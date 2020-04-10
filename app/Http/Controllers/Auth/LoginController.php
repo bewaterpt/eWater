@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Adldap;
 use App\User;
+use DB;
 
 class LoginController extends Controller
 {
@@ -62,7 +63,7 @@ class LoginController extends Controller
 
         $user_format = env('LDAP_USER_FORMAT', '%s@bewater.local');
         $userdn = sprintf('%s', $username);
-
+        $is_first_admin = DB::table('role_user')->where('role_id', 1)->first();
         // you might need this, as reported in
         // [#14](https://github.com/jotaelesalinas/laravel-simple-ldap-auth/issues/14):
         Adldap::auth()->bind('bewater\admbm', 'eTzTT5a85');
@@ -86,7 +87,10 @@ class LoginController extends Controller
                 foreach ($sync_attrs as $field => $value) {
                     $user->$field = $value !== null ? $value : '';
                 }
-                // $user->save();
+                $user->save();
+                if($is_first_admin == 0) {
+                    $user->roles()->attach(1);
+                }
             }
 
             // by logging the user we create the session, so there is no need to login again (in the configured time).
