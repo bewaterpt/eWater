@@ -6,11 +6,9 @@ use Closure;
 use Route;
 use Auth;
 
-use App\Models\role;
 use App\Models\Permission;
-use App\Models\EntUser;
 
-class Allowed extends Middleware
+class Allowed
 {
     /**
      * Depending on user's role and corresponding permissions, checks if user is allowed to access a route
@@ -23,17 +21,25 @@ class Allowed extends Middleware
     {
         $user = Auth::user();
 
-        if (intval($user->enabled) === 0) {
-            Auth::logout();
-            return redirect('login')->with('error', trans('auth.permission_denied'));
+
+
+        if(!$user) {
+            return redirect('/')->with('error', trans('auth.no_login'));
         }
 
+        if (!$user->enabled) {
+            Auth::logout();
+            return redirect('login')->with('error', trans('auth.account_disabled'));
+        }
+        // dd($user);
         $current_route = Route::getCurrentRoute()->getName();
         $permission_model = new Permission();
 
         if (!$permission_model->can($current_route)) {
-            return redirect('/');
+            return redirect()->back()->with('error', trans('auth.permission_denied'));
         }
+
+        // dd($next($request));
 
         return $next($request);
     }
