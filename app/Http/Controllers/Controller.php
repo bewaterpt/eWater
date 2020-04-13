@@ -24,7 +24,7 @@ class Controller extends BaseController
 
         $this->user = Auth::user();
         $this->user_roles = $this->user->roles;
-        $this->$permission = new Permission();
+        $this->permission = new Permission();
 
         return $next($request);
     }
