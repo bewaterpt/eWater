@@ -15,5 +15,6 @@ return [
 
     'failed' => 'These credentials do not match our records.',
     'throttle' => 'Too many login attempts. Please try again in :seconds seconds.',
-
+    'no_login' => 'There is no session available, please login again.',
+    'permission_denied' => "You do not have permission to access /:route",
 ];
