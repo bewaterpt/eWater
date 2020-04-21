@@ -9,7 +9,8 @@
     "license": "MIT",
     "require": {
         "php": "^7.2.5",
-        "adldap2/adldap2-laravel": "^6.0",
+        "adldap/adldap": "dev-master",
+        "directorytree/ldaprecord-laravel": "^1.2",
         "doctrine/dbal": "^2.10",
         "fideloper/proxy": "^4.2",
         "fruitcake/laravel-cors": "^1.0",
@@ -49,6 +50,9 @@
         "classmap": [
             "database/seeds",
             "database/factories"
+        ],
+        "files": [
+            "app/Helpers/LdapHelper.php"
         ]
     },
     "autoload-dev": {
