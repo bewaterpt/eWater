@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\User;
 Use Auth;
 
 class Permission extends Model
@@ -16,42 +17,36 @@ class Permission extends Model
         $roles = $user->roles()->get();
         $permissions = [];
 
-        if(!$user)
+        if(!$user) {
+            return redirect('/')->withErrors(__('auth.no_login'), 'custom');
+        }
 
         foreach($roles as $role) {
-            array_push($permissions, $role->permissions());
+            array_push($permissions, $role->permissions()->pluck('route'));
         }
 
         // dd($permissions);
 
-        if (sizeof($roles)) {
+        if (sizeof($roles) <= 0) {
             return false;
         }
 
-        // if ($group->type !== 'superadmin') {
-        //     if ($like) {
-        //         $res = $this->where('group_id', $group_id)
-        //             ->where('route', 'like', $route.'%')
-        //             ->where('allow', 1)
-        //             ->first();
+        // if ($current_route == 'settings.user.edit') {
+        //     if ($user->id == User::find($request->route('id'))->first()->id) {
+        //         return true;
         //     }
-        //     else {
-        //         $res = $this->where('group_id', $group_id)
-        //             ->where('route', $route)
-        //             ->where('allow', 1)
-        //             ->first();
-        //     }
-        // }
-        // else {
-        //     return true;
         // }
 
-        // if ($res) {
-        //     return true;
-        // }
-        // else {
-        //     return false;
-        // }
-        return true;
+        if ($user->roles()->pluck('slug')->contains('superadmin')) {
+            return true;
+        } else {
+            foreach ($permissions as $permission) {
+                if ($permission->contains($route)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }
