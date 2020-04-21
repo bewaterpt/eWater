@@ -43,7 +43,7 @@
                                     </a>
 
                                     <div class="dropdown-menu dropdown-menu" aria-labelledby="navbarDropdown">
-                                        <a class="dropdown-item" href="{{ route('settings.users')}}">@lang('settings.users')</a>
+                                        <a class="dropdown-item {{Route::currentRouteName()->contains('settings.users') ? 'active disabled' : ''}}" href="{{ route('settings.users')}}">@lang('settings.users')</a>
                                     </div>
                                 </li>
                             </ul>
@@ -67,7 +67,7 @@
                                     </a>
 
                                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                        <a class="dropdown-item" href="{{ route('settings.users.edit_self') }}">
+                                    <a class="dropdown-item {{Route::currentRouteName() == 'settings.users.edit_self' ? 'active' : ''}}" href="{{ route('settings.users.edit_self') }}">
                                             @Lang('general.edit_profile')
                                         </a>
                                         <a class="dropdown-item" href="{{ route('logout') }}"  onclick="
@@ -93,7 +93,7 @@
 
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                                     @foreach (config('app.locales') as $locale => $name)
-                                            <a class="dropdown-item" href="{{ $locale != app()->getLocale() ? route('settings.locale.change', ['locale' => $locale]) : '' }}" ?>
+                                            <a class="dropdown-item {{ $locale == app()->getLocale() ? 'active' : '' }}" href="{{ $locale != app()->getLocale() ? route('settings.locale.change', ['locale' => $locale]) : '' }}" ?>
                                                 {!! $locale == app()->getLocale() ?  '<i class="fas fa-caret-right" style="text-indent: -13px; margin-right: -4px;"></i>' : ''!!} {{ $name }} ({{ strtoupper($locale) }})
                                             </a>
                                     @endforeach

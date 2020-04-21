@@ -11,6 +11,7 @@ use App;
 use DB;
 use Auth;
 use View;
+use Route;
 
 class Controller extends BaseController
 {
@@ -19,13 +20,10 @@ class Controller extends BaseController
     protected $user;
     protected $user_roles;
     protected $permission;
+    protected $is_logged_in = false;
+    public $errors = [];
 
     public function __contruct(Request $request, Closure $next) {
-
-        $this->user = Auth::user();
-        $this->user_roles = $this->user->roles;
-        $this->permission = new Permission();
-
-        return $next($request);
+        dd(Route::current());
     }
 }

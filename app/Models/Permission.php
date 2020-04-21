@@ -22,6 +22,8 @@ class Permission extends Model
         }
 
         foreach($roles as $role) {
+            echo $role->id;
+            echo "\n";
             array_push($permissions, $role->permissions()->pluck('route'));
         }
 
@@ -41,12 +43,15 @@ class Permission extends Model
             return true;
         } else {
             foreach ($permissions as $permission) {
+                echo $permission;
+                echo "\n";
                 if ($permission->contains($route)) {
+                    dd($route);
                     return true;
                 }
             }
         }
-
+        die;
         return false;
     }
 }

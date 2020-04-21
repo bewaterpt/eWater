@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCacheTable extends Migration
+class ModifyManyToManyRoleUserRelationship extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,8 @@ class CreateCacheTable extends Migration
      */
     public function up()
     {
-        Schema::create('cache', function (Blueprint $table) {
-            $table->string('key')->unique();
-            $table->mediumText('value');
-            $table->integer('expiration');
+        Schema::table('role_user', function (Blueprint $table) {
+            $table->unique(['role_id', 'user_id'], 'idx_role_user_role_id_user_id');
         });
     }
 
@@ -27,6 +25,8 @@ class CreateCacheTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('cache');
+        Schema::table('role_user', function (Blueprint $table) {
+            $table->dropUnique('idx_role_user_role_id_user_id');
+        });
     }
 }
