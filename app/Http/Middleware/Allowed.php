@@ -21,22 +21,20 @@ class Allowed
     {
         $user = Auth::user();
 
-
-
         if(!$user) {
-            return redirect('/')->with('error', trans('auth.no_login'));
+            return redirect('/')->withErrors(__('auth.no_login'), 'custom');
         }
 
         if (!$user->enabled) {
             Auth::logout();
-            return redirect('login')->with('error', trans('auth.account_disabled'));
+            return redirect('login')->withErrors(__('auth.account_disabled'), 'custom');
         }
-        // dd($user);
+
         $current_route = Route::getCurrentRoute()->getName();
         $permission_model = new Permission();
 
         if (!$permission_model->can($current_route)) {
-            return redirect()->back()->with('error', trans('auth.permission_denied'));
+            return redirect()->back()->withErrors(__('auth.permission_denied', ['route' => $current_route]), 'custom');
         }
 
         // dd($next($request));
