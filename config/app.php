@@ -80,7 +80,14 @@ return [
     |
     */
 
-    'locale' => 'en',
+    'locale' => env('APP_LOCALE', 'pt'),
+
+    'locales' => [
+        'pt' => "Português",
+        'en' => "English",
+    ],
+
+    'reset_password_url' => env('RESET_PASSWORD_URL', 'http://192.168.21.10/rdweb/pages/en-us/password.aspx'),
 
     /*
     |--------------------------------------------------------------------------

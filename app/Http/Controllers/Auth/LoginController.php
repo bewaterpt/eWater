@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Hash;
 use Adldap;
 use App\User;
 use DB;
+use App\Helpers\LdapHelper;
+use LdapRecord\Laravel\Auth\ListensForLdapBindFailure;
 
 class LoginController extends Controller
 {
@@ -24,7 +26,9 @@ class LoginController extends Controller
     |
     */
 
-    use AuthenticatesUsers;
+    use AuthenticatesUsers, ListensForLdapBindFailure {
+        handleLdapBindError as baseHandleLdapBindError;
+    }
 
     /**
      * Where to redirect users after login.
@@ -34,78 +38,168 @@ class LoginController extends Controller
     protected $redirectTo = RouteServiceProvider::HOME;
 
     /**
+     * Username
+     *
+     * @var string
+     */
+    protected $userName = null;
+
+    /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(Request $request)
     {
         $this->middleware('guest')->except('logout');
+        $this->userName = $request->username;
+    }
+
+    public function credentials(Request $request) {
+        return [
+            'samaccountname' => $request->username,
+            'password' => $request->password,
+        ];
     }
 
     public function username() {
-        // we could return config('ldap_auth...') directly
-        // but it seems to change a lot and with this check we make sure
-        // that it will fail in future versions, if changed.
-        // you can return the config(...) directly if you want.
-        $column_name = config('ldap_auth.identifiers.database.username_column', null);
-        if ( !$column_name ) {
-            die('Error in LoginController::username(): could not find username column.');
-        }
-        return $column_name;
+        return 'username';
     }
 
-    protected function attemptLogin(Request $request)
-    {
-        $credentials = $request->only($this->username(), 'password');
-        $username = $credentials[$this->username()];
-        $password = $credentials['password'];
+    protected function handleLdapBindError($message, $code = null) {
+        switch ($code) {
+            case '532':
+                return redirect('/')->withErrors(__('auth.password_expired', ['url' => config('app.reset_password_url'), 'username' => $this->userName]), 'custom');
+                break;
 
-        $user_format = env('LDAP_USER_FORMAT', '%s@bewater.local');
-        $userdn = sprintf('%s', $username);
-        $is_first_admin = DB::table('role_user')->where('role_id', 1)->first();
-        // you might need this, as reported in
-        // [#14](https://github.com/jotaelesalinas/laravel-simple-ldap-auth/issues/14):
-        Adldap::auth()->bind('bewater\admbm', 'eTzTT5a85');
+            case '533':
+                return redirect('/')->withErrors(__('auth.account_disabled', ['helpdesk_email' => config('app.helpdesk_email')]), 'custom');
+                break;
 
-        if (Adldap::auth()->attempt($userdn, $password, true)) {
-            // the user exists in the LDAP server, with the provided password
+            case '701':
+                return redirect('/')->withErrors(__('auth.account_expired', ['helpdesk_email' => config('app.helpdesk_email')]), 'custom');
+                break;
 
-            $user = User::where($this->username(), $username)->first();
-            if (!$user) {
-                // the user doesn't exist in the local database, so we have to create one
+            case '773':
+                return redirect('/')->withErrors(__('auth.password_expired', ['url' => config('app.reset_password_url'), 'username' => $this->userName]), 'custom');
+                break;
+        }
 
-                $user = new User();
-                $user->username = $username;
-                $user->password = '';
-                // $user->updateTimestamps();
+        $this->baseHandleLdapBindError($message, $code);
+    }
 
-                // you can skip this if there are no extra attributes to read from the LDAP server
-                // or you can move it below this if(!$user) block if you want to keep the user always
-                // in sync with the LDAP server
-                $sync_attrs = $this->retrieveSyncAttributes(explode('\\', $username)[1]);
-                foreach ($sync_attrs as $field => $value) {
-                    $user->$field = $value !== null ? $value : '';
-                }
-                $user->save();
-                if($is_first_admin == 0) {
-                    $user->roles()->attach(1);
-                }
-            }
+    protected function authenticated(Request $request, $user) {
 
-            // by logging the user we create the session, so there is no need to login again (in the configured time).
-            // pass false as second parameter if you want to force the session to expire when the user closes the browser.
-            // have a look at the section 'session lifetime' in `config/session.php` for more options.
-            $this->guard()->login($user, true);
-            return true;
+        $is_first_admin = DB::table('role_user')->where('role_id', 1)->count();
+
+        if ($is_first_admin <= 1) {
+            $user->roles()->attach(1);
         } else {
-            $user = User::where($this->username(), $username)->first();
+            $user->roles()->attach(2);
         }
-
-        // the user doesn't exist in the LDAP server or the password is wrong
-        // log error
-        return false;
     }
+
+    // protected function attemptLogin(Request $request)
+    // {
+    //     $credentials = $request->only($this->username(), 'password');
+    //     $username = $credentials[$this->username()];
+    //     $password = $credentials['password'];
+
+    //     $user_format = env('LDAP_USER_FORMAT', '%s@bewater.local');
+    //     $userdn = sprintf('%s', $username);
+    //     $is_first_admin = DB::table('role_user')->where('role_id', 1)->count();
+    //     // you might need this, as reported in
+    //     // [#14](https://github.com/jotaelesalinas/laravel-simple-ldap-auth/issues/14):
+    //     // Adldap::auth()->bind('bewater\admbm', 'eTzTT5a85');
+    //     $result = Adldap::auth()->attempt($userdn, $password, true);
+
+    //     if ($result['state']) {
+    //         // the user exists in the LDAP server, with the provided password
+
+    //         $user = User::where($this->username(), $username)->first();
+    //         if (!$user) {
+    //             // the user doesn't exist in the local database, so we have to create one
+
+    //             $user = new User();
+    //             $user->username = $username;
+    //             $user->password = '';
+    //             // $user->updateTimestamps();
+
+    //             // you can skip this if there are no extra attributes to read from the LDAP server
+    //             // or you can move it below this if(!$user) block if you want to keep the user always
+    //             // in sync with the LDAP server
+    //             $sync_attrs = $this->retrieveSyncAttributes(explode('\\', $username)[1]);
+    //             foreach ($sync_attrs as $field => $value) {
+    //                 echo $field;
+    //                 if ($field == "uac") {
+    //                     dd(LdapHelper::getUserAccountControlAttributes($value));
+    //                     continue;
+    //                 }
+    //                 $user->$field = $value !== null ? $value : '';
+    //             }
+
+    //             $user->save();
+    //             if ($is_first_admin == 0 || $is_first_admin == 1) {
+    //                 $user->roles()->attach(1);
+    //             } else {
+    //                 $user->roles()->attach(2);
+    //             }
+
+    //             // by logging the user we create the session, so there is no need to login again (in the configured time).
+    //             // pass false as second parameter if you want to force the session to expire when the user closes the browser.
+    //             // have a look at the section 'session lifetime' in `config/session.php` for more options.
+
+    //         } else {
+    //             $sync_attrs = $this->retrieveSyncAttributes(explode('\\', $username)[1]);
+    //             $attributes = LdapHelper::getUserAccountControlAttributes($sync_attrs['uac']);
+
+    //             foreach ($attributes as $attribute => $value) {
+    //                 if ($attribute === "") {
+
+    //                 }
+    //             }
+    //         }
+
+    //         if (!$user->enabled) {
+    //             return redirect('/')->withErrors([trans('auth.account_disabled', ['helpdesk_email' => config('app.helpdesk_email')])]);
+    //         }
+
+    //         $this->guard()->login($user, true);
+    //         return true;
+    //     } else {
+
+    //         switch (LdapHelper::getErrorCode($result['message']->getDetailedError()->getDiagnosticMessage())) {
+    //             case '532':
+    //                 return redirect('/')->withErrors([trans('auth.password_expired', ['url' => config('reset_password_url'), 'username' => $username])]);
+    //                 break;
+
+    //             case '533':
+    //                 return redirect('/')->withErrors([trans('auth.account_disabled', ['helpdesk_email' => config('app.helpdesk_email')])]);
+    //                 break;
+
+    //             case '701':
+    //                 return redirect('/')->withErrors([trans('auth.account_expired', ['helpdesk_email' => config('app.helpdesk_email')])]);
+    //                 break;
+
+    //             case '773':
+    //                 return redirect('/')->withErrors([trans('auth.password_expired', ['url' => config('reset_password_url'), 'username' => $username])]);
+    //                 break;
+    //         }
+
+    //         $user = User::where($this->username(), $username)->first();
+    //         if(!$user) {
+    //             return redirect('/')->with([
+    //                 'errors' => trans('auth.failed', ['url' => config('reset_password_url'), 'username' => $username]),
+    //             ]);
+    //         }
+    //         $this->guard()->login($user, true);
+    //         return true;
+    //     }
+
+    //     // the user doesn't exist in the LDAP server or the password is wrong
+    //     // log error
+    //     return false;
+    // }
 
     protected function retrieveSyncAttributes($username)
     {

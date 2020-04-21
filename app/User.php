@@ -5,10 +5,13 @@ namespace App;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use LdapRecord\Laravel\Auth\AuthenticatesWithLdap;
+use LdapRecord\Laravel\Auth\LdapAuthenticatable;
+use LdapRecord\Laravel\Auth\HasLdapUser;
 
-class User extends Authenticatable
+class User extends Authenticatable implements LdapAuthenticatable
 {
-    use Notifiable;
+    use Notifiable, AuthenticatesWithLdap, HasLdapUser;
 
     /**
      * The attributes that are mass assignable.
@@ -48,10 +51,72 @@ class User extends Authenticatable
      *
      * @param type $for_select2 - Is the output going  to a select2 element?
      *
-     * @return type
+     * @return relationship
      */
-    public function roles()
-    {
+    public function roles() {
         return $this->belongsToMany('App\Models\Role');
+    }
+
+    /**
+     * Return the relationship for the user agent
+     *
+     * @return relationship
+     */
+    public function agent() {
+        return $this->belongsTo('App\Models\Agent');
+    }
+
+    /**
+     * Check if the user is an agent
+     *
+     * @return boolean
+     */
+    public function isAgent() {
+        if ($this->belongsTo('App\Models\Agent')->count() > 0) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Check if the user is enabled
+     *
+     * @return boolean
+     */
+    public function enabled() {
+        return $this->enabled;
+    }
+
+    /**
+     * Enable the user and the associated agent if there is one
+     *
+     * @param boolean $enableAgent
+     *
+     * @
+     */
+    public function enable($enableAgent = false) {
+        $this->enabled = true;
+        if($this->isAgent()) {
+            $this->agent()->enable();
+        }
+        $this->save();
+    }
+
+    /**
+     * Disable the user and the associated agent if there is one
+     */
+    public function disable() {
+        $this->enabled = false;
+        if($this->isAgent()) {
+            $this->agent()->disable();
+        }
+        $this->save();
+    }
+
+
+    public function delete() {
+        $this->removed = 1;
+        $this->save();
     }
 }
