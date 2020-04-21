@@ -1,0 +1,13 @@
+.error-container {
+
+    margin-bottom: 10px;
+
+    .danger {
+        background-color: rgba(255, 0, 0, .3);
+        border: 1px solid rgba(255,0,0,0.5);
+
+        &:not(:last-child()) {
+            margin-bottom: 5px;
+        }
+    }
+}

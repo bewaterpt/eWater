@@ -1,8 +1,18 @@
 // Fonts
 @import url('https://fonts.googleapis.com/css?family=Nunito');
 
-// Variables
-@import 'helpers/variables';
-
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
+
+// Datatables
+@import '~datatables.net-dt/css/jquery.dataTables.min.css';
+
+// Fontawesome Webfont
+@import '~@fortawesome/fontawesome-free/css/all';
+
+// App
+@import 'helpers/variables';
+
+@import 'partials/partials';
+
+@import 'layout/layout';

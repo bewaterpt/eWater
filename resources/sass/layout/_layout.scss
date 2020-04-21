@@ -1,0 +1,28 @@
+@import 'tables';
+@import 'header';
+
+a {
+    color: rgb(163, 163, 163);
+    text-decoration: none !important;
+
+    &:hover {
+        color: gray;
+    }
+
+    &.disable,
+    &.delete {
+        color: $danger;
+
+        &:hover {
+            color: $hoverdanger;
+        }
+    }
+
+    &.enable {
+        color: $green;
+
+        &:hover {
+            color: $hovergreen
+        }
+    }
+}

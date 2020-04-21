@@ -1,0 +1,26 @@
+.object-table {
+
+    thead {
+
+        th {
+
+            &:nth-last-of-type(-n+2) {
+                text-align: center;
+            }
+        }
+    }
+
+    tbody {
+
+        tr {
+
+            &:nth-child(even) {
+                background: rgba(0, 0, 0, 0.045);
+            }
+        }
+    }
+
+    .actions {
+        text-align: center;
+    }
+}
