@@ -1,5 +1,6 @@
 const mix = require('laravel-mix');
 
+mix.disableNotifications();
 /*
  |--------------------------------------------------------------------------
  | Mix Asset Management
@@ -11,5 +12,18 @@ const mix = require('laravel-mix');
  |
  */
 
-mix.js('resources/js/app.js', 'public/js')
-   .sass('resources/sass/app.scss', 'public/css');
+mix.sass('resources/sass/app.scss', 'public/css')
+.js([
+
+    // app.js General Script
+    "resources/js/app.js",
+
+    // View correspondent scripts
+    "resources/js/app/settings/user/datatables_users.js",
+
+], "public/js/app.js")
+.extract([
+    'datatables.net-dt',
+    'quill',
+    '@fortawesome/fontawesome-free',
+])
