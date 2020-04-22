@@ -15,6 +15,7 @@ class CreateDelegationsTable extends Migration
     {
         Schema::create('delegations', function (Blueprint $table) {
             $table->id();
+            $table->string('designation');
             $table->timestamps();
         });
     }
