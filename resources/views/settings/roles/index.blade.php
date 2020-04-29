@@ -5,25 +5,19 @@
     <div class="row justify-content-center">
         <div class="col-md-11">
             <div class="card">
-                <div class="card-header">@Lang('general.users')</div>
+                <div class="card-header">@Lang('general.roles')</div>
                 <div class="card-body">
                     <table id="datatable-users" class="object-table" style="width: 100%">
                         <thead>
                             <tr>
                                 <th>
-                                    @Lang('general.name')
+                                    @Lang('general.role')
                                 </th>
                                 <th>
-                                    @Lang('general.username')
+                                    @Lang('general.ad_group')
                                 </th>
                                 <th>
-                                    @Lang('general.roles')
-                                </th>
-                                <th>
-                                    @Lang('general.agent')
-                                </th>
-                                <th>
-                                    @Lang('general.state')
+                                    @Lang('general.user_count')
                                 </th>
                                 <th>
                                     @Lang('general.actions')
@@ -46,18 +40,18 @@
                                             {{$role->name}}
                                         @endforeach
                                     </td>
-                                    <td>
-                                        @if($user->agent()->first())
-                                        <a href="{{Route('settings.agent.view', ['id' => $user->agent()->first()->id])}}">
-                                            {{$user->agent()->first()->name}}
-                                        </a>
-                                        @endif
-                                    </td>
                                     <td style="text-align: center">
                                         @if($user->enabled)
                                             <i class="fas fa-check" style="color: limegreen"></i>
                                         @else
                                             <i class="fas fa-times" style="color: red"></i>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if($user->agent()->first())
+                                        <a href="{{Route('settings.agent.view', ['id' => $user->agent()->first()->id])}}">
+                                            {{$user->agent()->first()->name}}
+                                        </a>
                                         @endif
                                     </td>
                                     <td class="actions">

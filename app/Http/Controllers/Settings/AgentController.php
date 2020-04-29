@@ -1,21 +1,21 @@
 <?php
 
-namespace App\Http\Controllers\Settings;
+namespace App\Http\Controllers\settings;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use DB;
-use Auth;
-use App\User;
-use Route;
 
-class UserController extends Controller
+class AgentController extends Controller
 {
 
-    public function index(Request $request) {
-        $users = User::all();
+    public function __construct() {
+        parent::__construct();
+    }
 
-        return view('settings.users.index', ['users' => $users]);
+    public function index(Request $request) {
+        $agents = Agent::all();
+
+        return view('settings.agents.index', ['agents' => $agents]);
     }
 
     public function delete(Request $request) {
@@ -40,23 +40,13 @@ class UserController extends Controller
     }
 
     public function view($user_id) {
-        $user = User::find($this->decodeId($user_id));
         return view('settings.users.view')->with([
-            'user' => $user
-        ]);
-    }
-
-    public function edit_self() {
-        $user = Auth::user();
-
-        return view('settings.users.edit_self',
-        [
-            'user' => $user,
+            'user' => $user->first()
         ]);
     }
 
     public function edit($user_id) {
-        $user = User::find($user_id);
+
     }
 
     public function toggle_state($user_id) {

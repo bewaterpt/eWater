@@ -24,4 +24,5 @@ return [
     'password' => 'Palavra Passe',
     'username' => 'Nome de Utilizador',
     'remember_me' => 'Lembrar-me',
+    'logout' => 'Terminar Sessão',
 ];

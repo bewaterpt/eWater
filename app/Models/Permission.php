@@ -22,36 +22,30 @@ class Permission extends Model
         }
 
         foreach($roles as $role) {
-            echo $role->id;
-            echo "\n";
             array_push($permissions, $role->permissions()->pluck('route'));
         }
-
-        // dd($permissions);
 
         if (sizeof($roles) <= 0) {
             return false;
         }
-
-        // if ($current_route == 'settings.user.edit') {
-        //     if ($user->id == User::find($request->route('id'))->first()->id) {
-        //         return true;
-        //     }
-        // }
-
         if ($user->roles()->pluck('slug')->contains('superadmin')) {
             return true;
         } else {
             foreach ($permissions as $permission) {
-                echo $permission;
-                echo "\n";
                 if ($permission->contains($route)) {
-                    dd($route);
                     return true;
                 }
             }
         }
-        die;
+
         return false;
+    }
+
+    public function getByRoute($route, $like = false) {
+        return $like ? $this->where('route', $route)->first() : $this->where('route', 'like', $route)->get();
+    }
+
+    public function existsByRoute($route) {
+        return $this->where('route', $route)->count() > 0 ? true : false;
     }
 }

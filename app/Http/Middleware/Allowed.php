@@ -37,8 +37,6 @@ class Allowed
             return redirect()->back()->withErrors(__('auth.permission_denied', ['route' => $current_route]), 'custom');
         }
 
-        // dd($next($request));
-
         return $next($request);
     }
 }

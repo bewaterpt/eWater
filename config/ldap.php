@@ -70,4 +70,6 @@ return [
         'driver' => env('CACHE_DRIVER', 'file'),
     ],
 
+    'starts_with_filter' => env('STARTS_WITH_FILTER', 'Outono_'),
+
 ];

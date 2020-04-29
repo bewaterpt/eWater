@@ -3,6 +3,7 @@
 return [
     'name' => 'Nome',
     'username' => 'Nome de Utilizador',
+    'users' => 'Utilizadores',
     'roles' => 'Funções',
     'state' => 'Estado',
     'actions' => 'Ações',
@@ -11,5 +12,5 @@ return [
     'action_delete' => 'Eliminar',
     'action_disable' => 'Desativar',
     'action_enable' => 'Ativar',
-    'logout' => 'Terminar Sessão'
+    'agent' => 'Agente',
 ];

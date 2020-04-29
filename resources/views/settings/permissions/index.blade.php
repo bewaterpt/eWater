@@ -1,4 +1,5 @@
 @section('content')
+
 <div class="inner-container-right">
 
     <div class="inner-title-container">
@@ -9,20 +10,19 @@
     <div class="ln_solid after-title"></div>
 
       <div id="settings-permissions">
-        <?php array_shift($roles_header); ?>
+
+        {{array_shift($roles_header) }}
 
           <table>
-                @foreach( $categorized_routes as $title => $categorized_route )\
-                    <?php
-                        $counter = 0;
-                        $select_all = 1;
-                        $check_title=$title;
-                    ?>
+                @foreach( $categorized_routes as $title => $categorized_route )
+                    {{$counter = 0}}
+                    {{$select_all = 1}}
+                    {{$check_title=$title}}
 
                         <tr class="area">
-                            <td class="category-title">
-                                <div class="header">\
-                                    {{ Lang::get('permissions.'.$title) }}
+                            <td class="category-title" >
+                                <div class="header">
+                                    {{ __('permissions.'.$title) }}
                                 </div>
                             </td>
                             @foreach( $roles_header as $role_header )
@@ -37,7 +37,7 @@
                         @foreach( $categorized_route as $element )
                             <tr>
                                 <td class="extra-padding-left-25">@lang('permissions.'.$element)</td>
-                                <?php $select_count = 1;?>
+                                {{$select_count = 1}}
                                 @foreach( $role_data as $role )
 
                                     <td class="text-center permission-value">
@@ -49,9 +49,9 @@
                                             @endif
                                         @endif
                                     </td>
-                                    <?php $select_count++; ?>
+                                    {{$select_count++ }}
                                 @endforeach
-                            <?php $counter++; ?>
+                            {{$counter++ }}
                             </tr>
                         @endforeach
 
@@ -65,5 +65,6 @@
             <a href="#" class="btn btn-primary js-permissions-update extra-mid-width">@lang('global.save')</a>
         </div>
     </div>
-	@include('errors.msg')
 </div>
+
+@endsection

@@ -41,6 +41,11 @@ return [
             'provider' => 'ldap',
         ],
 
+        'db' => [
+            'driver' => 'session',
+            'provider' => 'database'
+        ],
+
         'api' => [
             'driver' => 'token',
             'provider' => 'users',
@@ -66,7 +71,7 @@ return [
     */
 
     'providers' => [
-        'users' => [
+        'database' => [
             'driver' => 'eloquent', // was 'eloquent'
             'model'  => App\User::class,
         ],
@@ -74,7 +79,9 @@ return [
         'ldap' => [
             'driver' => 'ldap',
             'model' => LdapRecord\Models\ActiveDirectory\User::class,
-            'rules' => [],
+            'rules' => [
+                App\Ldap\Rules\OutonoUsers::class,
+            ],
             'database' => [
                 'model' => App\User::class,
                 'sync_passwords' => true,

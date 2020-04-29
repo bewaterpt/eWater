@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateDelegationsTable extends Migration
+class AddSoftDeletesToAgentsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,8 @@ class CreateDelegationsTable extends Migration
      */
     public function up()
     {
-        Schema::create('delegations', function (Blueprint $table) {
-            $table->id();
-            $table->string('designation');
+        Schema::table('agents', function (Blueprint $table) {
             $table->softDeletes();
-            $table->timestamps();
         });
     }
 
@@ -28,6 +25,8 @@ class CreateDelegationsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('delegations');
+        Schema::table('agents', function (Blueprint $table) {
+            $table->dropSoftDeletes();
+        });
     }
 }

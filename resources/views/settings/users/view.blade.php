@@ -7,27 +7,37 @@
             <div class="card">
                 <div class="card-header">
                     @Lang('settings.profile'): {{ $user->name."(". $user->username .")"}}
-
-                    <span class="float-right">
-                        <a href="{{Route('settings.users.edit', ['id' => $user->id])}}">
-                            <i class="fas fa-user-edit"></i>
-                        </a>
-                        @if($user['id'] !== Auth::user()->id)
-                        <a href="{{Route('settings.users.toggle_state', ['id' => $user['id']])}}" class="{{ $user['enabled'] ? 'disable' : 'enable' }}" title="{{$user['enabled'] ? __('general.action_disable') : __('general.action_enable')}}">
-                            @if($user['enabled'])
-                                <i class="fas fa-user-times"></i>
-                            @else
-                                <i class="fas fa-user-check"></i>
-                            @endif
-                        </a>
-                        @if($user['id'] !== 1)
-                            <a href="{{Route('setings.users.delete', ['id' => $user['id']])}}" class="delete" title="@Lang('general.action_delete')"><i class="fas fa-trash-alt"></i></a>
-                        @endif
-                    @endif
-                    </span>
                 </div>
                 <div class="card-body">
-                    <pre>{{print_r($user)}}</pre>
+                    <div class="form-row mb-5">
+                        <div class="form-group col-md-6">
+                            <label for="inputName">@Lang('forms.fields.name')</label>
+                            <input type="text" name="name" class="form-control" id="inputName" value="{{$user->name ? $user->name : ''}}" placeholder="{{__('forms.placeholders.name')}}">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="inputEmail">@Lang('forms.fields.email')</label>
+                            <input type="email" name="email" class="form-control-plaintext" readonly value="{{$user->email ? $user->email : __('settings.no_value')}}" id="inputEmail" placeholder="{{__('forms.placeholders.email')}}">
+                        </div>
+                    </div>
+                    <div class="mb-3">Reset Password</div>
+                    <fieldset class="border-top mb-3">
+                        <div class="form-row">
+                            <div class="form-group pt-2 col-md-6">
+                                <label for="inputCurrentPassword">@Lang('forms.fields.current_password')</label>
+                                <input type="password" name="currentPass" class="form-control" id="inputCurrentPassword">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="inputNewPassword">@Lang('forms.fields.new_password')</label>
+                                <input type="password" name="newPass" class="form-control" id="inputNewPassword">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="inputNewPasswordRepeat">@Lang('forms.fields.new_password_repeat')</label>
+                                <input type="password" name="newPassRepeat" class="form-control" id="inputNewPasswordRepeat">
+                            </div>
+                        </div>
+                    </fieldset>
                 </div>
             </div>
         </div>

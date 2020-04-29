@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class ModifyManyToManyRoleUserRelationship extends Migration
+class FixRoleUserRelationship extends Migration
 {
     /**
      * Run the migrations.
@@ -14,7 +14,8 @@ class ModifyManyToManyRoleUserRelationship extends Migration
     public function up()
     {
         Schema::table('role_user', function (Blueprint $table) {
-            //$table->unique(['role_id', 'user_id'], 'idx_role_user_role_id_user_id');
+            // Foreign Keys
+            //$table->foreign('role_id')->references('id')->on('roles')->onCascade('delete');
         });
     }
 
@@ -26,7 +27,8 @@ class ModifyManyToManyRoleUserRelationship extends Migration
     public function down()
     {
         Schema::table('role_user', function (Blueprint $table) {
-            $table->dropUnique('idx_role_user_role_id_user_id');
+            // Foreign Keys
+            //$table->dropForeign('role_user_role_id_foreign');
         });
     }
 }

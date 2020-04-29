@@ -43,9 +43,16 @@
                                     </a>
 
                                     <div class="dropdown-menu dropdown-menu" aria-labelledby="navbarDropdown">
-                                        <a class="dropdown-item {{Route::currentRouteName()->contains('settings.users') ? 'active disabled' : ''}}" href="{{ route('settings.users')}}">@lang('settings.users')</a>
+                                        <a class="dropdown-item {{Route::currentRouteName() == 'settings.agents.list' ? 'active disabled' : ''}}" href="{{ route('settings.users.list')}}">@lang('general.users')</a>
+                                    </div>
+                                    <div class="dropdown-menu dropdown-menu" aria-labelledby="navbarDropdown">
+                                        <a class="dropdown-item {{Route::currentRouteName() == 'settings.users.list' ? 'active disabled' : ''}}" href="{{ route('settings.users.list')}}">@lang('general.users')</a>
+                                    </div>
+                                    <div class="dropdown-menu dropdown-menu" aria-labelledby="navbarDropdown">
+                                        <a class="dropdown-item {{Route::currentRouteName() == 'settings.roles.list' ? 'active disabled' : ''}}" href="{{ route('settings.users.list')}}">@lang('general.users')</a>
                                     </div>
                                 </li>
+
                             </ul>
                         @endguest
                         <!-- Right Side Of Navbar -->
@@ -53,11 +60,11 @@
                             <!-- Authentication Links -->
                             @guest
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
+                                    <a class="nav-link" href="{{ route('login') }}">{{ __('auth.login') }}</a>
                                 </li>
                                 @if (Route::has('register'))
                                     <li class="nav-item">
-                                        <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
+                                        <a class="nav-link" href="{{ route('register') }}">{{ __('auth.register') }}</a>
                                     </li>
                                 @endif
                             @else

@@ -67,22 +67,32 @@ class LoginController extends Controller
     }
 
     protected function handleLdapBindError($message, $code = null) {
+
         switch ($code) {
             case '532':
                 return redirect('/')->withErrors(__('auth.password_expired', ['url' => config('app.reset_password_url'), 'username' => $this->userName]), 'custom');
-                break;
+            break;
 
             case '533':
                 return redirect('/')->withErrors(__('auth.account_disabled', ['helpdesk_email' => config('app.helpdesk_email')]), 'custom');
-                break;
+            break;
 
             case '701':
                 return redirect('/')->withErrors(__('auth.account_expired', ['helpdesk_email' => config('app.helpdesk_email')]), 'custom');
-                break;
+            break;
 
             case '773':
                 return redirect('/')->withErrors(__('auth.password_expired', ['url' => config('app.reset_password_url'), 'username' => $this->userName]), 'custom');
-                break;
+            break;
+
+            default:
+                if ($message == "Can't contact LDAP server") {
+                    $user = User::where($this->username(), $this->userName)->first();
+                    if ($user) {
+                        $this->guard('db')->login($user);
+                    }
+                }
+            break;
         }
 
         $this->baseHandleLdapBindError($message, $code);
@@ -92,10 +102,12 @@ class LoginController extends Controller
 
         $is_first_admin = DB::table('role_user')->where('role_id', 1)->count();
 
-        if ($is_first_admin <= 1) {
-            $user->roles()->attach(1);
-        } else {
-            $user->roles()->attach(2);
+        if ($user->roles()->count() === 0) {
+            if ($is_first_admin <= 1) {
+                $user->roles()->syncWithoutDetaching([1]);
+            } else {
+                $user->roles()->syncWithoutDetaching([2]);
+            }
         }
     }
 
