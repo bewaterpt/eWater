@@ -7,9 +7,8 @@ use DB;
 use Hash;
 use Route;
 use Validator;
-use Illuminate\Support\Str;
 use App\Models\Role;
-use App\Models\AdGroup;
+use Illuminate\Support\Str;
 use App\User;
 use LdapRecord\Connection;
 
@@ -20,7 +19,7 @@ class GenerateData extends Command
      *
      * @var string
      */
-    protected $signature = 'db:dataseed';
+    protected $signature = 'app:initialize';
 
     /**
      * The console command description.
@@ -29,6 +28,10 @@ class GenerateData extends Command
      */
     protected $description = 'Populates necessary data in each table in the database';
 
+    protected $db;
+
+    protected $pdo;
+
     /**
      * Create a new command instance.
      *
@@ -36,6 +39,8 @@ class GenerateData extends Command
      */
     public function __construct()
     {
+        $this->db = DB::connection('mysql');
+        $this->pdo = $this->db->getPdo();
         parent::__construct();
     }
 
@@ -67,10 +72,6 @@ class GenerateData extends Command
         $query->select(['samaccountname', 'cn']);
         $groups = $query->where('cn', 'starts_with', config('ldap.starts_with_filter'))->get();
 
-        // Connect to the database
-        $db = DB::connection('mysql');
-        // Get connection PDO
-        $pdo = $db->getPdo();
         // Init array that will contain all permission ids
         $permission_ids = [];
 
@@ -115,8 +116,8 @@ class GenerateData extends Command
         try {
             $this->comment('Creating local admin user');
 
-            $db->insert('insert into users (name, email, username, password) values(?, ?, ?, ?)', [$admin_user_name, $admin_user_mail, $admin_user_username, Hash::make($admin_user_pass)]);
-            $admin_user_id = $pdo->lastInsertId();
+            $this->db->insert('insert into users (name, email, username, password) values(?, ?, ?, ?)', [$admin_user_name, $admin_user_mail, $admin_user_username, Hash::make($admin_user_pass)]);
+            $admin_user_id = $this->pdo->lastInsertId();
             $admin_user = User::find($admin_user_id);
 
             if (!$admin_user) {
@@ -130,22 +131,27 @@ class GenerateData extends Command
             // Insert all Roles
 
             $this->comment('Insert default roles');
-            $db->insert('insert into roles (name, slug) values(?, ?)', ['Administrador', 'admin']);
-            $admin_role_id = $pdo->lastInsertId();
-            $db->insert('insert into roles (name, slug) values(?, ?)', ['Operador', 'operator']);
-            $db->insert('insert into roles (name, slug) values(?, ?)', ['Utilizador', 'user']);
+            $this->db->insert('insert into roles (name, slug) values(?, ?)', ['Administrador', 'admin']);
+            $admin_role_id = $this->pdo->lastInsertId();
+            $this->db->insert('insert into roles (name, slug) values(?, ?)', ['Operador', 'operator']);
+            $this->db->insert('insert into roles (name, slug) values(?, ?)', ['Utilizador', 'user']);
             $this->info('Done');
             $this->info('');
 
             $this->comment('Insert Domain roles');
             foreach($groups as $group) {
-                $db->insert('insert into roles (name, slug) values(?, ?)', [$group['samaccountname'][0], strtolower($group['cn'][0])]);
+                $this->db->insert('insert into roles (name, slug) values(?, LOWER(?))', [$group['samaccountname'][0], $group['cn'][0]]);
             }
             $this->info('Done');
             $this->info('');
 
             $this->comment('Assign admin role to admin user');
             $admin_user->roles()->attach($admin_role_id);
+            $this->info('Done');
+            $this->info('');
+
+            $this->comment('Create delegations');
+            $this->db->insert('insert into delegations (designation) values(?)', ['Ourém']);
             $this->info('Done');
             $this->info('');
 
@@ -160,8 +166,8 @@ class GenerateData extends Command
             $this->output->progressStart($routes->count());
             foreach ($routes as $route) {
                 // $this->comment('Inserting '. $route);
-                $db->insert('insert into permissions (route) values(?)', [$route]);
-                array_push($permission_ids, $pdo->lastInsertId());
+                $this->db->insert('insert into permissions (route) values(?)', [$route]);
+                array_push($permission_ids, $this->pdo->lastInsertId());
                 $this->output->progressAdvance();
             }
             $this->output->progressFinish();
@@ -180,7 +186,15 @@ class GenerateData extends Command
         } catch(\Exception $e) {
             // On error rollback changes
             DB::rollback();
-            echo $e->getMessage();
+            $this->info('');
+            $this->info('Unexpected error ocurred, see message bellow:');
+            $this->error($e->getMessage());
         }
+
+        $ldap->disconnect();
+    }
+
+    protected function escapeString($str) {
+        return $this->pdo->quote($str);
     }
 }

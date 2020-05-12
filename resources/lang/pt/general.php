@@ -13,4 +13,5 @@ return [
     'action_disable' => 'Desativar',
     'action_enable' => 'Ativar',
     'agent' => 'Agente',
+    'save' => 'Gravar',
 ];

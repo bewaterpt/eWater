@@ -19,56 +19,85 @@ use Illuminate\Support\Facades\Route;
 
 // Auth::routes();
 
+/**
+ * @todo Internacionalize Routes
+ */
+
+/**
+ * Routes within this group are subject to all the members of the web middleware group
+ *
+ * @see App\Http\Kernel::class
+ */
 Route::group(['middleware' => ['web']], function () {
-    Route::get('/', 'HomeController@index')->name('home');
+
     Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
     Route::post('login', 'Auth\LoginController@login');
     Route::post('logout', 'Auth\LoginController@logout')->name('logout');
-    Route::match(['get', 'patch'] ,'profile/edit', 'Settings\UserController@edit_self')->name('settings.users.edit_self');
     Route::get('locale/change/{locale}', 'Settings\SettingsController@change_locale')->name('settings.locale.change');
 
-    Route::group(['middleware' => ['allowed']], function () {
+    /**
+     * Routes within this group only allow usage for authenticated users
+     *
+     * @see App\Http\Middleware\Authenticate::class
+     */
+    Route::group(['middleware' => ['auth']], function () {
 
-        // Users
-        Route::get('users', 'Settings\UserController@index')->name('settings.users.list');
-        Route::get('users/{id}', 'Settings\UserController@view')->name('settings.users.view');
-        Route::match(['get', 'post'], 'users/edit/{id}', 'Settings\UserController@edit')->name('settings.users.edit');
-        Route::get('users/toggle/{id}', 'Settings\UserController@toggle_state')->name('settings.users.toggle_state');
-        Route::get('users/delete/{id}', 'Settings\UserController@delete')->name('settings.users.delete');
-        Route::get('users/add', 'Settings\UserController@create')->name('settings.users.create');
+        Route::get('/', 'HomeController@index')->name('home');
+        Route::match(['get', 'patch'] ,'profile/edit', 'Settings\UserController@edit_self')->name('settings.users.edit_self');
 
-        // Work Types
-        Route::get('work_types', 'Settings\UserController@index')->name('settings.work_types.list');
-        Route::get('work_types/{id}', 'Settings\UserController@view')->name('settings.work_types.view');
-        Route::match(['get', 'post'], 'work_types/edit/{id}', 'Settings\UserController@edit')->name('settings.work_types.edit');
-        Route::get('work_types/toggle/{id}', 'Settings\UserController@toggle_state')->name('settings.work_types.toggle_state');
-        Route::get('work_types/delete/{id}', 'Settings\UserController@delete')->name('settings.work_types.delete');
+        /**
+         * Routes within this group only allow usage for authenticated users with the proper permissions to use them~
+         *
+         * @see App\Http\Middleware\Allowed::class
+         */
+        Route::group(['middleware' => ['allowed']], function () {
 
-        // Delegations
-        Route::get('delegations', 'Settings\UserController@index')->name('settings.delegations.list');
-        Route::get('delegations/{id}', 'Settings\UserController@view')->name('settings.delegations.view');
-        Route::match(['get', 'post'], 'delegations/edit/{id}', 'Settings\UserController@edit')->name('settings.delegations.edit');
-        Route::get('work_types/toggle/{id}', 'Settings\UserController@toggle_state')->name('settings.delegations.toggle_state');
-        Route::get('work_types/delete/{id}', 'Settings\UserController@delete')->name('settings.delegations.delete');
+            // Users
+            Route::get(__('routes.users.default'), 'Settings\UserController@index')->name('settings.users.list');
+            Route::get(__('routes.users.default').'/{id}', 'Settings\UserController@view')->name('settings.users.view');
+            Route::match(['get', 'post'], __('routes.users.edit').'/{id}', 'Settings\UserController@edit')->name('settings.users.edit');
+            Route::get('users/toggle/{id}', 'Settings\UserController@toggle_state')->name('settings.users.toggle_state');
+            Route::get('users/delete/{id}', 'Settings\UserController@delete')->name('settings.users.delete');
+            Route::get('users/add', 'Settings\UserController@create')->name('settings.users.create');
 
-        // Agents
-        Route::get('agents', 'Settings\AgentController@index')->name('settings.agents.list');
-        Route::get('agents/{id}', 'Settings\AgentController@view')->name('settings.agents.view');
-        Route::match(['get', 'post'], 'agents/edit/{id}', 'Settings\AgentController@edit')->name('settings.agents.edit');
-        Route::get('agents/toggle/{id}', 'Settings\AgentController@toggle_state')->name('settings.agents.toggle_state');
-        Route::get('agents/delete/{id}', 'Settings\AgentController@delete')->name('settings.agents.delete');
+            // Work Types
+            Route::get('work_types', 'Settings\UserController@index')->name('settings.work_types.list');
+            Route::get('work_types/{id}', 'Settings\UserController@view')->name('settings.work_types.view');
+            Route::match(['get', 'post'], 'work_types/edit/{id}', 'Settings\UserController@edit')->name('settings.work_types.edit');
+            Route::get('work_types/toggle/{id}', 'Settings\UserController@toggle_state')->name('settings.work_types.toggle_state');
+            Route::get('work_types/delete/{id}', 'Settings\UserController@delete')->name('settings.work_types.delete');
 
-        // Roles
-        Route::get('roles', 'Settings\RoleController@index')->name('settings.roles.list');
-        Route::get('roles/{id}', 'Settings\RoleController@view')->name('settings.roles.view');
-        Route::match(['get', 'post'], 'agents/edit/{id}', 'Settings\RoleController@edit')->name('settings.roles.edit');
-        Route::get('roles/delete/{id}', 'Settings\RoleController@delete')->name('settings.roles.delete');
+            // Delegations
+            Route::get('delegations', 'Settings\UserController@index')->name('settings.delegations.list');
+            Route::get('delegations/{id}', 'Settings\UserController@view')->name('settings.delegations.view');
+            Route::match(['get', 'post'], 'delegations/edit/{id}', 'Settings\UserController@edit')->name('settings.delegations.edit');
+            Route::get('work_types/toggle/{id}', 'Settings\UserController@toggle_state')->name('settings.delegations.toggle_state');
+            Route::get('work_types/delete/{id}', 'Settings\UserController@delete')->name('settings.delegations.delete');
 
-        // Roles
-        Route::get('permissions', 'Settings\PermissionController@index')->name('settings.permissions.list');
-        Route::get('permissions/{id}', 'Settings\PermissionController@view')->name('settings.permissions.view');
-        Route::match(['get', 'post'], 'agents/edit/{id}', 'Settings\PermissionController@edit')->name('settings.permissions.edit');
-        Route::get('permissions/delete/{id}', 'Settings\PermissionController@delete')->name('settings.permissions.delete');
-        Route::get('permissions/toggle/{id}', 'Settings\PermissionController@toggle_state')->name('settings.permissions.toggle_state');
+            // Agents
+            Route::get('agents', 'Settings\AgentController@index')->name('settings.agents.list');
+            Route::get('agents/{id}', 'Settings\AgentController@view')->name('settings.agents.view');
+            Route::match(['get', 'post'], 'agents/edit/{id}', 'Settings\AgentController@edit')->name('settings.agents.edit');
+            Route::get('agents/toggle/{id}', 'Settings\AgentController@toggle_state')->name('settings.agents.toggle_state');
+            Route::get('agents/delete/{id}', 'Settings\AgentController@delete')->name('settings.agents.delete');
+
+            // Roles
+            Route::get('roles', 'Settings\RoleController@index')->name('settings.roles.list');
+            Route::get('roles/{id}', 'Settings\RoleController@view')->name('settings.roles.view');
+            Route::match(['get', 'post'], 'agents/edit/{id}', 'Settings\RoleController@edit')->name('settings.roles.edit');
+            Route::get('roles/delete/{id}', 'Settings\RoleController@delete')->name('settings.roles.delete');
+
+            // Permissions
+            Route::get('permissions', 'Settings\PermissionController@index')->name('settings.permissions.list');
+            Route::get('permissions/{id}', 'Settings\PermissionController@view')->name('settings.permissions.view');
+            Route::match(['get', 'post'], 'permissions/edit/', 'Settings\PermissionController@edit')->name('settings.permissions.edit');
+            Route::get('permissions/delete/{id}', 'Settings\PermissionController@delete')->name('settings.permissions.delete');
+
+            // Failure Types
+            Route::get('failure_types', 'Settings\PermissionController@index')->name('settings.failure_types.list');
+            Route::get('failure_types/{id}', 'Settings\PermissionController@view')->name('settings.failure_types.view');
+            Route::match(['get', 'post'], 'failure_types/edit/{id}', 'Settings\PermissionController@edit')->name('settings.failure_types.edit');
+            Route::get('failure/delete/{id}', 'Settings\PermissionController@delete')->name('settings.failure_types.delete');
+        });
     });
 });

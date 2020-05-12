@@ -15,7 +15,7 @@ class UpdatePermissions extends Command
      *
      * @var string
      */
-    protected $signature = 'permissions:update';
+    protected $signature = 'app:permissions';
 
     /**
      * The console command description.

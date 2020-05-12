@@ -8,10 +8,11 @@ use Illuminate\Notifications\Notifiable;
 use LdapRecord\Laravel\Auth\AuthenticatesWithLdap;
 use LdapRecord\Laravel\Auth\LdapAuthenticatable;
 use LdapRecord\Laravel\Auth\HasLdapUser;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends Authenticatable implements LdapAuthenticatable
 {
-    use Notifiable, AuthenticatesWithLdap, HasLdapUser;
+    use Notifiable, AuthenticatesWithLdap, HasLdapUser, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\User;
+use App\Models\Role;
 Use Auth;
 
 class Permission extends Model
@@ -14,21 +15,24 @@ class Permission extends Model
 
     public function can($route, $like = false) {
         $user = Auth::user();
-        $roles = $user->roles()->get();
-        $permissions = [];
 
         if(!$user) {
             return redirect('/')->withErrors(__('auth.no_login'), 'custom');
         }
 
-        foreach($roles as $role) {
-            array_push($permissions, $role->permissions()->pluck('route'));
-        }
+        $roles = $user->roles()->get();
 
         if (sizeof($roles) <= 0) {
             return false;
         }
-        if ($user->roles()->pluck('slug')->contains('superadmin')) {
+
+        $permissions = [];
+
+        foreach($roles as $role) {
+            array_push($permissions, $role->permissions()->pluck('route'));
+        }
+
+        if ($user->roles()->pluck('slug')->contains('admin')) {
             return true;
         } else {
             foreach ($permissions as $permission) {
@@ -36,6 +40,18 @@ class Permission extends Model
                     return true;
                 }
             }
+        }
+
+        return false;
+    }
+
+    public function roleCanAccess($role, $route, $like = false) {
+        if(!$role) {
+            return redirect('/')->withErrors(__('errors.generic'), 'custom');
+        }
+
+        if ($role->permissions()->pluck('route')->contains($route)) {
+            return true;
         }
 
         return false;
