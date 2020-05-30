@@ -94,10 +94,18 @@ Route::group(['middleware' => ['web']], function () {
             Route::get('permissions/delete/{id}', 'Settings\PermissionController@delete')->name('settings.permissions.delete');
 
             // Failure Types
-            Route::get('failure_types', 'Settings\PermissionController@index')->name('settings.failure_types.list');
-            Route::get('failure_types/{id}', 'Settings\PermissionController@view')->name('settings.failure_types.view');
-            Route::match(['get', 'post'], 'failure_types/edit/{id}', 'Settings\PermissionController@edit')->name('settings.failure_types.edit');
-            Route::get('failure/delete/{id}', 'Settings\PermissionController@delete')->name('settings.failure_types.delete');
+            Route::get('failure_types', 'Settings\FailureTypeController@index')->name('settings.failure_types.list');
+            Route::match(['get', 'post'], 'failure_types/edit/{id}', 'Settings\FailureTypeController@edit')->name('settings.failure_types.edit');
+            Route::match(['get', 'post'], 'failure_types/create', 'Settings\FailureTypeController@create')->name('settings.failure_types.create');
+            Route::get('failure_types/delete/{id}', 'Settings\FailureTypeController@delete')->name('settings.failure_types.delete');
+            Route::get('failure_types/toggle/{id}', 'Settings\FailureTypeController@toggle_state')->name('settings.failure_types.toggle_state');
+
+
+            // Materials
+            Route::get('materials', 'Settings\MaterialController@index')->name('settings.materials.list');
+            Route::match(['get', 'post'], 'materials/edit/{id}', 'Settings\MaterialController@edit')->name('settings.materials.edit');
+            Route::match(['get', 'post'], 'materials/create/{id?}', 'Settings\MaterialController@create')->name('settings.materials.create');
+            Route::get('material/delete/{id}', 'Settings\MaterialController@delete')->name('settings.materials.delete');
         });
     });
 });

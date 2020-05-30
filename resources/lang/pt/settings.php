@@ -7,12 +7,16 @@ return [
     'cant_disable_self' => 'Não é possível desativar o prórpio utilizador',
     'profile' => 'Perfil',
     'user_doesnt_exist' => 'Este utilizador não existe.',
-
     'users' => [
-        'list' => 'Listar utilizadores',
-        'view' => 'Visualizar utilizadores',
-        'edit' => 'Editar utilizadores',
-        'toggle_state' => 'Ativar/Desativar utilizadores',
-        'delete' => ''
+        'list' => 'Lista de utilizadores',
+        'view' => 'Visualizar utilizador',
+        'edit' => 'Editar utilizador',
+        'toggle_state' => 'Ativar/Desativar utilizador',
+        'delete' => '',
     ],
+    'materials' => [
+        'list' => 'Lista de materiais',
+        'edit' => 'Editar material',
+        'create' => 'Crear material',
+    ]
 ];

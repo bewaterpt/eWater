@@ -115,12 +115,6 @@ class User extends Authenticatable implements LdapAuthenticatable
         $this->save();
     }
 
-
-    public function delete() {
-        $this->removed = 1;
-        $this->save();
-    }
-
     public function delegation() {
         return $this->hasOne('App\Models\Delegation');
     }

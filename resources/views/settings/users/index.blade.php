@@ -5,7 +5,7 @@
     <div class="row justify-content-center">
         <div class="col-md-11">
             <div class="card">
-                <div class="card-header">@Lang('general.users')</div>
+                <div class="card-header">@Lang('settings.users.list')</div>
                 <div class="card-body">
                     <table id="datatable-users" class="object-table" style="width: 100%">
                         <thead>

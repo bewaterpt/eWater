@@ -14,4 +14,7 @@ return [
     'action_enable' => 'Ativar',
     'agent' => 'Agente',
     'save' => 'Gravar',
+    'materials' => 'Materiais',
+    'designation' => 'Designação',
+    'failureType' => 'Tipo de Avaria',
 ];

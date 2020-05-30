@@ -13,9 +13,7 @@ class UserController extends Controller
 {
 
     public function index(Request $request) {
-        $users = User::all();
-
-        return view('settings.users.index', ['users' => $users]);
+        return view('settings.users.index', ['users' => User::all()]);
     }
 
     public function delete(Request $request) {
@@ -23,7 +21,7 @@ class UserController extends Controller
         $current_user = Auth::user();
 
         if (!$userToDelete) {
-            return redirect()->back()->withErrors(__('settings.no_user_specified'), custom);
+            return redirect()->back()->withErrors(__('settings.no_user_specified'), 'custom');
         }
 
         if ($userToDelete->id === 1) {
@@ -59,8 +57,8 @@ class UserController extends Controller
         $user = User::find($user_id);
     }
 
-    public function toggle_state($user_id) {
-        $user = User::find($user_id);
+    public function toggle_state($userId) {
+        $user = User::find($userId);
 
         if (!$user) {
             return redirect()->back()->withErrors(__('settings.user_doesnt_exist'), 'custom');

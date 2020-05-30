@@ -43,13 +43,10 @@
                                     </a>
 
                                     <div class="dropdown-menu dropdown-menu" aria-labelledby="navbarDropdown">
-                                        <a class="dropdown-item {{Route::currentRouteName() == 'settings.agents.list' ? 'active disabled' : ''}}" href="{{ route('settings.users.list')}}">@lang('general.users')</a>
-                                    </div>
-                                    <div class="dropdown-menu dropdown-menu" aria-labelledby="navbarDropdown">
+                                        <a class="dropdown-item {{Route::currentRouteName() == 'settings.agents.list' ? 'active disabled' : ''}}" href="{{ route('settings.users.list')}}">@lang('general.agents')</a>
+                                        <a class="dropdown-item {{Route::currentRouteName() == 'settings.roles.list' ? 'active disabled' : ''}}" href="{{ route('settings.users.list')}}">@lang('general.roles')</a>
+                                        <a class="dropdown-item {{Route::currentRouteName() == 'settings.failure_types.list' ? 'active disabled' : ''}}" href="{{ route('settings.failure_types.list')}}">@lang('general.failure_types')</a>
                                         <a class="dropdown-item {{Route::currentRouteName() == 'settings.users.list' ? 'active disabled' : ''}}" href="{{ route('settings.users.list')}}">@lang('general.users')</a>
-                                    </div>
-                                    <div class="dropdown-menu dropdown-menu" aria-labelledby="navbarDropdown">
-                                        <a class="dropdown-item {{Route::currentRouteName() == 'settings.roles.list' ? 'active disabled' : ''}}" href="{{ route('settings.users.list')}}">@lang('general.users')</a>
                                     </div>
                                 </li>
 

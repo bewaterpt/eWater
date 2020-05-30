@@ -15,6 +15,9 @@ class CreateFailureTypesTable extends Migration
     {
         Schema::create('failure_types', function (Blueprint $table) {
             $table->id();
+            $table->string('designation');
+            $table->boolean('enabled')->default(true);
+            $table->softDeletes();
             $table->timestamps();
         });
     }
