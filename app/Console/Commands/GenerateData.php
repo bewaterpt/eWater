@@ -193,8 +193,4 @@ class GenerateData extends Command
 
         $ldap->disconnect();
     }
-
-    protected function escapeString($str) {
-        return $this->pdo->quote($str);
-    }
 }

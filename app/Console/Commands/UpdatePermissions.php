@@ -15,7 +15,7 @@ class UpdatePermissions extends Command
      *
      * @var string
      */
-    protected $signature = 'app:permissions';
+    protected $signature = 'permissions:update';
 
     /**
      * The console command description.
@@ -48,7 +48,7 @@ class UpdatePermissions extends Command
         $admin_role = Role::where('slug', 'admin')->first();
         $permission_model = new Permission();
 
-        $this->comment('Create all the permissions');
+        $this->comment('Create added permissions');
 
         $permission_ids = [];
         $routes = collect(Route::getRoutes())->map(function ($route) {

@@ -1,0 +1,22 @@
+@mixin spinner {
+
+}
+
+@mixin ajax_spinner {
+    position: relative;
+
+    .spinner {
+        position: absolute;
+        right: 10px;
+
+        .spinner-outer {
+            width: 40px;
+            position: absolute;
+        }
+
+        .spinner-inner {
+            width: 20px;
+            position: absolute;
+        }
+    }
+}

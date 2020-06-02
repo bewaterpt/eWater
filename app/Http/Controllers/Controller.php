@@ -27,8 +27,10 @@ class Controller extends BaseController
 
     public function __construct() {
         $this->middleware(function($request, $next) {
-            $this->permission_model = new Permission;
+            $this->permissionModel = new Permission;
             $this->helper = new Helper;
+
+            View::share('pmodel', $this->permissionModel);
 
             return $next($request);
         });

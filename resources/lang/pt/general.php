@@ -17,4 +17,10 @@ return [
     'materials' => 'Materiais',
     'designation' => 'Designação',
     'failureType' => 'Tipo de Avaria',
+    'daily_reports' => [
+        'daily_reports' => 'Relatórios Diários',
+        'list' => 'Lista',
+        'create' => 'Inserir',
+        'approved' => 'Aprovados',
+    ],
 ];

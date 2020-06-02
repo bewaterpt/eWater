@@ -20,10 +20,12 @@ mix.sass('resources/sass/app.scss', 'public/css')
 
     // View correspondent scripts
     "resources/js/app/settings/user/datatables_users.js",
+    "resources/js/app/dailyReports.js",
 
 ], "public/js/app.js")
 .extract([
     'datatables.net-dt',
     'quill',
     '@fortawesome/fontawesome-free',
+    '@lottiefiles/lottie-player'
 ])

@@ -118,4 +118,16 @@ class User extends Authenticatable implements LdapAuthenticatable
     public function delegation() {
         return $this->hasOne('App\Models\Delegation');
     }
+
+    public function pendingReports() {
+        return $this->belongsTo('App\Models\DailyReport\PendingReport', 'user_id');
+    }
+
+    public function firstPhaseApprovals() {
+        return $this->belongsTo('App\Models\DailyReport\PendingReport', 'first_phase_approval');
+    }
+
+    public function secondPhaseApprovals() {
+        return $this->belongsTo('App\Models\DailyReport\PendingReport', 'second_phase_approval');
+    }
 }

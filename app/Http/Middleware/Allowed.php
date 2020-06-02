@@ -30,11 +30,11 @@ class Allowed
             return redirect('login')->withErrors(__('auth.account_disabled'), 'custom');
         }
 
-        $current_route = Route::getCurrentRoute()->getName();
-        $permission_model = new Permission();
+        $currentRoute = Route::getCurrentRoute()->getName();
+        $permissionModel = new Permission();
 
-        if (!$permission_model->can($current_route)) {
-            return redirect()->back()->withErrors(__('auth.permission_denied', ['route' => $current_route]), 'custom');
+        if (!$permissionModel->can($currentRoute)) {
+            return redirect()->back()->withErrors(__('auth.permission_denied', ['route' => $currentRoute]), 'custom');
         }
 
         return $next($request);

@@ -44,7 +44,7 @@ return [
         ],
 
         'mysql' => [
-            'driver' => 'mysql',
+            'driver' => env('DB_CONNECTION', 'mysql'),
             'url' => env('DATABASE_URL'),
             'host' => env('DB_HOST', '127.0.0.1'),
             'port' => env('DB_PORT', '3306'),
@@ -89,6 +89,14 @@ return [
             'charset' => 'utf8',
             'prefix' => '',
             'prefix_indexes' => true,
+        ],
+        'outono' => [
+            'driver' => env('OUTONO_CONNECTION', 'sqlsrv'),
+            'host' => env('OUTONO_HOST', '192.168.21.9\SQLEXPRESS_AM_T'),
+            'port' => env('OUTONO_PORT', '1433'),
+            'database' => env('OUTONO_DATABASE', 'Hercules_t'),
+            'username' => env('OUTONO_USERNAME', 'sa'),
+            'password' => env('OUTONO_PASSWORD', 'Kaala2014.'),
         ],
 
     ],

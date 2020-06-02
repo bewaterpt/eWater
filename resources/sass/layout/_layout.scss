@@ -26,3 +26,7 @@ a {
         }
     }
 }
+
+.has-spinner {
+    @include ajax_spinner;
+}
