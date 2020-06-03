@@ -13,14 +13,10 @@ class CreateReportsTable extends Migration
      */
     public function up()
     {
-        Schema::create('pending_reports', function (Blueprint $table) {
+        Schema::create('reports', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('first_phase_approval')->unsigned()->nullable();
-            $table->bigInteger('second_phase_approval')->unsigned()->nullable();
+            $table->bigInteger('current_status')->unsigned();
             $table->timestamps();
-
-            $table->foreign('first_phase_approval')->references('id')->on('users');
-            $table->foreign('second_phase_approval')->references('id')->on('users');
         });
     }
 

@@ -4,8 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\DailyReport\Article;
-use App\Models\DailyReport\PendingReport;
-use App\Models\DailyReport\ApprovedReport;
+use App\Models\DailyReport\Report;
 use Auth;
 
 class DailyReportController extends Controller
