@@ -35,7 +35,7 @@
                                     <td>
                                         {{$role->slug}}
                                     </td>
-                                    <td>
+                                    <td class="text-center">
                                         {{ $role->users()->count() }}
                                     </td>
                                     {{-- <td style="text-align: center">
