@@ -14,7 +14,7 @@
                                     @Lang('general.role')
                                 </th>
                                 <th>
-                                    @Lang('general.ad_group')
+                                    @Lang('general.slug')
                                 </th>
                                 <th>
                                     @Lang('general.user_count')
@@ -25,20 +25,18 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($users as $user)
+                            @foreach($roles as $role)
                                 <tr>
                                     <td>
-                                        <a href="{{Route('settings.users.view', ['id' => $user->id])}}">
-                                            {{$user->name}}
+                                        <a {{--href="{{Route('settings.users.view', ['id' => $user->id])}}" --}}>
+                                            {{$role->name}}
                                         </a>
                                     </td>
                                     <td>
-                                        {{$user->username}}
+                                        {{$role->slug}}
                                     </td>
                                     <td>
-                                        @foreach($user->roles()->get() as $role)
-                                            {{$role->name}}
-                                        @endforeach
+                                        {{ $role->users()->count() }}
                                     </td>
                                     <td style="text-align: center">
                                         @if($user->enabled)
@@ -47,27 +45,16 @@
                                             <i class="fas fa-times" style="color: red"></i>
                                         @endif
                                     </td>
-                                    <td>
-                                        @if($user->agent()->first())
-                                        <a href="{{Route('settings.agent.view', ['id' => $user->agent()->first()->id])}}">
-                                            {{$user->agent()->first()->name}}
-                                        </a>
-                                        @endif
-                                    </td>
                                     <td class="actions">
-                                        <a class="" href="{{$user->id === Auth::user()->id ? Route('settings.users.edit_self') : Route('settings.users.edit', ['id' => $user->id])}}" title="@Lang('general.action_edit')"><i class="fas fa-user-edit"></i></a>
-                                        @if($user->id !== Auth::user()->id)
-                                            <a href="{{Route('settings.users.toggle_state', ['id' => $user->id])}}" class="{{ $user->enabled ? 'disable' : 'enable' }}" title="{{$user->enabled ? __('general.action_disable') : __('general.action_enable')}}">
-                                                @if($user->enabled)
-                                                    <i class="fas fa-user-times"></i>
-                                                @else
-                                                    <i class="fas fa-user-check"></i>
-                                                @endif
-                                            </a>
-                                            {{-- @if($user['id'] !== 1)
-                                                <a href="{{Route('settings.users.delete', ['id' => $user['id']])}}" class="delete" title="@Lang('general.action_delete')"><i class="fas fa-trash-alt"></i></a>
-                                            @endif --}}
-                                        @endif
+                                        <a class="" href="{{Route('settings.roles.edit', ['id' => $role->id])}}" title="@Lang('general.action_edit')"><i class="fas fa-user-edit"></i></a>
+                                        {{-- <a href="{{Route('settings.roles.toggle_state', ['id' => $role->id])}}" class="{{ $user->enabled ? 'disable' : 'enable' }}" title="{{$role->enabled ? __('general.action_disable') : __('general.action_enable')}}">
+                                            @if($user->enabled)
+                                                <i class="fas fa-user-times"></i>
+                                            @else
+                                                <i class="fas fa-user-check"></i>
+                                            @endif
+                                        </a> --}}
+                                        <a href="{{Route('settings.roles.delete', ['id' => $role->id])}}" class="delete" title="@Lang('general.action_delete')"><i class="fas fa-trash-alt"></i></a>
                                     </td>
                                 </tr>
                             @endforeach
