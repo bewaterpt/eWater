@@ -16981,3 +16981,22 @@ a.enable:hover {
   color: #36a865;
 }
 
+.has-spinner {
+  position: relative;
+}
+
+.has-spinner .spinner {
+  position: absolute;
+  right: 10px;
+}
+
+.has-spinner .spinner .spinner-outer {
+  width: 40px;
+  position: absolute;
+}
+
+.has-spinner .spinner .spinner-inner {
+  width: 20px;
+  position: absolute;
+}
+
