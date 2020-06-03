@@ -16,10 +16,10 @@ class DailyReportController extends Controller
     public function index() {
         $user = Auth::user();
 
-        $reports = $user->pendingReports()->get();
+        $reports = $user->reports()->get();
 
         if ($user->roles->pluck('slug')->contains('1st_phase_approval')) {
-            $reports = array_merge($reports, PendingReport::where('first_phase_approval', null));
+            $reports = array_merge($reports, );
         }
 
         if ($user->roles->pluck('slug')->contains('2nd_phase_approval')) {
