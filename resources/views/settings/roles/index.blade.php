@@ -38,13 +38,13 @@
                                     <td>
                                         {{ $role->users()->count() }}
                                     </td>
-                                    <td style="text-align: center">
+                                    {{-- <td style="text-align: center">
                                         @if($user->enabled)
                                             <i class="fas fa-check" style="color: limegreen"></i>
                                         @else
                                             <i class="fas fa-times" style="color: red"></i>
                                         @endif
-                                    </td>
+                                    </td> --}}
                                     <td class="actions">
                                         <a class="" href="{{Route('settings.roles.edit', ['id' => $role->id])}}" title="@Lang('general.action_edit')"><i class="fas fa-user-edit"></i></a>
                                         {{-- <a href="{{Route('settings.roles.toggle_state', ['id' => $role->id])}}" class="{{ $user->enabled ? 'disable' : 'enable' }}" title="{{$role->enabled ? __('general.action_disable') : __('general.action_enable')}}">
