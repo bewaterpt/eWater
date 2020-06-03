@@ -84,7 +84,7 @@ Route::group(['middleware' => ['web']], function () {
             // Roles
             Route::get('roles', 'Settings\RoleController@index')->name('settings.roles.list');
             Route::get('roles/{id}', 'Settings\RoleController@view')->name('settings.roles.view');
-            Route::match(['get', 'post'], 'agents/edit/{id}', 'Settings\RoleController@edit')->name('settings.roles.edit');
+            Route::match(['get', 'post'], 'roles/edit/{id}', 'Settings\RoleController@edit')->name('settings.roles.edit');
             Route::get('roles/delete/{id}', 'Settings\RoleController@delete')->name('settings.roles.delete');
 
             // Permissions
