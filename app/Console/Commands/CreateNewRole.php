@@ -45,9 +45,9 @@ class CreateNewRole extends Command
      */
     public function handle()
     {
-        $roleName = $this->ask("Enter the new role\'s name");
+        $roleName = $this->ask("Enter the new role's name");
         $defaultRoleSlug = $this->helper->transliterate($roleName, 1);
-        $roleSlug = $this->ask("Enter the new role\'s slug", $defaultRoleSlug);
+        $roleSlug = $this->ask("Enter the new role's slug", $defaultRoleSlug);
 
         $role = new Role();
         $role->name = $roleName;

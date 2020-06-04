@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateReportStatusesTable extends Migration
+class CreateRoleStatusTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,13 @@ class CreateReportStatusesTable extends Migration
      */
     public function up()
     {
-        Schema::create('report_statuses', function (Blueprint $table) {
-            $table->id();
-            $table->bigInteger('report_id')->unsigned();
+        Schema::create('role_status', function (Blueprint $table) {
+            $table->bigInteger('role_id')->unsigned();
             $table->bigInteger('status_id')->unsigned();
-            $table->bigInteger('user_id')->unsigned();
             $table->timestamps();
+
+            $table->foreign('role_id')->references('id')->on('roles');
+            $table->foreign('status_id')->references('id')->on('statuses');
         });
     }
 
@@ -29,6 +30,6 @@ class CreateReportStatusesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('report_statuses');
+        Schema::dropIfExists('roles_statuses');
     }
 }

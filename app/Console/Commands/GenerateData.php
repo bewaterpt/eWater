@@ -179,6 +179,12 @@ class GenerateData extends Command
             $this->info('Done');
             $this->info('');
 
+            $this->db->insert('insert into statuses (name, slug) values(?, ?)', ['Criar/editar relatório', 'create_edit_report']);
+            $this->db->insert('insert into statuses (name, slug) values(?, ?)', ['Aprovação chefe de departamento', 'department_chief_approval']);
+            $this->db->insert('insert into statuses (name, slug) values(?, ?)', ['Aprovação diretor de departamento', 'department_director_approval']);
+            $this->db->insert('insert into statuses (name, slug) values(?, ?)', ['Sincronização BD', 'database_sync']);
+            $this->db->insert('insert into statuses (name, slug) values(?, ?)', ['TERMINADO', 'finish']);
+
             // On completion commit transaction data
             DB::commit();
 

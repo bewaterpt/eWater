@@ -26,7 +26,7 @@ class ModifyManyToManyRoleUserRelationship extends Migration
     public function down()
     {
         Schema::table('role_user', function (Blueprint $table) {
-            $table->dropUnique('idx_role_user_role_id_user_id');
+            // $table->dropUnique('idx_role_user_role_id_user_id');
         });
     }
 }

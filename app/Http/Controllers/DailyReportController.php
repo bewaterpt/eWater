@@ -16,14 +16,15 @@ class DailyReportController extends Controller
     public function index() {
         $user = Auth::user();
 
-        $reports = $user->reports()->get();
 
-        if ($user->roles->pluck('slug')->contains('1st_phase_approval')) {
-            $reports = array_merge($reports, );
+        $reports = $user->reports()->get()->toArray();
+
+        if ($this->statusModel->userCanApprove(2)) {
+            $reports = array_merge($reports, Report::where('current_status', 2)->get()->toArray());
         }
 
-        if ($user->roles->pluck('slug')->contains('2nd_phase_approval')) {
-            $reports = array_merge($reports, PendingReport::where('second_phase_approval', null));
+        if ($this->statusModel->usercanApprove(3)) {
+            $reports = array_merge($reports, Report::where('current_status', 3)->get()->toArray());
         }
 
         return view('daily_reports.index', ['reports' => $reports]);

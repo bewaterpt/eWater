@@ -46,7 +46,9 @@
                                     <td>
                                         <input class="form-control datepicker col-md-11" placeholder="Select Date" name="date[]" type="date">
                                     </td>
-                                    <td></td>
+                                    <td>
+
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>

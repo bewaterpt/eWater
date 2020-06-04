@@ -14,6 +14,7 @@ use Auth;
 use View;
 use Route;
 use vinkla\Hashids\Facades\Hashids;
+use App\Models\DailyReport\Status;
 
 class Controller extends BaseController
 {
@@ -22,12 +23,14 @@ class Controller extends BaseController
     protected $user;
     protected $userRoles;
     protected $permissionModel;
+    protected $statusModel;
     protected $isLoggedIn = false;
     protected $helper;
 
     public function __construct() {
         $this->middleware(function($request, $next) {
             $this->permissionModel = new Permission;
+            $this->statusModel = new Status;
             $this->helper = new Helper;
 
             View::share('pmodel', $this->permissionModel);
