@@ -17051,3 +17051,7 @@ a.enable:hover {
   position: absolute;
 }
 
+#insert-reports tr:first-child .actions #removeRow {
+  display: none;
+}
+

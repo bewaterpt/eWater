@@ -28,7 +28,7 @@
                             @foreach($reports as $report)
                                 <tr>
                                     <td>
-                                        <a href="{{Route('settings.reports.view', ['id' => $user->id])}}">
+                                        <a href="{{Route('daily_reports.view', ['id' => $report->id])}}">
                                             {{ $report->id }}
                                         </a>
                                     </td>

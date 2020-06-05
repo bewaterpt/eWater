@@ -11,6 +11,8 @@ class Article extends Model
 
     protected $table = 'tbArtigos';
 
+    protected $primaryKey = 'cod';
+
     public static function getArticleById($id) {
         return self::where('cod', $id)->first();
     }

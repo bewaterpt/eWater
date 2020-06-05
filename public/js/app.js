@@ -37146,6 +37146,56 @@ module.exports = function(module) {
  */
 __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
+$(document).ready(function () {
+  // Setup ajax headers
+  $.ajaxSetup({
+    headers: {
+      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
+  });
+  /**
+   * Gets the selected article info
+   *
+   * @param {Event} event - the inherited event that called the function
+   */
+
+  function getArticleInfo(event) {
+    $.ajax({
+      type: 'POST',
+      url: '/daily-reports/article/get-info',
+      data: {
+        id: $(event.target).val()
+      },
+      dataType: 'json',
+      success: function success(data) {
+        console.log('Data: ', data);
+
+        if (data.article.fixo == 1) {
+          $(event.target).closest('tr').find('#inputUnitPrice').val(parseFloat(data.article.precoUnitario).toFixed(2)).prop('readonly', true);
+        } else {
+          $(event.target).closest('tr').find('#inputUnitPrice').val(0).prop('read-only', true);
+        }
+      }
+    });
+  }
+
+  $('#inputArticle').on('change', function (e) {
+    getArticleInfo(e);
+  });
+  $('#addRow').on('click', function () {
+    var tr = $('table#insert-reports tbody tr:last-child').clone();
+    tr.find('input').val('').prop('readonly', false);
+    tr.find(':not(td:first-child) input[type="number"]').val(0);
+    tr.removeClass('first');
+    tr.find('#inputArticle').on('change', function (e) {
+      getArticleInfo(e);
+    });
+    console.log(tr[0]);
+    $('table#insert-reports tbody').append(tr);
+  });
+  mapOnArticleChange();
+});
+
 /***/ }),
 
 /***/ "./resources/js/app/dailyReports.js":
@@ -37155,16 +37205,21 @@ __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-$(document).ready(function () {
-  $('#inputArticles').on('change', function () {
-    var player = document.querySelector("lottie-player");
-    $(player).toggleClass('invisible');
-    $.ajax({
-      type: 'GET',
-      url: '/daily-report/get-price'
-    });
-  });
-});
+// $(document).ready(() => {
+//     $('#inputArticles').on('change', () => {
+//         const player = document.querySelector("lottie-player");
+//         $(player).toggleClass('invisible');
+//         $.ajax({
+//             type: 'GET',
+//             url: '/daily-report/get-price'
+//         });
+//     });
+//     $('#addRow').on('click', () => {
+//         let tr = $('table#insert-reports tbody tr:last-child').clone();
+//         console.log(tr);
+//         $('table#insert-reports tbody').append(tr);
+//     });
+// });
 
 /***/ }),
 
@@ -37257,4 +37312,4 @@ module.exports = __webpack_require__(/*! C:\Users\bruno.martins\source\repos\out
 
 /***/ })
 
-},[[0,"/js/manifest","/js/vendor"]]]);
+},[[0,"/js/manifest"]]]);

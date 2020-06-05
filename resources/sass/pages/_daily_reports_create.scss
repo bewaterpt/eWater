@@ -1,0 +1,15 @@
+#insert-reports {
+
+    tr {
+
+        &:first-child {
+
+            .actions {
+
+                #removeRow {
+                    display: none;
+                }
+            }
+        }
+    }
+}

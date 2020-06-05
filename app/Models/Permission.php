@@ -13,8 +13,13 @@ class Permission extends Model
         return $this->belongsToMany('App\Models\Role');
     }
 
-    public function can($route, $like = false) {
-        $user = Auth::user();
+    public function can($route, $userId = null, $like = false) {
+        $user = null;
+        if($userId) {
+            $user = User::find($userId);
+        } else {
+            $user = Auth::user();
+        }
 
         if(!$user) {
             return redirect('/')->withErrors(__('auth.no_login'), 'custom');

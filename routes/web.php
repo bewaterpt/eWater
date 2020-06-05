@@ -114,7 +114,9 @@ Route::group(['middleware' => ['web']], function () {
             Route::get('daily-reports/first-approval', 'DailyReportController@firstApproval')->name('daily_reports.first_approval');
             Route::get('daily-reports/second-approval', 'DailyReportController@secondApproval')->name('daily_reports.second_approval');
             Route::get('daily-reports/approved', 'DailyReportController@approved')->name('daily_reports.approved');
-            Route::post('daily-reports/article/get-price', 'DailyReportController@getArticlePrice')->name('daily_reports.article.get_price');
+            Route::post('daily-reports/article/get-info', 'DailyReportController@getArticlePrice')->name('daily_reports.article.get_price');
+            Route::get('daily-reports/{id}', 'DailyReportController@view')->name('daily_reports.view');
+            Route::get('daily-reports/edit/{id}', 'DailyReportController@edit')->name('daily_reports.edit');
         });
     });
 });

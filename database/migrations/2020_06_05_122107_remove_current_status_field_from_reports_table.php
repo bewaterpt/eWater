@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddDelegationColumnToUsersTable extends Migration
+class RemoveCurrentStatusFieldFromReportsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,8 @@ class AddDelegationColumnToUsersTable extends Migration
      */
     public function up()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->bigInteger('delegation_id')->unsigned()->nullable();
-
-            $table->foreign('delegation_id')->references('id')->on('delegations');
+        Schema::table('reports', function (Blueprint $table) {
+            $table->dropColumn('current_status');
         });
     }
 
@@ -27,8 +25,8 @@ class AddDelegationColumnToUsersTable extends Migration
      */
     public function down()
     {
-        Schema::table('users', function (Blueprint $table) {
-            //
+        Schema::table('reports', function (Blueprint $table) {
+            $table->bigInteger('current_status')->unsigned();
         });
     }
 }

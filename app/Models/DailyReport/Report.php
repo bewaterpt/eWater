@@ -6,11 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Report extends Model
 {
-    public function getCurrentStatus() {
-        return $this->hasOne('App\Models\DailyReport\Status', 'current_status');
+    public function creator() {
+        return $this->belongsTo('App\User', 'user_id');
     }
 
-    public function getCreator() {
-        return $this->hasOne('App\User');
+    public function status() {
+        $relation = $this->hasMany('App\Models\DailyReport\ProcessStatus', 'process_id');
+
+        dd($relation);
     }
 }
