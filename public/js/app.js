@@ -37179,6 +37179,8 @@ $(document).ready(function () {
     });
   }
 
+  function removeLine(e) {}
+
   $('#inputArticle').on('change', function (e) {
     getArticleInfo(e);
   });
