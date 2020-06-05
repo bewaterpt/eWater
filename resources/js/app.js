@@ -39,6 +39,7 @@ $(document).ready(() => {
 
     function removeLine(e) {
 
+
     }
 
     $('#inputArticle').on('change', (e) => {
