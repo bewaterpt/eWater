@@ -25,7 +25,6 @@ mix.sass('resources/sass/app.scss', 'public/css')
 ], "public/js/app.js")
 .extract([
     'datatables.net-dt',
-    'quill',
+    // 'quill',
     '@fortawesome/fontawesome-free',
-    '@lottiefiles/lottie-player'
 ])
