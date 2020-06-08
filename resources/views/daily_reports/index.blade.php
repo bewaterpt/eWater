@@ -5,16 +5,16 @@
     <div class="row justify-content-center">
         <div class="col-md-11">
             <div class="card">
-                <div class="card-header">@Lang('settings.users.list')</div>
+                <div class="card-header">@Lang('general.daily_reports.list')</div>
                 <div class="card-body">
-                    <table id="datatable-users" class="object-table" style="width: 100%">
-                        <thead>
+                    <table class="table table-stripped table-bordered" style="width: 100%">
+                        <thead class="thead-light">
                             <tr>
                                 <th>
                                     @Lang('general.daily_reports.report_number')
                                 </th>
                                 <th>
-                                    @Lang('general.status')
+                                    @Lang('general.daily_reports.status')
                                 </th>
                                 <th>
                                     @Lang('general.created_by')
@@ -36,9 +36,11 @@
                                         {{ $report->getCurrentStatus()->first()->name}}
                                     </td>
                                     <td>
-                                        {{ $report->getCreator() }}
+                                        {{ $report->creator()->first()->name }}
                                     </td>
                                     <td class="actions">
+                                        <a class="view" href="{{ route('daily_reports.view', ['id' => $report->id]) }}"><i class="fas fa-eye"></i></a>
+                                        <a href="{{ route('daily_reports.edit', ['id' => $report->id]) }}" class="edit"><i class="fas fa-edit"></i></a>
                                         {{-- <a class="" href="{{$user->id === Auth::user()->id ? Route('settings.users.edit_self') : Route('settings.users.edit', ['id' => $user->id])}}" title="@Lang('general.action_edit')"><i class="fas fa-user-edit"></i></a>
                                         @if($user->id !== Auth::user()->id)
                                             <a href="{{Route('settings.users.toggle_state', ['id' => $user->id])}}" class="{{ $user->enabled ? 'disable' : 'enable' }}" title="{{$user->enabled ? __('general.action_disable') : __('general.action_enable')}}">

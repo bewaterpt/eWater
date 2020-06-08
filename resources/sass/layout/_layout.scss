@@ -30,3 +30,9 @@ a {
 .has-spinner {
     @include ajax_spinner;
 }
+
+#bug-report {
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+}

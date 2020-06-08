@@ -117,6 +117,9 @@ Route::group(['middleware' => ['web']], function () {
             Route::post('daily-reports/article/get-info', 'DailyReportController@getArticlePrice')->name('daily_reports.article.get_price');
             Route::get('daily-reports/{id}', 'DailyReportController@view')->name('daily_reports.view');
             Route::get('daily-reports/edit/{id}', 'DailyReportController@edit')->name('daily_reports.edit');
+            Route::get('daily-reports/progress-status/{id}', 'DailyReportController@progressStatus')->name('daily_reports.forward');
+            Route::get('daily-reports/regress-status/{id}', 'DailyReportController@regressStatus')->name('daily_reports.back');
+            Route::get('daily-reports/cancel/{id}', 'DailyReportController@cancel')->name('daily_reports.cancel');
         });
     });
 });

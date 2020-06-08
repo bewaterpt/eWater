@@ -7,13 +7,15 @@ use Auth;
 
 class Status extends Model
 {
-    public function userCanApprove(Int $statusId) {
-        $status = self::find($statusId);
-        $user = Auth::user();
+    public function userCanProgress($status = false) {
 
-        if($status) {
-
+        if ($status) {
+            $status = self::find($statusId);
+        } else {
+            $status = $this;
         }
+
+        $user = Auth::user();
 
         $statusRoles = $status->roles()->get()->pluck('id')->toArray();
         $statusRolesSize = Sizeof($statusRoles);

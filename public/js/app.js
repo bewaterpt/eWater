@@ -37146,56 +37146,12 @@ module.exports = function(module) {
  */
 __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
-$(document).ready(function () {
-  // Setup ajax headers
-  $.ajaxSetup({
-    headers: {
-      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-    }
-  });
-  /**
-   * Gets the selected article info
-   *
-   * @param {Event} event - the inherited event that called the function
-   */
+var today = new Date(); // Setup ajax headers
 
-  function getArticleInfo(event) {
-    $.ajax({
-      type: 'POST',
-      url: '/daily-reports/article/get-info',
-      data: {
-        id: $(event.target).val()
-      },
-      dataType: 'json',
-      success: function success(data) {
-        console.log('Data: ', data);
-
-        if (data.article.fixo == 1) {
-          $(event.target).closest('tr').find('#inputUnitPrice').val(parseFloat(data.article.precoUnitario).toFixed(2)).prop('readonly', true);
-        } else {
-          $(event.target).closest('tr').find('#inputUnitPrice').val(0).prop('read-only', true);
-        }
-      }
-    });
+$.ajaxSetup({
+  headers: {
+    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
   }
-
-  function removeLine(e) {}
-
-  $('#inputArticle').on('change', function (e) {
-    getArticleInfo(e);
-  });
-  $('#addRow').on('click', function () {
-    var tr = $('table#insert-reports tbody tr:last-child').clone();
-    tr.find('input').val('').prop('readonly', false);
-    tr.find(':not(td:first-child) input[type="number"]').val(0);
-    tr.removeClass('first');
-    tr.find('#inputArticle').on('change', function (e) {
-      getArticleInfo(e);
-    });
-    console.log(tr[0]);
-    $('table#insert-reports tbody').append(tr);
-  });
-  mapOnArticleChange();
 });
 
 /***/ }),
@@ -37207,21 +37163,72 @@ $(document).ready(function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-// $(document).ready(() => {
-//     $('#inputArticles').on('change', () => {
-//         const player = document.querySelector("lottie-player");
-//         $(player).toggleClass('invisible');
-//         $.ajax({
-//             type: 'GET',
-//             url: '/daily-report/get-price'
-//         });
-//     });
-//     $('#addRow').on('click', () => {
-//         let tr = $('table#insert-reports tbody tr:last-child').clone();
-//         console.log(tr);
-//         $('table#insert-reports tbody').append(tr);
-//     });
-// });
+$(document).ready(function () {
+  function ISODateString(d) {
+    function pad(n) {
+      return n < 10 ? '0' + n : n;
+    }
+
+    return d.getUTCFullYear() + '-' + pad(d.getUTCMonth() + 1) + '-' + pad(d.getUTCDate()) + 'T' + pad(d.getUTCHours()) + ':' + pad(d.getUTCMinutes()); // + pad(d.getUTCSeconds())+'Z'
+  }
+
+  if ($('#daily-reports-create').length > 0) {
+    /**
+     * Gets the selected article info
+     *
+     * @param {Event} event - the inherited event that called the function
+     */
+    var getArticleInfo = function getArticleInfo(event) {
+      $.ajax({
+        type: 'POST',
+        url: '/daily-reports/article/get-info',
+        data: {
+          id: $(event.target).val()
+        },
+        dataType: 'json',
+        success: function success(data) {
+          console.log('Data: ', data);
+
+          if (data.article.fixo == 1) {
+            $(event.target).closest('tr').find('#inputUnitPrice').val(parseFloat(data.article.precoUnitario).toFixed(2)).prop('readonly', true);
+          } else {
+            $(event.target).closest('tr').find('#inputUnitPrice').val(0).prop('read-only', true);
+          }
+        }
+      });
+    };
+    /**
+     * Removes desired table row
+     *
+     * @param {Event} event - the inherited event that called the function
+     */
+
+
+    var removeLine = function removeLine(event) {
+      $(event.target).closest('tr').remove();
+    };
+
+    $('#inputArticle').on('change', function (e) {
+      getArticleInfo(e);
+    });
+    $('#addRow').on('click', function () {
+      var tr = $('table#insert-reports tbody tr:last-child').clone();
+      tr.find('input').val('').prop('readonly', false);
+      tr.find(':not(td:first-child) input[type="number"]').val(0);
+      tr.removeClass('first');
+      tr.find('#inputArticle').on('change', function (e) {
+        getArticleInfo(e);
+      });
+      tr.find('#removeRow').on('click', function (e) {
+        removeLine(e);
+      });
+      tr.find('#inputDatetime').val(ISODateString(today));
+      console.log(tr[0]);
+      $('table#insert-reports tbody').append(tr);
+    });
+    $('#inputDatetime').val(ISODateString(today));
+  }
+});
 
 /***/ }),
 

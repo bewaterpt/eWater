@@ -38,30 +38,50 @@
                         @else
                          <!-- MENU -->
                             <ul class="navbar-nav mr-auto">
-                                <li class="nav-item dropdown">
-                                    <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                        @Lang('settings.settings') <span class="caret"></span>
-                                    </a>
+                                @if($pmodel->can('settings.'))
+                                    <li class="nav-item dropdown">
+                                        <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                            @Lang('settings.settings') <span class="caret"></span>
+                                        </a>
 
-                                    <div class="dropdown-menu dropdown-menu" aria-labelledby="navbarDropdown">
-                                        <a class="dropdown-item {{Route::currentRouteName() == 'settings.agents.list' ? 'active disabled' : ''}}" href="{{ route('settings.agents.list')}}">@lang('general.agents')</a>
-                                        <a class="dropdown-item {{Route::currentRouteName() == 'settings.roles.list' ? 'active disabled' : ''}}" href="{{ route('settings.roles.list')}}">@lang('general.roles')</a>
-                                        <a class="dropdown-item {{Route::currentRouteName() == 'settings.failure_types.list' ? 'active disabled' : ''}}" href="{{ route('settings.failure_types.list')}}">@lang('general.failure_types')</a>
-                                        <a class="dropdown-item {{Route::currentRouteName() == 'settings.users.list' ? 'active disabled' : ''}}" href="{{ route('settings.users.list')}}">@lang('general.users')</a>
-                                    </div>
-                                </li>
-                                <li class="nav-item dropdown">
-                                    <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                        @Lang('general.daily_reports.daily_reports') <span class="caret"></span>
-                                    </a>
-
-                                    <div class="dropdown-menu dropdown-menu" aria-labelledby="navbarDropdown">
-                                        <a class="dropdown-item {{Route::currentRouteName() == 'daily_reports.list' ? 'active disabled' : ''}}" href="{{ route('daily_reports.list')}}">@lang('general.daily_reports.list')</a>
-                                        <a class="dropdown-item {{Route::currentRouteName() == 'daily_reports.create' ? 'active disabled' : ''}}" href="{{ route('daily_reports.create')}}">@lang('general.daily_reports.create')</a>
-                                        <a class="dropdown-item {{Route::currentRouteName() == 'daily_reports.pending' ? 'active disabled' : ''}}" href="{{ route('daily_reports.pending')}}">@lang('general.daily_reports.pending')</a>
-                                        <a class="dropdown-item {{Route::currentRouteName() == 'daily_reports.approved' ? 'active disabled' : ''}}" href="{{ route('daily_reports.approved')}}">@lang('general.daily_reports.approved')</a>
-                                    </div>
-                                </li>
+                                        <div class="dropdown-menu dropdown-menu" aria-labelledby="navbarDropdown">
+                                            @if($pmodel->can('settings.agents.list'))
+                                                <a class="dropdown-item {{Route::currentRouteName() == 'settings.agents.list' ? 'active disabled' : ''}}" href="{{ route('settings.agents.list')}}">@lang('general.agents')</a>
+                                            @endif
+                                            @if($pmodel->can('settings.roles.list'))
+                                                <a class="dropdown-item {{Route::currentRouteName() == 'settings.roles.list' ? 'active disabled' : ''}}" href="{{ route('settings.roles.list')}}">@lang('general.roles')</a>
+                                            @endif
+                                            @if($pmodel->can('settings.failure_types.list'))
+                                                <a class="dropdown-item {{Route::currentRouteName() == 'settings.failure_types.list' ? 'active disabled' : ''}}" href="{{ route('settings.failure_types.list')}}">@lang('general.failure_types')</a>
+                                            @endif
+                                            @if($pmodel->can('settings.users.list'))
+                                                <a class="dropdown-item {{Route::currentRouteName() == 'settings.users.list' ? 'active disabled' : ''}}" href="{{ route('settings.users.list')}}">@lang('general.users')</a>
+                                            @endif
+                                        </div>
+                                    </li>
+                                @endif
+                                @if($pmodel->can('daily_reports.'))
+                                    <li class="nav-item dropdown">
+                                        <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                            @Lang('general.daily_reports.daily_reports') <span class="caret"></span>
+                                        </a>
+                                        {{-- {{dd(Route::currentRouteName())}} --}}
+                                        <div class="dropdown-menu dropdown-menu" aria-labelledby="navbarDropdown">
+                                            @if($pmodel->can('daily_reports.list'))
+                                                <a class="dropdown-item {{ Route::currentRouteName() == 'daily_reports.list' ? 'disabled active' : '' }}" href="{{ route('daily_reports.list')}}">@lang('general.daily_reports.list')</a>
+                                            @endif
+                                            @if($pmodel->can('daily_reports.create'))
+                                                <a class="dropdown-item {{ Route::currentRouteName() == 'daily_reports.create' ? 'active disabled' : '' }}" href="{{ route('daily_reports.create')}}">@lang('general.daily_reports.create')</a>
+                                            @endif
+                                            {{-- @if($pmodel->can('daily_reports.pending'))
+                                                <a class="dropdown-item {{Route::currentRouteName() == 'daily_reports.pending' ? 'active disabled' : ''}}" href="{{ route('daily_reports.pending')}}">@lang('general.daily_reports.pending')</a>
+                                            @endif
+                                            @if($pmodel->can('daily_reports.approved'))
+                                                <a class="dropdown-item {{Route::currentRouteName() == 'daily_reports.approved' ? 'active disabled' : ''}}" href="{{ route('daily_reports.approved')}}">@lang('general.daily_reports.approved')</a>
+                                            @endif --}}
+                                        </div>
+                                    </li>
+                                @endif
                             </ul>
                         @endguest
                         <!-- Right Side Of Navbar -->
@@ -83,7 +103,7 @@
                                     </a>
 
                                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item {{Route::currentRouteName() == 'settings.users.edit_self' ? 'active' : ''}}" href="{{ route('settings.users.edit_self') }}">
+                                        <a class="dropdown-item {{ Route::currentRouteName() == 'settings.users.edit_self' ? 'active' : '' }}" href="{{ route('settings.users.edit_self') }}">
                                             @Lang('general.edit_profile')
                                         </a>
                                         <a class="dropdown-item" href="{{ route('logout') }}"  onclick="
@@ -138,6 +158,13 @@
                 @endif
                 @yield('content')
             </main>
+            <div class="card float-right" id="bug-report">
+                <a href="mailto:helpdesk@bewater.com.pt" class="text-white">
+                    <div class="card-header bg-primary">
+                        <i class="fas fa-bug"></i>
+                    </div>
+                </a>
+            </div>
         </div>
         <!--scripts-->
         <script src="{{ asset('js/app.js') }}"></script>

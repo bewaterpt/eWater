@@ -22,19 +22,19 @@ class DailyReportController extends Controller
     public function index() {
         $user = Auth::user();
 
-        $rawReports = $user->reports()->get()->toArray();
+        $rawReports = $user->reports()->get();
         $reports = new Collection();
 
         if ($this->statusModel->userCanApprove(2)) {
-            $reports = array_merge($reports, Report::where('current_status', 2)->get()->toArray());
+            $reports = array_merge($reports, Report::where('current_status', 2)->get());
         }
 
         if ($this->statusModel->usercanApprove(3)) {
-            $reports = array_merge($reports, Report::where('current_status', 3)->get()->toArray());
+            $reports = array_merge($reports, Report::where('current_status', 3)->get());
         }
 
         foreach ($rawReports as $rawReport) {
-            $reports->push((object) $rawReport);
+            $reports->push($rawReport);
         }
 
         return view('daily_reports.index', ['reports' => $reports]);
@@ -75,16 +75,11 @@ class DailyReportController extends Controller
             $processCreated->concluded_at = Carbon::now();
             $processCreated->save();
 
-            $processEditing = new ProcessStatus();
-            $processEditing->report()->associate($report->id);
-            $processEditing->status()->associate(1);
-            $processEditing->user()->associate($user->id);
-            $processEditing->previous()->associate($processCreated->id);
-            $processEditing->save();
+            $processCreated->stepForward();
 
             ReportLine::insert($rows);
 
-            return view('daily_reports.list')->with(['success' => __('general.daily_reports.report_success')]);
+            return redirect(route('daily_reports.list'))->with(['success' => __('general.daily_reports.report_success')]);
 
         } else {
             $articles = Article::all()->pluck('cod', 'descricao');
@@ -93,7 +88,11 @@ class DailyReportController extends Controller
 
     }
 
-    public function view() {
+    public function view(Request $request, $reportId) {
+        $report = Report::find($reportId);
+        $reportRows = $report->processStatus()->orderBy('created_at', 'asc')->get();
+
+        return view('daily_reports.view', [ 'report' => $report, 'reportRows' => $reportRows ]);
     }
 
     public function getArticlePrice(Request $request) {
@@ -114,5 +113,24 @@ class DailyReportController extends Controller
         }
 
         return json_encode($data);
+    }
+
+    public function progressStatus(Request $request, $progressStatusId) {
+        $processStatus = ProcessStatus::find($progressStatusId);
+        $processStatus->stepForward();
+    }
+
+    public function regressStatus(Request $request, $progressStatusId) {
+        $processStatus = ProcessStatus::find($progressStatusId);
+        $processStatus->stepBack();
+    }
+
+    public function progressExtra(Request $request, $progressStatusId) {
+
+    }
+
+    public function cancel(Request $request, $reportId) {
+        $report = Report::find($id);
+        $report->cancel();
     }
 }

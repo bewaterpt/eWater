@@ -18,11 +18,11 @@ class CreateProcessStatusTable extends Migration
             $table->bigInteger('process_id')->unsigned();
             $table->bigInteger('status_id')->unsigned();
             $table->bigInteger('user_id')->unsigned();
-            $table->bigInteger('previous_status')->unsigned();
-            $table->bigInteger('failover_role')->unsigned();
-            $table->bigInteger('failover_user')->unsigned();
-            $table->longText('comment');
-            $table->timestamp('concluded_at');
+            $table->bigInteger('previous_status')->unsigned()->nullable();
+            $table->bigInteger('failover_role')->unsigned()->nullable();
+            $table->bigInteger('failover_user')->unsigned()->nullable();
+            $table->longText('comment')->nullable();
+            $table->timestamp('concluded_at')->nullable();
             $table->timestamps();
 
             $table->foreign('process_id')->references('id')->on('reports');

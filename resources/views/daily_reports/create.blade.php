@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
+<div id="daily-reports-create" class="container">
     <div class="row justify-content-center">
         <div class="col-md-12">
             <div class="card">
@@ -48,7 +48,7 @@
                                         <input type="number" name="quantity[]" min="0" value="0" class="form-control col-md-6" id="inputQuantity" required>
                                     </td>
                                     <td>
-                                        <input class="form-control datepicker col-md-11" placeholder="Select Date" name="datetime]" type="datetime-local" required>
+                                        <input id="inputDatetime" class="form-control datepicker col-md-11" placeholder="Select Date" name="datetime[]" type="datetime-local" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}" required>
                                     </td>
                                     <td class="actions text-center">
                                         <a id="removeRow" href="#" class="text-danger"><i class="fas fa-times"></i></a>

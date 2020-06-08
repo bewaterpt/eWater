@@ -24,3 +24,26 @@
         text-align: center;
     }
 }
+
+table {
+
+    &.table {
+
+        &.table-striped {
+
+            & > tbody {
+
+                & > tr {
+
+                    &:nth-of-type(even) {
+                        background-color: rgba(0, 0, 0, 0.05); // Choose your own color here
+                    }
+
+                    &:nth-of-type(odd) {
+                        background-color: transparent; // Choose your own color here
+                    }
+                }
+            }
+        }
+    }
+}

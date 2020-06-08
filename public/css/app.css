@@ -17005,6 +17005,14 @@ readers do not read off random characters that represent icons */
   text-align: center;
 }
 
+table.table.table-striped > tbody > tr:nth-of-type(even) {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+table.table.table-striped > tbody > tr:nth-of-type(odd) {
+  background-color: transparent;
+}
+
 a {
   color: #a3a3a3;
   text-decoration: none !important;
@@ -17049,6 +17057,12 @@ a.enable:hover {
 .has-spinner .spinner .spinner-inner {
   width: 20px;
   position: absolute;
+}
+
+#bug-report {
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
 }
 
 #insert-reports tr:first-child .actions #removeRow {
