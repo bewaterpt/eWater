@@ -179,6 +179,7 @@ class GenerateData extends Command
             $this->info('Done');
             $this->info('');
 
+            $this->comment('Insert process statuses');
             $this->db->insert('insert into statuses (name, slug) values(?, ?)', ['Criado', 'created']);
             $this->db->insert('insert into statuses (name, slug) values(?, ?)', ['Em Edição', 'editing']);
             $this->db->insert('insert into statuses (name, slug) values(?, ?)', ['Estado Extra', 'extra']);
@@ -187,6 +188,8 @@ class GenerateData extends Command
             $this->db->insert('insert into statuses (name, slug) values(?, ?)', ['Sincronização BD', 'database_sync']);
             $this->db->insert('insert into statuses (name, slug) values(?, ?)', ['TERMINADO', 'finish']);
             $this->db->insert('insert into statuses (name, slug) values(?, ?)', ['CANCELADO', 'cancel']);
+            $this->info('Done');
+            $this->info('');
 
             // On completion commit transaction data
             DB::commit();

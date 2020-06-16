@@ -17,6 +17,10 @@ class CreateReportsTable extends Migration
             $table->id();
             $table->bigInteger('current_status')->unsigned();
             $table->bigInteger('user_id')->unsigned();
+            // $table->bigInteger('team_id')->unsigned();
+            // $table->integer('km_departure');
+            // $table->integer('km_arrival');
+
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users');

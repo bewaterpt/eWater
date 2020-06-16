@@ -39,6 +39,14 @@ class Controller extends BaseController
         });
     }
 
+    /**
+     * @method encodeId
+     *
+     * @param Integer $id - The identifier to be encoded
+     * @param Boolean $alt = false - Connection switch
+     *
+     * @link PROJECT_DIR/config/hashids -> connections
+     */
     public function encodeId($id, $alt = false) {
         return $alt ? Hashids::connection('alt')->encode($id) : Hashids::encode($id);
     }

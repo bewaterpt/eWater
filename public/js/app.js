@@ -37144,15 +37144,16 @@ module.exports = function(module) {
  * includes Vue and other libraries. It is a great starting point when
  * building robust, powerful web applications using Vue and Laravel.
  */
-__webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
+__webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js"); // Setup ajax headers
 
-var today = new Date(); // Setup ajax headers
 
 $.ajaxSetup({
   headers: {
     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
   }
-});
+}); // TinyMCE Langs
+
+__webpack_require__(/*! ./config/tinymce/langs/pt_PT */ "./resources/js/config/tinymce/langs/pt_PT.js");
 
 /***/ }),
 
@@ -37164,6 +37165,8 @@ $.ajaxSetup({
 /***/ (function(module, exports) {
 
 $(document).ready(function () {
+  var today = new Date();
+
   function ISODateString(d) {
     function pad(n) {
       return n < 10 ? '0' + n : n;
@@ -37212,7 +37215,7 @@ $(document).ready(function () {
       getArticleInfo(e);
     });
     $('#addRow').on('click', function () {
-      var tr = $('table#insert-reports tbody tr:last-child').clone();
+      var tr = $('table#report-lines tbody tr:last-child').clone();
       tr.find('input').val('').prop('readonly', false);
       tr.find(':not(td:first-child) input[type="number"]').val(0);
       tr.removeClass('first');
@@ -37224,9 +37227,24 @@ $(document).ready(function () {
       });
       tr.find('#inputDatetime').val(ISODateString(today));
       console.log(tr[0]);
-      $('table#insert-reports tbody').append(tr);
+      $('table#report-lines tbody').append(tr);
     });
     $('#inputDatetime').val(ISODateString(today));
+  }
+});
+
+/***/ }),
+
+/***/ "./resources/js/app/datatables/reports.js":
+/*!************************************************!*\
+  !*** ./resources/js/app/datatables/reports.js ***!
+  \************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+$(document).ready(function () {
+  if ($("#report-process-status").length > 0) {
+    $("#report-process-status").datatable();
   }
 });
 
@@ -37246,6 +37264,55 @@ $(document).ready(function () {
       clearInterval(t);
     }
   }, 1000);
+});
+
+/***/ }),
+
+/***/ "./resources/js/app/utility/tinymce.js":
+/*!*********************************************!*\
+  !*** ./resources/js/app/utility/tinymce.js ***!
+  \*********************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+$(document).ready(function () {
+  if ($('#text-editor').length > 0) {
+    var editor_config = {
+      path_absolute: "/",
+      selector: "textarea#text-editor",
+      language: 'pt_PT',
+      menubar: false,
+      statusbar: false,
+      plugins: ["advlist autolink lists link image charmap print preview hr anchor pagebreak", "searchreplace visualblocks visualchars code", "insertdatetime media nonbreaking table directionality", "emoticons template paste textcolor colorpicker textpattern"],
+      toolbar: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image media",
+      relative_urls: false,
+      file_browser_callback: function file_browser_callback(field_name, url, type, win) {
+        var x = window.innerWidth || document.documentElement.clientWidth || document.getElementsByTagName('body')[0].clientWidth;
+        var y = window.innerHeight || document.documentElement.clientHeight || document.getElementsByTagName('body')[0].clientHeight;
+        var cmsURL = editor_config.path_absolute + 'laravel-filemanager?field_name=' + field_name;
+
+        if (type == 'image') {
+          cmsURL = cmsURL + "&type=Images";
+        } else {
+          cmsURL = cmsURL + "&type=Files";
+        }
+
+        tinyMCE.activeEditor.windowManager.open({
+          file: cmsURL,
+          title: 'Filemanager',
+          width: x * 0.8,
+          height: y * 0.8,
+          resizable: "yes",
+          close_previous: "no"
+        });
+      }
+    };
+    tinymce.init(editor_config);
+    window.mce = tinymce.init(editor_config);
+    ; // $('#formNextStatus').on('sumbit', () => {
+    //     $('#inputComment').val(quill.root.innerHTML);
+    // });
+  }
 });
 
 /***/ }),
@@ -37295,6 +37362,435 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
 /***/ }),
 
+/***/ "./resources/js/config/tinymce/langs/pt_PT.js":
+/*!****************************************************!*\
+  !*** ./resources/js/config/tinymce/langs/pt_PT.js ***!
+  \****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+tinymce.addI18n('pt_PT', {
+  "Redo": "Refazer",
+  "Undo": "Anular",
+  "Cut": "Cortar",
+  "Copy": "Copiar",
+  "Paste": "Colar",
+  "Select all": "Selecionar tudo",
+  "New document": "Novo documento",
+  "Ok": "Ok",
+  "Cancel": "Cancelar",
+  "Visual aids": "Ajuda visual",
+  "Bold": "Negrito",
+  "Italic": "It\xE1lico",
+  "Underline": "Sublinhado",
+  "Strikethrough": "Rasurado",
+  "Superscript": "Superior \xE0 linha",
+  "Subscript": "Inferior \xE0 linha",
+  "Clear formatting": "Limpar formata\xE7\xE3o",
+  "Align left": "Alinhar \xE0 esquerda",
+  "Align center": "Alinhar ao centro",
+  "Align right": "Alinhar \xE0 direita",
+  "Justify": "Justificar",
+  "Bullet list": "Lista com marcas",
+  "Numbered list": "Lista numerada",
+  "Decrease indent": "Diminuir avan\xE7o",
+  "Increase indent": "Aumentar avan\xE7o",
+  "Close": "Fechar",
+  "Formats": "Formatos",
+  "Your browser doesn't support direct access to the clipboard. Please use the Ctrl+X\/C\/V keyboard shortcuts instead.": "O seu navegador n\xE3o suporta acesso direto \xE0 \xE1rea de transfer\xEAncia. Por favor, use os atalhos Ctrl+X/C/V do seu teclado.",
+  "Headers": "Cabe\xE7alhos",
+  "Header 1": "Cabe\xE7alho 1",
+  "Header 2": "Cabe\xE7alho 2",
+  "Header 3": "Cabe\xE7alho 3",
+  "Header 4": "Cabe\xE7alho 4",
+  "Header 5": "Cabe\xE7alho 5",
+  "Header 6": "Cabe\xE7alho 6",
+  "Headings": "T\xEDtulos",
+  "Heading 1": "T\xEDtulo 1",
+  "Heading 2": "T\xEDtulo 2",
+  "Heading 3": "T\xEDtulo 3",
+  "Heading 4": "T\xEDtulo 4",
+  "Heading 5": "T\xEDtulo 5",
+  "Heading 6": "T\xEDtulo 6",
+  "Preformatted": "Pr\xE9-formatado",
+  "Div": "Div",
+  "Pre": "Pre",
+  "Code": "C\xF3digo",
+  "Paragraph": "Par\xE1grafo",
+  "Blockquote": "Blockquote",
+  "Inline": "Inline",
+  "Blocks": "Blocos",
+  "Paste is now in plain text mode. Contents will now be pasted as plain text until you toggle this option off.": "O comando colar est\xE1 em modo de texto simples. O conte\xFAdo ser\xE1 colado como texto simples at\xE9 desativar esta op\xE7\xE3o.",
+  "Fonts": "Tipos de letra",
+  "Font Sizes": "Tamanhos dos tipos de letra",
+  "Class": "Classe",
+  "Browse for an image": "Procurar uma imagem",
+  "OR": "OU",
+  "Drop an image here": "Largar aqui uma imagem",
+  "Upload": "Carregar",
+  "Block": "Bloco",
+  "Align": "Alinhar",
+  "Default": "Padr\xE3o",
+  "Circle": "C\xEDrculo",
+  "Disc": "Disco",
+  "Square": "Quadrado",
+  "Lower Alpha": "a. b. c. ...",
+  "Lower Greek": "\\u03b1. \\u03b2. \\u03b3. ...",
+  "Lower Roman": "i. ii. iii. ...",
+  "Upper Alpha": "A. B. C. ...",
+  "Upper Roman": "I. II. III. ...",
+  "Anchor...": "\xC2ncora...",
+  "Name": "Nome",
+  "Id": "ID",
+  "Id should start with a letter, followed only by letters, numbers, dashes, dots, colons or underscores.": "O ID deve come\xE7ar com uma letra, seguido apenas por letras, n\xFAmeros, pontos, dois pontos, tra\xE7os ou sobtra\xE7os.",
+  "You have unsaved changes are you sure you want to navigate away?": "Existem altera\xE7\xF5es que ainda n\xE3o foram guardadas. Tem a certeza que pretende sair?",
+  "Restore last draft": "Restaurar o \xFAltimo rascunho",
+  "Special character...": "Car\xE1ter especial...",
+  "Source code": "C\xF3digo fonte",
+  "Insert\/Edit code sample": "Inserir/editar amostra de c\xF3digo",
+  "Language": "Idioma",
+  "Code sample...": "Amostra de c\xF3digo...",
+  "Color Picker": "Seletor de cores",
+  "R": "R",
+  "G": "G",
+  "B": "B",
+  "Left to right": "Da esquerda para a direita",
+  "Right to left": "Da direita para a esquerda",
+  "Emoticons...": "\xCDcones expressivos...",
+  "Metadata and Document Properties": "Metadados e propriedades do documento",
+  "Title": "T\xEDtulo",
+  "Keywords": "Palavras-chave",
+  "Description": "Descri\xE7\xE3o",
+  "Robots": "Rob\xF4s",
+  "Author": "Autor",
+  "Encoding": "Codifica\xE7\xE3o",
+  "Fullscreen": "Ecr\xE3 completo",
+  "Action": "A\xE7\xE3o",
+  "Shortcut": "Atalho",
+  "Help": "Ajuda",
+  "Address": "Endere\xE7o",
+  "Focus to menubar": "Foco na barra de menu",
+  "Focus to toolbar": "Foco na barra de ferramentas",
+  "Focus to element path": "Foco no caminho do elemento",
+  "Focus to contextual toolbar": "Foco na barra de contexto",
+  "Insert link (if link plugin activated)": "Inserir hiperliga\xE7\xE3o (se o plugin de liga\xE7\xF5es estiver ativado)",
+  "Save (if save plugin activated)": "Guardar (se o plugin de guardar estiver ativado)",
+  "Find (if searchreplace plugin activated)": "Pesquisar (se o plugin pesquisar e substituir estiver ativado)",
+  "Plugins installed ({0}):": "Plugins instalados ({0}):",
+  "Premium plugins:": "Plugins comerciais:",
+  "Learn more...": "Saiba mais...",
+  "You are using {0}": "Est\xE1 a usar {0}",
+  "Plugins": "Plugins",
+  "Handy Shortcuts": "Atalhos \xFAteis",
+  "Horizontal line": "Linha horizontal",
+  "Insert\/edit image": "Inserir\/editar imagem",
+  "Image description": "Descri\xE7\xE3o da imagem",
+  "Source": "Localiza\xE7\xE3o",
+  "Dimensions": "Dimens\xF5es",
+  "Constrain proportions": "Manter propor\xE7\xF5es",
+  "General": "Geral",
+  "Advanced": "Avan\xE7ado",
+  "Style": "Estilo",
+  "Vertical space": "Espa\xE7amento vertical",
+  "Horizontal space": "Espa\xE7amento horizontal",
+  "Border": "Contorno",
+  "Insert image": "Inserir imagem",
+  "Image...": "Imagem...",
+  "Image list": "Lista de imagens",
+  "Rotate counterclockwise": "Rota\xE7\xE3o anti-hor\xE1ria",
+  "Rotate clockwise": "Rota\xE7\xE3o hor\xE1ria",
+  "Flip vertically": "Inverter verticalmente",
+  "Flip horizontally": "Inverter horizontalmente",
+  "Edit image": "Editar imagem",
+  "Image options": "Op\xE7\xF5es de imagem",
+  "Zoom in": "Mais zoom",
+  "Zoom out": "Menos zoom",
+  "Crop": "Recortar",
+  "Resize": "Redimensionar",
+  "Orientation": "Orienta\xE7\xE3o",
+  "Brightness": "Brilho",
+  "Sharpen": "Mais nitidez",
+  "Contrast": "Contraste",
+  "Color levels": "N\xEDveis de cor",
+  "Gamma": "Gama",
+  "Invert": "Inverter",
+  "Apply": "Aplicar",
+  "Back": "Voltar",
+  "Insert date\/time": "Inserir data\/hora",
+  "Date\/time": "Data\/hora",
+  "Insert\/Edit Link": "Inserir/editar liga\xE7\xE3o",
+  "Insert\/edit link": "Inserir/editar liga\xE7\xE3o",
+  "Text to display": "Texto a exibir",
+  "Url": "URL",
+  "Open link in...": "Abrir liga\xE7\xE3o em...",
+  "Current window": "Janela atual",
+  "None": "Nenhum",
+  "New window": "Nova janela",
+  "Remove link": "Remover liga\xE7\xE3o",
+  "Anchors": "\xC2ncora",
+  "Link...": "Liga\xE7\xE3o...",
+  "Paste or type a link": "Copiar ou escrever uma hiperliga\xE7\xE3o",
+  "The URL you entered seems to be an email address. Do you want to add the required mailto: prefix?": "O URL que indicou parece ser um endere\xE7o de email. Quer adicionar o prefixo mailto: tal como necess\xE1rio?",
+  "The URL you entered seems to be an external link. Do you want to add the required http:\/\/ prefix?": "O URL que indicou parece ser um endere\xE7o web. Quer adicionar o prefixo http:// tal como necess\xE1rio?",
+  "Link list": "Lista de liga\xE7\xF5es",
+  "Insert video": "Inserir v\xEDdeo",
+  "Insert\/edit video": "Inserir/editar v\xEDdeo",
+  "Insert\/edit media": "Inserir\/editar media",
+  "Alternative source": "Localiza\xE7\xE3o alternativa",
+  "Alternative source URL": "URL da origem alternativa",
+  "Media poster (Image URL)": "Publicador de media (URL da imagem)",
+  "Paste your embed code below:": "Colar c\xF3digo para embeber:",
+  "Embed": "Embeber",
+  "Media...": "Media...",
+  "Nonbreaking space": "Espa\xE7o n\xE3o quebr\xE1vel",
+  "Page break": "Quebra de p\xE1gina",
+  "Paste as text": "Colar como texto",
+  "Preview": "Pr\xE9-visualizar",
+  "Print...": "Imprimir...",
+  "Save": "Guardar",
+  "Find": "Pesquisar",
+  "Replace with": "Substituir por",
+  "Replace": "Substituir",
+  "Replace all": "Substituir tudo",
+  "Previous": "Anterior",
+  "Next": "Pr\xF3ximo",
+  "Find and replace...": "Localizar e substituir...",
+  "Could not find the specified string.": "N\xE3o foi poss\xEDvel localizar o termo especificado.",
+  "Match case": "Diferenciar mai\xFAsculas e min\xFAsculas",
+  "Find whole words only": "Localizar apenas palavras inteiras",
+  "Spell check": "Verifica\xE7\xE3o ortogr\xE1fica",
+  "Ignore": "Ignorar",
+  "Ignore all": "Ignorar tudo",
+  "Finish": "Concluir",
+  "Add to Dictionary": "Adicionar ao dicion\xE1rio",
+  "Insert table": "Inserir tabela",
+  "Table properties": "Propriedades da tabela",
+  "Delete table": "Eliminar tabela",
+  "Cell": "C\xE9lula",
+  "Row": "Linha",
+  "Column": "Coluna",
+  "Cell properties": "Propriedades da c\xE9lula",
+  "Merge cells": "Unir c\xE9lulas",
+  "Split cell": "Dividir c\xE9lula",
+  "Insert row before": "Inserir linha antes",
+  "Insert row after": "Inserir linha depois",
+  "Delete row": "Eliminar linha",
+  "Row properties": "Propriedades da linha",
+  "Cut row": "Cortar linha",
+  "Copy row": "Copiar linha",
+  "Paste row before": "Colar linha antes",
+  "Paste row after": "Colar linha depois",
+  "Insert column before": "Inserir coluna antes",
+  "Insert column after": "Inserir coluna depois",
+  "Delete column": "Eliminar coluna",
+  "Cols": "Colunas",
+  "Rows": "Linhas",
+  "Width": "Largura",
+  "Height": "Altura",
+  "Cell spacing": "Espa\xE7amento entre c\xE9lulas",
+  "Cell padding": "Espa\xE7amento interno da c\xE9lula",
+  "Show caption": "Mostrar legenda",
+  "Left": "Esquerda",
+  "Center": "Centro",
+  "Right": "Direita",
+  "Cell type": "Tipo de c\xE9lula",
+  "Scope": "Escopo",
+  "Alignment": "Alinhamento",
+  "H Align": "Alinhamento H",
+  "V Align": "Alinhamento V",
+  "Top": "Superior",
+  "Middle": "Meio",
+  "Bottom": "Inferior",
+  "Header cell": "C\xE9lula de cabe\xE7alho",
+  "Row group": "Agrupar linha",
+  "Column group": "Agrupar coluna",
+  "Row type": "Tipo de linha",
+  "Header": "Cabe\xE7alho",
+  "Body": "Corpo",
+  "Footer": "Rodap\xE9",
+  "Border color": "Cor de contorno",
+  "Insert template...": "Inserir modelo...",
+  "Templates": "Modelos",
+  "Template": "Tema",
+  "Text color": "Cor do texto",
+  "Background color": "Cor de fundo",
+  "Custom...": "Personalizada...",
+  "Custom color": "Cor personalizada",
+  "No color": "Sem cor",
+  "Remove color": "Remover cor",
+  "Table of Contents": "\xCDndice",
+  "Show blocks": "Mostrar blocos",
+  "Show invisible characters": "Mostrar caracteres invis\xEDveis",
+  "Word count": "Contagem de palavras",
+  "Count": "Contagem",
+  "Document": "Documento",
+  "Selection": "Sele\xE7\xE3o",
+  "Words": "Palavras",
+  "Words: {0}": "Palavras: {0}",
+  "{0} words": "{0} palavras",
+  "File": "Ficheiro",
+  "Edit": "Editar",
+  "Insert": "Inserir",
+  "View": "Ver",
+  "Format": "Formatar",
+  "Table": "Tabela",
+  "Tools": "Ferramentas",
+  "Powered by {0}": "Criado em {0}",
+  "Rich Text Area. Press ALT-F9 for menu. Press ALT-F10 for toolbar. Press ALT-0 for help": "Caixa de texto formatado. Pressione ALT-F9 para exibir o menu. Pressione ALT-F10 para exibir a barra de ferramentas. Pressione ALT-0 para exibir a ajuda",
+  "Image title": "T\xEDtulo da imagem",
+  "Border width": "Largura do limite",
+  "Border style": "Estilo do limite",
+  "Error": "Erro",
+  "Warn": "Aviso",
+  "Valid": "V\xE1lido",
+  "To open the popup, press Shift+Enter": "Para abrir o pop-up, prima Shift+Enter",
+  "Rich Text Area. Press ALT-0 for help.": "\xC1rea de texto formatado. Prima ALT-0 para exibir a ajuda.",
+  "System Font": "Tipo de letra do sistema",
+  "Failed to upload image: {0}": "Falha ao carregar imagem: {0}",
+  "Failed to load plugin: {0} from url {1}": "Falha ao carregar plugin: {0} do URL {1}",
+  "Failed to load plugin url: {0}": "Falha ao carregar o URL do plugin: {0}",
+  "Failed to initialize plugin: {0}": "Falha ao inicializar plugin: {0}",
+  "example": "exemplo",
+  "Search": "Pesquisar",
+  "All": "Tudo",
+  "Currency": "Moeda",
+  "Text": "Texto",
+  "Quotations": "Aspas",
+  "Mathematical": "Matem\xE1tico",
+  "Extended Latin": "Carateres latinos estendidos",
+  "Symbols": "S\xEDmbolos",
+  "Arrows": "Setas",
+  "User Defined": "Definido pelo utilizador",
+  "dollar sign": "cifr\xE3o",
+  "currency sign": "sinal monet\xE1rio",
+  "euro-currency sign": "sinal monet\xE1rio do euro",
+  "colon sign": "sinal de dois pontos",
+  "cruzeiro sign": "sinal de cruzeiro",
+  "french franc sign": "sinal de franco franc\xEAs",
+  "lira sign": "sinal de lira",
+  "mill sign": "sinal de por mil",
+  "naira sign": "sinal de naira",
+  "peseta sign": "sinal de peseta",
+  "rupee sign": "sinal de r\xFApia",
+  "won sign": "sinal de won",
+  "new sheqel sign": "sinal de novo sheqel",
+  "dong sign": "sinal de dong",
+  "kip sign": "sinal kip",
+  "tugrik sign": "sinal tugrik",
+  "drachma sign": "sinal drachma",
+  "german penny symbol": "sinal de penny alem\xE3o",
+  "peso sign": "sinal de peso",
+  "guarani sign": "sinal de guarani",
+  "austral sign": "sinal de austral",
+  "hryvnia sign": "sinal hryvnia",
+  "cedi sign": "sinal de cedi",
+  "livre tournois sign": "sinal de libra de tours",
+  "spesmilo sign": "sinal de spesmilo",
+  "tenge sign": "sinal de tengue",
+  "indian rupee sign": "sinal de rupia indiana",
+  "turkish lira sign": "sinal de lira turca",
+  "nordic mark sign": "sinal de marca n\xF3rdica",
+  "manat sign": "sinal manat",
+  "ruble sign": "sinal de rublo",
+  "yen character": "sinal de iene",
+  "yuan character": "sinal de iuane",
+  "yuan character, in hong kong and taiwan": "sinal de iuane, em Hong Kong e Taiwan",
+  "yen\/yuan character variant one": "variante um de sinal de iene\/iuane",
+  "Loading emoticons...": "A carregar \xEDcones expressivos...",
+  "Could not load emoticons": "N\xE3o foi poss\xEDvel carregar \xEDcones expressivos",
+  "People": "Pessoas",
+  "Animals and Nature": "Animais e natureza",
+  "Food and Drink": "Comida e bebida",
+  "Activity": "Atividade",
+  "Travel and Places": "Viagens e lugares",
+  "Objects": "Objetos",
+  "Flags": "Bandeiras",
+  "Characters": "Carateres",
+  "Characters (no spaces)": "Carateres (sem espa\xE7os)",
+  "{0} characters": "{0} carateres",
+  "Error: Form submit field collision.": "Erro: conflito no campo de submiss\xE3o de formul\xE1rio.",
+  "Error: No form element found.": "Erro: nenhum elemento de formul\xE1rio encontrado.",
+  "Update": "Atualizar",
+  "Color swatch": "Cole\xE7\xE3o de cores",
+  "Turquoise": "Turquesa",
+  "Green": "Verde",
+  "Blue": "Azul",
+  "Purple": "P\xFArpura",
+  "Navy Blue": "Azul-atl\xE2ntico",
+  "Dark Turquoise": "Turquesa escuro",
+  "Dark Green": "Verde escuro",
+  "Medium Blue": "Azul interm\xE9dio",
+  "Medium Purple": "P\xFArpura interm\xE9dio",
+  "Midnight Blue": "Azul muito escuro",
+  "Yellow": "Amarelo",
+  "Orange": "Laranja",
+  "Red": "Vermelho",
+  "Light Gray": "Cinzento claro",
+  "Gray": "Cinzento",
+  "Dark Yellow": "Amarelo escuro",
+  "Dark Orange": "Laranja escuro",
+  "Dark Red": "Vermelho escuro",
+  "Medium Gray": "Cinzento m\xE9dio",
+  "Dark Gray": "Cinzento escuro",
+  "Light Green": "Verde claro",
+  "Light Yellow": "Amarelo claro",
+  "Light Red": "Vermelho claro",
+  "Light Purple": "P\xFArpura claro",
+  "Light Blue": "Azul claro",
+  "Dark Purple": "P\xFArpura escuro",
+  "Dark Blue": "Azul escuro",
+  "Black": "Preto",
+  "White": "Branco",
+  "Switch to or from fullscreen mode": "Entrar ou sair do modo de ecr\xE3 inteiro",
+  "Open help dialog": "Abrir caixa de di\xE1logo Ajuda",
+  "history": "hist\xF3rico",
+  "styles": "estilos",
+  "formatting": "formata\xE7\xE3o",
+  "alignment": "alinhamento",
+  "indentation": "avan\xE7o",
+  "permanent pen": "caneta permanente",
+  "comments": "coment\xE1rios",
+  "Format Painter": "Pincel de formata\xE7\xE3o",
+  "Insert\/edit iframe": "Inserir\/editar iframe",
+  "Capitalization": "Capitaliza\xE7\xE3o",
+  "lowercase": "min\xFAsculas",
+  "UPPERCASE": "MAI\xDASCULAS",
+  "Title Case": "Iniciais mai\xFAsculas",
+  "Permanent Pen Properties": "Propriedades da Caneta Permanente",
+  "Permanent pen properties...": "Propriedades da caneta permanente...",
+  "Font": "Tipo de letra",
+  "Size": "Tamanho",
+  "More...": "Mais...",
+  "Spellcheck Language": "Idioma de verifica\xE7\xE3o lingu\xEDstica",
+  "Select...": "Selecionar...",
+  "Preferences": "Prefer\xEAncias",
+  "Yes": "Sim",
+  "No": "N\xE3o",
+  "Keyboard Navigation": "Navega\xE7\xE3o com teclado",
+  "Version": "Vers\xE3o",
+  "Anchor": "\xC2ncora",
+  "Special character": "Car\xE1cter especial",
+  "Code sample": "Amostra de c\xF3digo",
+  "Color": "Cor",
+  "Emoticons": "Emo\xE7\xF5es",
+  "Document properties": "Propriedades do documento",
+  "Image": "Imagem",
+  "Insert link": "Inserir liga\xE7\xE3o",
+  "Target": "Alvo",
+  "Link": "Liga\xE7\xE3o",
+  "Poster": "Autor",
+  "Media": "Media",
+  "Print": "Imprimir",
+  "Prev": "Anterior",
+  "Find and replace": "Pesquisar e substituir",
+  "Whole words": "Palavras completas",
+  "Spellcheck": "Corretor ortogr\xE1fico",
+  "Caption": "Legenda",
+  "Insert template": "Inserir modelo"
+});
+
+/***/ }),
+
 /***/ "./resources/sass/app.scss":
 /*!*********************************!*\
   !*** ./resources/sass/app.scss ***!
@@ -37307,18 +37803,20 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 /***/ }),
 
 /***/ 0:
-/*!*****************************************************************************************************************************************************!*\
-  !*** multi ./resources/js/app.js ./resources/js/app/settings/user/datatables_users.js ./resources/js/app/dailyReports.js ./resources/sass/app.scss ***!
-  \*****************************************************************************************************************************************************/
+/*!************************************************************************************************************************************************************************************************************************************!*\
+  !*** multi ./resources/js/app.js ./resources/js/app/utility/tinymce.js ./resources/js/app/settings/user/datatables_users.js ./resources/js/app/dailyReports.js ./resources/js/app/datatables/reports.js ./resources/sass/app.scss ***!
+  \************************************************************************************************************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(/*! C:\Users\bruno.martins\source\repos\outono\resources\js\app.js */"./resources/js/app.js");
+__webpack_require__(/*! C:\Users\bruno.martins\source\repos\outono\resources\js\app\utility\tinymce.js */"./resources/js/app/utility/tinymce.js");
 __webpack_require__(/*! C:\Users\bruno.martins\source\repos\outono\resources\js\app\settings\user\datatables_users.js */"./resources/js/app/settings/user/datatables_users.js");
 __webpack_require__(/*! C:\Users\bruno.martins\source\repos\outono\resources\js\app\dailyReports.js */"./resources/js/app/dailyReports.js");
+__webpack_require__(/*! C:\Users\bruno.martins\source\repos\outono\resources\js\app\datatables\reports.js */"./resources/js/app/datatables/reports.js");
 module.exports = __webpack_require__(/*! C:\Users\bruno.martins\source\repos\outono\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })
 
-},[[0,"/js/manifest"]]]);
+},[[0,"/js/manifest","/js/vendor"]]]);

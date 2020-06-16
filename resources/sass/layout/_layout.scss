@@ -32,7 +32,16 @@ a {
 }
 
 #bug-report {
-    position: absolute;
+    position: fixed;
     right: 20px;
     bottom: 20px;
+}
+
+.disabled {
+    cursor: not-allowed;
+}
+
+.ql-container {
+    resize: vertical;
+    overflow-y: scroll;
 }

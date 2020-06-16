@@ -17,7 +17,7 @@
         <link rel="dns-prefetch" href="//fonts.gstatic.com">
         {{-- <link rel="icon" href="{{ asset('/favicon.png') }}" type="image/x-icon"/> --}}
         <link href="https://fonts.googleapis.com/css?family=Courier" rel="stylesheet">
-
+        <script src="//cdn.tinymce.com/4/tinymce.min.js"></script>
         <!-- Styles -->
         <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     </head>

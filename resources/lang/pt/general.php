@@ -22,7 +22,13 @@ return [
     'created_time_ago' => 'Criado :time',
     'updated_time_ago' => 'Atualizado :time',
     'created_by_user' => 'Criado por :name',
-    'created_by_user_at_time' => 'Criado por :names :time',
+    'created_by_user_at_time' => 'Criado por :name :time',
+    'work_number' => 'Número da Obra',
+    'article' => 'Artigo',
+    'quantity' => 'Quantidade',
+    'unit_price' => 'Preço Unitário',
+    'date' => 'Data',
+    'total' => 'Total',
     'daily_reports' => [
         'daily_reports' => 'Relatórios Diários',
         'list' => 'Lista de Relatórios',
@@ -36,5 +42,6 @@ return [
         'report' => 'Relatório #:number',
         'action_log' => 'Registo de operações',
         'processing' => 'Em processamento',
+        'cancelled_by_user_at_time' => 'Cancelado por :name :time',
     ],
 ];

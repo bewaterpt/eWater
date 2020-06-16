@@ -6,10 +6,12 @@
 
 require('./bootstrap');
 
-const today = new Date();
 // Setup ajax headers
 $.ajaxSetup({
     headers: {
         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
     }
 });
+
+// TinyMCE Langs
+require('./config/tinymce/langs/pt_PT');

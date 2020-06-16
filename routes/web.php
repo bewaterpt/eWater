@@ -24,7 +24,7 @@ use Illuminate\Support\Facades\Route;
  */
 
 /**
- * Routes within this group are subject to all the members of the web middleware group
+ * Routes and route groups within this group are subject to all the members of the web middleware group
  *
  * @see App\Http\Kernel::class
  */
@@ -46,7 +46,7 @@ Route::group(['middleware' => ['web']], function () {
         Route::match(['get', 'patch'] ,'profile/edit', 'Settings\UserController@edit_self')->name('settings.users.edit_self');
 
         /**
-         * Routes within this group only allow usage for authenticated users with the proper permissions to use them~
+         * Routes within this group only allow usage for authenticated users with the proper permissions to use them
          *
          * @see App\Http\Middleware\Allowed::class
          */
@@ -117,9 +117,15 @@ Route::group(['middleware' => ['web']], function () {
             Route::post('daily-reports/article/get-info', 'DailyReportController@getArticlePrice')->name('daily_reports.article.get_price');
             Route::get('daily-reports/{id}', 'DailyReportController@view')->name('daily_reports.view');
             Route::get('daily-reports/edit/{id}', 'DailyReportController@edit')->name('daily_reports.edit');
-            Route::get('daily-reports/progress-status/{id}', 'DailyReportController@progressStatus')->name('daily_reports.forward');
-            Route::get('daily-reports/regress-status/{id}', 'DailyReportController@regressStatus')->name('daily_reports.back');
+            Route::get('daily-reports/regress-status/{id}', 'DailyReportController@regressStatus')->name('daily_reports.prev');
+            Route::get('daily-reports/progress-status/{id}', 'DailyReportController@progressStatus')->name('daily_reports.next');
             Route::get('daily-reports/cancel/{id}', 'DailyReportController@cancel')->name('daily_reports.cancel');
         });
     });
+});
+
+
+// Custom Laravel Filemanager routes,
+Route::group(['prefix' => 'laravel-filemanager', 'middleware' => ['web', 'auth']], function () {
+    \UniSharp\LaravelFilemanager\Lfm::routes();
 });

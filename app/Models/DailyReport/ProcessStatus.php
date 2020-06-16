@@ -15,13 +15,16 @@ class ProcessStatus extends Model
 
     const EXCLUDED_STATUSES = [
         self::STATUS_EXTRA,
-        self::STATUS_CANCELLED
+        self::STATUS_CANCELLED,
+        self::STATUS_FINISHED
     ];
 
     const SELF_CONCLUDING_STATUSES = [
         self::STATUS_FINISHED,
         self::STATUS_CANCELLED
     ];
+
+    protected $dates = ['concluded_at'];
 
     protected $touches = ['report'];
 
@@ -57,6 +60,10 @@ class ProcessStatus extends Model
             $nextStatusId = self::STATUS_CANCELLED;
         } else {
             $nextStatusId = Status::whereNotIn('id', self::EXCLUDED_STATUSES)->where('id', '>', $currentStatusId)->min('id');
+        }
+
+        if ($currentStatusId === 3) {
+            $nextStatusId === $this->previous()->first();
         }
 
         $this->conclude($user->id);
@@ -114,7 +121,8 @@ class ProcessStatus extends Model
     public function closed() {
         $closed = false;
 
-        if ($this->status()->first()->slug === 'cancel') {
+        // TODO: Remove 'cancelled' slug in lieu of simpler, 'cancel' slug
+        if (in_array($this->status()->first()->slug, ['cancel', 'cancelled'])) {
             $closed = true;
         }
 

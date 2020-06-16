@@ -1,6 +1,6 @@
 const mix = require('laravel-mix');
 
-mix.disableNotifications();
+// mix.disableNotifications();
 /*
  |--------------------------------------------------------------------------
  | Mix Asset Management
@@ -18,9 +18,13 @@ mix.sass('resources/sass/app.scss', 'public/css')
     // app.js General Script
     "resources/js/app.js",
 
+    // Utility Scripts
+    "resources/js/app/utility/tinymce.js",
+
     // View correspondent scripts
     "resources/js/app/settings/user/datatables_users.js",
     "resources/js/app/dailyReports.js",
+    "resources/js/app/datatables/reports.js",
 
 ], "public/js/app.js")
 .extract([

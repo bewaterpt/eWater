@@ -6,7 +6,7 @@
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header">
-                    @Lang('settings.profile'): {{ $user->name."(". $user->username .")"}}
+                    @Lang('settings.profile'): {{ $user->name."(". $user->username .")" }}
                 </div>
                 <div class="card-body">
                     <div class="form-row mb-5">

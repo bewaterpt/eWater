@@ -15,16 +15,31 @@ class Report extends Model
         return $this->hasMany('App\Models\DailyReport\ProcessStatus', 'process_id');
     }
 
+    public function latestUpdate() {
+        return $this->hasMany('App\Models\DailyReport\ProcessStatus', 'process_id')->latest('id')->first();
+    }
+
+    public function lines() {
+        return $this->hasMany('App\Models\DailyReport\ReportLine');
+    }
+
     public function getCurrentStatus() {
-        return $this->ProcessStatus()->latest()->first()->status();
+        return $this->latestUpdate()->status();
     }
 
     public function cancel() {
         $processStatus = $this->processStatus()->latest()->first();
-        $processStatus->cancel();
+        return $processStatus->cancel();
     }
 
     public function closed() {
+        $processStatus = $this->processStatus()->latest()->first();
+        return $processStatus->closed();
+    }
 
+    public function getTotalPrice() {
+        return $this->lines()->get()->map(function ($line) {
+            return $line->quantity * $line->unit_price;
+        })->sum();
     }
 }

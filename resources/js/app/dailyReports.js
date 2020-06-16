@@ -1,5 +1,7 @@
 $(document).ready(() => {
 
+    let today = new Date();
+
     function ISODateString(d){
         function pad(n){return n<10 ? '0'+n : n}
         return d.getUTCFullYear()+'-'
@@ -47,7 +49,7 @@ $(document).ready(() => {
         });
 
         $('#addRow').on('click', () => {
-            let tr = $('table#insert-reports tbody tr:last-child').clone();
+            let tr = $('table#report-lines tbody tr:last-child').clone();
             tr.find('input').val('').prop('readonly', false);
             tr.find(':not(td:first-child) input[type="number"]').val(0);
             tr.removeClass('first');
@@ -59,7 +61,7 @@ $(document).ready(() => {
             });
             tr.find('#inputDatetime').val(ISODateString(today))
             console.log(tr[0]);
-            $('table#insert-reports tbody').append(tr);
+            $('table#report-lines tbody').append(tr);
 
         });
         $('#inputDatetime').val(ISODateString(today));

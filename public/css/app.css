@@ -17060,12 +17060,21 @@ a.enable:hover {
 }
 
 #bug-report {
-  position: absolute;
+  position: fixed;
   right: 20px;
   bottom: 20px;
 }
 
-#insert-reports tr:first-child .actions #removeRow {
+.disabled {
+  cursor: not-allowed;
+}
+
+.ql-container {
+  resize: vertical;
+  overflow-y: scroll;
+}
+
+#report-lines tr:first-child .actions #removeRow {
   display: none;
 }
 

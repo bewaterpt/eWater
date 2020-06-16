@@ -29260,4 +29260,4 @@ module.exports = __webpack_require__(/*! @fortawesome/fontawesome-free */"./node
 
 /***/ })
 
-},[[1,"/js/manifest"]]]);
+}]);
