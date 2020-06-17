@@ -8,10 +8,10 @@ require('./bootstrap');
 
 // Setup ajax headers
 $.ajaxSetup({
-    headers: {
-        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-    }
+    // headers: {
+    //     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    // }
 });
 
 // TinyMCE Langs
-require('./config/tinymce/langs/pt_PT');
+require('./config/tinymce/lang/pt_PT');

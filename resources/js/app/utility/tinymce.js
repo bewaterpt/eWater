@@ -4,7 +4,7 @@ $(document).ready(() => {
     if ($('#text-editor').length > 0) {
         let editor_config = {
             path_absolute : "/",
-            selector: "textarea#text-editor",
+            selector: "textarea.text-editor",
             language: 'pt_PT',
             menubar:false,
             statusbar: false,

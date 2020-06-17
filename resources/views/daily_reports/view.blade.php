@@ -85,8 +85,8 @@
                         <div class="mt-5 mb-3">
                             @Lang('general.daily_reports.action_log')
                         </div>
-                        <div class="border-top pt-3">
-                            <table class="table table-sm table-striped" style="width: 100%">
+                        <div class="">
+                            <table id="report-process-status" class="table table-sm" style="width: 100%">
                                 <thead class="">
                                     <tr>
                                         <th>

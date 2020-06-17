@@ -14,8 +14,11 @@
                 <div class="card-body">
                     <form class="" method="post" action={{Route('daily_reports.create')}}>
                         @csrf
+                        <label for="inputPlate"></label>
                         <input type="text" id="inputPlate" name="plate" class="form-control col-md-2" pattern="([A-Z]{2}-[0-9]{2}-[0-9]{2}|[0-9]{2}-[A-Z]{2}-[0-9]{2}|[0-9]{2}-[0-9]{2}-[A-Z]{2})">
+                        <label for="inputKmDeparture"></label>
                         <input type="number" id="inputKmDeparture" name="km-departure" class="form-control col-md-2">
+                        <label for="inputKmArrival"></label>
                         <input type="number" id="inputKmArrival" name="km-arrival" class="form-control col-md-2">
                         <table id="report-lines" class="mb-4">
                             <thead>

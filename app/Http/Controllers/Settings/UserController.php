@@ -13,12 +13,17 @@ class UserController extends Controller
 {
 
     public function index(Request $request) {
-        return view('settings.users.index', ['users' => User::all()]);
+        $users = User::all()->map(function ($item) {
+            $item->id = $this->encodeId($item->id);
+
+            return $item;
+        });
+        return view('settings.users.index', ['users' => $users]);
     }
 
     public function delete(Request $request) {
-        $userToDelete = User::find($request->route('id'));
-        $current_user = Auth::user();
+        $userToDelete = User::find($this->decodeId($request->route('id')))->first();
+        $currentUser = Auth::user();
 
         if (!$userToDelete) {
             return redirect()->back()->withErrors(__('settings.no_user_specified'), 'custom');
@@ -28,7 +33,7 @@ class UserController extends Controller
             return redirect()->back()->withErrors(__('settings.cant_delete_local_admin'), 'custom');
         }
 
-        if ($userToDelete->id === $current_user->id) {
+        if ($userToDelete->id === $currentUser->id) {
             return redirect()->back()->withErrors(__('settings.cant_delete_self'), 'custom');
         }
 
@@ -37,8 +42,10 @@ class UserController extends Controller
         return redirect()->back()->with(['success', trans('settings.user_deleted')]);
     }
 
-    public function view($user_id) {
-        $user = User::find($this->decodeId($user_id));
+    public function view($userId) {
+        $user = User::find($this->decodeId($userId))->first();
+        $user->id = $this->encodeId($user->id);
+
         return view('settings.users.view')->with([
             'user' => $user
         ]);
@@ -53,12 +60,13 @@ class UserController extends Controller
         ]);
     }
 
-    public function edit($user_id) {
-        $user = User::find($user_id);
+    public function edit($userId) {
+        $user = User::find($this->decodeId($userId))->first();
+        $user->id = $this->encodeId($user->id);
     }
 
     public function toggle_state($userId) {
-        $user = User::find($userId);
+        $user = User::find($this->decodeId($userId))->first();
 
         if (!$user) {
             return redirect()->back()->withErrors(__('settings.user_doesnt_exist'), 'custom');

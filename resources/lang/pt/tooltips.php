@@ -4,5 +4,6 @@ return [
         'prev' => 'Ação anterior',
         'next' => 'Ação seguinte',
         'cancel' => 'Cancelar relatório',
+        'extra' => 'Criar ação extra',
     ],
 ];

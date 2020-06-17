@@ -54,8 +54,8 @@ Route::group(['middleware' => ['web']], function () {
 
             // Users
             Route::get(__('routes.users.default'), 'Settings\UserController@index')->name('settings.users.list');
-            Route::get(__('routes.users.default').'/{id}', 'Settings\UserController@view')->name('settings.users.view');
-            Route::match(['get', 'post'], __('routes.users.edit').'/{id}', 'Settings\UserController@edit')->name('settings.users.edit');
+            Route::get(__('routes.users.view'), 'Settings\UserController@view')->name('settings.users.view');
+            Route::match(['get', 'post'], __('routes.users.edit'), 'Settings\UserController@edit')->name('settings.users.edit');
             Route::get('users/toggle/{id}', 'Settings\UserController@toggle_state')->name('settings.users.toggle_state');
             Route::get('users/delete/{id}', 'Settings\UserController@delete')->name('settings.users.delete');
             Route::get('users/add', 'Settings\UserController@create')->name('settings.users.create');
@@ -118,6 +118,7 @@ Route::group(['middleware' => ['web']], function () {
             Route::get('daily-reports/{id}', 'DailyReportController@view')->name('daily_reports.view');
             Route::get('daily-reports/edit/{id}', 'DailyReportController@edit')->name('daily_reports.edit');
             Route::get('daily-reports/regress-status/{id}', 'DailyReportController@regressStatus')->name('daily_reports.prev');
+            Route::get('daily-reports/extra-status/{id}', 'DailyReportController@progressExtra')->name('daily_reports.extra');
             Route::get('daily-reports/progress-status/{id}', 'DailyReportController@progressStatus')->name('daily_reports.next');
             Route::get('daily-reports/cancel/{id}', 'DailyReportController@cancel')->name('daily_reports.cancel');
         });

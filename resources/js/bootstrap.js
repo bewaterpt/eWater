@@ -39,3 +39,16 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 //     cluster: process.env.MIX_PUSHER_APP_CLUSTER,
 //     encrypted: true
 // });
+
+window.langs = {
+    dataTables: {
+        pt: "//cdn.datatables.net/plug-ins/1.10.21/i18n/Portuguese.json",
+        en: "//datatables.net/plug-ins/i18n/English.json",
+    },
+
+    tinymce: {
+
+    }
+}
+
+window.lang = $("#navbarDropdown.lang").text().toLowerCase().trim();

@@ -72,11 +72,15 @@ class DailyReportController extends Controller
      * @return View view()
      */
     public function create(Request $request) {
+
         if($request->isMethod('POST')) {
             $user = Auth::user();
 
             $report = new Report();
             $report->creator()->associate($user->id);
+            $report->km_departure = $request->input('km-departure');
+            $report->km_arrival = $request->input('km-arrival');
+            $report->vehicle_plate = $request->input('plate');
             $report->save();
 
             $input = $request->input();

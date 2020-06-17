@@ -37147,13 +37147,12 @@ module.exports = function(module) {
 __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js"); // Setup ajax headers
 
 
-$.ajaxSetup({
-  headers: {
-    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-  }
+$.ajaxSetup({// headers: {
+  //     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+  // }
 }); // TinyMCE Langs
 
-__webpack_require__(/*! ./config/tinymce/langs/pt_PT */ "./resources/js/config/tinymce/langs/pt_PT.js");
+__webpack_require__(/*! ./config/tinymce/lang/pt_PT */ "./resources/js/config/tinymce/lang/pt_PT.js");
 
 /***/ }),
 
@@ -37244,7 +37243,15 @@ $(document).ready(function () {
 
 $(document).ready(function () {
   if ($("#report-process-status").length > 0) {
-    $("#report-process-status").datatable();
+    $("#report-process-status").DataTable({
+      responsive: true,
+      // ordering: false,
+      searching: false,
+      lengthChange: false,
+      language: {
+        url: "/config/dataTables/lang/" + window.lang + ".json"
+      }
+    });
   }
 });
 
@@ -37279,7 +37286,7 @@ $(document).ready(function () {
   if ($('#text-editor').length > 0) {
     var editor_config = {
       path_absolute: "/",
-      selector: "textarea#text-editor",
+      selector: "textarea.text-editor",
       language: 'pt_PT',
       menubar: false,
       statusbar: false,
@@ -37360,12 +37367,21 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 //     encrypted: true
 // });
 
+window.langs = {
+  dataTables: {
+    pt: "//cdn.datatables.net/plug-ins/1.10.21/i18n/Portuguese.json",
+    en: "//datatables.net/plug-ins/i18n/English.json"
+  },
+  tinymce: {}
+};
+window.lang = $("#navbarDropdown.lang").text().toLowerCase().trim();
+
 /***/ }),
 
-/***/ "./resources/js/config/tinymce/langs/pt_PT.js":
-/*!****************************************************!*\
-  !*** ./resources/js/config/tinymce/langs/pt_PT.js ***!
-  \****************************************************/
+/***/ "./resources/js/config/tinymce/lang/pt_PT.js":
+/*!***************************************************!*\
+  !*** ./resources/js/config/tinymce/lang/pt_PT.js ***!
+  \***************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -37819,4 +37835,4 @@ module.exports = __webpack_require__(/*! C:\Users\bruno.martins\source\repos\out
 
 /***/ })
 
-},[[0,"/js/manifest","/js/vendor"]]]);
+},[[0,"/js/manifest"]]]);

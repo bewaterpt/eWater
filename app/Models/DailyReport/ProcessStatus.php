@@ -95,7 +95,7 @@ class ProcessStatus extends Model
         $nextProcessStatus->previous()->associate($this->id);
         $nextProcessStatus->save();
 
-        return $prevStatusId;
+        return $nextProcessStatus;
     }
 
     public function stepExtra() {
@@ -131,5 +131,9 @@ class ProcessStatus extends Model
         }
 
         return $closed;
+    }
+
+    public function isExtra() {
+        return $this->status()->first()->id === 3 ? true : false;
     }
 }

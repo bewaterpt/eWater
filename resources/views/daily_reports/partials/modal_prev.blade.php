@@ -11,7 +11,7 @@
             <form id="formChangeStatus" method="POST" action="{{ route('daily_reports.prev', ['id' => $report->latestUpdate()->id]) }}">
                 <div class="modal-body">
                     <label for="text-editor">@Lang('forms.fields.comments')</label>
-                    <textarea id="text-editor" name="comment"></textarea>
+                    <textarea class="text-editor" name="comment"></textarea>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">@Lang('general.close')</button>

@@ -3,6 +3,8 @@
 return [
     'users' => [
         'default' => 'utilizadores',
-        'edit' => 'utilizadores/editar'
+        'view' => 'utilizadores/{id}',
+        'edit' => 'utilizadores/editar/{id}',
+
     ]
 ];

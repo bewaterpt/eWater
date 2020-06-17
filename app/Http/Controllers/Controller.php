@@ -13,7 +13,7 @@ use DB;
 use Auth;
 use View;
 use Route;
-use vinkla\Hashids\Facades\Hashids;
+// use vinkla\Hashids\Facades\Hashids;
 use App\Models\DailyReport\Status;
 
 class Controller extends BaseController
@@ -48,10 +48,10 @@ class Controller extends BaseController
      * @link PROJECT_DIR/config/hashids -> connections
      */
     public function encodeId($id, $alt = false) {
-        return $alt ? Hashids::connection('alt')->encode($id) : Hashids::encode($id);
+        return $alt ? \Hashids::connection('alt')->encode($id) : \Hashids::encode($id);
     }
 
     public function decodeId($id, $alt = false) {
-        return $alt ? Hashids::connection('alt')->decode($id) : Hashids::decode($id);
+        return $alt ? \Hashids::connection('alt')->decode($id) : \Hashids::decode($id);
     }
 }

@@ -17,7 +17,7 @@
         <link rel="dns-prefetch" href="//fonts.gstatic.com">
         {{-- <link rel="icon" href="{{ asset('/favicon.png') }}" type="image/x-icon"/> --}}
         <link href="https://fonts.googleapis.com/css?family=Courier" rel="stylesheet">
-        <script src="//cdn.tinymce.com/4/tinymce.min.js"></script>
+        <script src='https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js'></script>
         <!-- Styles -->
         <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     </head>
@@ -123,7 +123,7 @@
 
                         <ul class="navbar-nav">
                             <li class="nav-item dropdown">
-                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                <a id="navbarDropdown" class="lang nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                     {{ explode('_', strtoupper(app()->getLocale()))[0] }} <span class="caret"></span>
                                 </a>
 
