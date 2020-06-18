@@ -12,7 +12,7 @@ class CustomMigrateFresh extends Command
      *
      * @var string
      */
-    protected $signature = 'migrate:fresh';
+    protected $signature = 'app:reset';
 
     /**
      * The console command description.
@@ -38,9 +38,6 @@ class CustomMigrateFresh extends Command
      */
     public function handle()
     {
-        $this->output = new BufferedOutput();
-        $this->call('migrate:fresh');
-        echo $this->output->fetch();
         config('app.initialized', false);
     }
 }
