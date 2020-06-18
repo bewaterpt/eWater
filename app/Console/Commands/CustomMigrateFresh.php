@@ -39,5 +39,6 @@ class CustomMigrateFresh extends Command
     public function handle()
     {
         config('app.initialized', false);
+
     }
 }
