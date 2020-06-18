@@ -194,6 +194,7 @@ class GenerateData extends Command
             // On completion commit transaction data
             DB::commit();
 
+            config('app.initialized', true);
             $this->info('Finished seeding database');
         } catch(\Exception $e) {
             // On error rollback changes
