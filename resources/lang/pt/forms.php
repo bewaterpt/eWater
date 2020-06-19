@@ -10,7 +10,9 @@ return [
         'article' => 'Artigo',
         'unit_price' => 'Preço Unitário',
         'quantity' => 'Quantidade',
-        'date' => 'Data'
+        'date' => 'Data',
+        'worker' => 'Funcionário',
+        'hours' => 'Nº de Horas',
     ],
     'placeholders' => [
         'name'=> 'Nome Apelido',
@@ -22,13 +24,16 @@ return [
         'article' => 'Artigo',
         'unit_price' => 'Preço Unitário',
         'quantity' => 'Quantidade',
-        'date' => 'Data'
+        'date' => 'Data',
+        'worker' => 'Funcionário',
+        'hours' => 'Nº de Horas',
     ],
     'descriptors' => [
         'name' => "O Seu primeiro e último nome",
-        'email' => "O seu endereço de email."
+        'email' => "O seu endereço de email.",
     ],
     'buttons' => [
         'save' => 'Guardar',
+        'close' => 'Fechar',
     ],
 ];

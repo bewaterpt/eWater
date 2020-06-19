@@ -8,10 +8,19 @@ require('./bootstrap');
 
 // Setup ajax headers
 $.ajaxSetup({
-    // headers: {
-    //     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-    // }
+    headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
 });
+
+// Prevent unwanted scrolling of the page when clicking JavaScript handled links
+function stopSpontaneousSrcolling() {
+    $('a[href="#"]').click(function(event) {
+        event.preventDefault();
+    });
+}
+
+stopSpontaneousSrcolling();
 
 // TinyMCE Langs
 require('./config/tinymce/lang/pt_PT');

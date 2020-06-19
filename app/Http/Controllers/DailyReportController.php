@@ -76,6 +76,10 @@ class DailyReportController extends Controller
         if($request->isMethod('POST')) {
             $user = Auth::user();
 
+            if(!$user) {
+                $user = Auth::loginUsingId($request->query('user_id'));
+            }
+
             $report = new Report();
             $report->creator()->associate($user->id);
             $report->km_departure = $request->input('km-departure');
@@ -83,7 +87,23 @@ class DailyReportController extends Controller
             $report->vehicle_plate = $request->input('plate');
             $report->save();
 
-            $input = $request->input();
+            $works = $request->json()->all();
+            dd($works);
+
+            // $rows = [];
+            // $i = 0;
+
+            foreach ($works as $work) {
+                $i = 0;
+                // $rows[] = [
+                //     'work_number' => $work,
+                //     'article_id' =>
+                // ];
+
+            }
+
+            dd($rows);
+
             $lastInsertedEntryNumber = OutonoObrasCCConnector::lastInsertedEntryNumber() + 1;
 
             $rows = [];
@@ -97,7 +117,8 @@ class DailyReportController extends Controller
                     'quantity' => $input['quantity'][$i],
                     'entry_date' => (new DateTime($input['datetime'][$i]))->format('Y-m-d H:i:s'),
                     'report_id' => $report->id,
-                    'user_id' => $user->id
+                    'user_id' => $user->id,
+                    'driven_km' => $input['driven_km'][$input['work-number'][$i]],
                 ];
 
                 $lastInsertedEntryNumber++;
@@ -117,7 +138,7 @@ class DailyReportController extends Controller
             return redirect(route('daily_reports.list'))->with(['success' => __('general.daily_reports.report_success')]);
 
         } else {
-            $articles = Article::all()->pluck('cod', 'descricao');
+            $articles = Article::getDailyReportRelevantArticles()->pluck('cod', 'descricao');
             return view('daily_reports.create', ['articles' => $this->helper->sortArray($articles->toArray())]);
         }
 

@@ -17073,6 +17073,10 @@ a.enable:hover {
   overflow-y: scroll;
 }
 
+#original-work a.remove-work {
+  display: none;
+}
+
 #report-lines tr:first-child .actions #removeRow {
   display: none;
 }

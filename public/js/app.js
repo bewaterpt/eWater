@@ -37147,10 +37147,19 @@ module.exports = function(module) {
 __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js"); // Setup ajax headers
 
 
-$.ajaxSetup({// headers: {
-  //     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-  // }
-}); // TinyMCE Langs
+$.ajaxSetup({
+  headers: {
+    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+  }
+}); // Prevent unwanted scrolling of the page when clicking JavaScript handled links
+
+function stopSpontaneousSrcolling() {
+  $('a[href="#"]').click(function (event) {
+    event.preventDefault();
+  });
+}
+
+stopSpontaneousSrcolling(); // TinyMCE Langs
 
 __webpack_require__(/*! ./config/tinymce/lang/pt_PT */ "./resources/js/config/tinymce/lang/pt_PT.js");
 
@@ -37163,8 +37172,11 @@ __webpack_require__(/*! ./config/tinymce/lang/pt_PT */ "./resources/js/config/ti
 /*! no static exports found */
 /***/ (function(module, exports) {
 
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 $(document).ready(function () {
   var today = new Date();
+  console.log($('input.work-number'));
 
   function ISODateString(d) {
     function pad(n) {
@@ -37173,6 +37185,31 @@ $(document).ready(function () {
 
     return d.getUTCFullYear() + '-' + pad(d.getUTCMonth() + 1) + '-' + pad(d.getUTCDate()) + 'T' + pad(d.getUTCHours()) + ':' + pad(d.getUTCMinutes()); // + pad(d.getUTCSeconds())+'Z'
   }
+
+  $('#report').on('submit', function (event) {
+    event.preventDefault();
+    var rows = [];
+    $('div.card.work').each(function (index, work) {
+      rows = _defineProperty({}, $(work).find('input.work-number').val(), {});
+      $(work).find('tbody tr').each(function (index, tr) {
+        trIndex = index;
+        rows[$(work).find('input.work-number').val()] = _defineProperty({}, trIndex, {});
+        $(document).find('input:not(.work-number), select').each(function (index, input) {
+          rows[$(work).find('input.work-number').val()][trIndex][input.name] = input.value;
+        });
+      });
+    });
+    console.log(JSON.stringify(rows));
+    $.ajax({
+      method: 'POST',
+      url: $('#report').attr('action'),
+      data: JSON.stringify(rows),
+      contentType: 'json',
+      success: function success(data) {
+        console.log(data);
+      }
+    });
+  });
 
   if ($('#daily-reports-create').length > 0) {
     /**
@@ -37206,15 +37243,17 @@ $(document).ready(function () {
      */
 
 
-    var removeLine = function removeLine(event) {
+    var removeRow = function removeRow(event) {
       $(event.target).closest('tr').remove();
     };
 
-    $('#inputArticle').on('change', function (e) {
-      getArticleInfo(e);
-    });
-    $('#addRow').on('click', function () {
-      var tr = $('table#report-lines tbody tr:last-child').clone();
+    var removeWork = function removeWork(event) {
+      $(event.target).closest('.card.work:not(#original-work)').remove();
+    };
+
+    var addRow = function addRow(event) {
+      var tr = $(event.target).parents('.card.work').find('table#report-lines tbody tr:last-child').clone();
+      console.log(tr);
       tr.find('input').val('').prop('readonly', false);
       tr.find(':not(td:first-child) input[type="number"]').val(0);
       tr.removeClass('first');
@@ -37222,11 +37261,97 @@ $(document).ready(function () {
         getArticleInfo(e);
       });
       tr.find('#removeRow').on('click', function (e) {
-        removeLine(e);
+        removeRow(e);
       });
       tr.find('#inputDatetime').val(ISODateString(today));
       console.log(tr[0]);
-      $('table#report-lines tbody').append(tr);
+      $(event.target).parents('.card.work').find('table#report-lines tbody').append(tr); // window.scrollTo(0, document.body.scrollHeight || document.documentElement.scrollHeight);
+
+      $('a[href="#"]').click(function (event) {
+        event.preventDefault();
+      });
+      replaceVal(event);
+    };
+
+    var replaceVal = function replaceVal(event) {
+      work = $(event.target).closest('.card.work');
+      console.log(work);
+      work.find('input.driven-km').attr('name', work.find('input.driven-km').attr('name').replace(/\[.*\b\]/, '[' + (work.find('input.work-number').val() != 0 ? work.find('input.work-number').val() : 'replace') + ']'));
+      work.find('input.real-work-number').val(work.find('input.work-number').val());
+    };
+
+    $('#inputArticle').on('change', function (e) {
+      getArticleInfo(e);
+    });
+    $('#addRow').on('click', function (event) {
+      addRow(event);
+    });
+    $('input.work-number').val('').on('change', function (event) {
+      replaceNames(event);
+    });
+    $('a.remove-work').on('click', function (event) {
+      removeWork(event);
+    });
+    $('input.work-number').on('keyup change', function (event) {
+      replaceVal(event);
+    });
+    $('a.add-work').on('click', function (event) {
+      var work = $(event.target).parents('.card').find('.card.work:last-of-type').clone();
+      console.log(work);
+      work.removeAttr('id');
+      work.find('input.work-number, input.driven-km').val('').on('change', function (event) {
+        replaceNames(event);
+      });
+      var trs = work.find('table#report-lines tbody tr');
+      trs.each(function (index, tr) {
+        console.log(index);
+
+        if (trs.length - (index + 1) == 0) {
+          return false;
+        }
+
+        $(tr).remove();
+      });
+      work.find('#addRow').on('click', function (event) {
+        addRow(event);
+      });
+      work.find('a.remove-work').on('click', function (event) {
+        removeWork(event);
+      });
+      work.find('input.work-number').on('keyup change', function (event) {
+        replaceVal(event);
+      });
+      var tr = work.find('table#report-lines tbody tr:last-child');
+      tr.find('input').val('').prop('readonly', false);
+      tr.find(':not(td:first-child) input[type="number"]').val(0);
+      tr.removeClass('first');
+      tr.find('#inputArticle').on('change', function (event) {
+        getArticleInfo(event);
+      });
+      tr.find('#removeRow').on('click', function (event) {
+        removeLine(event);
+      });
+      tr.find('#inputDatetime').val(ISODateString(today)); // window.scrollTo(0, document.body.scrollHeight || document.documentElement.scrollHeight);
+
+      $(event.target).parents('.card').find('.card.work:last-of-type').after(work);
+      $('a[href="#"]').click(function (event) {
+        event.preventDefault();
+      }); // tr.find('input').val('').prop('readonly', false);
+      // tr.find(':not(td:first-child) input[type="number"]').val(0);
+      // tr.removeClass('first');
+      // tr.find('#inputArticle').on('change', (e) => {
+      //     getArticleInfo(e)
+      // });
+      // tr.find('#removeRow').on('click', (e) => {
+      //     removeLine(e);
+      // });
+      // tr.find('#inputDatetime').val(ISODateString(today))
+      // console.log(tr[0]);
+      // $('table#report-lines tbody').append(tr);
+      // // window.scrollTo(0, document.body.scrollHeight || document.documentElement.scrollHeight);
+      // $('a[href="#"]').click(function(event) {
+      //     event.preventDefault();
+      // });
     });
     $('#inputDatetime').val(ISODateString(today));
   }
