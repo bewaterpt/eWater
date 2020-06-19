@@ -111,8 +111,8 @@ class LoginController extends Controller
         if ($user->roles()->count() === 0) {
             if ($is_first_admin <= 1) {
                 $user->roles()->syncWithoutDetaching([1]);
-            } else {
-                $user->roles()->syncWithoutDetaching([2]);
+            } else if($is_first_admin <= 2){
+                $user->roles()->syncWithoutDetaching([$user->id]);
             }
         }
     }
