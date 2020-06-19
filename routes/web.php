@@ -39,10 +39,8 @@ Route::group(['middleware' => ['web']], function () {
      * Routes within this group only allow usage for authenticated users
      *
      * @see App\Http\Middleware\Authenticate::class
-     *
-     * @todo Re-add Auth later
      */
-    Route::group(['middleware' => ['web']], function () {
+    Route::group(['middleware' => ['auth']], function () {
 
         Route::get('/', 'HomeController@index')->name('home');
         Route::match(['get', 'patch'] ,'profile/edit', 'Settings\UserController@edit_self')->name('settings.users.edit_self');
@@ -51,10 +49,8 @@ Route::group(['middleware' => ['web']], function () {
          * Routes within this group only allow usage for authenticated users with the proper permissions to use them
          *
          * @see App\Http\Middleware\Allowed::class
-         *
-         * @todo Re-add allowed later
          */
-        Route::group(['middleware' => ['web']], function () {
+        Route::group(['middleware' => ['allowed']], function () {
 
             // Users
             Route::get(__('routes.users.default'), 'Settings\UserController@index')->name('settings.users.list');
