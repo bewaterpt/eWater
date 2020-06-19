@@ -32,6 +32,7 @@ class CustomMigrateFresh extends Command
     }
 
     /**
+     *
      * Execute the console command.
      *
      * @return mixed
