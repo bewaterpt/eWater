@@ -23,7 +23,7 @@ $(document).ready(() => {
                 trIndex = index;
                 rows[$(work).find('input.work-number').val()] = {[trIndex]: {}};
 
-                $(document).find('input:not(.work-number), select').each((index, input) => {
+                $(document).find('.card.work input:not(.work-number), select').each((index, input) => {
                     rows[$(work).find('input.work-number').val()][trIndex][input.name] = input.value;
                 });
             });

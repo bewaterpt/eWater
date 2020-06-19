@@ -37194,7 +37194,7 @@ $(document).ready(function () {
       $(work).find('tbody tr').each(function (index, tr) {
         trIndex = index;
         rows[$(work).find('input.work-number').val()] = _defineProperty({}, trIndex, {});
-        $(document).find('input:not(.work-number), select').each(function (index, input) {
+        $(document).find('.card.work input:not(.work-number), select').each(function (index, input) {
           rows[$(work).find('input.work-number').val()][trIndex][input.name] = input.value;
         });
       });
