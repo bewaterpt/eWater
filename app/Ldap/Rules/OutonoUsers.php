@@ -14,7 +14,7 @@ class OutonoUsers extends Rule
      */
     public function isValid()
     {
-        $outonoUsers = Group::find('cn=Outono_Users,ou=Applications,dc=bewater,dc=local');
+        $outonoUsers = Group::find('cn=eWater_Users,ou=Applications,dc=bewater,dc=local');
 
         return $this->user->groups()->recursive()->exists($outonoUsers);
     }

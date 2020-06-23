@@ -63,7 +63,7 @@ class UpdateADGroups extends Command
         // Get AD Groups to populate ad_groups table, which is merely a helper table
         $query = $ldap->query();
         $query->select(['samaccountname', 'cn']);
-        $groups = Group::in("ou=Access_Outono,".config('ldap.connections.default.base_dn'))->get();
+        $groups = Group::in("ou=" . config('ldap.ou_filter') . ",".config('ldap.connections.default.base_dn'))->get();
         $rolesToRemove = Role::whereNotIn('id', [1, 2, 3])->pluck('slug');
 
         DB::beginTransaction();
