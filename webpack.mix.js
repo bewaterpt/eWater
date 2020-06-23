@@ -13,7 +13,13 @@ const mix = require('laravel-mix');
  */
 
 mix.sass('resources/sass/app.scss', 'public/css')
-.js([
+.extract([
+    'datatables.net',
+    'datatables.net-dt',
+    'datatables.net-bs4',
+    'bootstrap',
+    '@fortawesome/fontawesome-free',
+]).js([
 
     // app.js General Script
     "resources/js/app.js",
@@ -26,10 +32,5 @@ mix.sass('resources/sass/app.scss', 'public/css')
     "resources/js/app/dailyReports.js",
     "resources/js/app/datatables/reports.js",
 
-], "public/js/app.js")
-.extract([
-    'datatables.net-dt',
-    'datatables.net-bs4',
-    // 'tinymce',
-    '@fortawesome/fontawesome-free',
-])
+], "public/js/app.js");
+

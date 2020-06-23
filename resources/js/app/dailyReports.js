@@ -2,8 +2,6 @@ $(document).ready(() => {
 
     let today = new Date();
 
-    console.log($('input.work-number'));
-
     function ISODateString(d){
         function pad(n){return n<10 ? '0'+n : n}
         return d.getUTCFullYear()+'-'
@@ -13,34 +11,6 @@ $(document).ready(() => {
         + pad(d.getUTCMinutes());
         // + pad(d.getUTCSeconds())+'Z'
     }
-
-    $('#report').on('submit', (event) => {
-        event.preventDefault();
-        let rows = [];
-        $('div.card.work').each((index, work) => {
-            rows = {[$(work).find('input.work-number').val()]: {}};
-            $(work).find('tbody tr').each((index, tr) => {
-                trIndex = index;
-                rows[$(work).find('input.work-number').val()] = {[trIndex]: {}};
-
-                $(document).find('.card.work input:not(.work-number), select').each((index, input) => {
-                    rows[$(work).find('input.work-number').val()][trIndex][input.name] = input.value;
-                });
-            });
-        });
-
-        console.log(JSON.stringify(rows));
-
-        $.ajax({
-            method: 'POST',
-            url: $('#report').attr('action'),
-            data: JSON.stringify(rows),
-            contentType: 'json',
-            success: (data) => {
-                console.log(data);
-            }
-        });
-    });
 
     if($('#daily-reports-create').length > 0) {
         /**
@@ -175,26 +145,67 @@ $(document).ready(() => {
             $('a[href="#"]').click(function(event) {
                 event.preventDefault();
             });
-
-
-
-            // tr.find('input').val('').prop('readonly', false);
-            // tr.find(':not(td:first-child) input[type="number"]').val(0);
-            // tr.removeClass('first');
-            // tr.find('#inputArticle').on('change', (e) => {
-            //     getArticleInfo(e)
-            // });
-            // tr.find('#removeRow').on('click', (e) => {
-            //     removeLine(e);
-            // });
-            // tr.find('#inputDatetime').val(ISODateString(today))
-            // console.log(tr[0]);
-            // $('table#report-lines tbody').append(tr);
-            // // window.scrollTo(0, document.body.scrollHeight || document.documentElement.scrollHeight);
-            // $('a[href="#"]').click(function(event) {
-            //     event.preventDefault();
-            // });
         });
         $('#inputDatetime').val(ISODateString(today));
+
+        $('#report').on('submit', (event) => {
+            event.preventDefault();
+
+            try {
+                let data = {
+                    plate: $('input[name="plate"]').val(),
+                    km_departure: $('input[name="km-departure"]').val(),
+                    km_arrival: $('input[name="km-arrival"]').val(),
+                    comment: $('textarea').val(),
+                }
+
+                let totalKm = data.km_arrival - data.km_departure;
+                let userInsertedKm = 0;
+                let rows = {};
+                $('div.card.work').each((workIndex, work) => {
+                    workNum = $(work).find('input.work-number').val()
+                    rows[workNum] = {};
+                    $(work).find('tbody tr').each((trIndex, tr) => {
+                        rows[workNum][trIndex] = {};
+                        $(document).find('.card.work input:not(.work-number), select').each((inputIndex, input) => {
+                            if(input.name === "driven-km") {
+                                userInsertedKm += parseInt(input.value);
+                            }
+                            rows[workNum][trIndex][input.name] = input.value;
+                        });
+                    });
+                });
+
+
+
+                if(userInsertedKm !== totalKm) {
+                    throw new Error($('#errors #differentKm')[0].innerText);
+                }
+
+                data.rows = rows;
+
+                $.ajax({
+                    method: 'POST',
+                    url: $('#report').attr('action'),
+                    data: JSON.stringify(data),
+                    contentType: 'json',
+                    success: (response) => {
+                        window.location.replace(response);
+                    }
+                });
+            } catch (error) {
+                alert(error.message);
+            }
+        });
+
+        $(document).on('change keyup', 'input[name="km-departure"], input[name="km-arrival"]', (event) => {
+            $('#total-km-holder #value').text(parseInt(($('input[name="km-arrival"]').val() - $('input[name="km-departure"]').val())));
+
+            if (parseInt(($('input[name="km-arrival"]').val() - $('input[name="km-departure"]').val())) < 0) {
+                $('#total-km-holder').addClass('text-danger');
+            } else {
+                $('#total-km-holder').removeClass('text-danger');
+            }
+        });
     }
 });

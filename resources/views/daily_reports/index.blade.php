@@ -7,7 +7,7 @@
             <div class="card">
                 <div class="card-header">@Lang('general.daily_reports.list')</div>
                 <div class="card-body">
-                    <table class="table table-stripped table-bordered" style="width: 100%">
+                    <table id="reports" class="table table-sm table-stripped table-bordered" style="width: 100%">
                         <thead class="thead-light">
                             <tr>
                                 <th>
@@ -15,6 +15,12 @@
                                 </th>
                                 <th>
                                     @Lang('general.daily_reports.status')
+                                </th>
+                                <th>
+                                    @Lang('general.daily_reports.total_hr')
+                                </th>
+                                <th>
+                                    @Lang('general.daily_reports.total_km')
                                 </th>
                                 <th>
                                     @Lang('general.created_by')
@@ -33,7 +39,18 @@
                                         </a>
                                     </td>
                                     <td>
-                                        {{ $report->getCurrentStatus()->first()->name}}
+                                        {{ $report->getCurrentStatus()->first()->name }}
+                                    </td>
+                                    <td>
+                                        {{ $report->getTotalHours() }}
+                                        @if($report->getTotalHours() > 1)
+                                            @Lang('general.hours')
+                                        @else
+                                            @Lang('general.hour')
+                                        @endif
+                                    </td>
+                                    <td>
+                                        {{ $report->getTotalKm() }} @Lang('general.daily_reports.km')
                                     </td>
                                     <td>
                                         {{ $report->creator()->first()->name }}

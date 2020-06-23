@@ -31,57 +31,62 @@
                                 @Lang('general.updated_time_ago', ['time' => $report->updated_at->diffForHumans()])
                             </div>
                         </div>
-                        <table class="table table-striped table-bordered">
-                            <thead class="thead-light">
-                                <tr>
-                                    <th>
-                                        @Lang('general.work_number')
-                                    </th>
-                                    <th>
-                                        @Lang('general.article')
-                                    </th>
-                                    <th>
-                                        @Lang('general.quantity')
-                                    </th>
-                                    <th>
-                                        @Lang('general.unit_price')
-                                    </th>
-                                    <th>
-                                        @Lang('general.total')
-                                    </th>
-                                    <th>
-                                        @Lang('general.date')
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($report->lines()->get() as $line)
+
+                        @foreach($report->lines()->get()->groupBy('work_number') as $workNumber => $rows)
+                            <table class="table table-sm table-bordered border-top border-bottom accordion-toggle collapsed mb-0 mt-2" id="work-{{ $workNumber }}" data-toggle="collapse" data-parent="#work-{{ $workNumber }}" href="#collapse-{{ $workNumber }}">
+                                <thead class="thead-light">
                                     <tr>
-                                        <td>
-                                            {{ $line->work_number }}
-                                        </td>
-                                        <td>
-                                            {{ $line->getArticle()->descricao }}
-                                        </td>
-                                        <td>
-                                            {{ $line->quantity }}
-                                        </td>
-                                        <td>
-                                            {{ $line->unit_price }} €
-                                        </td>
-                                        <td>
-                                            {{ $line->getTotal() }} €
-                                        </td>
-                                        <td>
-                                            {{ $line->entry_date }}
-                                        </td>
+                                        <th class="pl-3 border-0">{{ $workNumber }}</th>
+                                        <th class="border-0">{{ $helpers->getWorkReportHours($workNumber) }}
+                                            @if($helpers->getWorkReportHours($workNumber) > 1)
+                                                @Lang('general.hours')
+                                            @else
+                                                @Lang('general.hour')
+                                            @endif
+                                        </th>
+                                        <th class="border-0">{{ $helpers->getWorkReportKm($workNumber) }} @Lang('general.daily_reports.km')</th>
+                                        <th class="chevron text-right pr-3 border-0"><i class="fas fa-chevron-up"></i></th>
                                     </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                        <div class="float-right text-right col-md-6">
-                            @Lang('general.total'): {{ $report->getTotalPrice() }} €
-                        </div>
+                                </thead>
+                            </table>
+                            <table class="table table-sm table-bordered collapse in p-0" id="collapse-{{ $workNumber }}" style="position: relative; z-index: 20">
+                                <thead>
+                                    <tr class="hide-table-padding">
+                                        <th>
+                                            @Lang('general.worker')
+                                        </th>
+                                        <th>
+                                            @Lang('general.article')
+                                        </th>
+                                        <th>
+                                            @Lang('general.hours')
+                                        </th>
+                                        <th>
+                                            @Lang('general.date')
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($rows as $row)
+                                        <tr>
+                                            <td>
+                                                {{ $row->worker }}
+                                            </td>
+                                            <td>
+                                                {{ $row->getArticle()->descricao }}
+                                            </td>
+                                            <td>
+                                                {{ $row->quantity }}
+                                            </td>
+                                            <td>
+                                                {{ $row->entry_date }}
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        @endforeach
+
                         <div class="mt-5 mb-3">
                             @Lang('general.daily_reports.action_log')
                         </div>

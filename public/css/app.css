@@ -17081,3 +17081,16 @@ a.enable:hover {
   display: none;
 }
 
+table[id^=work-] {
+  cursor: pointer;
+}
+
+table[id^=work-].collapsed th.chevron i {
+  transition: transform 0.4s;
+  transform: rotate(180deg);
+}
+
+table[id^=work-] th.chevron i {
+  transition: transform 0.4s;
+}
+

@@ -37,9 +37,24 @@ class Report extends Model
         return $processStatus->closed();
     }
 
+    /**
+     * @method getTotalPrice()
+     *
+     * Gets the sum of all unit prices related to this report for the price total
+     *
+     * @deprecated because prices are not needed
+     */
     public function getTotalPrice() {
         return $this->lines()->get()->map(function ($line) {
             return $line->quantity * $line->unit_price;
         })->sum();
+    }
+
+    public function getTotalHours() {
+        return $this->lines()->get()->sum('quantity');
+    }
+
+    public function getTotalKm() {
+        return $this->lines()->get()->sum('driven_km');
     }
 }

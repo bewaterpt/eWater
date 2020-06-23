@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddFieldsToReportLinesTable extends Migration
+class AddCommentFieldToReportsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,8 @@ class AddFieldsToReportLinesTable extends Migration
      */
     public function up()
     {
-        Schema::table('report_lines', function (Blueprint $table) {
-            $table->integer('driven_km');
-            $table->string('worker');
+        Schema::table('reports', function (Blueprint $table) {
+            $table->longText('comment')->nullable();
         });
     }
 
@@ -26,9 +25,8 @@ class AddFieldsToReportLinesTable extends Migration
      */
     public function down()
     {
-        Schema::table('report_lines', function (Blueprint $table) {
-            $table->dropColumn('driven_km');
-            $table->dropColumn('worker');
+        Schema::table('reports', function (Blueprint $table) {
+            $table->dropColumn('comment');
         });
     }
 }

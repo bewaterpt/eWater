@@ -11,4 +11,15 @@ $(document).ready(() => {
             }
         });
     }
+
+    if ($("#reports").length > 0) {
+        $("#reports").DataTable({
+            responsive: true,
+            // ordering: false,
+            lengthChange: false,
+            language: {
+                url: "/config/dataTables/lang/" + window.lang + ".json"
+            }
+        });
+    }
 });

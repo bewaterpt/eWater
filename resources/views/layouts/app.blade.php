@@ -9,15 +9,11 @@
 
         <title>{{ config('app.name', 'Laravel') }}</title>
 
-        <!-- Scripts -->
-        <script src="{{ asset('js/vendor.js') }}" defer></script>
-        <script src="{{ asset('js/manifest.js') }}" defer></script>
-
         <!-- Fonts -->
         <link rel="dns-prefetch" href="//fonts.gstatic.com">
         {{-- <link rel="icon" href="{{ asset('/favicon.png') }}" type="image/x-icon"/> --}}
         <link href="https://fonts.googleapis.com/css?family=Courier" rel="stylesheet">
-        <script src='https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js'></script>
+        <script src="https://cdn.tiny.cloud/1/cx6voesmf6uv8rlv64tv92yhqix2qj2puwg1cwcdvrshvn6r/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
         <!-- Styles -->
         <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     </head>
@@ -159,7 +155,7 @@
                 @yield('content')
             </main>
             <div class="card float-right" id="bug-report">
-                <a href="mailto:helpdesk@bewater.com.pt" class="text-white">
+                <a href="mailto:helpdesk@bewater.com.pt" title="{{ __('tooltips.report_a_bug') }}" class="text-white">
                     <div class="card-header bg-primary">
                         <i class="fas fa-bug"></i>
                     </div>
@@ -167,6 +163,8 @@
             </div>
         </div>
         <!--scripts-->
+        <script src="{{ asset('js/vendor.js') }}"></script>
+        <script src="{{ asset('js/manifest.js') }}"></script>
         <script src="{{ asset('js/app.js') }}"></script>
     </body>
 </html>

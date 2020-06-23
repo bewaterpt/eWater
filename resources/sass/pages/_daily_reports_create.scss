@@ -23,3 +23,34 @@
         }
     }
 }
+
+table {
+
+    &[id^="work-"] {
+        cursor: pointer;
+
+        &.collapsed {
+
+            th {
+
+                &.chevron {
+
+                    i {
+                        transition: transform .4s;
+                        transform: rotate(180deg);
+                    }
+                }
+            }
+        }
+
+        th {
+
+            &.chevron {
+
+                i {
+                    transition: transform .4s;
+                }
+            }
+        }
+    }
+}

@@ -79,49 +79,40 @@ class DailyReportController extends Controller
             if(!$user) {
                 $user = Auth::loginUsingId($request->query('user_id'));
             }
+            $input = $request->json()->all();
 
             $report = new Report();
             $report->creator()->associate($user->id);
-            $report->km_departure = $request->input('km-departure');
-            $report->km_arrival = $request->input('km-arrival');
-            $report->vehicle_plate = $request->input('plate');
+            $report->vehicle_plate = $input['plate'];
+            $report->km_departure = $input['km_departure'];
+            $report->km_arrival = $input['km_arrival'];
             $report->save();
 
-            $works = $request->json()->all();
-            dd($works);
+            $works = $input['rows'];
 
-            // $rows = [];
-            // $i = 0;
 
-            foreach ($works as $work) {
-                $i = 0;
-                // $rows[] = [
-                //     'work_number' => $work,
-                //     'article_id' =>
-                // ];
-
-            }
-
-            dd($rows);
 
             $lastInsertedEntryNumber = OutonoObrasCCConnector::lastInsertedEntryNumber() + 1;
 
             $rows = [];
 
-            for ($i = 0; $i < Sizeof($input['work-number']); $i++) {
-                $rows[] = [
-                    'entry_number' => $lastInsertedEntryNumber,
-                    'article_id' => $input['article'][$i],
-                    'work_number' => $input['work-number'][$i],
-                    'unit_price' => $input['unit-price'][$i],
-                    'quantity' => $input['quantity'][$i],
-                    'entry_date' => (new DateTime($input['datetime'][$i]))->format('Y-m-d H:i:s'),
-                    'report_id' => $report->id,
-                    'user_id' => $user->id,
-                    'driven_km' => $input['driven_km'][$input['work-number'][$i]],
-                ];
+            foreach ($works as $workNumber => $workData) {
 
-                $lastInsertedEntryNumber++;
+                foreach ($workData as $reportRow) {
+                    $rows[] = [
+                        'entry_number' => $lastInsertedEntryNumber,
+                        'article_id' => $reportRow['article'],
+                        'work_number' => $workNumber,
+                        'quantity' => $reportRow['quantity'],
+                        'entry_date' => (new DateTime($reportRow['datetime']))->format('Y-m-d H:i:s'),
+                        'report_id' => $report->id,
+                        'user_id' => $user->id,
+                        'driven_km' => $reportRow['driven-km'],
+                        'worker' => $reportRow['worker'],
+                    ];
+
+                    $lastInsertedEntryNumber++;
+                }
             }
 
             $processCreated = new ProcessStatus();
@@ -135,7 +126,7 @@ class DailyReportController extends Controller
 
             ReportLine::insert($rows);
 
-            return redirect(route('daily_reports.list'))->with(['success' => __('general.daily_reports.report_success')]);
+            return route('daily_reports.list')->with(['success' => __('general.daily_reports.report_success')]);
 
         } else {
             $articles = Article::getDailyReportRelevantArticles()->pluck('cod', 'descricao');
@@ -156,6 +147,7 @@ class DailyReportController extends Controller
      */
     public function view(Request $request, $reportId) {
         $report = Report::find($reportId);
+        // dd($report->lines()->get()->groupBy('work_number'));
         $reportRows = $report->processStatus()->orderBy('created_at', 'desc')->orderBy('id', 'desc')->get();
 
         return view('daily_reports.view', [ 'report' => $report, 'reportRows' => $reportRows ]);
