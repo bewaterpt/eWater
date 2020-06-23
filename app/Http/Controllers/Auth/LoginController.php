@@ -106,12 +106,10 @@ class LoginController extends Controller
 
     protected function authenticated(Request $request, $user) {
 
-        $is_first_admin = DB::table('role_user')->where('role_id', 1)->count();
+        $adminCount = DB::table('role_user')->where('role_id', 1)->count();
 
         if ($user->roles()->count() === 0) {
-            if ($is_first_admin <= 1) {
-                $user->roles()->syncWithoutDetaching([1]);
-            } else if($is_first_admin <= 2){
+            if($adminCount < 3){
                 $user->roles()->syncWithoutDetaching([$user->id]);
             }
         }
