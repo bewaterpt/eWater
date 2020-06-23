@@ -109,8 +109,10 @@ class LoginController extends Controller
         $adminCount = DB::table('role_user')->where('role_id', 1)->count();
 
         if ($user->roles()->count() === 0) {
-            if($adminCount < 3){
-                $user->roles()->syncWithoutDetaching([$user->id]);
+            if ($adminCount <= 2) {
+                $user->roles()->syncWithoutDetaching([1]);
+            } else {
+                $user->roles()->syncWithoutDetaching([2]);
             }
         }
     }
