@@ -21,7 +21,7 @@ class Status extends Model
         $statusRolesSize = Sizeof($statusRoles);
 
         if($statusRolesSize <= 0) {
-            return true;
+            return false;
         }
 
         $userRoles = $user->roles()->get()->pluck('id')->toArray();

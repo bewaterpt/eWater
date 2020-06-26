@@ -46,4 +46,21 @@ table {
             }
         }
     }
+
+    tr {
+
+        td {
+            vertical-align: middle !important;
+
+            &.actions {
+                position: relative;
+
+                a {
+                    top: 0;
+                    bottom: 0;
+                    position: relative;
+                }
+            }
+        }
+    }
 }

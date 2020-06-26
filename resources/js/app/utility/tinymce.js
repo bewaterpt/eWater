@@ -1,7 +1,7 @@
 
 $(document).ready(() => {
 
-    if ($('#text-editor').length > 0) {
+    if ($('textarea.text-editor').length > 0) {
         let editor_config = {
             path_absolute : "/",
             selector: "textarea.text-editor",

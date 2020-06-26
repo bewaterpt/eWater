@@ -2,6 +2,7 @@
 namespace App\Helpers;
 
 use App\Models\DailyReport\ReportLine;
+use App\Models\DailyReport\Report;
 class Helper {
 
     protected function isAssoc(array $arr)
@@ -145,13 +146,5 @@ class Helper {
         }
 
         return strtr($str, $replacePairs);
-    }
-
-    public function getWorkReportHours($workNumber) {
-        return ReportLine::where('work_number', $workNumber)->get()->sum('quantity');
-    }
-
-    public function getWorkReportKm($workNumber) {
-        return ReportLine::where('work_number', $workNumber)->get()->sum('driven_km');
     }
 }

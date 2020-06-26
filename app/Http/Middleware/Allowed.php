@@ -33,6 +33,8 @@ class Allowed
         $currentRoute = Route::getCurrentRoute()->getName();
         $permissionModel = new Permission();
 
+        // dd($permissionModel->can($currentRoute));
+
         if (!$permissionModel->can($currentRoute)) {
             return redirect()->back()->withErrors(__('auth.permission_denied', ['route' => $currentRoute]), 'custom');
         }

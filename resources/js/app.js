@@ -5,7 +5,6 @@
  */
 
 require('./bootstrap');
-
 // Setup ajax headers
 $.ajaxSetup({
     headers: {
@@ -24,3 +23,4 @@ stopSpontaneousSrcolling();
 
 // TinyMCE Langs
 require('./config/tinymce/lang/pt_PT');
+

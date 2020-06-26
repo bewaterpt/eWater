@@ -183,8 +183,8 @@ class GenerateData extends Command
             $this->db->insert('insert into statuses (name, slug) values(?, ?)', ['Criado', 'created']);
             $this->db->insert('insert into statuses (name, slug) values(?, ?)', ['Em Edição', 'editing']);
             $this->db->insert('insert into statuses (name, slug) values(?, ?)', ['Estado Extra', 'extra']);
-            $this->db->insert('insert into statuses (name, slug) values(?, ?)', ['Aprovação chefe de departamento', 'department_chief_approval']);
-            $this->db->insert('insert into statuses (name, slug) values(?, ?)', ['Aprovação diretor de departamento', 'department_director_approval']);
+            $this->db->insert('insert into statuses (name, slug) values(?, ?)', ['Validação', 'validation']);
+            $this->db->insert('insert into statuses (name, slug) values(?, ?)', ['Aprovação', 'approval']);
             $this->db->insert('insert into statuses (name, slug) values(?, ?)', ['Sincronização BD', 'database_sync']);
             $this->db->insert('insert into statuses (name, slug) values(?, ?)', ['TERMINADO', 'finish']);
             $this->db->insert('insert into statuses (name, slug) values(?, ?)', ['CANCELADO', 'cancel']);

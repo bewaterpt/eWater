@@ -24,14 +24,14 @@
     }
 }
 
-table {
+div {
 
     &[id^="work-"] {
         cursor: pointer;
 
         &.collapsed {
 
-            th {
+            div {
 
                 &.chevron {
 
@@ -43,13 +43,55 @@ table {
             }
         }
 
-        th {
+        div {
 
             &.chevron {
 
                 i {
                     transition: transform .4s;
                 }
+            }
+        }
+    }
+
+    &.card {
+
+        table {
+            border-collapse: collapse;
+            border: none;
+
+            thead {
+                border: none;
+
+                tr {
+                    border-top: none;
+
+                    th {
+                        border-width: 1px;
+                        border-top: none;
+                    }
+                }
+            }
+        }
+    }
+}
+
+#modalComment {
+
+    .modal-header {
+
+        .ri-xl {
+            vertical-align: auto;
+            line-height: 1.2em;
+        }
+    }
+
+    #comment {
+
+        .body {
+
+            p {
+                margin: 0 !important;
             }
         }
     }

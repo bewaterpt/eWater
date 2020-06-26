@@ -14,6 +14,8 @@ class User extends Authenticatable implements LdapAuthenticatable
 {
     use Notifiable, AuthenticatesWithLdap, HasLdapUser, SoftDeletes;
 
+    protected $primaryKey = 'id';
+
     /**
      * The attributes that are mass assignable.
      *

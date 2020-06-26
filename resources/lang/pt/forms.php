@@ -13,6 +13,8 @@ return [
         'date' => 'Data',
         'worker' => 'Funcionário',
         'hours' => 'Nº de Horas',
+        'comments' => "Notas/Comentários",
+        'slug' => 'Nome máquina',
     ],
     'placeholders' => [
         'name'=> 'Nome Apelido',

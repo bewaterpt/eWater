@@ -12,6 +12,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use DateTime;
 use Auth;
+use Route;
 
 class DailyReportController extends Controller
 {
@@ -36,27 +37,16 @@ class DailyReportController extends Controller
     public function index(Request $request) {
         $user = Auth::user();
 
-        $reports =  $user->reports()->get();
+        $reports = Report::all();
+        $reportList = collect([]);
 
-        if ($this->statusModel->userCanProgress(4)) {
-            $newReports = Report::all();
-            foreach($newReports as $newReport) {
-                if ($newReport->latestUpdate()->status()->first()->id === 4) {
-                    $reports->push($newReport);
-                }
+        foreach($reports as $report) {
+            if ($report->creator()->first()->id === $user->id || $this->statusModel->userCanProgress($report->getCurrentStatus()->first()->id) && !$report->closed()) {
+                $reportList->push($report);
             }
         }
 
-        if ($this->statusModel->usercanProgress(5)) {
-            $newReports = Report::all();
-            foreach($newReports as $newReport) {
-                if ($newReport->latestUpdate()->status()->first()->id === 5) {
-                    $reports->push($newReport);
-                }
-            }
-        }
-
-        return view('daily_reports.index', ['reports' => $reports]);
+        return view('daily_reports.index', ['reports' => $reportList]);
     }
 
     /**
@@ -75,10 +65,6 @@ class DailyReportController extends Controller
 
         if($request->isMethod('POST')) {
             $user = Auth::user();
-
-            if(!$user) {
-                $user = Auth::loginUsingId($request->query('user_id'));
-            }
             $input = $request->json()->all();
 
             $report = new Report();
@@ -126,7 +112,7 @@ class DailyReportController extends Controller
 
             ReportLine::insert($rows);
 
-            return route('daily_reports.list')->with(['success' => __('general.daily_reports.report_success')]);
+            return route('daily_reports.list');
 
         } else {
             $articles = Article::getDailyReportRelevantArticles()->pluck('cod', 'descricao');
@@ -147,10 +133,20 @@ class DailyReportController extends Controller
      */
     public function view(Request $request, $reportId) {
         $report = Report::find($reportId);
-        // dd($report->lines()->get()->groupBy('work_number'));
-        $reportRows = $report->processStatus()->orderBy('created_at', 'desc')->orderBy('id', 'desc')->get();
+        $user = Auth::user();
 
-        return view('daily_reports.view', [ 'report' => $report, 'reportRows' => $reportRows ]);
+        if (!$report) {
+            return redirect()->back()->withErrors(__('errors.report_not_found'), 'custom');
+        }
+
+        if ($report->creator()->first()->id !== $user->id && !$this->statusModel->userCanProgress($report->getCurrentStatus()->first()->id)) {
+            return redirect(route('daily_reports.list'))->withErrors(__('auth.permission_denied', ['route' => $request->path()]), 'custom');
+        }
+
+        // dd($report->lines()->get()->groupBy('work_number'));
+        $processStatuses = $report->processStatus()->orderBy('created_at', 'desc')->orderBy('id', 'desc')->get();
+
+        return view('daily_reports.view', [ 'report' => $report, 'processStatuses' => $processStatuses ]);
     }
 
     /**
@@ -250,5 +246,25 @@ class DailyReportController extends Controller
             // TODO: Add translation string
             return redirect()->back()->with(['success' => 'Report successfuly canceled']);
         }
+    }
+
+    public function getProcessStatusComment(Request $request) {
+        $data = [
+            'status' => 500,
+            'msg' => 'Unexpected error',
+        ];
+
+        $processStatus = ProcessStatus::find($request->json('id'));
+
+        if ($processStatus) {
+            $data['status'] = 200;
+            $data['msg'] = 'Success';
+            $data['comment'] = $processStatus->comment;
+        } else {
+            $data['status'] = 404;
+            $data['msg'] = 'Not Found';
+        }
+
+        return json_encode($data);
     }
 }

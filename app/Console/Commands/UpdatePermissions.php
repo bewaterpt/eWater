@@ -45,36 +45,65 @@ class UpdatePermissions extends Command
         $db = DB::connection('mysql');
         $pdo = $db->getPdo();
 
-        $admin_role = Role::where('slug', 'admin')->first();
-        $permission_model = new Permission();
+        $adminRole = Role::where('slug', 'admin')->first();
+        $permissionModel = new Permission();
 
-        $this->comment('Create added permissions');
+        $this->comment('Adding created permissions');
 
-        $permission_ids = [];
+        $permissionIds = [];
         $routes = collect(Route::getRoutes())->map(function ($route) {
             return in_array('allowed', $route->gatherMiddleware()) ? $route->getName() : null;
         })->filter(function ($value) {
             return !is_null($value);
         });
 
-        $routesToUpdate = [];
+        $routesToAdd = [];
 
         foreach ($routes as $route) {
-            if (!$permission_model->existsByRoute($route)) {
-                $routesToUpdate[] = $route;
+            if (!$permissionModel->existsByRoute($route)) {
+                $routesToAdd[] = $route;
             }
         }
 
-        $this->output->progressStart(sizeof($routesToUpdate));
-        foreach ($routesToUpdate as $route) {
-            $db->insert('insert into permissions (route) values(?)', [$route]);
-            array_push($permission_ids, $pdo->lastInsertId());
-            $this->output->progressAdvance();
+        if (Sizeof($routesToAdd)) {
+            $this->output->progressStart(sizeof($routesToAdd));
+            foreach ($routesToAdd as $route) {
+                $db->insert('insert into permissions (route) values(?)', [$route]);
+                array_push($permissionIds, $pdo->lastInsertId());
+                $this->output->progressAdvance();
+            }
+
+            $adminRole->permissions()->attach($permissionIds);
+            $this->output->progressFinish();
+        } else {
+            $this->info('Nothing to add.');
+            $this->info('');
         }
 
+        $this->comment('Removing deleted permissions');
+        $routesToRemove = [];
+        $permissionIds = [];
 
-        $admin_role->permissions()->attach($permission_ids);
-        $this->output->progressFinish();
+        foreach (Permission::all()->pluck('route') as $routeName) {
+            if (!$routes->filter(function($route) use ($routeName) { return $route === $routeName; })->first()) {
+                $routesToRemove[] = $routeName;
+                $permissionIds[] = Permission::where('route', $routeName)->first()->id;
+            }
+        }
+
+        if(Sizeof($routesToRemove)) {
+            $adminRole->permissions()->detach($permissionIds);
+            $this->output->progressStart(sizeof($routesToRemove));
+            foreach ($routesToRemove as $route) {
+                $db->delete('delete from permissions where route = ?', [$route]);
+                $this->output->progressAdvance();
+            }
+            $this->output->progressFinish();
+        } else {
+            $this->info('Nothing to remove.');
+            $this->info('');
+        }
+
         $this->info('Done');
         $this->info('');
     }

@@ -32735,10 +32735,34 @@ __webpack_require__(/*! ./config/tinymce/lang/pt_PT */ "./resources/js/config/ti
 
 /***/ }),
 
-/***/ "./resources/js/app/dailyReports.js":
-/*!******************************************!*\
-  !*** ./resources/js/app/dailyReports.js ***!
-  \******************************************/
+/***/ "./resources/js/app/components/multiselect_listbox.js":
+/*!************************************************************!*\
+  !*** ./resources/js/app/components/multiselect_listbox.js ***!
+  \************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+$(document).ready(function () {
+  if ($("#multiselect-listbox").length > 0) {
+    $("#multiselect-listbox #btnContainer #addItems").on('click', function (event) {
+      event.preventDefault();
+      $("#multiselect-listbox #selectLeft").find(":selected").appendTo($("#multiselect-listbox #selectRight")[0]).prop('selected', false);
+      $("#multiselect-listbox #selectLeft").find(":selected").remove();
+    });
+    $("#multiselect-listbox #btnContainer #removeItems").on('click', function (event) {
+      event.preventDefault();
+      $("#multiselect-listbox #selectRight").find(":selected").appendTo($("#multiselect-listbox #selectLeft")[0]).prop('selected', false);
+      $("#multiselect-listbox #selectRight").find(":selected").remove();
+    });
+  }
+});
+
+/***/ }),
+
+/***/ "./resources/js/app/daily_reports/dailyReports.js":
+/*!********************************************************!*\
+  !*** ./resources/js/app/daily_reports/dailyReports.js ***!
+  \********************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -32799,9 +32823,6 @@ $(document).ready(function () {
       tr.find('input').val('').prop('readonly', false);
       tr.find(':not(td:first-child) input[type="number"]').val(0);
       tr.removeClass('first');
-      tr.find('#inputArticle').on('change', function (e) {
-        getArticleInfo(e);
-      });
       tr.find('#removeRow').on('click', function (e) {
         removeRow(e);
       });
@@ -32812,38 +32833,18 @@ $(document).ready(function () {
       $('a[href="#"]').click(function (event) {
         event.preventDefault();
       });
-      replaceVal(event);
     };
 
-    var replaceVal = function replaceVal(event) {
-      work = $(event.target).closest('.card.work');
-      console.log(work);
-      work.find('input.driven-km').attr('name', work.find('input.driven-km').attr('name').replace(/\[.*\b\]/, '[' + (work.find('input.work-number').val() != 0 ? work.find('input.work-number').val() : 'replace') + ']'));
-      work.find('input.real-work-number').val(work.find('input.work-number').val());
-    };
-
-    $('#inputArticle').on('change', function (e) {
-      getArticleInfo(e);
-    });
     $('#addRow').on('click', function (event) {
       addRow(event);
     });
-    $('input.work-number').val('').on('change', function (event) {
-      replaceNames(event);
-    });
     $('a.remove-work').on('click', function (event) {
       removeWork(event);
-    });
-    $('input.work-number').on('keyup change', function (event) {
-      replaceVal(event);
     });
     $('a.add-work').on('click', function (event) {
       var work = $(event.target).parents('.card').find('.card.work:last-of-type').clone();
       console.log(work);
       work.removeAttr('id');
-      work.find('input.work-number, input.driven-km').val('').on('change', function (event) {
-        replaceNames(event);
-      });
       var trs = work.find('table#report-lines tbody tr');
       trs.each(function (index, tr) {
         console.log(index);
@@ -32860,16 +32861,10 @@ $(document).ready(function () {
       work.find('a.remove-work').on('click', function (event) {
         removeWork(event);
       });
-      work.find('input.work-number').on('keyup change', function (event) {
-        replaceVal(event);
-      });
       var tr = work.find('table#report-lines tbody tr:last-child');
       tr.find('input').val('').prop('readonly', false);
       tr.find(':not(td:first-child) input[type="number"]').val(0);
       tr.removeClass('first');
-      tr.find('#inputArticle').on('change', function (event) {
-        getArticleInfo(event);
-      });
       tr.find('#removeRow').on('click', function (event) {
         removeLine(event);
       });
@@ -32883,6 +32878,8 @@ $(document).ready(function () {
     $('#inputDatetime').val(ISODateString(today));
     $('#report').on('submit', function (event) {
       event.preventDefault();
+      $('#report button[type="submit"]').find('#spinner, #spinner-text').removeClass('d-none');
+      $('#report button[type="submit"]').find('.btn-text').addClass('d-none');
 
       try {
         var data = {
@@ -32920,10 +32917,23 @@ $(document).ready(function () {
           data: JSON.stringify(data),
           contentType: 'json',
           success: function success(response) {
+            $('#report button[type="submit"]').find('#spinner, #spinner-text').removeClass('d-none');
+            $('#report button[type="submit"]').find('.btn-text').addClass('d-none');
             window.location.replace(response);
+          },
+          error: function error(jqXHR, status, _error) {
+            $('#report button[type="submit"]').find('#spinner, #spinner-text').removeClass('d-none');
+            $('#report button[type="submit"]').find('.btn-text').addClass('d-none');
+            alert(_error.message);
+          },
+          complete: function complete() {
+            $('#report button[type="submit"]').find('#spinner, #spinner-text').removeClass('d-none');
+            $('#report button[type="submit"]').find('.btn-text').addClass('d-none');
           }
         });
       } catch (error) {
+        $('#report button[type="submit"]').find('#spinner, #spinner-text').removeClass('d-none');
+        $('#report button[type="submit"]').find('.btn-text').addClass('d-none');
         alert(error.message);
       }
     });
@@ -32937,14 +32947,47 @@ $(document).ready(function () {
       }
     });
   }
+
+  if ($('#daily-reports-view').length > 0) {
+    $('#modalComment').on('show.bs.modal', function (event) {
+      var dataId = '';
+
+      if (typeof $(event.relatedTarget).data('id') !== 'undefined') {
+        dataId = $(event.relatedTarget).data('id');
+      }
+
+      $(event.target).find('#comment .body').html("");
+      $(event.target).find('#modal-spinner').removeClass('d-none');
+      $currAjax = $.ajax({
+        method: 'POST',
+        url: '/daily-reports/process-status/get-comment',
+        data: JSON.stringify({
+          id: dataId
+        }),
+        contentType: 'json',
+        success: function success(response) {
+          response = JSON.parse(response);
+          $(event.target).find('#comment .body').html(response.comment);
+          $(event.target).find('#modal-spinner').addClass('d-none');
+        },
+        error: function error(jqXHR, status, _error2) {
+          $(event.target).find('#modal-spinner').addClass('d-none');
+          alert(_error2);
+        },
+        complete: function complete() {
+          $(event.target).find('#modal-spinner').addClass('d-none');
+        }
+      });
+    });
+  }
 });
 
 /***/ }),
 
-/***/ "./resources/js/app/datatables/reports.js":
-/*!************************************************!*\
-  !*** ./resources/js/app/datatables/reports.js ***!
-  \************************************************/
+/***/ "./resources/js/app/daily_reports/datatables_reports.js":
+/*!**************************************************************!*\
+  !*** ./resources/js/app/daily_reports/datatables_reports.js ***!
+  \**************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -32975,10 +33018,90 @@ $(document).ready(function () {
 
 /***/ }),
 
-/***/ "./resources/js/app/settings/user/datatables_users.js":
-/*!************************************************************!*\
-  !*** ./resources/js/app/settings/user/datatables_users.js ***!
-  \************************************************************/
+/***/ "./resources/js/app/settings/permissions/update.js":
+/*!*********************************************************!*\
+  !*** ./resources/js/app/settings/permissions/update.js ***!
+  \*********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+$(document).ready(function () {
+  if ($('#settings-permissions').length > 0) {
+    var getPermissionAttributes = function getPermissionAttributes(element) {
+      element = element.split('][');
+      element[0] = element[0].replace('[', '');
+      element[1] = element[1].replace(']', '');
+      return {
+        id: element[0],
+        route: element[1]
+      };
+    };
+
+    var updateAjaxPermissions = function updateAjaxPermissions(dataToSubmit, event) {
+      $.ajax({
+        url: window.origin + '/permissions/update',
+        method: "POST",
+        data: JSON.stringify({
+          data: dataToSubmit
+        }),
+        dataType: 'json'
+      }).done(function (response) {
+        $(event.target).find('button[type="submit"]').find('#spinner, #spinner-text').addClass('d-none');
+        $(event.target).find('button[type="submit"]').find('.btn-text').removeClass('d-none');
+      });
+    };
+
+    $('#settings-permissions').on('submit', function (event) {
+      event.preventDefault();
+      $(event.target).find('button[type="submit"]').find('#spinner, #spinner-text').removeClass('d-none');
+      $(event.target).find('button[type="submit"]').find('.btn-text').addClass('d-none');
+      var dataToSubmit = [];
+      $("#settings-permissions .permission-value .square.green").each(function (index) {
+        if ($(this).prop('checked')) {
+          var element_attributes = getPermissionAttributes($(this).attr('name'));
+          dataToSubmit.push({
+            id: element_attributes.id,
+            route: element_attributes.route
+          });
+        }
+      }); // Ajax to server
+
+      updateAjaxPermissions(dataToSubmit, event);
+    });
+  }
+});
+
+/***/ }),
+
+/***/ "./resources/js/app/settings/statuses/update.js":
+/*!******************************************************!*\
+  !*** ./resources/js/app/settings/statuses/update.js ***!
+  \******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+$(document).ready(function () {
+  if ($("form#updateStatus").length > 0) {
+    $("form#updateStatus").on('submit', function (event) {
+      event.preventDefault();
+      $('form#updateStatus').find('#selectRight option').each(function (index, role) {
+        if (index === $('form#updateStatus').find('#selectRight option').length - 1) {
+          $('form#updateStatus input#roles').val($('form#updateStatus input#roles').val() + role.value);
+        } else {
+          $('form#updateStatus input#roles').val($('form#updateStatus input#roles').val() + role.value + ', ');
+        }
+      });
+      $('form#updateStatus')[0].submit();
+    });
+  }
+});
+
+/***/ }),
+
+/***/ "./resources/js/app/settings/users/datatables_users.js":
+/*!*************************************************************!*\
+  !*** ./resources/js/app/settings/users/datatables_users.js ***!
+  \*************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -32993,6 +33116,31 @@ $(document).ready(function () {
 
 /***/ }),
 
+/***/ "./resources/js/app/settings/users/update.js":
+/*!***************************************************!*\
+  !*** ./resources/js/app/settings/users/update.js ***!
+  \***************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+$(document).ready(function () {
+  if ($("form#updateUser").length > 0) {
+    $("form#updateUser").on('submit', function (event) {
+      event.preventDefault();
+      $('form#updateUser').find('#selectRight option').each(function (index, role) {
+        if (index === $('form#updateUser').find('#selectRight option').length - 1) {
+          $('form#updateUser input#roles').val($('form#updateUser input#roles').val() + role.value);
+        } else {
+          $('form#updateUser input#roles').val($('form#updateUser input#roles').val() + role.value + ', ');
+        }
+      });
+      $('form#updateUser')[0].submit();
+    });
+  }
+});
+
+/***/ }),
+
 /***/ "./resources/js/app/utility/tinymce.js":
 /*!*********************************************!*\
   !*** ./resources/js/app/utility/tinymce.js ***!
@@ -33001,7 +33149,7 @@ $(document).ready(function () {
 /***/ (function(module, exports) {
 
 $(document).ready(function () {
-  if ($('#text-editor').length > 0) {
+  if ($('textarea.text-editor').length > 0) {
     var editor_config = {
       path_absolute: "/",
       selector: "textarea.text-editor",
@@ -33542,17 +33690,21 @@ tinymce.addI18n('pt_PT', {
 /***/ }),
 
 /***/ 0:
-/*!************************************************************************************************************************************************************************************************************************************!*\
-  !*** multi ./resources/js/app.js ./resources/js/app/utility/tinymce.js ./resources/js/app/settings/user/datatables_users.js ./resources/js/app/dailyReports.js ./resources/js/app/datatables/reports.js ./resources/sass/app.scss ***!
-  \************************************************************************************************************************************************************************************************************************************/
+/*!*******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** multi ./resources/js/app.js ./resources/js/app/utility/tinymce.js ./resources/js/app/settings/statuses/update.js ./resources/js/app/settings/users/update.js ./resources/js/app/settings/users/datatables_users.js ./resources/js/app/settings/permissions/update.js ./resources/js/app/components/multiselect_listbox.js ./resources/js/app/daily_reports/dailyReports.js ./resources/js/app/daily_reports/datatables_reports.js ./resources/sass/app.scss ***!
+  \*******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(/*! C:\Users\bruno.martins\source\repos\outono\resources\js\app.js */"./resources/js/app.js");
 __webpack_require__(/*! C:\Users\bruno.martins\source\repos\outono\resources\js\app\utility\tinymce.js */"./resources/js/app/utility/tinymce.js");
-__webpack_require__(/*! C:\Users\bruno.martins\source\repos\outono\resources\js\app\settings\user\datatables_users.js */"./resources/js/app/settings/user/datatables_users.js");
-__webpack_require__(/*! C:\Users\bruno.martins\source\repos\outono\resources\js\app\dailyReports.js */"./resources/js/app/dailyReports.js");
-__webpack_require__(/*! C:\Users\bruno.martins\source\repos\outono\resources\js\app\datatables\reports.js */"./resources/js/app/datatables/reports.js");
+__webpack_require__(/*! C:\Users\bruno.martins\source\repos\outono\resources\js\app\settings\statuses\update.js */"./resources/js/app/settings/statuses/update.js");
+__webpack_require__(/*! C:\Users\bruno.martins\source\repos\outono\resources\js\app\settings\users\update.js */"./resources/js/app/settings/users/update.js");
+__webpack_require__(/*! C:\Users\bruno.martins\source\repos\outono\resources\js\app\settings\users\datatables_users.js */"./resources/js/app/settings/users/datatables_users.js");
+__webpack_require__(/*! C:\Users\bruno.martins\source\repos\outono\resources\js\app\settings\permissions\update.js */"./resources/js/app/settings/permissions/update.js");
+__webpack_require__(/*! C:\Users\bruno.martins\source\repos\outono\resources\js\app\components\multiselect_listbox.js */"./resources/js/app/components/multiselect_listbox.js");
+__webpack_require__(/*! C:\Users\bruno.martins\source\repos\outono\resources\js\app\daily_reports\dailyReports.js */"./resources/js/app/daily_reports/dailyReports.js");
+__webpack_require__(/*! C:\Users\bruno.martins\source\repos\outono\resources\js\app\daily_reports\datatables_reports.js */"./resources/js/app/daily_reports/datatables_reports.js");
 module.exports = __webpack_require__(/*! C:\Users\bruno.martins\source\repos\outono\resources\sass\app.scss */"./resources/sass/app.scss");
 
 

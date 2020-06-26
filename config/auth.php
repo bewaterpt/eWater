@@ -87,7 +87,7 @@ return [
                 'sync_passwords' => true,
                 'password_column' => 'password',
                 'sync_attributes' => [
-                    'name' => 'givenname',
+                    'name' => 'cn',
                     'email' => 'mail',
                     'username' => 'samaccountname',
                     // 'uac' => 'useraccountcontrol',

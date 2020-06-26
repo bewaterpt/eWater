@@ -119,21 +119,22 @@ class ProcessStatus extends Model
     }
 
     public function closed() {
-        $closed = false;
-
-        // TODO: Remove 'cancelled' slug in lieu of simpler, 'cancel' slug
-        if (in_array($this->status()->first()->slug, ['cancel', 'cancelled'])) {
-            $closed = true;
+        if ($this->status()->first()->slug === 'cancel') {
+            return true;
         }
 
-        if($this->status()->first()->slug === 'finish' && !$closed) {
-            $closed = true;
+        if($this->status()->first()->slug === 'finish') {
+            return true;
         }
 
-        return $closed;
+        return false;
     }
 
     public function isExtra() {
         return $this->status()->first()->id === 3 ? true : false;
+    }
+
+    public function hasComment() {
+        return $this->comment !== null ? true : false;
     }
 }

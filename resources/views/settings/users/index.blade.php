@@ -7,7 +7,7 @@
             <div class="card">
                 <div class="card-header">@Lang('settings.users.list')</div>
                 <div class="card-body">
-                    <table id="datatable-users" class="object-table" style="width: 100%">
+                    <table id="datatable-users" class="object-table table table-sm table-striped" style="width: 100%">
                         <thead>
                             <tr>
                                 <th>
@@ -42,8 +42,11 @@
                                         {{$user->username}}
                                     </td>
                                     <td>
+                                        @if($user->username==="admbm")
+                                        {{-- {{dd($user->roles())}} --}}
+                                        @endif
                                         @foreach($user->roles()->get() as $role)
-                                            {{$role->name}}
+                                            {{ $role->name }}
                                         @endforeach
                                     </td>
                                     <td>

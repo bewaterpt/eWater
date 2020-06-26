@@ -44,6 +44,8 @@ Route::group(['middleware' => ['web']], function () {
 
         Route::get('/', 'HomeController@index')->name('home');
         Route::match(['get', 'patch'] ,'profile/edit', 'Settings\UserController@edit_self')->name('settings.users.edit_self');
+        Route::post('daily-reports/process-status/get-comment', 'DailyReportController@getProcessStatusComment')->name('daily_reports.process_status.get_comment');
+        Route::post('daily-reports/article/get-info', 'DailyReportController@getArticlePrice')->name('daily_reports.article.get_price');
 
         /**
          * Routes within this group only allow usage for authenticated users with the proper permissions to use them
@@ -55,7 +57,8 @@ Route::group(['middleware' => ['web']], function () {
             // Users
             Route::get(__('routes.users.default'), 'Settings\UserController@index')->name('settings.users.list');
             Route::get(__('routes.users.view'), 'Settings\UserController@view')->name('settings.users.view');
-            Route::match(['get', 'post'], __('routes.users.edit'), 'Settings\UserController@edit')->name('settings.users.edit');
+            Route::get(__('routes.users.edit'), 'Settings\UserController@edit')->name('settings.users.edit');
+            Route::post(__('routes.users.update'), 'Settings\UserController@update')->name('settings.users.update');
             Route::get('users/toggle/{id}', 'Settings\UserController@toggle_state')->name('settings.users.toggle_state');
             Route::get('users/delete/{id}', 'Settings\UserController@delete')->name('settings.users.delete');
             Route::get('users/add', 'Settings\UserController@create')->name('settings.users.create');
@@ -89,9 +92,9 @@ Route::group(['middleware' => ['web']], function () {
 
             // Permissions
             Route::get('permissions', 'Settings\PermissionController@index')->name('settings.permissions.list');
-            Route::get('permissions/{id}', 'Settings\PermissionController@view')->name('settings.permissions.view');
-            Route::match(['get', 'post'], 'permissions/edit/', 'Settings\PermissionController@edit')->name('settings.permissions.edit');
-            Route::get('permissions/delete/{id}', 'Settings\PermissionController@delete')->name('settings.permissions.delete');
+            // Route::get('permissions/{id}', 'Settings\PermissionController@view')->name('settings.permissions.view');
+            Route::post('permissions/update', 'Settings\PermissionController@update')->name('settings.permissions.edit');
+            // Route::get('permissions/delete/{id}', 'Settings\PermissionController@delete')->name('settings.permissions.delete');
 
             // Failure Types
             Route::get('failure-types', 'Settings\FailureTypeController@index')->name('settings.failure_types.list');
@@ -100,12 +103,18 @@ Route::group(['middleware' => ['web']], function () {
             Route::get('failure-types/delete/{id}', 'Settings\FailureTypeController@delete')->name('settings.failure_types.delete');
             Route::get('failure-types/toggle/{id}', 'Settings\FailureTypeController@toggle_state')->name('settings.failure_types.toggle_state');
 
-
             // Materials
             Route::get('materials', 'Settings\MaterialController@index')->name('settings.materials.list');
             Route::match(['get', 'post'], 'materials/edit/{id}', 'Settings\MaterialController@edit')->name('settings.materials.edit');
             Route::match(['get', 'post'], 'materials/create/{id?}', 'Settings\MaterialController@create')->name('settings.materials.create');
             Route::get('material/delete/{id}', 'Settings\MaterialController@delete')->name('settings.materials.delete');
+
+            // Process Statuses
+            Route::get('statuses', 'Settings\StatusController@index')->name('settings.statuses.list');
+            Route::post('statuses/update/{id}', 'Settings\StatusController@update')->name('settings.statuses.update');
+            Route::match(['get', 'post'], 'statuses/edit/{id}', 'Settings\StatusController@edit')->name('settings.statuses.edit');
+            Route::match(['get', 'post'], 'statuses/create', 'Settings\StatusController@create')->name('settings.statuses.create');
+            Route::get('statuses/delete/{id}', 'Settings\StatusController@delete')->name('settings.statuses.delete');
 
             // Daily Reports
             Route::get('daily-reports', 'DailyReportController@index')->name('daily_reports.list');
@@ -114,13 +123,14 @@ Route::group(['middleware' => ['web']], function () {
             Route::get('daily-reports/first-approval', 'DailyReportController@firstApproval')->name('daily_reports.first_approval');
             Route::get('daily-reports/second-approval', 'DailyReportController@secondApproval')->name('daily_reports.second_approval');
             Route::get('daily-reports/approved', 'DailyReportController@approved')->name('daily_reports.approved');
-            Route::post('daily-reports/article/get-info', 'DailyReportController@getArticlePrice')->name('daily_reports.article.get_price');
             Route::get('daily-reports/{id}', 'DailyReportController@view')->name('daily_reports.view');
             Route::get('daily-reports/edit/{id}', 'DailyReportController@edit')->name('daily_reports.edit');
-            Route::get('daily-reports/regress-status/{id}', 'DailyReportController@regressStatus')->name('daily_reports.prev');
-            Route::get('daily-reports/extra-status/{id}', 'DailyReportController@progressExtra')->name('daily_reports.extra');
-            Route::get('daily-reports/progress-status/{id}', 'DailyReportController@progressStatus')->name('daily_reports.next');
-            Route::get('daily-reports/cancel/{id}', 'DailyReportController@cancel')->name('daily_reports.cancel');
+            Route::post('daily-reports/regress-status/{id}', 'DailyReportController@regressStatus')->name('daily_reports.prev');
+            Route::post('daily-reports/extra-status/{id}', 'DailyReportController@progressExtra')->name('daily_reports.extra');
+            Route::post('daily-reports/progress-status/{id}', 'DailyReportController@progressStatus')->name('daily_reports.next');
+            Route::post('daily-reports/cancel/{id}', 'DailyReportController@cancel')->name('daily_reports.cancel');
+
+
         });
     });
 });

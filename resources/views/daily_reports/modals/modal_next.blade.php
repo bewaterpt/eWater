@@ -3,12 +3,13 @@
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="modalNextStatusLabel">@Lang('general.forward_process')</h5>
+                <h5 class="modal-title" id="modalNextStatusLabel">@Lang('general.daily_reports.forward_process')</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <form id="formNextStatus" method="POST" action="{{ route('daily_reports.next', ['id' => $report->latestUpdate()->id]) }}">
+                @csrf
                 <div class="modal-body">
                     <label for="text-editor">@Lang('forms.fields.comments')</label>
                     <textarea class="text-editor" name="comment"></textarea>

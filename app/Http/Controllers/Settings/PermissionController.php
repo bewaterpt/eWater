@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Permission;
 use App\Models\Role;
 use Route;
+use URL;
 
 class PermissionController extends Controller
 {
@@ -22,6 +23,7 @@ class PermissionController extends Controller
 
         $roleData = [];
         $rolesHeader = [__('global.permission')];
+
         $availableRoutes = [];
 
         $routeCollection = Permission::all()->pluck('route');
@@ -29,13 +31,27 @@ class PermissionController extends Controller
         foreach($roles as $role) {
             $routes = [];
             foreach ($routeCollection as $route) {
-                $routeElements = explode('.', $route);
 
-                $routes[$routeElements[0].'.'.$routeElements[1]][] = [
-                    'checked' => $this->permission_model->roleCanAccess($role, $route),
+                $routeElements = explode('.', $route);
+                $topRouteIndex = "";
+
+
+                for ($i=0;$i<(Sizeof($routeElements)-1);$i++) {
+                    $topRouteIndex .= $routeElements[$i];
+
+                    if ($i  !== (Sizeof($routeElements)-2)) {
+                        $topRouteIndex .= '.';
+                    }
+                }
+
+                $routes[$topRouteIndex][] = [
+                    'checked' => $this->permissionModel->roleCanAccess($role, $route),
                     'route' => $route
                 ];
             }
+
+            // dd($routes);
+
             $rolesHeader[] = $role->name;
 
             $roleData[] = [
@@ -44,30 +60,22 @@ class PermissionController extends Controller
             ];
         }
 
-        foreach ($routeCollection as $route) {
-            $availableRoutes[] = $route;
-        }
-
         $categorizedRoutes = [];
-        foreach($availableRoutes as $route) {
+        foreach($routeCollection as $route) {
+
             $routeElements = explode('.', $route);
-            $categorizedRoutes[$routeElements[0].'.'.$routeElements[1]][] = end($routeElements);
+            $topRouteIndex = "";
+
+            for ($i=0;$i<(Sizeof($routeElements)-1);$i++) {
+                $topRouteIndex .= $routeElements[$i];
+
+                if ($i  !== (Sizeof($routeElements)-2)) {
+                    $topRouteIndex .= '.';
+                }
+            }
+
+            $categorizedRoutes[$topRouteIndex][] = end($routeElements);
         }
-
-
-
-        // $used_category_routes = [];
-        // foreach($categorizedRoutes as $category_route_key => $category_route) {
-        //     foreach($category_route as $route_key => $route) {
-        //         if(!in_array( $route, $used_category_routes )) {
-        //             $used_category_routes[] = $route;
-        //         } else {
-        //             unset($categorizedRoutes[$category_route_key][$route_key]);
-        //         }
-        //     }
-        // }
-
-        // dd($this->helper->sortArray($categorizedRoutes));
 
         return view('settings.permissions.index', [
             'roleData' => $roleData,
@@ -75,4 +83,36 @@ class PermissionController extends Controller
             'categorizedRoutes' => $this->helper->sortArray($categorizedRoutes)
         ]);
     }
+
+    public function update(Request $request){
+                $response = [
+                    'status' => 500,
+                    'message' => __('global.unexpected_error')
+                ];
+
+                $elementsToUpdate = [];
+
+                if($request->json('data')){
+                    $data = $request->json('data');
+
+                    foreach($data as $element) {
+                        $elementsToUpdate[$element['id']][] = $element['route'];
+                    }
+                }
+
+
+                foreach( $elementsToUpdate as $roleId => $routes ){
+                    $role = Role::find($roleId);
+                    $permissionIds = Permission::whereIn('route', $routes)->pluck('id');
+                    try {
+                        $role->permissions()->sync($permissionIds);
+                        $response['status'] = 200;
+                        $response['message'] = trans('global.saved_successfully');
+                    } catch (\Exception $e) {
+                        $response['message'] = $e->getMessage();
+                    }
+                }
+
+                return $response;
+            }
 }

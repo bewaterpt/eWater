@@ -14,6 +14,8 @@ return [
     'action_enable' => 'Ativar',
     'agent' => 'Agente',
     'save' => 'Gravar',
+    'cancel' => 'Cancelar',
+    'close' => 'Fechar',
     'materials' => 'Materiais',
     'designation' => 'Designação',
     'failureType' => 'Tipo de Avaria',
@@ -32,6 +34,12 @@ return [
     'hours' => 'Horas',
     'hour' => 'Hora',
     'worker' => 'Funcionário',
+    'permissions' => 'Permissões',
+    'failure_types' => 'Tipos de avaria',
+    'agents' => 'Agents',
+    'statuses' => "Estados",
+    'status' => "Estado",
+    'slug' => "Nome máquina",
     'daily_reports' => [
         'daily_reports' => 'Relatórios Diários',
         'list' => 'Lista de Relatórios',
@@ -56,5 +64,8 @@ return [
         'km_arrival' => 'KM à chegada',
         'comment' => 'Notas/Comentários',
         'add_work' => 'Adicionar Obra',
+        'forward_process' => 'Avançar para o proximo passo',
+        'backward_process' => 'Retroceder para o passo anterior',
+        'process_status_comment' => 'Nota/Comentário da operação'
     ],
 ];

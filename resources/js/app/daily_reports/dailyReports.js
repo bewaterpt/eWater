@@ -22,7 +22,7 @@ $(document).ready(() => {
             $.ajax({
                 type: 'POST',
                 url: '/daily-reports/article/get-info',
-                data: { id: $(event.target).val()},
+                data: { id: $(event.target).val() },
                 dataType: 'json',
                 success: (data) => {
                     console.log('Data: ', data);
@@ -54,9 +54,6 @@ $(document).ready(() => {
             tr.find('input').val('').prop('readonly', false);
             tr.find(':not(td:first-child) input[type="number"]').val(0);
             tr.removeClass('first');
-            tr.find('#inputArticle').on('change', (e) => {
-                getArticleInfo(e)
-            });
             tr.find('#removeRow').on('click', (e) => {
                 removeRow(e);
             });
@@ -67,44 +64,20 @@ $(document).ready(() => {
             $('a[href="#"]').click(function(event) {
                 event.preventDefault();
             });
-            replaceVal(event);
         }
-
-        function replaceVal(event) {
-            work = $(event.target).closest('.card.work');
-            console.log(work);
-            work.find('input.driven-km').attr('name', work.find('input.driven-km').attr('name').replace(/\[.*\b\]/, '[' + (work.find('input.work-number').val() != 0 ? work.find('input.work-number').val() : 'replace') + ']'));
-            work.find('input.real-work-number').val(work.find('input.work-number').val());
-        }
-
-        $('#inputArticle').on('change', (e) => {
-            getArticleInfo(e);
-        });
 
         $('#addRow').on('click', (event) => {
             addRow(event);
-        });
-
-        $('input.work-number').val('').on('change', (event) => {
-            replaceNames(event);
         });
 
         $('a.remove-work').on('click', (event) => {
             removeWork(event);
         });
 
-        $('input.work-number').on('keyup change', (event) => {
-            replaceVal(event);
-        });
-
         $('a.add-work').on('click', (event) => {
             let work = $(event.target).parents('.card').find('.card.work:last-of-type').clone();
             console.log(work);
             work.removeAttr('id');
-
-            work.find('input.work-number, input.driven-km').val('').on('change', (event) => {
-                replaceNames(event);
-            });
 
             let trs = work.find('table#report-lines tbody tr');
             trs.each((index, tr) => {
@@ -123,17 +96,10 @@ $(document).ready(() => {
                 removeWork(event);
             });
 
-            work.find('input.work-number').on('keyup change', (event) => {
-                replaceVal(event);
-            });
-
             let tr = work.find('table#report-lines tbody tr:last-child');
             tr.find('input').val('').prop('readonly', false);
             tr.find(':not(td:first-child) input[type="number"]').val(0);
             tr.removeClass('first');
-            tr.find('#inputArticle').on('change', (event) => {
-                getArticleInfo(event)
-            });
             tr.find('#removeRow').on('click', (event) => {
                 removeLine(event);
             });
@@ -150,6 +116,9 @@ $(document).ready(() => {
 
         $('#report').on('submit', (event) => {
             event.preventDefault();
+
+            $('#report button[type="submit"]').find('#spinner, #spinner-text').removeClass('d-none');
+            $('#report button[type="submit"]').find('.btn-text').addClass('d-none');
 
             try {
                 let data = {
@@ -190,10 +159,23 @@ $(document).ready(() => {
                     data: JSON.stringify(data),
                     contentType: 'json',
                     success: (response) => {
+                        $('#report button[type="submit"]').find('#spinner, #spinner-text').removeClass('d-none');
+                        $('#report button[type="submit"]').find('.btn-text').addClass('d-none');
                         window.location.replace(response);
-                    }
+                    },
+                    error: (jqXHR, status, error) => {
+                        $('#report button[type="submit"]').find('#spinner, #spinner-text').removeClass('d-none');
+                        $('#report button[type="submit"]').find('.btn-text').addClass('d-none');
+                        alert(error.message);
+                    },
+                    complete: () => {
+                        $('#report button[type="submit"]').find('#spinner, #spinner-text').removeClass('d-none');
+                        $('#report button[type="submit"]').find('.btn-text').addClass('d-none');
+                    },
                 });
             } catch (error) {
+                $('#report button[type="submit"]').find('#spinner, #spinner-text').removeClass('d-none');
+                $('#report button[type="submit"]').find('.btn-text').addClass('d-none');
                 alert(error.message);
             }
         });
@@ -206,6 +188,40 @@ $(document).ready(() => {
             } else {
                 $('#total-km-holder').removeClass('text-danger');
             }
+        });
+    }
+
+    if($('#daily-reports-view').length > 0) {
+
+        $('#modalComment').on('show.bs.modal', (event) => {
+
+            var dataId = '';
+
+            if (typeof $(event.relatedTarget).data('id') !== 'undefined') {
+                dataId = $(event.relatedTarget).data('id');
+            }
+
+            $(event.target).find('#comment .body').html("");
+            $(event.target).find('#modal-spinner').removeClass('d-none');
+
+            $currAjax = $.ajax({
+                method: 'POST',
+                url: '/daily-reports/process-status/get-comment',
+                data: JSON.stringify({ id: dataId }),
+                contentType: 'json',
+                success: (response) => {
+                    response = JSON.parse(response);
+                    $(event.target).find('#comment .body').html(response.comment);
+                    $(event.target).find('#modal-spinner').addClass('d-none');
+                },
+                error: (jqXHR, status, error) => {
+                    $(event.target).find('#modal-spinner').addClass('d-none');
+                    alert(error);
+                },
+                complete: () => {
+                    $(event.target).find('#modal-spinner').addClass('d-none');
+                },
+            });
         });
     }
 });

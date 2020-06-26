@@ -23,6 +23,19 @@ class Report extends Model
         return $this->hasMany('App\Models\DailyReport\ReportLine');
     }
 
+    public function linesByWorkNumber($workNumber) {
+        $lines = $this->hasMany('App\Models\DailyReport\ReportLine')->get();
+        $processedLines = [];
+
+        foreach ($lines as $line) {
+            if ($line->work_number === $workNumber) {
+                $processedLines[] = $line;
+            }
+        }
+
+        return collect($processedLines);
+    }
+
     public function getCurrentStatus() {
         return $this->latestUpdate()->status();
     }

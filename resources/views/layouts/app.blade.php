@@ -14,6 +14,7 @@
         {{-- <link rel="icon" href="{{ asset('/favicon.png') }}" type="image/x-icon"/> --}}
         <link href="https://fonts.googleapis.com/css?family=Courier" rel="stylesheet">
         <script src="https://cdn.tiny.cloud/1/cx6voesmf6uv8rlv64tv92yhqix2qj2puwg1cwcdvrshvn6r/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <!-- Styles -->
         <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     </head>
@@ -42,16 +43,22 @@
 
                                         <div class="dropdown-menu dropdown-menu" aria-labelledby="navbarDropdown">
                                             @if($pmodel->can('settings.agents.list'))
-                                                <a class="dropdown-item {{Route::currentRouteName() == 'settings.agents.list' ? 'active disabled' : ''}}" href="{{ route('settings.agents.list')}}">@lang('general.agents')</a>
-                                            @endif
-                                            @if($pmodel->can('settings.roles.list'))
-                                                <a class="dropdown-item {{Route::currentRouteName() == 'settings.roles.list' ? 'active disabled' : ''}}" href="{{ route('settings.roles.list')}}">@lang('general.roles')</a>
+                                                <a title="Temporáriamente Indisponível" class="dropdown-item disabled {{Route::currentRouteName() == 'settings.agents.list' ? 'bg-primary text-white disabled' : ''}}" href="{{ route('settings.agents.list')}}">@lang('general.agents')</a>
                                             @endif
                                             @if($pmodel->can('settings.failure_types.list'))
-                                                <a class="dropdown-item {{Route::currentRouteName() == 'settings.failure_types.list' ? 'active disabled' : ''}}" href="{{ route('settings.failure_types.list')}}">@lang('general.failure_types')</a>
+                                                <a class="dropdown-item {{Route::currentRouteName() == 'settings.failure_types.list' ? 'bg-primary text-white disabled' : ''}}" href="{{ route('settings.failure_types.list')}}">@lang('general.failure_types')</a>
+                                            @endif
+                                            @if($pmodel->can('settings.permissions.list'))
+                                                <a class="dropdown-item {{Route::currentRouteName() == 'settings.permissions.list' ? 'bg-primary text-white disabled' : ''}}" href="{{ route('settings.permissions.list')}}">@lang('general.permissions')</a>
+                                            @endif
+                                            @if($pmodel->can('settings.roles.list'))
+                                                <a class="dropdown-item {{Route::currentRouteName() == 'settings.roles.list' ? 'bg-primary text-white disabled' : ''}}" href="{{ route('settings.roles.list')}}">@lang('general.roles')</a>
+                                            @endif
+                                            @if($pmodel->can('settings.statuses.list'))
+                                                <a class="dropdown-item {{Route::currentRouteName() == 'settings.statuses.list' ? 'bg-primary text-white disabled' : ''}}" href="{{ route('settings.statuses.list')}}">@lang('general.statuses')</a>
                                             @endif
                                             @if($pmodel->can('settings.users.list'))
-                                                <a class="dropdown-item {{Route::currentRouteName() == 'settings.users.list' ? 'active disabled' : ''}}" href="{{ route('settings.users.list')}}">@lang('general.users')</a>
+                                                <a class="dropdown-item {{Route::currentRouteName() == 'settings.users.list' ? 'bg-primary text-white disabled' : ''}}" href="{{ route('settings.users.list')}}">@lang('general.users')</a>
                                             @endif
                                         </div>
                                     </li>
@@ -99,9 +106,9 @@
                                     </a>
 
                                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                        <a class="dropdown-item {{ Route::currentRouteName() == 'settings.users.edit_self' ? 'active' : '' }}" href="{{ route('settings.users.edit_self') }}">
+                                        {{-- <a class="dropdown-item {{ Route::currentRouteName() == 'settings.users.edit_self' ? 'bg-primary text-white' : '' }}" href="{{ route('settings.users.edit_self') }}">
                                             @Lang('general.edit_profile')
-                                        </a>
+                                        </a> --}}
                                         <a class="dropdown-item" href="{{ route('logout') }}"  onclick="
                                             event.preventDefault();
                                             document.getElementById('logout-form').submit();"
@@ -155,10 +162,8 @@
                 @yield('content')
             </main>
             <div class="card float-right" id="bug-report">
-                <a href="mailto:helpdesk@bewater.com.pt" title="{{ __('tooltips.report_a_bug') }}" class="text-white">
-                    <div class="card-header bg-primary">
+                <a href="mailto:helpdesk@bewater.com.pt" title="{{ __('tooltips.report_a_bug') }}" class="btn btn-link btn-lg btn-primary text-white">
                         <i class="fas fa-bug"></i>
-                    </div>
                 </a>
             </div>
         </div>
