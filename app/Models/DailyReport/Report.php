@@ -70,4 +70,8 @@ class Report extends Model
     public function getTotalKm() {
         return $this->lines()->get()->sum('driven_km');
     }
+
+    public static function notSynced() {
+        return self::where('synced', false);
+    }
 }

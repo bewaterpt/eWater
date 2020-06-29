@@ -10,6 +10,10 @@ class OutonoObrasCCConnector extends Model
 
     protected $table = 'tbObrasCC';
 
+    protected $primaryKey = 'numMov';
+
+    public $timestamps = false;
+
     public static function lastInsertedEntryNumber() {
         return self::max('numLanc');
     }

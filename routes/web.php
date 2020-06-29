@@ -131,6 +131,7 @@ Route::group(['middleware' => ['web']], function () {
             Route::post('daily-reports/cancel/{id}', 'DailyReportController@cancel')->name('daily_reports.cancel');
 
 
+            Route::get('test', 'TestController@index')->name('tests.test');
         });
     });
 });

@@ -92,7 +92,8 @@ class DailyReportController extends Controller
                         'quantity' => $reportRow['quantity'],
                         'entry_date' => (new DateTime($reportRow['datetime']))->format('Y-m-d H:i:s'),
                         'report_id' => $report->id,
-                        'user_id' => $user->id,
+                        'created_by' => $user->id,
+                        'user_id' => $reportRow['worker'],
                         'driven_km' => $reportRow['driven-km'],
                         'worker' => $reportRow['worker'],
                     ];
@@ -192,9 +193,19 @@ class DailyReportController extends Controller
             $processStatus->comment = $request->input('comment');
             $processStatus->save();
         }
-        $processStatus->stepForward();
+        $newProcessStatus = $processStatus->stepForward();
 
-        return redirect()->back();
+        if($newProcessStatus->status()->first()->id === ProcessStatus::STATUS_DB_SYNC) {
+            try {
+                Artisan::call('reports:sync');
+            } catch (\Exception $th) {
+                $newProcessStatus->comment(__('errors.db_sync_failed'));
+                $newProcessStatus->save();
+                return redirect()->back()->withErrors(__('errors.db_sync_failed'), 'custom');
+            }
+        }
+
+        return redirect()->back()->with(__('general.db_sync_success'));
     }
 
     /**

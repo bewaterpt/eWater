@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Article extends Model
 {
-    const TRANsPORTATION_ARTICLE_ID = 2;
+    const TRANSPORTATION_ARTICLE_ID = 2;
 
     protected $connection = 'outono';
 
@@ -14,8 +14,8 @@ class Article extends Model
 
     protected $primaryKey = 'cod';
 
-    public static function getArticleById($id) {
-        return self::where('cod', $id)->first();
+    public static function getById($articleId) {
+        return self::find($articleId);
     }
 
     public static function getDailyReportRelevantArticles() {

@@ -10,6 +10,7 @@ use Auth;
 class ProcessStatus extends Model
 {
     const STATUS_EXTRA = 3;
+    const STATUS_DB_SYNC = 6;
     const STATUS_FINISHED = 7;
     const STATUS_CANCELLED = 8;
 
@@ -23,6 +24,7 @@ class ProcessStatus extends Model
         self::STATUS_FINISHED,
         self::STATUS_CANCELLED
     ];
+
 
     protected $dates = ['concluded_at'];
 

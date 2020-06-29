@@ -92,7 +92,10 @@ class UpdatePermissions extends Command
         }
 
         if(Sizeof($routesToRemove)) {
-            $adminRole->permissions()->detach($permissionIds);
+            $roles = Role::all();
+            $roles->map(function($role) use ($permissionIds) {
+                $role->permissions()->detach($permissionIds);
+            });
             $this->output->progressStart(sizeof($routesToRemove));
             foreach ($routesToRemove as $route) {
                 $db->delete('delete from permissions where route = ?', [$route]);

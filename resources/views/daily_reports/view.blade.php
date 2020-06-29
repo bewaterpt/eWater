@@ -73,7 +73,7 @@
                                             @foreach($rows as $row)
                                                 <tr>
                                                     <td>
-                                                        {{ $row->worker }}
+                                                        {{ $row->user()->first()->username }}
                                                     </td>
                                                     <td>
                                                         {{ $row->getArticle()->descricao }}
