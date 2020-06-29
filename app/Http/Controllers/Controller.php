@@ -35,6 +35,7 @@ class Controller extends BaseController
 
             View::share('pmodel', $this->permissionModel);
             View::share('helpers', $this->helper);
+            View::share('currentUser', Auth::user());
 
             return $next($request);
         });
