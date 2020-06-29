@@ -10,6 +10,7 @@ use App\Models\DailyReport\ReportLine;
 use App\Models\DailyReport\ProcessStatus;
 use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Collection;
+use App\User;
 use DateTime;
 use Auth;
 use Route;
@@ -76,8 +77,6 @@ class DailyReportController extends Controller
 
             $works = $input['rows'];
 
-
-
             $lastInsertedEntryNumber = OutonoObrasCCConnector::lastInsertedEntryNumber() + 1;
 
             $rows = [];
@@ -117,7 +116,10 @@ class DailyReportController extends Controller
 
         } else {
             $articles = Article::getDailyReportRelevantArticles()->pluck('cod', 'descricao');
-            return view('daily_reports.create', ['articles' => $this->helper->sortArray($articles->toArray())]);
+            $workers = User::whereHas('roles', function ($query) {
+                $query->where('slug', 'like', 'ewater_exp_%');
+            })->get();
+            return view('daily_reports.create', ['articles' => $this->helper->sortArray($articles->toArray()), 'workers' => $workers]);
         }
 
     }

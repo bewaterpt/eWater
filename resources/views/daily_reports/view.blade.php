@@ -21,7 +21,7 @@
                             @endif
                             @if($pmodel->can('daily_reports.cancel') && !$report->closed())
                                 <a href="{{ route('daily_reports.cancel', ['id' => $report->id]) }}" class="text-danger">
-                                    <i class="fas fa-trash-alt"></i>
+                                    <i class="fas fa-ban"></i>
                                 </a>
                             @endif
                         </span>

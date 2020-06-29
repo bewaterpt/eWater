@@ -62,7 +62,11 @@
                                     <tbody>
                                         <tr class="first">
                                             <td>
-                                                <input type="text" name="worker" required class="form-control col-md-9" id="inputWorkNumber" required>
+                                                <select type="text" name="worker" required class="form-control col-md-9" id="inputWorker" required>
+                                                    @foreach ($workers as $worker)
+                                                        <option value="{{ $worker->id }}">{{ $worker->name }}</option>
+                                                    @endforeach
+                                                </select>
                                             </td>
                                             <td>
                                                 <select name="article" required class="form-control selectpicker col-md-12" id="inputArticle" data-dropup-auto="false" required>
