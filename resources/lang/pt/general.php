@@ -56,6 +56,7 @@ return [
         'action_log' => 'Registo de operações',
         'processing' => 'Em processamento',
         'cancelled_by_user_at_time' => 'Cancelado por :name :time',
+        'closed_by_user_at_time' => 'Fechado por :name :time',
         'driven-km' => 'Km conduzidos',
         'work-number-x' => 'Obra #',
         'km' => 'KM',

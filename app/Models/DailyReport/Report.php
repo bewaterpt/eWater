@@ -46,7 +46,7 @@ class Report extends Model
     }
 
     public function closed() {
-        $processStatus = $this->processStatus()->latest()->first();
+        $processStatus = $this->latestUpdate();
         return $processStatus->closed();
     }
 

@@ -6,7 +6,7 @@
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-header">
-                        @Lang('general.daily_reports.report', ['number' => $report->id]) {{ $report->closed() ? '(' . __('general.daily_reports.cancelled_by_user_at_time', [ 'name' => $report->creator()->first()->name, 'time' => $report->latestUpdate()->concluded_at->diffForHumans()]) . ')' : '' }}
+                        @Lang('general.daily_reports.report', ['number' => $report->id]) {{ $report->closed() ? '(' . __('general.daily_reports.closed_by_user_at_time', [ 'name' => $report->creator()->first()->name, 'time' => $report->latestUpdate()->concluded_at->diffForHumans()]) . ')' : '' }}
                         <span class="float-right">
                             @if(!$report->closed() && $report->getCurrentStatus()->first()->userCanProgress())
                                 <a class="btn-link back text-danger" title="{{__('tooltips.daily_reports.prev')}}" data-toggle="modal" data-target="#modalPrevStatus" href="#">
@@ -163,10 +163,6 @@
                                                         <a class="btn-link forward text-success" title="{{ __('tooltips.daily_reports.next') }}" data-toggle="modal" data-target="#modalNextStatus" href="#">
                                                             <i class="fas fa-step-forward"></i>
                                                         </a>
-                                                    @else
-                                                        @if (!$processStatus->hasComment())
-                                                            -
-                                                        @endif
                                                     @endif
                                                 @endif
                                                 @if ($processStatus->hasComment())
