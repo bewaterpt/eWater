@@ -55,7 +55,7 @@ class UserController extends Controller
     }
 
     public function edit($userId) {
-        $user = User::find($userId)->first();
+        $user = User::find($userId);
         $userRoleIds = $user->roles()->pluck('id');
         $roles = Role::whereNotIn('id', $userRoleIds)->get();
 

@@ -46,7 +46,7 @@
                                         {{-- {{dd($user->roles())}} --}}
                                         @endif
                                         @foreach($user->roles()->get() as $role)
-                                            {{ $role->name }}
+                                            {{ $role->name }}<br>
                                         @endforeach
                                     </td>
                                     <td>
@@ -64,9 +64,10 @@
                                         @endif
                                     </td>
                                     <td class="actions">
-                                        <a class="" href="{{$user->getAttributes()['id'] === Auth::user()->id ? Route('settings.users.edit_self') : Route('settings.users.edit', ['id' => $user->getAttributes()['id']])}}" title="@Lang('general.action_edit')"><i class="fas fa-user-edit"></i></a>
+                                        {{-- {{$user->getAttributes()['id'] === Auth::user()->id ? Route('settings.users.edit_self') :  --}}
+                                        <a class="" href="{{ Route('settings.users.edit', ['id' => $user->getAttributes()['id']]) }}" title="@Lang('general.action_edit')"><i class="fas fa-user-edit"></i></a>
                                         @if($user->getAttributes()['id'] !== Auth::user()->id)
-                                            <a href="{{Route('settings.users.toggle_state', ['id' => $user->getAttributes()['id']])}}" class="{{ $user->enabled ? 'disable' : 'enable' }}" title="{{$user->enabled ? __('general.action_disable') : __('general.action_enable')}}">
+                                            <a href="{{ Route('settings.users.toggle_state', ['id' => $user->getAttributes()['id']]) }}" class="{{ $user->enabled ? 'disable' : 'enable' }}" title="{{$user->enabled ? __('general.action_disable') : __('general.action_enable')}}">
                                                 @if($user->enabled)
                                                     <i class="fas fa-user-times"></i>
                                                 @else

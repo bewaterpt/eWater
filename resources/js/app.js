@@ -23,4 +23,3 @@ stopSpontaneousSrcolling();
 
 // TinyMCE Langs
 require('./config/tinymce/lang/pt_PT');
-

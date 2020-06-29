@@ -17,7 +17,7 @@ class ProcessStatus extends Model
     const EXCLUDED_STATUSES = [
         self::STATUS_EXTRA,
         self::STATUS_CANCELLED,
-        self::STATUS_FINISHED
+        // self::STATUS_FINISHED
     ];
 
     const SELF_CONCLUDING_STATUSES = [

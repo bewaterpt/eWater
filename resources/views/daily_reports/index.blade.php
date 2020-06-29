@@ -7,7 +7,7 @@
             <div class="card">
                 <div class="card-header">@Lang('general.daily_reports.list')</div>
                 <div class="card-body">
-                    <table id="reports" class="table table-sm table-stripped table-bordered" style="width: 100%">
+                    <table id="reports" class="table table-sm table-striped table-bordered" style="width: 100%">
                         <thead class="thead-light">
                             <tr>
                                 <th>

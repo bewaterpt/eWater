@@ -40,6 +40,7 @@ return [
     'statuses' => "Estados",
     'status' => "Estado",
     'slug' => "Nome máquina",
+    'loading' => 'A carregar...',
     'daily_reports' => [
         'daily_reports' => 'Relatórios Diários',
         'list' => 'Lista de Relatórios',

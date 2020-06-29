@@ -15,7 +15,7 @@ class SyncReports extends Command
      *
      * @var string
      */
-    protected $signature = 'reports:sync';
+    protected $signature = 'reports:sync {report}';
 
     /**
      * The console command description.
@@ -41,32 +41,30 @@ class SyncReports extends Command
      */
     public function handle()
     {
-        $reports = Report::notSynced()->get();
+        $report = Report::find($this->argument('report'));
 
-        $collectionOfLines = $reports->map(function ($report) {
-            return $report->lines()->get()->map(function ($line) {
-                return $line;
-            });
-        });
+        // $collectionOfLines = $reports->map(function ($report) {
+        //     return $report->lines()->get()->map(function ($line) {
+        //         return $line;
+        //     });
+        // });
 
         $reportLines;
         $reportTransportationData;
 
-        foreach ($collectionOfLines as $lines) {
-            foreach ($lines as $line) {
-                $reportLines[$line->work_number][] = $line;
+        foreach ($report->lines()->get() as $line) {
+            $reportLines[$line->work_number][] = $line;
 
-                if (!isset($reportTransportationData[$line->work_number]['km'])) {
-                    $reportTransportationData[$line->work_number]['km'] = $line->driven_km;
-                }
+            if (!isset($reportTransportationData[$line->work_number]['km'])) {
+                $reportTransportationData[$line->work_number]['km'] = $line->driven_km;
+            }
 
-                if (!isset($reportTransportationData[$line->work_number]['date'])) {
-                    $reportTransportationData[$line->work_number]['date'] = $line->entry_date;
-                }
+            if (!isset($reportTransportationData[$line->work_number]['date'])) {
+                $reportTransportationData[$line->work_number]['date'] = $line->entry_date;
+            }
 
-                if (!isset($reportTransportationData[$line->work_number]['report'])) {
-                    $reportTransportationData[$line->work_number]['report'] = $line->report()->first();
-                }
+            if (!isset($reportTransportationData[$line->work_number]['report'])) {
+                $reportTransportationData[$line->work_number]['report'] = $line->report()->first();
             }
         }
 
@@ -111,5 +109,8 @@ class SyncReports extends Command
                 }
             }
         }
+
+        $report->synced = true;
+        $report->save();
     }
 }

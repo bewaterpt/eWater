@@ -10,10 +10,12 @@ use App\Models\DailyReport\ReportLine;
 use App\Models\DailyReport\ProcessStatus;
 use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Artisan;
 use App\User;
 use DateTime;
 use Auth;
 use Route;
+use Illuminate\Console\Command;
 
 class DailyReportController extends Controller
 {
@@ -41,13 +43,13 @@ class DailyReportController extends Controller
         $reports = Report::all();
         $reportList = collect([]);
 
-        foreach($reports as $report) {
-            if ($report->creator()->first()->id === $user->id || $this->statusModel->userCanProgress($report->getCurrentStatus()->first()->id) && !$report->closed()) {
-                $reportList->push($report);
-            }
-        }
+        // foreach($reports as $report) {
+        //     if ($report->creator()->first()->id === $user->id || $this->statusModel->userCanProgress($report->getCurrentStatus()->first()->id) && !$report->closed()) {
+        //         $reportList->push($report);
+        //     }
+        // }
 
-        return view('daily_reports.index', ['reports' => $reportList]);
+        return view('daily_reports.index', ['reports' => $reports]);
     }
 
     /**
@@ -142,9 +144,9 @@ class DailyReportController extends Controller
             return redirect()->back()->withErrors(__('errors.report_not_found'), 'custom');
         }
 
-        if ($report->creator()->first()->id !== $user->id && !$this->statusModel->userCanProgress($report->getCurrentStatus()->first()->id)) {
-            return redirect(route('daily_reports.list'))->withErrors(__('auth.permission_denied', ['route' => $request->path()]), 'custom');
-        }
+        // if ($report->creator()->first()->id !== $user->id && !$this->statusModel->userCanProgress($report->getCurrentStatus()->first()->id)) {
+        //     return redirect(route('daily_reports.list'))->withErrors(__('auth.permission_denied', ['route' => $request->path()]), 'custom');
+        // }
 
         // dd($report->lines()->get()->groupBy('work_number'));
         $processStatuses = $report->processStatus()->orderBy('created_at', 'desc')->orderBy('id', 'desc')->get();
@@ -199,9 +201,11 @@ class DailyReportController extends Controller
 
         if($newProcessStatus->status()->first()->id === ProcessStatus::STATUS_DB_SYNC) {
             try {
-                Artisan::call('reports:sync');
-            } catch (\Exception $th) {
-                $newProcessStatus->comment(__('errors.db_sync_failed'));
+                Artisan::call('reports:sync ' . $processStatus->report()->first()->id);
+                $newProcessStatus->stepForward();
+            } catch (\Exception $e) {
+                $newProcessStatus->comment = __('errors.db_sync_failed') . ': ' . $e->getMessage();
+                $newProcessStatus->stepBack();
                 $newProcessStatus->save();
                 return redirect()->back()->withErrors(__('errors.db_sync_failed'), 'custom');
             }

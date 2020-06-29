@@ -36,6 +36,6 @@ mix.sass('resources/sass/app.scss', 'public/css')
     "resources/js/app/components/multiselect_listbox.js",
     "resources/js/app/daily_reports/dailyReports.js",
     "resources/js/app/daily_reports/datatables_reports.js",
-
+    "resources/js/app/utility/fixes.js",
 ], "public/js/app.js");
 
