@@ -202,16 +202,19 @@ class DailyReportController extends Controller
         if($newProcessStatus->status()->first()->id === ProcessStatus::STATUS_DB_SYNC) {
             try {
                 Artisan::call('reports:sync ' . $processStatus->report()->first()->id);
+                $newProcessStatus->comment = __('general.daily_reports.db_sync_success');
+                $newProcessStatus->save();
                 $newProcessStatus->stepForward();
             } catch (\Exception $e) {
-                $newProcessStatus->comment = __('errors.db_sync_failed') . ': ' . $e->getMessage();
-                $newProcessStatus->stepBack();
+                $newProcessStatus->comment = __('errors.db_sync_failed') . '<b>' . $e->getMessage() . '</b>';
+                $newProcessStatus->error = true;
                 $newProcessStatus->save();
-                return redirect()->back()->withErrors(__('errors.db_sync_failed'), 'custom');
+                $newProcessStatus->stepBack();
+                return redirect()->back()->withErrors(__('errors.db_sync_failed') . '<b>' . $e->getMessage() . '</b>', 'custom');
             }
         }
 
-        return redirect()->back()->with(__('general.db_sync_success'));
+        return redirect()->back()->with(__('general.daily_reports.db_sync_success'));
     }
 
     /**

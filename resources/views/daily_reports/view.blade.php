@@ -170,8 +170,7 @@
                                                     @endif
                                                 @endif
                                                 @if ($processStatus->hasComment())
-                                                    <a class="btn-link comment text-info ri-information-line ri-lg" title="{{ __('tooltips.daily_reports.view_comment') }}" data-toggle="modal" data-id="{{ $processStatus->id }}" data-target="#modalComment" href="#">
-                                                        {{-- <i class="fas fa-info"></i> --}}
+                                                    <a class="btn-link comment {{ $processStatus->error ? 'text-danger ri-alert-line' : 'ri-information-line text-info' }} ri-lg" title="{{ __('tooltips.daily_reports.view_comment') }}" data-toggle="modal" data-id="{{ $processStatus->id }}" data-target="#modalComment" href="#">
                                                     </a>
                                                 @endif
                                             </td>

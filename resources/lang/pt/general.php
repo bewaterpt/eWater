@@ -42,6 +42,7 @@ return [
     'slug' => "Nome máquina",
     'loading' => 'A carregar...',
     'daily_reports' => [
+        'db_sync_success' => "Relatório sincronizado corretamente com o outono.",
         'daily_reports' => 'Relatórios Diários',
         'list' => 'Lista de Relatórios',
         'create' => 'Criar relatório',
