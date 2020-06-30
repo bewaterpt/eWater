@@ -23,3 +23,7 @@ stopSpontaneousSrcolling();
 
 // TinyMCE Langs
 require('./config/tinymce/lang/pt_PT');
+
+$(document).ready(() => {
+    $('[data-toggle="popover"]').popover();
+});

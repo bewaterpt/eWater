@@ -15,6 +15,7 @@ return [
         'hours' => 'Nº de Horas',
         'comments' => "Notas/Comentários",
         'slug' => 'Nome máquina',
+        'without_access' => ''
     ],
     'placeholders' => [
         'name'=> 'Nome Apelido',

@@ -32733,6 +32733,10 @@ stopSpontaneousSrcolling(); // TinyMCE Langs
 
 __webpack_require__(/*! ./config/tinymce/lang/pt_PT */ "./resources/js/config/tinymce/lang/pt_PT.js");
 
+$(document).ready(function () {
+  $('[data-toggle="popover"]').popover();
+});
+
 /***/ }),
 
 /***/ "./resources/js/app/components/multiselect_listbox.js":
@@ -33220,6 +33224,8 @@ window._ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
 try {
   window.Popper = __webpack_require__(/*! popper.js */ "./node_modules/popper.js/dist/esm/popper.js")["default"];
   window.$ = window.jQuery = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+
+  __webpack_require__(/*! bootstrap/dist/js/bootstrap.bundle */ "./node_modules/bootstrap/dist/js/bootstrap.bundle.js");
 
   __webpack_require__(/*! bootstrap */ "./node_modules/bootstrap/dist/js/bootstrap.js");
 

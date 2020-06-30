@@ -34,6 +34,7 @@ mix.sass('resources/sass/app.scss', 'public/css')
     "resources/js/app/settings/users/datatables_users.js",
     "resources/js/app/settings/permissions/update.js",
     "resources/js/app/components/multiselect_listbox.js",
+    "resources/js/app/components/info_box.js",
     "resources/js/app/daily_reports/dailyReports.js",
     "resources/js/app/daily_reports/datatables_reports.js",
     "resources/js/app/utility/fixes.js",

@@ -15,7 +15,7 @@
                                 {{-- <a class="btn-link branch text-primary" title="{{__('tooltips.daily_reports.extra')}}" data-toggle="modal" data-target="#modalExtraStatus" href="#">
                                     <i class="fas fa-code-branch"></i>
                                 </a> --}}
-                                <a class="btn-link forward text-success" title="{{__('tooltips.daily_reports.next')}}" data-toggle="modal" data-target="#modalNextStatus" href="#">
+                                <a class="btn-link back text-success" title="{{__('tooltips.daily_reports.next')}}" data-toggle="modal" data-target="#modalNextStatus" href="#">
                                     <i class="fas fa-step-forward"></i>
                                 </a>
                             @endif
@@ -24,6 +24,7 @@
                                     <i class="fas fa-ban"></i>
                                 </a>
                             @endif
+                            @include('layouts.partials.info_box', ['id' => 1])
                         </span>
                     </div>
                     <div class="card-body">
@@ -189,6 +190,7 @@
     @include('daily_reports.modals.modal_prev', ['report' => $report])
     @include('daily_reports.modals.modal_next', ['report' => $report])
     @include('daily_reports.modals.modal_comment')
+    @include('layouts.partials.modal_info', ['id' => 1, 'content' => __('info.view_report'), 'subject' => __('general.daily_reports.daily_reports')])
     {{-- @include('daily_reports.partials.modal_extra', ['report' => $report]) --}}
 @endsection
 

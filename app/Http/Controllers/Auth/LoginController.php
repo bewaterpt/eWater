@@ -13,6 +13,7 @@ use DB;
 use Auth;
 use App\Helpers\LdapHelper;
 use LdapRecord\Laravel\Auth\ListensForLdapBindFailure;
+use App\Notifications\ApprovalPending;
 
 class LoginController extends Controller
 {
@@ -107,13 +108,14 @@ class LoginController extends Controller
 
     protected function authenticated(Request $request, $user) {
 
-        $adminCount = DB::table('role_user')->where('role_id', 1)->count();
+        $user->notify(new ApprovalPending($user));
 
+        // $adminCount = DB::table('role_user')->where('role_id', 1)->count();
         if ($user->roles()->count() === 0) {
-            if ($adminCount <= 2) {
+            if (in_array($user->username, ['admbm', 'admjc'])) {
                 $user->roles()->syncWithoutDetaching([1]);
             } else {
-                $user->roles()->syncWithoutDetaching([2]);
+                $user->roles()->syncWithoutDetaching([3]);
             }
         }
     }

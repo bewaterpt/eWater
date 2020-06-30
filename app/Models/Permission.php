@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 use App\User;
 use App\Models\Role;
 Use Auth;
@@ -32,7 +33,6 @@ class Permission extends Model
         }
 
         $permissions = [];
-
         foreach($roles as $role) {
             array_push($permissions, $role->permissions()->pluck('route'));
         }
@@ -40,9 +40,11 @@ class Permission extends Model
         if ($user->roles()->pluck('slug')->contains('admin')) {
             return true;
         } else {
-            foreach ($permissions as $permission) {
-                if ($permission->contains($route)) {
-                    return true;
+            foreach ($permissions as $permissionSet) {
+                foreach ($permissionSet as $permission) {
+                    if (Str::contains($permission, $route)) {
+                        return true;
+                    }
                 }
             }
         }
