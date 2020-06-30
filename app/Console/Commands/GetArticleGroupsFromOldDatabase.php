@@ -35,6 +35,7 @@ class GetArticleGroupsFromOldDatabase extends Command
         $this->pdo = $this->db->getPdo();
         $this->outonoPdo = $this->outonoDb->getPdo();
         parent::__construct();
+
     }
 
     /**
