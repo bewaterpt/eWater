@@ -34,9 +34,9 @@
                             @foreach($reports as $report)
                                 <tr>
                                     <td>
-                                        <a href="{{Route('daily_reports.view', ['id' => $report->id])}}">
+                                        {{-- <a href="{{Route('daily_reports.view', ['id' => $report->id])}}"> --}}
                                             {{ $report->id }}
-                                        </a>
+                                        {{-- </a> --}}
                                     </td>
                                     <td>
                                         {{ $report->getCurrentStatus()->first()->name }}

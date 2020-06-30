@@ -75,6 +75,7 @@ class DailyReportController extends Controller
             $report->vehicle_plate = $input['plate'];
             $report->km_departure = $input['km_departure'];
             $report->km_arrival = $input['km_arrival'];
+            $report->comment = $input['comment'];
             $report->save();
 
             $works = $input['rows'];

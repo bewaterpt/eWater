@@ -54,6 +54,7 @@ class LoginController extends Controller
     {
         $this->middleware('guest')->except('logout');
         $this->userName = $request->username;
+        parent::__construct();
     }
 
     public function credentials(Request $request) {

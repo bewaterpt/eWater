@@ -128,7 +128,7 @@ Route::group(['middleware' => ['web']], function () {
             Route::post('daily-reports/regress-status/{id}', 'DailyReportController@regressStatus')->name('daily_reports.prev');
             Route::post('daily-reports/extra-status/{id}', 'DailyReportController@progressExtra')->name('daily_reports.extra');
             Route::post('daily-reports/progress-status/{id}', 'DailyReportController@progressStatus')->name('daily_reports.next');
-            Route::post('daily-reports/cancel/{id}', 'DailyReportController@cancel')->name('daily_reports.cancel');
+            Route::get('daily-reports/cancel/{id}', 'DailyReportController@cancel')->name('daily_reports.cancel');
 
 
             Route::get('test', 'TestController@index')->name('tests.test');

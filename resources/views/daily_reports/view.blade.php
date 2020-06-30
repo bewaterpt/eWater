@@ -27,6 +27,12 @@
                         </span>
                     </div>
                     <div class="card-body">
+                        @if($report->comment)
+                            <label for="comment">@Lang('general.daily_reports.comment')</label>
+                            <div id="comment" class="comment border rounded mh-25 pt-2 px-2 mb-3">
+                                {!! $report->comment !!}
+                            </div>
+                        @endif
                         <div class="col-md-12 m-0 p-0 mb-2">
                             <span></span>
                             <div class="d-inline report-creator text-left">

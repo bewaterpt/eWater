@@ -30,7 +30,7 @@
                             </div>
                             <div class="float-right col-md-10">
                                 <label for="inputComment">@Lang('general.daily_reports.comment')</label>
-                                <textarea name="comment" rows="7" id="inputComment" class="form-control float-right mh-100"></textarea>
+                                <textarea name="comment" rows="7" id="inputComment" class="form-control text-editor float-right mh-100"></textarea>
                             </div>
                         </fieldset>
 
