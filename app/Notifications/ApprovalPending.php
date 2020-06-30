@@ -6,6 +6,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Facades\Log;
 
 class ApprovalPending extends Notification implements ShouldQueue
 {
@@ -60,5 +61,9 @@ class ApprovalPending extends Notification implements ShouldQueue
         return [
             //
         ];
+    }
+
+    public function failed(Exception $e) {
+        Log::critical($e->getMessage());
     }
 }
