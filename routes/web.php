@@ -120,9 +120,9 @@ Route::group(['middleware' => ['web']], function () {
             Route::get('daily-reports', 'DailyReportController@index')->name('daily_reports.list');
             Route::get('daily-reports/pending', 'DailyReportController@pending')->name('daily_reports.pending');
             Route::match(['get', 'post'], 'daily-reports/create', 'DailyReportController@create')->name('daily_reports.create');
-            Route::get('daily-reports/first-approval', 'DailyReportController@firstApproval')->name('daily_reports.first_approval');
-            Route::get('daily-reports/second-approval', 'DailyReportController@secondApproval')->name('daily_reports.second_approval');
-            Route::get('daily-reports/approved', 'DailyReportController@approved')->name('daily_reports.approved');
+            // Route::get('daily-reports/first-approval', 'DailyReportController@firstApproval')->name('daily_reports.first_approval');
+            // Route::get('daily-reports/second-approval', 'DailyReportController@secondApproval')->name('daily_reports.second_approval');
+            // Route::get('daily-reports/approved', 'DailyReportController@approved')->name('daily_reports.approved');
             Route::get('daily-reports/{id}', 'DailyReportController@view')->name('daily_reports.view');
             Route::get('daily-reports/edit/{id}', 'DailyReportController@edit')->name('daily_reports.edit');
             Route::post('daily-reports/regress-status/{id}', 'DailyReportController@regressStatus')->name('daily_reports.prev');
@@ -131,7 +131,7 @@ Route::group(['middleware' => ['web']], function () {
             Route::get('daily-reports/cancel/{id}', 'DailyReportController@cancel')->name('daily_reports.cancel');
 
 
-            Route::get('test', 'TestController@index')->name('tests.test');
+            // Route::get('test', 'TestController@index')->name('tests.test');
         });
     });
 });

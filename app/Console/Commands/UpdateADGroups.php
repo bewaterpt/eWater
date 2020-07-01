@@ -16,7 +16,7 @@ class UpdateADGroups extends Command
      *
      * @var string
      */
-    protected $signature = 'app:roles';
+    protected $signature = 'roles:update';
 
     /**
      * The console command description.
