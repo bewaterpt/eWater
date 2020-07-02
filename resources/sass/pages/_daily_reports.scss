@@ -21,6 +21,24 @@
                 }
             }
         }
+
+        td {
+
+            &.quantity {
+                width: 15%;
+            }
+
+            &.date {
+                width: 25%;
+            }
+
+            input {
+
+                &#inputDatetime {
+                    width: 87%;
+                }
+            }
+        }
     }
 }
 

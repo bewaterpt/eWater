@@ -3,7 +3,7 @@ $(document).ready(() => {
     if ($("#report-process-status").length > 0) {
         $("#report-process-status").DataTable({
             responsive: true,
-            // ordering: false,
+            order: [[ 3, "desc" ]],
             searching: false,
             lengthChange: false,
             language: {

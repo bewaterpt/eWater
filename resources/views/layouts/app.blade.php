@@ -161,7 +161,7 @@
                 @endif
                 @yield('content')
             </main>
-            <div class="card float-right" id="bug-report">
+            <div class="card float-right d-none d-md-block" id="bug-report">
                 <a href="mailto:helpdesk@bewater.com.pt?subject=Bug%20Report {{ $currentUser ? ': ' . $currentUser->name : ''}}" title="{{ __('tooltips.report_a_bug') }}" class="btn btn-link btn-lg btn-primary text-white">
                         <i class="fas fa-bug"></i>
                 </a>

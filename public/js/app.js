@@ -32739,6 +32739,17 @@ $(document).ready(function () {
 
 /***/ }),
 
+/***/ "./resources/js/app/components/info_box.js":
+/*!*************************************************!*\
+  !*** ./resources/js/app/components/info_box.js ***!
+  \*************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+
+
+/***/ }),
+
 /***/ "./resources/js/app/components/multiselect_listbox.js":
 /*!************************************************************!*\
   !*** ./resources/js/app/components/multiselect_listbox.js ***!
@@ -32999,7 +33010,7 @@ $(document).ready(function () {
   if ($("#report-process-status").length > 0) {
     $("#report-process-status").DataTable({
       responsive: true,
-      // ordering: false,
+      order: [[3, "desc"]],
       searching: false,
       lengthChange: false,
       language: {
@@ -33709,9 +33720,9 @@ tinymce.addI18n('pt_PT', {
 /***/ }),
 
 /***/ 0:
-/*!*******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** multi ./resources/js/app.js ./resources/js/app/utility/tinymce.js ./resources/js/app/settings/statuses/update.js ./resources/js/app/settings/users/update.js ./resources/js/app/settings/users/datatables_users.js ./resources/js/app/settings/permissions/update.js ./resources/js/app/components/multiselect_listbox.js ./resources/js/app/daily_reports/dailyReports.js ./resources/js/app/daily_reports/datatables_reports.js ./resources/js/app/utility/fixes.js ./resources/sass/app.scss ***!
-  \*******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*!*************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** multi ./resources/js/app.js ./resources/js/app/utility/tinymce.js ./resources/js/app/settings/statuses/update.js ./resources/js/app/settings/users/update.js ./resources/js/app/settings/users/datatables_users.js ./resources/js/app/settings/permissions/update.js ./resources/js/app/components/multiselect_listbox.js ./resources/js/app/components/info_box.js ./resources/js/app/daily_reports/dailyReports.js ./resources/js/app/daily_reports/datatables_reports.js ./resources/js/app/utility/fixes.js ./resources/sass/app.scss ***!
+  \*************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -33722,6 +33733,7 @@ __webpack_require__(/*! C:\Users\bruno.martins\source\repos\outono\resources\js\
 __webpack_require__(/*! C:\Users\bruno.martins\source\repos\outono\resources\js\app\settings\users\datatables_users.js */"./resources/js/app/settings/users/datatables_users.js");
 __webpack_require__(/*! C:\Users\bruno.martins\source\repos\outono\resources\js\app\settings\permissions\update.js */"./resources/js/app/settings/permissions/update.js");
 __webpack_require__(/*! C:\Users\bruno.martins\source\repos\outono\resources\js\app\components\multiselect_listbox.js */"./resources/js/app/components/multiselect_listbox.js");
+__webpack_require__(/*! C:\Users\bruno.martins\source\repos\outono\resources\js\app\components\info_box.js */"./resources/js/app/components/info_box.js");
 __webpack_require__(/*! C:\Users\bruno.martins\source\repos\outono\resources\js\app\daily_reports\dailyReports.js */"./resources/js/app/daily_reports/dailyReports.js");
 __webpack_require__(/*! C:\Users\bruno.martins\source\repos\outono\resources\js\app\daily_reports\datatables_reports.js */"./resources/js/app/daily_reports/datatables_reports.js");
 __webpack_require__(/*! C:\Users\bruno.martins\source\repos\outono\resources\js\app\utility\fixes.js */"./resources/js/app/utility/fixes.js");

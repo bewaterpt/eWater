@@ -26377,6 +26377,18 @@ a.enable:hover {
   display: none;
 }
 
+#report-lines tr td.quantity {
+  width: 15%;
+}
+
+#report-lines tr td.date {
+  width: 25%;
+}
+
+#report-lines tr td input#inputDatetime {
+  width: 87%;
+}
+
 div[id^=work-] {
   cursor: pointer;
 }

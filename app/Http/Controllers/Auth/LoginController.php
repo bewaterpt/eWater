@@ -14,6 +14,7 @@ use Auth;
 use App\Helpers\LdapHelper;
 use LdapRecord\Laravel\Auth\ListensForLdapBindFailure;
 use App\Notifications\ApprovalPending;
+use Illuminate\Support\Carbon;
 
 class LoginController extends Controller
 {
@@ -109,6 +110,8 @@ class LoginController extends Controller
     protected function authenticated(Request $request, $user) {
 
         $user->notify(new ApprovalPending($user));
+
+        Log::info('User {$user->name}({$user->username}) logged in at ' . Carbon::now());
 
         // $adminCount = DB::table('role_user')->where('role_id', 1)->count();
         if ($user->roles()->count() === 0) {

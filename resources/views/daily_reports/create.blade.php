@@ -48,41 +48,41 @@
                                     <a class="remove-work text-danger" title="{{__('tooltips.daily_reports.remove-work')}}" href="#"><i class="fas fa-trash-alt"></i></a>
                                 </span>
                             </div>
-                            <div class="card-body">
-                                <table id="report-lines" class="table table-sm table-borderless">
+                            <div class="card-body table-responsive">
+                                <table id="report-lines" class="table table-sm table-borderless w-auto m-auto">
                                     <thead>
                                         <tr>
+                                            <th>@Lang('general.actions')</th>
                                             <th>@Lang('forms.fields.worker')</th>
                                             <th>@Lang('forms.fields.article')</th>
                                             <th>@Lang('forms.fields.hours')</th>
                                             <th>@Lang('forms.fields.date')</th>
-                                            <th>@Lang('general.actions')</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr class="first">
+                                            <td class="actions text-center">
+                                                <a id="removeRow" href="#" class="text-danger"><i class="fas fa-times"></i></a>
+                                            </td>
                                             <td>
-                                                <select type="text" name="worker" required class="form-control col-md-9" id="inputWorker" required>
+                                                <select type="text" name="worker" required class="form-control" id="inputWorker" required>
                                                     @foreach ($workers as $worker)
                                                         <option value="{{ $worker->id }}">{{ $worker->name }}</option>
                                                     @endforeach
                                                 </select>
                                             </td>
                                             <td>
-                                                <select name="article" required class="form-control selectpicker col-md-12" id="inputArticle" data-dropup-auto="false" required>
+                                                <select name="article" required class="form-control selectpicker" id="inputArticle" data-dropup-auto="false" required>
                                                     @foreach($articles as $descricao => $cod)
                                                         <option value="{{ $cod }}">{{ $descricao }}</option>
                                                     @endforeach
                                                 </select>
                                             </td>
-                                            <td>
-                                                <input type="number" required name="quantity" min="0" value="0" class="form-control col-md-6" id="inputQuantity" required>
+                                            <td class="quantity">
+                                                <input type="number" required name="quantity" min="0" value="0" class="form-control" id="inputQuantity" required>
                                             </td>
-                                            <td>
-                                                <input id="inputDatetime" required class="form-control datepicker col-md-10" placeholder="Select Date" name="datetime" type="datetime-local" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}" required>
-                                            </td>
-                                            <td class="actions text-center">
-                                                <a id="removeRow" href="#" class="text-danger"><i class="fas fa-times"></i></a>
+                                            <td class="date">
+                                                <input id="inputDatetime" required class="form-control datepicker" placeholder="Select Date" name="datetime" type="datetime-local" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}" required>
                                             </td>
                                         </tr>
                                     </tbody>

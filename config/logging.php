@@ -3,6 +3,7 @@
 use Monolog\Handler\NullHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\SyslogUdpHandler;
+use Illuminate\Support\Carbon;
 
 return [
 
@@ -37,21 +38,78 @@ return [
     'channels' => [
         'stack' => [
             'driver' => 'stack',
-            'channels' => ['single'],
+            'channels' => [
+                'daily-debug',
+                'daily-info',
+                'daily-notice',
+                'daily-warning',
+                'daily-error',
+                'daily-alert',
+                'daily-emergency',
+            ],
             'ignore_exceptions' => false,
         ],
 
         'single' => [
             'driver' => 'single',
-            'path' => storage_path('logs/laravel.log'),
+            'path' => storage_path('logs/ewater.log'),
             'level' => 'debug',
         ],
 
-        'daily' => [
+        'daily-debug' => [
             'driver' => 'daily',
-            'path' => storage_path('logs/laravel.log'),
+            'path' => storage_path('logs/ewater-dbg.log'),
             'level' => 'debug',
-            'days' => 14,
+            'days' => 1,
+        ],
+
+        'daily-info' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/ewater-info.log'),
+            'level' => 'info',
+            'days' => 1,
+        ],
+
+        'daily-notice' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/ewater-ntc.log'),
+            'level' => 'notice',
+            'days' => 1,
+        ],
+
+        'daily-warning' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/ewater-warn.log'),
+            'level' => 'warning',
+            'days' => 1,
+        ],
+
+        'daily-error' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/ewater-err.log'),
+            'level' => 'error',
+            'days' => 1,
+        ],
+
+        'daily-critical' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/ewater-crit.log'),
+            'level' => 'critical',
+            'days' => 1,
+        ],
+
+        'daily-alert' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/ewater-alert.log'),
+            'level' => 'alert',
+            'days' => 1,
+        ],
+
+        'daily-emergency' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/ewater-emergency.log'),
+            'level' => 'emergency',
+            'days' => 1,
         ],
 
         'slack' => [
