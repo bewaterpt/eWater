@@ -12,7 +12,7 @@ $(document).ready(() => {
         // + pad(d.getUTCSeconds())+'Z'
     }
 
-    if($('#daily-reports-create').length > 0) {
+    if($('#daily-reports-create').length > 0 || $('#daily-reports-edit').length > 0) {
         /**
          * Gets the selected article info
          *
@@ -57,7 +57,9 @@ $(document).ready(() => {
             tr.find('#removeRow').on('click', (e) => {
                 removeRow(e);
             });
-            tr.find('#inputDatetime').val(ISODateString(today))
+            if (tr.find('#inputDatetime').val() === '') {
+                tr.find('#inputDatetime').val(ISODateString(today));
+            }
             console.log(tr[0]);
             $(event.target).parents('.card.work').find('table#report-lines tbody').append(tr);
             // window.scrollTo(0, document.body.scrollHeight || document.documentElement.scrollHeight);
@@ -103,7 +105,9 @@ $(document).ready(() => {
             tr.find('#removeRow').on('click', (event) => {
                 removeLine(event);
             });
-            tr.find('#inputDatetime').val(ISODateString(today))
+            if (tr.find('#inputDatetime').val() === '') {
+                tr.find('#inputDatetime').val(ISODateString(today));
+            }
             // window.scrollTo(0, document.body.scrollHeight || document.documentElement.scrollHeight);
 
             $(event.target).parents('.card').find('.card.work:last-of-type').after(work);
@@ -112,7 +116,9 @@ $(document).ready(() => {
                 event.preventDefault();
             });
         });
-        $('#inputDatetime').val(ISODateString(today));
+        if ($('#inputDatetime').val() === '') {
+            $('#inputDatetime').val(ISODateString(today));
+        }
 
         $('#report').on('submit', (event) => {
             event.preventDefault();
@@ -131,23 +137,32 @@ $(document).ready(() => {
                 let totalKm = data.km_arrival - data.km_departure;
                 let userInsertedKm = 0;
                 let rows = {};
+
                 $('div.card.work').each((workIndex, work) => {
                     workNum = $(work).find('input.work-number').val()
+                    kmInserted = false;
                     rows[workNum] = {};
                     $(work).find('tbody tr').each((trIndex, tr) => {
                         rows[workNum][trIndex] = {};
+                        rows[workNum][trIndex]['driven-km'] = $(work).find('input.driven-km').val()
                         $(document).find('.card.work input:not(.work-number), select').each((inputIndex, input) => {
-                            if(input.name === "driven-km") {
-                                userInsertedKm += parseInt(input.value);
+                            if (input.name !== 'driven-km') {
+                                rows[workNum][trIndex][input.name] = input.value;
                             }
-                            rows[workNum][trIndex][input.name] = input.value;
                         });
                     });
                 });
 
+                $(document).find('.card.work .card-header input[name=driven-km]').each((inputIndex, input) => {
+                    userInsertedKm += parseInt(input.value);
+                });
 
 
-                if(userInsertedKm !== totalKm) {
+                console.log('Total: ', totalKm)
+                console.log('Inserted: ', userInsertedKm)
+                console.log(Math.abs(userInsertedKm - totalKm));
+
+                if(Math.abs(userInsertedKm - totalKm) !== 0) {
                     throw new Error($('#errors #differentKm')[0].innerText);
                 }
 
@@ -159,23 +174,23 @@ $(document).ready(() => {
                     data: JSON.stringify(data),
                     contentType: 'json',
                     success: (response) => {
-                        $('#report button[type="submit"]').find('#spinner, #spinner-text').removeClass('d-none');
-                        $('#report button[type="submit"]').find('.btn-text').addClass('d-none');
+                        $('#report button[type="submit"]').find('#spinner, #spinner-text').addClass('d-none');
+                        $('#report button[type="submit"]').find('.btn-text').removeClass('d-none');
                         window.location.replace(response);
                     },
                     error: (jqXHR, status, error) => {
-                        $('#report button[type="submit"]').find('#spinner, #spinner-text').removeClass('d-none');
-                        $('#report button[type="submit"]').find('.btn-text').addClass('d-none');
+                        $('#report button[type="submit"]').find('#spinner, #spinner-text').addClass('d-none');
+                        $('#report button[type="submit"]').find('.btn-text').removeClass('d-none');
                         alert(error.message);
                     },
                     complete: () => {
-                        $('#report button[type="submit"]').find('#spinner, #spinner-text').removeClass('d-none');
-                        $('#report button[type="submit"]').find('.btn-text').addClass('d-none');
+                        $('#report button[type="submit"]').find('#spinner, #spinner-text').addClass('d-none');
+                        $('#report button[type="submit"]').find('.btn-text').removeClass('d-none');
                     },
                 });
             } catch (error) {
-                $('#report button[type="submit"]').find('#spinner, #spinner-text').removeClass('d-none');
-                $('#report button[type="submit"]').find('.btn-text').addClass('d-none');
+                $('#report button[type="submit"]').find('#spinner, #spinner-text').addClass('d-none');
+                $('#report button[type="submit"]').find('.btn-text').removeClass('d-none');
                 alert(error.message);
             }
         });

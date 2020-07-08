@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateWorkReasonsTable extends Migration
+class AddDrivenKmColToReportsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,8 @@ class CreateWorkReasonsTable extends Migration
      */
     public function up()
     {
-        Schema::create('work_reasons', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+        Schema::table('reports', function (Blueprint $table) {
+            $table->integer('driven_km');
         });
     }
 
@@ -26,6 +25,8 @@ class CreateWorkReasonsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('work_reasons');
+        Schema::table('reports', function (Blueprint $table) {
+            $table->dropColumn('driven_km');
+        });
     }
 }

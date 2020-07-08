@@ -68,7 +68,7 @@ class Report extends Model
     }
 
     public function getTotalKm() {
-        return $this->lines()->get()->sum('driven_km');
+        return $this->km_arrival - $this->km_departure;
     }
 
     public static function notSynced() {

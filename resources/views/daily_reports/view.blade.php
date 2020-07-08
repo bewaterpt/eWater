@@ -55,7 +55,7 @@
                                             @Lang('general.hour')
                                         @endif
                                     </div>
-                                    <div class="d-inline-block">{{ $report->linesByWorkNumber($workNumber)->sum('driven_km') }} @Lang('general.daily_reports.km')</div>
+                                    <div class="d-inline-block">{{ $report->linesByWorkNumber($workNumber)->first()->driven_km }} @Lang('general.daily_reports.km')</div>
                                     <div class="d-inline chevron float-right text-right"><i class="fas fa-chevron-up"></i></div>
                                 </div>
                                 <div class="card-body p-0 collapse in" id="collapse-{{ $workNumber }}">

@@ -15,6 +15,7 @@ use App\Helpers\LdapHelper;
 use LdapRecord\Laravel\Auth\ListensForLdapBindFailure;
 use App\Notifications\ApprovalPending;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class LoginController extends Controller
 {

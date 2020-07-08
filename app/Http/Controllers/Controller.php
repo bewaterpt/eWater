@@ -6,6 +6,7 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
+use Illuminate\Support\Carbon;
 use App\Models\Permission;
 use App\Helpers\Helper;
 use App;
@@ -36,6 +37,7 @@ class Controller extends BaseController
             View::share('pmodel', $this->permissionModel);
             View::share('helpers', $this->helper);
             View::share('currentUser', Auth::user());
+            View::share('carbon', new Carbon());
 
             return $next($request);
         });

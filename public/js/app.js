@@ -32792,7 +32792,7 @@ $(document).ready(function () {
     return d.getUTCFullYear() + '-' + pad(d.getUTCMonth() + 1) + '-' + pad(d.getUTCDate()) + 'T' + pad(d.getUTCHours()) + ':' + pad(d.getUTCMinutes()); // + pad(d.getUTCSeconds())+'Z'
   }
 
-  if ($('#daily-reports-create').length > 0) {
+  if ($('#daily-reports-create').length > 0 || $('#daily-reports-edit').length > 0) {
     /**
      * Gets the selected article info
      *
@@ -32841,7 +32841,11 @@ $(document).ready(function () {
       tr.find('#removeRow').on('click', function (e) {
         removeRow(e);
       });
-      tr.find('#inputDatetime').val(ISODateString(today));
+
+      if (tr.find('#inputDatetime').val() === '') {
+        tr.find('#inputDatetime').val(ISODateString(today));
+      }
+
       console.log(tr[0]);
       $(event.target).parents('.card.work').find('table#report-lines tbody').append(tr); // window.scrollTo(0, document.body.scrollHeight || document.documentElement.scrollHeight);
 
@@ -32883,14 +32887,22 @@ $(document).ready(function () {
       tr.find('#removeRow').on('click', function (event) {
         removeLine(event);
       });
-      tr.find('#inputDatetime').val(ISODateString(today)); // window.scrollTo(0, document.body.scrollHeight || document.documentElement.scrollHeight);
+
+      if (tr.find('#inputDatetime').val() === '') {
+        tr.find('#inputDatetime').val(ISODateString(today));
+      } // window.scrollTo(0, document.body.scrollHeight || document.documentElement.scrollHeight);
+
 
       $(event.target).parents('.card').find('.card.work:last-of-type').after(work);
       $('a[href="#"]').click(function (event) {
         event.preventDefault();
       });
     });
-    $('#inputDatetime').val(ISODateString(today));
+
+    if ($('#inputDatetime').val() === '') {
+      $('#inputDatetime').val(ISODateString(today));
+    }
+
     $('#report').on('submit', function (event) {
       event.preventDefault();
       $('#report button[type="submit"]').find('#spinner, #spinner-text').removeClass('d-none');
@@ -32908,20 +32920,26 @@ $(document).ready(function () {
         var rows = {};
         $('div.card.work').each(function (workIndex, work) {
           workNum = $(work).find('input.work-number').val();
+          kmInserted = false;
           rows[workNum] = {};
           $(work).find('tbody tr').each(function (trIndex, tr) {
             rows[workNum][trIndex] = {};
+            rows[workNum][trIndex]['driven-km'] = $(work).find('input.driven-km').val();
             $(document).find('.card.work input:not(.work-number), select').each(function (inputIndex, input) {
-              if (input.name === "driven-km") {
-                userInsertedKm += parseInt(input.value);
+              if (input.name !== 'driven-km') {
+                rows[workNum][trIndex][input.name] = input.value;
               }
-
-              rows[workNum][trIndex][input.name] = input.value;
             });
           });
         });
+        $(document).find('.card.work .card-header input[name=driven-km]').each(function (inputIndex, input) {
+          userInsertedKm += parseInt(input.value);
+        });
+        console.log('Total: ', totalKm);
+        console.log('Inserted: ', userInsertedKm);
+        console.log(Math.abs(userInsertedKm - totalKm));
 
-        if (userInsertedKm !== totalKm) {
+        if (Math.abs(userInsertedKm - totalKm) !== 0) {
           throw new Error($('#errors #differentKm')[0].innerText);
         }
 
@@ -32932,23 +32950,23 @@ $(document).ready(function () {
           data: JSON.stringify(data),
           contentType: 'json',
           success: function success(response) {
-            $('#report button[type="submit"]').find('#spinner, #spinner-text').removeClass('d-none');
-            $('#report button[type="submit"]').find('.btn-text').addClass('d-none');
+            $('#report button[type="submit"]').find('#spinner, #spinner-text').addClass('d-none');
+            $('#report button[type="submit"]').find('.btn-text').removeClass('d-none');
             window.location.replace(response);
           },
           error: function error(jqXHR, status, _error) {
-            $('#report button[type="submit"]').find('#spinner, #spinner-text').removeClass('d-none');
-            $('#report button[type="submit"]').find('.btn-text').addClass('d-none');
+            $('#report button[type="submit"]').find('#spinner, #spinner-text').addClass('d-none');
+            $('#report button[type="submit"]').find('.btn-text').removeClass('d-none');
             alert(_error.message);
           },
           complete: function complete() {
-            $('#report button[type="submit"]').find('#spinner, #spinner-text').removeClass('d-none');
-            $('#report button[type="submit"]').find('.btn-text').addClass('d-none');
+            $('#report button[type="submit"]').find('#spinner, #spinner-text').addClass('d-none');
+            $('#report button[type="submit"]').find('.btn-text').removeClass('d-none');
           }
         });
       } catch (error) {
-        $('#report button[type="submit"]').find('#spinner, #spinner-text').removeClass('d-none');
-        $('#report button[type="submit"]').find('.btn-text').addClass('d-none');
+        $('#report button[type="submit"]').find('#spinner, #spinner-text').addClass('d-none');
+        $('#report button[type="submit"]').find('.btn-text').removeClass('d-none');
         alert(error.message);
       }
     });

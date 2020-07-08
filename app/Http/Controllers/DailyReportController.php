@@ -80,6 +80,8 @@ class DailyReportController extends Controller
 
             $works = $input['rows'];
 
+            // dd($works);
+
             $lastInsertedEntryNumber = OutonoObrasCCConnector::lastInsertedEntryNumber() + 1;
 
             $rows = [];
@@ -287,5 +289,34 @@ class DailyReportController extends Controller
         }
 
         return json_encode($data);
+    }
+
+    public function edit(Request $request, $reportId) {
+        $report = Report::find($reportId);
+        $articles = Article::getDailyReportRelevantArticles()->pluck('cod', 'descricao');
+        $workers = User::whereHas('roles', function ($query) {
+            $query->where('slug', 'like', 'ewater_exp_%');
+        })->get();
+
+        $works;
+        $worksTranportData;
+
+        foreach ($report->lines()->get() as $line) {
+            $works[$line->work_number][] = $line;
+
+            if (!isset($worksTranportData[$line->work_number]['km'])) {
+                $worksTranportData[$line->work_number]['km'] = $line->driven_km;
+            }
+
+            if (!isset($worksTranportData[$line->work_number]['date'])) {
+                $worksTranportData[$line->work_number]['date'] = $line->entry_date;
+            }
+
+            if (!isset($worksTranportData[$line->work_number]['report'])) {
+                $worksTranportData[$line->work_number]['report'] = $line->report()->first();
+            }
+        }
+
+        return view('daily_reports.edit', ['report' => $report, 'workers' => $workers, 'articles' => $articles, 'works' => $works, 'transportData' => $worksTranportData]);
     }
 }
