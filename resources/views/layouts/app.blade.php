@@ -139,6 +139,11 @@
                                 </div>
                             </li>
                         </ul>
+                        <div class="card float-right d-none d-md-block" id="bug-report">
+                            <a href="mailto:helpdesk@bewater.com.pt?subject=Bug%20Report {{ $currentUser ? ': ' . $currentUser->name : ''}}" title="{{ __('tooltips.report_a_bug') }}" class="btn btn-link btn-md btn-primary text-white">
+                                    <i class="fas fa-headset-alt"></i>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </nav>
@@ -161,11 +166,6 @@
                 @endif
                 @yield('content')
             </main>
-            <div class="card float-right d-none d-md-block" id="bug-report">
-                <a href="mailto:helpdesk@bewater.com.pt?subject=Bug%20Report {{ $currentUser ? ': ' . $currentUser->name : ''}}" title="{{ __('tooltips.report_a_bug') }}" class="btn btn-link btn-lg btn-primary text-white">
-                        <i class="fas fa-bug"></i>
-                </a>
-            </div>
         </div>
         <!--scripts-->
         <script src="{{ asset('js/vendor.js') }}"></script>
