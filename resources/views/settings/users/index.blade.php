@@ -19,14 +19,14 @@
                                 <th>
                                     @Lang('general.roles')
                                 </th>
-                                <th>
-                                    @Lang('general.agent')
+                                <th class="text-center">
+                                    @Lang('general.accountable')
                                 </th>
-                                <th>
+                                <th class="text-center">
                                     @Lang('general.state')
                                 </th>
                                 <th>
-                                    @Lang('general.actions')
+                                    <i class="fas fa-tools"></i>
                                 </th>
                             </tr>
                         </thead>
@@ -49,18 +49,18 @@
                                             {{ $role->name }}<br>
                                         @endforeach
                                     </td>
-                                    <td>
-                                        @if($user->agent()->first())
-                                        <a href="{{Route('settings.agent.view', ['id' => $user->agent()->first()->id])}}">
-                                            {{$user->agent()->first()->name}}
-                                        </a>
+                                    <td class="text-center">
+                                        @if($user->accountable)
+                                            <i class="fas fa-check text-success"></i>
+                                        @else
+                                            <i class="fas fa-times text-danger"></i>
                                         @endif
                                     </td>
-                                    <td style="text-align: center">
+                                    <td class="text-center">
                                         @if($user->enabled)
-                                            <i class="fas fa-check" style="color: limegreen"></i>
+                                            <i class="fas fa-check text-success"></i>
                                         @else
-                                            <i class="fas fa-times" style="color: red"></i>
+                                            <i class="fas fa-times text-danger"></i>
                                         @endif
                                     </td>
                                     <td class="actions">

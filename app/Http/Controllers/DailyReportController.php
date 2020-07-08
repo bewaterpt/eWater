@@ -120,9 +120,10 @@ class DailyReportController extends Controller
             return route('daily_reports.list');
 
         } else {
+            $currentUserRoles = Auth::user()->roles()->pluck('slug');
             $articles = Article::getDailyReportRelevantArticles()->pluck('cod', 'descricao');
             $workers = User::whereHas('roles', function ($query) {
-                $query->where('slug', 'like', 'ewater_exp_%');
+                $query->whereIn('slug', $currentUserRoles);
             })->get();
             return view('daily_reports.create', ['articles' => $this->helper->sortArray($articles->toArray()), 'workers' => $workers]);
         }
@@ -293,9 +294,10 @@ class DailyReportController extends Controller
 
     public function edit(Request $request, $reportId) {
         $report = Report::find($reportId);
+        $currentUserRoles = Auth::user()->roles()->pluck('slug');
         $articles = Article::getDailyReportRelevantArticles()->pluck('cod', 'descricao');
         $workers = User::whereHas('roles', function ($query) {
-            $query->where('slug', 'like', 'ewater_exp_%');
+            $query->whereIn('slug', $currentUserRoles);
         })->get();
 
         $works;

@@ -1,7 +1,7 @@
 <fieldset id="multiselect-listbox" class="border-top mb-3">
     <div class="form-row mt-2 justify-content-center">
         <div class="form-group col-md-5">
-            <label for="inputRoles">@Lang('forms.fields.without_access')</label>
+            <label for="selectLeft">@Lang('forms.fields.without_access')</label>
             <select class="form-control selectpicker" multiple id="selectLeft">
                 @foreach($left as $role)
                     <option value="{{ $role->id }}">{{ $role->{$lField} }}</option>

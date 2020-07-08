@@ -41,6 +41,7 @@ return [
     'status' => "Estado",
     'slug' => "Nome máquina",
     'loading' => 'A carregar...',
+    'accountable' => 'Responsável?',
     'daily_reports' => [
         'db_sync_success' => "Relatório sincronizado corretamente com o outono.",
         'daily_reports' => 'Relatórios Diários',

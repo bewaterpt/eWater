@@ -15,7 +15,10 @@ return [
         'hours' => 'Nº de Horas',
         'comments' => "Notas/Comentários",
         'slug' => 'Nome máquina',
-        'without_access' => ''
+        'without_access' => 'Não pertence',
+        'with_access' => 'Pertence',
+        'no_value' => 'N/A',
+        'accountable_bool' => 'Reponsável?',
     ],
     'placeholders' => [
         'name'=> 'Nome Apelido',

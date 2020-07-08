@@ -6,23 +6,27 @@
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header">
-                    @Lang('settings.edit_user') {{ $user->name }}
+                    @Lang('settings.users.edit'): {{ $user->name }}
                 </div>
                 <div class="card-body">
                     <form id="updateUser" method="POST" action={{Route('settings.users.update', ['id' => $user->id])}}>
                         @csrf
                         <input type="hidden" name="roles" id="roles"/>
-                        <div class="form-row mb-5">
+                        <div class="form-row mb-2">
                             <div class="form-group col-md-6">
                                 <label for="inputName">@Lang('forms.fields.name')</label>
                                 <input type="text" name="name" class="form-control" id="inputName" value="{{$user->name ? $user->name : ''}}" placeholder="{{__('forms.placeholders.name')}}">
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="inputEmail">@Lang('forms.fields.email')</label>
-                                <input type="email" name="email" class="form-control-plaintext" readonly value="{{$user->email ? $user->email : __('settings.no_value')}}" id="inputEmail" placeholder="{{__('forms.placeholders.email')}}">
+                                <input type="email" name="email" class="form-control-plaintext" readonly value="{{$user->email ? $user->email : __('forms.fields.no_value')}}" id="inputEmail" placeholder="{{__('forms.placeholders.email')}}">
+                            </div>
+                            <div class="form-group col-md-12">
+                                <label for="inputAccountable" class="mr-2">@Lang('forms.fields.accountable_bool')</label>
+                                <input type="checkbox" name="accountable" class="form-control-checkbox" {{$user->accountable ? 'checked' : ''}} id="inputAccountable">
                             </div>
                         </div>
-                        <div class="mb-3">@Lang('general.daily_reports.')</div>
+                        <div class="mb-3">@Lang('general.roles')</div>
                         @include('components.multiselect_listbox', ['left' => $roles, 'right' => $user->roles()->get(), 'lField' => 'name', 'rField' => 'name'])
                         <button type="submit" class="btn btn-primary">@Lang('general.save')</button>
                       </form>

@@ -65,6 +65,13 @@ class UserController extends Controller
     public function update(Request $request, $userId) {
         $user = User::find($userId);
         $user->name = $request->input('name');
+
+        if ($request->has('accountable')) {
+            $user->accountable = true;
+        } else {
+            $user->accountable = false ;
+        }
+
         $user->save();
 
         $roleIds;
