@@ -6,7 +6,7 @@
         <div class="col-md-11">
             <div class="card">
                 <div class="card-header">@Lang('general.daily_reports.list')</div>
-                <div class="card-body">
+                <div class="card-body table-responsive">
                     <table id="reports" class="table table-sm table-striped table-bordered" style="width: 100%">
                         <thead class="thead-light">
                             <tr>
@@ -25,8 +25,8 @@
                                 <th>
                                     @Lang('general.created_by')
                                 </th>
-                                <th>
-                                    @Lang('general.actions')
+                                <th class="text-center px-0">
+                                    <i class="fas fa-tools text-black sorting_disabled"></i>
                                 </th>
                             </tr>
                         </thead>
@@ -55,7 +55,7 @@
                                     <td>
                                         {{ $report->creator()->first()->name }}
                                     </td>
-                                    <td class="actions">
+                                    <td class="actions text-center">
                                         <a class="view" href="{{ route('daily_reports.view', ['id' => $report->id]) }}"><i class="fas fa-eye"></i></a>
                                         <a href="{{ route('daily_reports.edit', ['id' => $report->id]) }}" class="edit"><i class="fas fa-edit"></i></a>
                                         {{-- <a class="" href="{{$user->id === Auth::user()->id ? Route('settings.users.edit_self') : Route('settings.users.edit', ['id' => $user->id])}}" title="@Lang('general.action_edit')"><i class="fas fa-user-edit"></i></a>

@@ -10,6 +10,7 @@
     "require": {
         "php": "^7.2.5",
         "adldap/adldap": "dev-master",
+        "alimranahmed/laraocr": "^1.0",
         "directorytree/ldaprecord-laravel": "^1.2",
         "doctrine/dbal": "^2.10",
         "fideloper/proxy": "^4.2",

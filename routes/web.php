@@ -107,7 +107,7 @@ Route::group(['middleware' => ['web']], function () {
             Route::get('materials', 'Settings\MaterialController@index')->name('settings.materials.list');
             Route::match(['get', 'post'], 'materials/edit/{id}', 'Settings\MaterialController@edit')->name('settings.materials.edit');
             Route::match(['get', 'post'], 'materials/create/{id?}', 'Settings\MaterialController@create')->name('settings.materials.create');
-            Route::get('material/delete/{id}', 'Settings\MaterialController@delete')->name('settings.materials.delete');
+            // Route::get('material/delete/{id}', 'Settings\MaterialController@delete')->name('settings.materials.delete');
 
             // Process Statuses
             Route::get('statuses', 'Settings\StatusController@index')->name('settings.statuses.list');

@@ -16,6 +16,12 @@ $(document).ready(() => {
         $("#reports").DataTable({
             responsive: true,
             // ordering: false,
+            columnDefs: [
+                {
+                    targets: $("#reports").find("thead tr:first th").length,
+                    orderable: false,
+                }
+            ],
             lengthChange: false,
             language: {
                 url: "/config/dataTables/lang/" + window.lang + ".json"

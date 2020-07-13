@@ -7,7 +7,7 @@
             <div class="card">
                 <div class="card-header">@Lang('general.statuses')</div>
                 <div class="card-body">
-                    <table id="datatable-users" class="object-table table table-sm table-striped" style="width: 100%">
+                    <table id="datatable-statuses" class="object-table table table-sm table-striped table-bordered" style="width: 100%">
                         <thead>
                             <tr>
                                 <th>

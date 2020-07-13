@@ -58,7 +58,7 @@
                                     <div class="d-inline-block">{{ $report->linesByWorkNumber($workNumber)->first()->driven_km }} @Lang('general.daily_reports.km')</div>
                                     <div class="d-inline chevron float-right text-right"><i class="fas fa-chevron-up"></i></div>
                                 </div>
-                                <div class="card-body p-0 collapse in" id="collapse-{{ $workNumber }}">
+                                <div class="card-body p-0 collapse in table-responsive" id="collapse-{{ $workNumber }}">
                                     <table class="table table-sm table-bordered p-0 m-0" style="position: relative; z-index: 20">
                                         <thead>
                                             <tr class="hide-table-padding">

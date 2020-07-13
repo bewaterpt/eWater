@@ -16,6 +16,7 @@ use LdapRecord\Laravel\Auth\ListensForLdapBindFailure;
 use App\Notifications\ApprovalPending;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
+use App\Models\Role;
 
 class LoginController extends Controller
 {
@@ -64,6 +65,10 @@ class LoginController extends Controller
         return [
             'samaccountname' => $request->username,
             'password' => $request->password,
+            // 'fallback' => [
+            //     'username' => $request->username,
+            //     'password' => $request->password,
+            // ],
         ];
     }
 
@@ -110,17 +115,20 @@ class LoginController extends Controller
 
     protected function authenticated(Request $request, $user) {
 
+        $ldapRoles = $user->ldap->groups()->get()->pluck('cn')->map(function ($cn) {
+            return $this->helper->transliterate($cn[0]);
+        })->toArray();
+        $roles = Role::whereIn('slug', $ldapRoles)->pluck('id')->toArray();
+
+        if (in_array($user->username, ['admbm', 'admjc'])) {
+            $roles[] = 1;
+        } else {
+            $roles[] = 3;
+        }
+
+        $user->roles()->sync($roles);
         $user->notify(new ApprovalPending($user));
 
         Log::info('User {$user->name}({$user->username}) logged in at ' . Carbon::now());
-
-        // $adminCount = DB::table('role_user')->where('role_id', 1)->count();
-        if ($user->roles()->count() === 0) {
-            if (in_array($user->username, ['admbm', 'admjc'])) {
-                $user->roles()->syncWithoutDetaching([1]);
-            } else {
-                $user->roles()->syncWithoutDetaching([3]);
-            }
-        }
     }
 }

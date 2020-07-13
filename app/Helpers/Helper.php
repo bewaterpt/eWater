@@ -145,6 +145,6 @@ class Helper {
             return strtoupper(strtr($str, $replacePairs));
         }
 
-        return strtr($str, $replacePairs);
+        return mb_strtolower(strtr($str, $replacePairs));
     }
 }

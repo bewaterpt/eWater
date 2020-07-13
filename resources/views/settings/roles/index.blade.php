@@ -7,7 +7,7 @@
             <div class="card">
                 <div class="card-header">@Lang('general.roles')</div>
                 <div class="card-body">
-                    <table id="datatable-users" class="object-table" style="width: 100%">
+                    <table id="datatable-roles" class="object-table table table-bordered table-striped" style="width: 100%">
                         <thead>
                             <tr>
                                 <th>
