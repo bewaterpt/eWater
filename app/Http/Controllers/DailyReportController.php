@@ -3,11 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\DailyReport\Article;
-use App\Models\DailyReport\Report;
-use App\Models\DailyReport\OutonoObrasCCConnector;
-use App\Models\DailyReport\ReportLine;
-use App\Models\DailyReport\ProcessStatus;
+use App\Models\DailyReports\Article;
+use App\Models\DailyReports\Report;
+use App\Models\DailyReports\ReportLine;
+use App\Models\DailyReports\ProcessStatus;
+use App\Models\Connectors\OutonoObrasCCConnector;
 use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Artisan;

@@ -14,8 +14,7 @@ use DB;
 use Auth;
 use View;
 use Route;
-// use vinkla\Hashids\Facades\Hashids;
-use App\Models\DailyReport\Status;
+use App\Models\DailyReports\Status;
 
 class Controller extends BaseController
 {

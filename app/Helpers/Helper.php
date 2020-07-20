@@ -1,8 +1,8 @@
 <?php
 namespace App\Helpers;
 
-use App\Models\DailyReport\ReportLine;
-use App\Models\DailyReport\Report;
+use App\Models\DailyReports\ReportLine;
+use App\Models\DailyReports\Report;
 class Helper {
 
     protected function isAssoc(array $arr)

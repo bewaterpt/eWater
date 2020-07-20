@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Models\DailyReport;
+namespace App\Models\DailyReports;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
-use App\Models\DailyReport\Status;
+use App\Models\DailyReports\Status;
 use Auth;
 
 class ProcessStatus extends Model
@@ -33,11 +33,11 @@ class ProcessStatus extends Model
     protected $table = 'process_status';
 
     public function report() {
-        return $this->belongsTo('App\Models\DailyReport\Report', 'process_id');
+        return $this->belongsTo('App\Models\DailyReports\Report', 'process_id');
     }
 
     public function status() {
-        return $this->belongsTo('App\Models\DailyReport\Status');
+        return $this->belongsTo('App\Models\DailyReports\Status');
     }
 
     public function user() {
@@ -45,7 +45,7 @@ class ProcessStatus extends Model
     }
 
     public function previous() {
-        return $this->belongsTo('App\Models\DailyReport\ProcessStatus', 'previous_status');
+        return $this->belongsTo('App\Models\DailyReports\ProcessStatus', 'previous_status');
     }
 
     public function stepForward($status = false) {

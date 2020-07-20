@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Settings;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\DailyReport\Status;
+use App\Models\DailyReports\Status;
 use App\Models\Role;
 
 class StatusController extends Controller

@@ -5,6 +5,12 @@
  */
 
 require('./bootstrap');
+import Vue from 'vue';
+import Laraform from 'laraform';
+
+Vue.use(Laraform);
+
+
 // Setup ajax headers
 $.ajaxSetup({
     headers: {

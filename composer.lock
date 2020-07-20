@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "3093bef2bd5cddd32bf9689437d9bd29",
+    "content-hash": "791e7982518add8b225ede860832b00c",
     "packages": [
         {
             "name": "adldap/adldap",
@@ -1066,76 +1066,6 @@
             "time": "2020-04-28T08:47:37+00:00"
         },
         {
-            "name": "graham-campbell/manager",
-            "version": "v4.5.3",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/GrahamCampbell/Laravel-Manager.git",
-                "reference": "9584dcca30aeaebd04bed7f1a59ee52fe5b24b49"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/GrahamCampbell/Laravel-Manager/zipball/9584dcca30aeaebd04bed7f1a59ee52fe5b24b49",
-                "reference": "9584dcca30aeaebd04bed7f1a59ee52fe5b24b49",
-                "shasum": ""
-            },
-            "require": {
-                "illuminate/contracts": "^5.5|^6.0|^7.0",
-                "illuminate/support": "^5.5|^6.0|^7.0",
-                "php": "^7.1.3"
-            },
-            "require-dev": {
-                "graham-campbell/analyzer": "^2.4|^3.0",
-                "graham-campbell/testbench-core": "^3.1",
-                "mockery/mockery": "^1.3.1",
-                "phpunit/phpunit": "^6.5|^7.5|^8.4|^9.0"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "4.5-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "GrahamCampbell\\Manager\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Graham Campbell",
-                    "email": "graham@alt-three.com"
-                }
-            ],
-            "description": "Manager Provides Some Manager Functionality For Laravel",
-            "keywords": [
-                "Graham Campbell",
-                "GrahamCampbell",
-                "Laravel Manager",
-                "Laravel-Manager",
-                "connector",
-                "framework",
-                "interface",
-                "laravel",
-                "manager"
-            ],
-            "funding": [
-                {
-                    "url": "https://github.com/GrahamCampbell",
-                    "type": "github"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/graham-campbell/manager",
-                    "type": "tidelift"
-                }
-            ],
-            "time": "2020-04-26T09:40:56+00:00"
-        },
-        {
             "name": "guzzlehttp/guzzle",
             "version": "6.5.4",
             "source": {
@@ -1326,24 +1256,23 @@
         },
         {
             "name": "hashids/hashids",
-            "version": "4.0.0",
+            "version": "3.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/vinkla/hashids.git",
-                "reference": "43bb2407f16a631f0128f47bcb67ff986c63dde2"
+                "reference": "b6c61142bfe36d43740a5419d11c351dddac0458"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/vinkla/hashids/zipball/43bb2407f16a631f0128f47bcb67ff986c63dde2",
-                "reference": "43bb2407f16a631f0128f47bcb67ff986c63dde2",
+                "url": "https://api.github.com/repos/vinkla/hashids/zipball/b6c61142bfe36d43740a5419d11c351dddac0458",
+                "reference": "b6c61142bfe36d43740a5419d11c351dddac0458",
                 "shasum": ""
             },
             "require": {
-                "ext-mbstring": "*",
-                "php": "^7.2"
+                "php": "^7.1.3"
             },
             "require-dev": {
-                "phpunit/phpunit": "^8.0"
+                "phpunit/phpunit": "^7.0"
             },
             "suggest": {
                 "ext-bcmath": "Required to use BC Math arbitrary precision mathematics (*).",
@@ -1352,7 +1281,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "4.0-dev"
+                    "dev-master": "3.0-dev"
                 }
             },
             "autoload": {
@@ -1372,8 +1301,8 @@
                 },
                 {
                     "name": "Vincent Klaiber",
-                    "email": "hello@doubledip.se",
-                    "homepage": "https://doubledip.se"
+                    "email": "hello@vinkla.com",
+                    "homepage": "https://vinkla.com"
                 }
             ],
             "description": "Generate short, unique, non-sequential ids (like YouTube and Bitly) from numbers",
@@ -1389,7 +1318,7 @@
                 "obfuscate",
                 "youtube"
             ],
-            "time": "2019-04-03T13:40:29+00:00"
+            "time": "2018-03-12T16:30:09+00:00"
         },
         {
             "name": "intervention/image",
@@ -1460,6 +1389,64 @@
                 "watermark"
             ],
             "time": "2019-11-02T09:15:47+00:00"
+        },
+        {
+            "name": "laraform/laraform-laravel",
+            "version": "1.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laraform/laraform-laravel.git",
+                "reference": "56635552bfb7ba956e72501f2e5c88d7a8d8eb9f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laraform/laraform-laravel/zipball/56635552bfb7ba956e72501f2e5c88d7a8d8eb9f",
+                "reference": "56635552bfb7ba956e72501f2e5c88d7a8d8eb9f",
+                "shasum": ""
+            },
+            "require": {
+                "hashids/hashids": "^3.0",
+                "php": ">=5.5.9"
+            },
+            "require-dev": {
+                "orchestra/testbench": "~3.0",
+                "phpunit/phpunit": "^7.5"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Laraform\\LaraformServiceProvider"
+                    ],
+                    "aliases": {
+                        "Laraform": "Laraform\\Laraform"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Laraform\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Adam Berecz",
+                    "email": "adam@laraform.io"
+                }
+            ],
+            "description": "Laraform Community Edition (Laravel)",
+            "homepage": "https://laraform.io",
+            "keywords": [
+                "builder",
+                "form",
+                "generator",
+                "laravel"
+            ],
+            "time": "2020-04-29T06:21:43+00:00"
         },
         {
             "name": "laravel/framework",
@@ -6096,70 +6083,6 @@
                 "upload"
             ],
             "time": "2020-05-10T10:10:07+00:00"
-        },
-        {
-            "name": "vinkla/hashids",
-            "version": "8.1.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/vinkla/laravel-hashids.git",
-                "reference": "ecf5534731dbd476e52859b3a6ab265f29ebade7"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/vinkla/laravel-hashids/zipball/ecf5534731dbd476e52859b3a6ab265f29ebade7",
-                "reference": "ecf5534731dbd476e52859b3a6ab265f29ebade7",
-                "shasum": ""
-            },
-            "require": {
-                "graham-campbell/manager": "^4.4",
-                "hashids/hashids": "^4.0",
-                "illuminate/contracts": "^7.0",
-                "illuminate/support": "^7.0",
-                "php": "^7.2.5"
-            },
-            "require-dev": {
-                "graham-campbell/analyzer": "^3.0",
-                "graham-campbell/testbench": "^5.4",
-                "mockery/mockery": "^1.3",
-                "phpunit/phpunit": "^8.5 || ^9.0",
-                "squizlabs/php_codesniffer": "^3.5"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "8.1-dev"
-                },
-                "laravel": {
-                    "providers": [
-                        "Vinkla\\Hashids\\HashidsServiceProvider"
-                    ],
-                    "aliases": {
-                        "Hashids": "Vinkla\\Hashids\\Facades\\Hashids"
-                    }
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Vinkla\\Hashids\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Vincent Klaiber",
-                    "email": "hello@doubledip.se"
-                }
-            ],
-            "description": "A Hashids bridge for Laravel",
-            "keywords": [
-                "hashids",
-                "laravel"
-            ],
-            "time": "2020-03-10T08:21:07+00:00"
         },
         {
             "name": "vlucas/phpdotenv",

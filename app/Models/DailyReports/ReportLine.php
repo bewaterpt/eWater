@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Models\DailyReport;
+namespace App\Models\DailyReports;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Models\DailyReport\Article;
+use App\Models\DailyReports\Article;
 
 class ReportLine extends Model
 {
@@ -23,7 +23,7 @@ class ReportLine extends Model
     }
 
     public function report() {
-        return $this->belongsTo('App\Models\DailyReport\Report');
+        return $this->belongsTo('App\Models\DailyReports\Report');
     }
 
     public function user() {

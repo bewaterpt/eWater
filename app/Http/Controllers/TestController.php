@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\DailyReport\Report;
-use App\Models\DailyReport\OutonoObrasCCConnector as ObrasCC;
-use App\Models\DailyReport\Article;
+use App\Models\DailyReports\Report;
+use App\Models\DailyReports\Article;
+use App\Models\Connectors\OutonoObrasCCConnector as ObrasCC;
 use Illuminate\Support\Carbon;
 
 class TestController extends Controller

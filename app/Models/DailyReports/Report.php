@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Models\DailyReport;
+namespace App\Models\DailyReports;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Models\DailyReport\ProgressStatus;
+use App\Models\DailyReports\ProgressStatus;
 
 class Report extends Model
 {
@@ -12,19 +12,19 @@ class Report extends Model
     }
 
     public function processStatus() {
-        return $this->hasMany('App\Models\DailyReport\ProcessStatus', 'process_id');
+        return $this->hasMany('App\Models\DailyReports\ProcessStatus', 'process_id');
     }
 
     public function latestUpdate() {
-        return $this->hasMany('App\Models\DailyReport\ProcessStatus', 'process_id')->latest('id')->first();
+        return $this->hasMany('App\Models\DailyReports\ProcessStatus', 'process_id')->latest('id')->first();
     }
 
     public function lines() {
-        return $this->hasMany('App\Models\DailyReport\ReportLine');
+        return $this->hasMany('App\Models\DailyReports\ReportLine');
     }
 
     public function linesByWorkNumber($workNumber) {
-        $lines = $this->hasMany('App\Models\DailyReport\ReportLine')->get();
+        $lines = $this->hasMany('App\Models\DailyReports\ReportLine')->get();
         $processedLines = [];
 
         foreach ($lines as $line) {
