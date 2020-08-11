@@ -73,6 +73,7 @@
                                             </td>
                                             <td>
                                                 <select name="article" required class="form-control selectpicker" id="inputArticle" data-dropup-auto="false" required>
+                                                    {{-- {{ dd($articles) }} --}}
                                                     @foreach($articles as $descricao => $cod)
                                                         <option value="{{ $cod }}">{{ $descricao }}</option>
                                                     @endforeach

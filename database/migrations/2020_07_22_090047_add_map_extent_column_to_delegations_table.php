@@ -14,7 +14,7 @@ class AddMapExtentColumnToDelegationsTable extends Migration
     public function up()
     {
         Schema::table('delegations', function (Blueprint $table) {
-            $table->json('map_extent');
+            $table->json('map_extent')->nullable();
         });
     }
 
