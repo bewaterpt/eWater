@@ -19,6 +19,7 @@ class Article extends Model
     }
 
     public static function getDailyReportRelevantArticles() {
+        dd(self::whereIn('cod', [1, 3, 4])->pluck('cod', 'descricao'));
         return self::whereIn('cod', [1, 3, 4]);
     }
 
