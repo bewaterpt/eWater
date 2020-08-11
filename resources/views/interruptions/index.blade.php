@@ -5,7 +5,12 @@
     <div class="row justify-content-center">
         <div class="col-md-11">
             <div class="card">
-                <div class="card-header">@Lang('general.interruptions.interruptions')</div>
+                <div class="card-header">
+                    @Lang('general.interruptions.interruptions')
+                    <span class="float-right">
+                        <a class="">
+                    </span>
+                </div>
                 <div class="card-body table-responsive">
                     <table id="reports" class="table table-sm table-striped table-bordered" style="width: 100%">
                         <thead class="thead-light">
