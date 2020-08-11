@@ -4,7 +4,7 @@ namespace App\Models\Connectors;
 
 use Illuminate\Database\Eloquent\Model;
 
-class OutonoObrasConnector extends Model
+class OutonoObras extends Model
 {
     protected $connection = 'outono';
 
@@ -16,5 +16,9 @@ class OutonoObrasConnector extends Model
 
     public function getById($workId) {
         return self::find($workId);
+    }
+
+    public static function exists($id) {
+        return self::where('id', $id)->exists();
     }
 }

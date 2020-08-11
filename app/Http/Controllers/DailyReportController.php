@@ -7,7 +7,7 @@ use App\Models\DailyReports\Article;
 use App\Models\DailyReports\Report;
 use App\Models\DailyReports\ReportLine;
 use App\Models\DailyReports\ProcessStatus;
-use App\Models\Connectors\OutonoObrasCCConnector;
+use App\Models\Connectors\OutonoObrasCC;
 use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Artisan;
@@ -82,7 +82,7 @@ class DailyReportController extends Controller
 
             // dd($works);
 
-            $lastInsertedEntryNumber = OutonoObrasCCConnector::lastInsertedEntryNumber() + 1;
+            $lastInsertedEntryNumber = OutonoObrasCC::lastInsertedEntryNumber() + 1;
 
             $rows = [];
 
@@ -122,7 +122,7 @@ class DailyReportController extends Controller
         } else {
             $currentUserRoles = Auth::user()->roles()->pluck('slug');
             $articles = Article::getDailyReportRelevantArticles()->pluck('cod', 'descricao');
-            $workers = User::whereHas('roles', function ($query) {
+            $workers = User::whereHas('roles', function ($query) use ($currentUserRoles){
                 $query->whereIn('slug', $currentUserRoles);
             })->get();
             return view('daily_reports.create', ['articles' => $this->helper->sortArray($articles->toArray()), 'workers' => $workers]);

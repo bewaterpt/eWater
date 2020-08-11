@@ -5,7 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use App\Models\DailyReports\Report;
 use App\Models\DailyReports\Article;
-use App\Models\Connectors\OutonoObrasCCConnector as ObrasCC;
+use App\Models\Connectors\OutonoObrasCC as ObrasCC;
 use Illuminate\Support\Carbon;
 
 class SyncReports extends Command

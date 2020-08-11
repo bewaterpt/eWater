@@ -18,7 +18,7 @@
         "guzzlehttp/guzzle": "^6.3",
         "hashids/hashids": "^3.0",
         "intervention/image": "^2.5",
-        "laraform/laraform-laravel": "^1.2",
+        "jazmy/jaz-form-builder": "dev-master",
         "laravel/framework": "^7.0",
         "laravel/helpers": "^1.2",
         "laravel/scout": "^8.0",

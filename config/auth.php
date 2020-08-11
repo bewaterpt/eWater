@@ -84,8 +84,8 @@ return [
             ],
             'database' => [
                 'model' => App\User::class,
-                'sync_passwords' => true,
-                'password_column' => 'password',
+                // 'sync_passwords' => true,
+                // 'password_column' => 'password',
                 'sync_attributes' => [
                     'name' => 'cn',
                     'email' => 'mail',

@@ -42,6 +42,8 @@ return [
     'slug' => "Nome máquina",
     'loading' => 'A carregar...',
     'accountable' => 'Responsável?',
+    'work_number' => '# Obra',
+    'start_date' => 'Data de inicio',
     'daily_reports' => [
         'db_sync_success' => "Relatório sincronizado corretamente com o outono.",
         'daily_reports' => 'Relatórios Diários',
@@ -71,5 +73,12 @@ return [
         'forward_process' => 'Avançar para o proximo passo',
         'backward_process' => 'Retroceder para o passo anterior',
         'process_status_comment' => 'Nota/Comentário da operação'
+    ],
+    'interruptions' => [
+        'interruptions' => 'Interrupções',
+        'scheduled' => 'Interrupções Programadas',
+        'unscheduled' => 'Interrupções não programadas',
+        'affected_area' => 'Área afetada',
+        'reinstatement_date' => 'Data de Restabelecimento',
     ],
 ];

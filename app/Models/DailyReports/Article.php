@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\DailyReportss;
+namespace App\Models\DailyReports;
 
 use Illuminate\Database\Eloquent\Model;
 

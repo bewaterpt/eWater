@@ -45523,9 +45523,7 @@ $(document).ready(function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-// $(document).ready(() => {
-//     $('table.dataTable').removeClass('dataTable');
-// });
+
 
 /***/ }),
 
@@ -45596,9 +45594,8 @@ try {
   window.Popper = __webpack_require__(/*! popper.js */ "./node_modules/popper.js/dist/esm/popper.js")["default"];
   window.$ = window.jQuery = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
 
-  __webpack_require__(/*! bootstrap/dist/js/bootstrap.bundle */ "./node_modules/bootstrap/dist/js/bootstrap.bundle.js");
+  __webpack_require__(/*! bootstrap/dist/js/bootstrap.bundle.min */ "./node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"); // require('bootstrap');
 
-  __webpack_require__(/*! bootstrap */ "./node_modules/bootstrap/dist/js/bootstrap.js");
 
   __webpack_require__(/*! datatables.net */ "./node_modules/datatables.net/js/jquery.dataTables.js"); // require('datatables.net-dt');
 

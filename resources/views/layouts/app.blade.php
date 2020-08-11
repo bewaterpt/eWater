@@ -85,6 +85,24 @@
                                         </div>
                                     </li>
                                 @endif
+                                @if($pmodel->can('interruptions.'))
+                                    <li class="nav-item dropdown">
+                                        <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                            @Lang('general.interruptions.interruptions') <span class="caret"></span>
+                                        </a>
+                                        <div class="dropdown-menu dropdown-menu" aria-labelledby="navbarDropdown">
+                                            @if($pmodel->can('interruptions.list'))
+                                                <a class="dropdown-item {{ Route::currentRouteName() == 'interruptions.list' ? 'disabled active' : '' }}" href="{{ route('interruptions.list')}}">@lang('general.list_all')</a>
+                                            @endif
+                                            @if($pmodel->can('interruptions.list_unscheduled'))
+                                                <a class="dropdown-item {{ Route::currentRouteName() == 'interruptions.list_unscheduled' ? 'disabled active' : '' }}" href="{{ route('interruptions.list_unscheduled')}}">@lang('general.list_unscheduled')</a>
+                                            @endif
+                                            @if($pmodel->can('interruptions.list_scheduled'))
+                                                <a class="dropdown-item {{ Route::currentRouteName() == 'interruptions.list_scheduled' ? 'disabled active' : '' }}" href="{{ route('interruptions.list_scheduled')}}">@lang('general.list_scheduled')</a>
+                                            @endif
+                                        </div>
+                                    </li>
+                                @endif
                             </ul>
                         @endguest
                         <!-- Right Side Of Navbar -->

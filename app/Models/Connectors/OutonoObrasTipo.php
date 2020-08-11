@@ -4,7 +4,7 @@ namespace App\Models\Connectors;
 
 use Illuminate\Database\Eloquent\Model;
 
-class OutonoObrasTipoConnector extends Model
+class OutonoObrasTipo extends Model
 {
     protected $connection = 'outono';
 
