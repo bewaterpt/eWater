@@ -21,8 +21,8 @@ class Article extends Model
     public static function getDailyReportRelevantArticles() {
         dd(self::whereIn('cod', [1, 3, 4])->pluck('descricao')->
             map(function($element) {
-                $str = (string) $element;
-                dd($str);
+                $str = "";
+                // dd($str);
                 foreach($element as $c) {
                     dd($c);
                     $str .= chr($c);
