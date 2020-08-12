@@ -122,7 +122,7 @@ class DailyReportController extends Controller
         } else {
             $currentUserRoles = Auth::user()->roles()->pluck('slug');
             $articles = Article::getDailyReportRelevantArticles()->pluck('cod', 'descricao')->map(function($element) {
-                return utf8_encode(utf8_decode($element));
+                return utf8_encode($element);
             });
             dd($articles);
             $workers = User::whereHas('roles', function ($query) use ($currentUserRoles){
