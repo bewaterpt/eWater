@@ -22,8 +22,13 @@ class Article extends Model
         dd(self::whereIn('cod', [1, 3, 4])->pluck('descricao')->
             map(function($element) {
                 // $element = str_split($element);
-                $str = "";
-                dd(utf8_decode($element));
+                $elements = [
+                    $element,
+                    utf8_decode($element),
+                    utf8_encode($element)
+                ];
+
+                dd($elements);
                 foreach($element as $c) {
                     $str .= chr($c);
                 }
