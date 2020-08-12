@@ -27,7 +27,7 @@ class Article extends Model
                 foreach($element as $c) {
                     $str .= chr($c);
                 }
-                return $str;
+                return uf8_encode($str);
             })
         );
         return self::whereIn('cod', [1, 3, 4]);
