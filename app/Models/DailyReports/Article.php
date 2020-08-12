@@ -21,13 +21,13 @@ class Article extends Model
     public static function getDailyReportRelevantArticles() {
         dd(self::whereIn('cod', [1, 3, 4])->pluck('descricao')->
             map(function($element) {
-                $element = str_split($element);
+                // $element = str_split($element);
                 $str = "";
-                // dd($str);
+                dd(mb_check_encoding($element));
                 foreach($element as $c) {
                     $str .= chr($c);
                 }
-                return uf8_encode($str);
+                return $element;
             })
         );
         return self::whereIn('cod', [1, 3, 4]);
