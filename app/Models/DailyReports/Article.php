@@ -23,6 +23,7 @@ class Article extends Model
             map(function($element) {
                 $str = "";
                 foreach($element as $c) {
+                    dd($c);
                     $str .= chr($c);
                 }
                 return $str;
