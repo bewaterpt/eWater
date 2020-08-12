@@ -57,6 +57,9 @@
                                             @if($pmodel->can('settings.statuses.list'))
                                                 <a class="dropdown-item {{Route::currentRouteName() == 'settings.statuses.list' ? 'bg-primary text-white disabled' : ''}}" href="{{ route('settings.statuses.list')}}">@lang('general.statuses')</a>
                                             @endif
+                                            @if($pmodel->can('settings.teams.list'))
+                                                <a class="dropdown-item {{Route::currentRouteName() == 'settings.teams.list' ? 'bg-primary text-white disabled' : ''}}" href="{{ route('settings.teams.list')}}">@lang('general.teams')</a>
+                                            @endif
                                             @if($pmodel->can('settings.users.list'))
                                                 <a class="dropdown-item {{Route::currentRouteName() == 'settings.users.list' ? 'bg-primary text-white disabled' : ''}}" href="{{ route('settings.users.list')}}">@lang('general.users')</a>
                                             @endif

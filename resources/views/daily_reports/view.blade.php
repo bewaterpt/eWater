@@ -111,8 +111,9 @@
                             <table id="report-process-status" class="table table-sm" style="width: 100%">
                                 <thead class="">
                                     <tr>
-                                        <th class="text-center">
-                                            @Lang('general.actions')
+                                        <th class="text-center px-0">
+                                            {{-- @Lang('general.actions') --}}
+                                            <i class="fas fa-tools text-black sorting_disabled"></i>
                                         </th>
                                         {{-- <th>
                                             #

@@ -19,7 +19,15 @@ class Article extends Model
     }
 
     public static function getDailyReportRelevantArticles() {
-        dd(self::whereIn('cod', [1, 3, 4])->get());
+        dd(self::whereIn('cod', [1, 3, 4])->get()->
+            map(function($element) {
+                $str = "";
+                foreach($element as $c) {
+                    $str .= chr($c);
+                }
+                return $str;
+            })
+        );
         return self::whereIn('cod', [1, 3, 4]);
     }
 

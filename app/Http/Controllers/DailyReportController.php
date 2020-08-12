@@ -75,6 +75,7 @@ class DailyReportController extends Controller
             $report->vehicle_plate = $input['plate'];
             $report->km_departure = $input['km_departure'];
             $report->km_arrival = $input['km_arrival'];
+            $report->driven_km = $input['km_arrival'] - $input['km_departure'];
             $report->comment = $input['comment'];
             $report->save();
 
@@ -98,7 +99,6 @@ class DailyReportController extends Controller
                         'report_id' => $report->id,
                         'created_by' => $user->id,
                         'user_id' => $reportRow['worker'],
-                        'driven_km' => $reportRow['driven-km'],
                         'worker' => $reportRow['worker'],
                     ];
 
@@ -122,7 +122,7 @@ class DailyReportController extends Controller
         } else {
             $currentUserRoles = Auth::user()->roles()->pluck('slug');
             $articles = Article::getDailyReportRelevantArticles()->pluck('cod', 'descricao');
-            dd($articles);
+            // dd($articles);
             $workers = User::whereHas('roles', function ($query) use ($currentUserRoles){
                 $query->whereIn('slug', $currentUserRoles);
             })->get();

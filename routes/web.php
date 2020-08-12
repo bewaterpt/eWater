@@ -135,6 +135,12 @@ Route::group(['middleware' => ['web']], function () {
             Route::get('interruptions/unscheduled', 'InterruptionController@unscheduled')->name('interruptions.list_unscheduled');
             Route::post('interruptions/create', 'InterruptionController@create')->name('interruptions.create');
 
+            // Teams
+            Route::get('teams', 'Settings\TeamController@index')->name('settings.teams.list');
+            Route::get('teams/{id}', 'Settings\TeamController@view')->name('settings.teams.view');
+            Route::match(['get', 'post'], 'teams/edit/{id}', 'Settings\TeamController@edit')->name('settings.teams.edit');
+            Route::get('teams/delete/{id}', 'Settings\TeamController@delete')->name('settings.teams.delete');
+
             Route::get('test', 'TestController@index')->name('tests.test');
         });
     });

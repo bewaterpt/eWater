@@ -1,11 +1,11 @@
 
 $(document).ready(() => {
     let t = setInterval(() => {
-        if ($('#datatable-users').length > 0) {
-            $('#datatable-users').dataTable({
+        if ($('#datatable-teams').length > 0) {
+            $('#datatable-teams').dataTable({
                 columnDefs: [
                     {
-                        targets: $("#datatable-users").find("thead tr:first th.actions").index(),
+                        targets: $("#datatable-teams").find("thead tr:first th.actions").index(),
                         orderable: false,
                     }
                 ],
