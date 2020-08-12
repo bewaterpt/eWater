@@ -25,7 +25,6 @@ class Article extends Model
                 $str = "";
                 // dd($str);
                 foreach($element as $c) {
-                    dd($c);
                     $str .= chr($c);
                 }
                 return $str;
