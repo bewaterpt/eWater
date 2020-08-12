@@ -137,8 +137,10 @@ Route::group(['middleware' => ['web']], function () {
 
             // Teams
             Route::get('teams', 'Settings\TeamController@index')->name('settings.teams.list');
-            Route::get('teams/{id}', 'Settings\TeamController@view')->name('settings.teams.view');
-            Route::match(['get', 'post'], 'teams/edit/{id}', 'Settings\TeamController@edit')->name('settings.teams.edit');
+            Route::get('teams/create', 'Settings\TeamController@create')->name('settings.teams.create');
+            Route::post('teams/store', 'Settings\TeamController@store')->name('settings.teams.store');
+            Route::get('teams/edit/{id}', 'Settings\TeamController@edit')->name('settings.teams.edit');
+            Route::post('teams/update/{id}', 'Settings\TeamController@update')->name('settings.teams.update');
             Route::get('teams/delete/{id}', 'Settings\TeamController@delete')->name('settings.teams.delete');
 
             Route::get('test', 'TestController@index')->name('tests.test');

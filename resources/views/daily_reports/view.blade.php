@@ -94,7 +94,7 @@
                                                         @endif
                                                     </td>
                                                     <td>
-                                                        {{ $row->entry_date }}
+                                                        {{ (new DateTime($row->entry_date))->format('Y-m-d') }}
                                                     </td>
                                                 </tr>
                                             @endforeach
@@ -150,8 +150,7 @@
                                                     @endif
                                                 @endif
                                                 @if ($processStatus->hasComment())
-                                                    <a class="btn-link comment {{ $processStatus->error ? 'text-danger ri-alert-line' : 'ri-information-line text-info' }} ri-lg" title="{{ __('tooltips.daily_reports.view_comment') }}" data-toggle="modal" data-id="{{ $processStatus->id }}" data-target="#modalComment" href="#">
-                                                    </a>
+                                                    <a class="btn-link comment {{ $processStatus->error ? 'text-danger ri-alert-line' : 'ri-information-line text-info' }} ri-lg" title="{{ __('tooltips.daily_reports.view_comment') }}" data-toggle="modal" data-id="{{ $processStatus->id }}" data-target="#modalComment" href="#"></a>
                                                 @endif
                                             </td>
                                             {{-- <td>

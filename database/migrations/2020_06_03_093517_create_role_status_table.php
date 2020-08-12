@@ -30,6 +30,10 @@ class CreateRoleStatusTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('roles_statuses');
+        Schema::table('role_status', function (Blueprint $table) {
+            $table->dropForeign(['role_id']);
+            $table->dropForeign(['status_id']);
+        });
+        Schema::dropIfExists('role_status');
     }
 }

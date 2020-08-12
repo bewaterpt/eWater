@@ -9,6 +9,7 @@ use Auth;
 use App\User;
 use Route;
 use App\Models\Role;
+use App\Models\Team;
 
 class UserController extends Controller
 {
@@ -57,19 +58,29 @@ class UserController extends Controller
     public function edit($userId) {
         $user = User::find($userId);
         $userRoleIds = $user->roles()->pluck('id');
+        $teams = Team::all();
         $roles = Role::whereNotIn('id', $userRoleIds)->get();
 
-        return view('settings.users.edit', ['user' => $user, 'roles' => $roles]);
+        return view('settings.users.edit', ['user' => $user, 'roles' => $roles, 'teams' => $teams]);
     }
 
     public function update(Request $request, $userId) {
         $user = User::find($userId);
         $user->name = $request->input('name');
+        // dd(gettype($request->team));
 
         if ($request->has('accountable')) {
             $user->accountable = true;
         } else {
             $user->accountable = false ;
+        }
+
+        if($request->team === "none") {
+            if($user->team()->exists()) {
+                $user->team()->dissociate();
+            }
+        } else {
+            $user->team()->associate($request->team);
         }
 
         $user->save();

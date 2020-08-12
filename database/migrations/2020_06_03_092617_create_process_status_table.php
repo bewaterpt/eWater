@@ -43,6 +43,14 @@ class CreateProcessStatusTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('report_statuses');
+        Schema::table('process_status', function (Blueprint $table) {
+            $table->dropForeign(['process_id']);
+            $table->dropForeign(['user_id']);
+            $table->dropForeign(['status_id']);
+            $table->dropForeign(['previous_status']);
+            $table->dropForeign(['failover_role']);
+            $table->dropForeign(['failover_user']);
+        });
+        Schema::dropIfExists('process_status');
     }
 }

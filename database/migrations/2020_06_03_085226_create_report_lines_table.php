@@ -37,6 +37,10 @@ class CreateReportLinesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('pending_reports');
+        Schema::table('report_lines', function (Blueprint $table) {
+            $table->dropForeign(['report_id']);
+            $table->dropForeign(['user_id']);
+        });
+        Schema::dropIfExists('report_lines');
     }
 }

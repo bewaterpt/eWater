@@ -74,4 +74,8 @@ class Report extends Model
     public static function notSynced() {
         return self::where('synced', false);
     }
+
+    public function team() {
+        return $this->belongsTo('App\Models\Team');
+    }
 }

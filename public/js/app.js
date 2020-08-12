@@ -45127,7 +45127,9 @@ $(document).ready(function () {
       return n < 10 ? '0' + n : n;
     }
 
-    return d.getUTCFullYear() + '-' + pad(d.getUTCMonth() + 1) + '-' + pad(d.getUTCDate()) + 'T' + pad(d.getUTCHours()) + ':' + pad(d.getUTCMinutes()); // + pad(d.getUTCSeconds())+'Z'
+    return d.getUTCFullYear() + '-' + pad(d.getUTCMonth() + 1) + '-' + pad(d.getUTCDate()); // + 'T'+pad(d.getUTCHours())+':'
+    // + pad(d.getUTCMinutes());
+    // + pad(d.getUTCSeconds())+'Z'
   }
 
   if ($('#daily-reports-create').length > 0 || $('#daily-reports-edit').length > 0) {
@@ -45251,7 +45253,9 @@ $(document).ready(function () {
           plate: $('input[name="plate"]').val(),
           km_departure: $('input[name="km-departure"]').val(),
           km_arrival: $('input[name="km-arrival"]').val(),
-          comment: $('textarea').val()
+          comment: $('textarea').val(),
+          datetime: $('#inputDatetime').val(),
+          team: $('#inputTeam').children('option:selected').val()
         };
         var totalKm = data.km_arrival - data.km_departure;
         var userInsertedKm = 0;
@@ -45327,7 +45331,7 @@ $(document).ready(function () {
         dataId = $(event.relatedTarget).data('id');
       }
 
-      $(event.target).find('#comment .body').html("");
+      $(event.target).find('#content .body').html("");
       $(event.target).find('#modal-spinner').removeClass('d-none');
       $currAjax = $.ajax({
         method: 'POST',
@@ -45338,7 +45342,7 @@ $(document).ready(function () {
         contentType: 'json',
         success: function success(response) {
           response = JSON.parse(response);
-          $(event.target).find('#comment .body').html(response.comment);
+          $(event.target).find('#content .body').html(response.content);
           $(event.target).find('#modal-spinner').addClass('d-none');
         },
         error: function error(jqXHR, status, _error2) {
@@ -45378,9 +45382,10 @@ $(document).ready(function () {
   if ($("#reports").length > 0) {
     $("#reports").DataTable({
       responsive: true,
+      order: [[1, "asc"]],
       // ordering: false,
       columnDefs: [{
-        targets: $("#reports").find("thead tr:first th").length,
+        targets: $("#reports").find("thead tr:first th.actions").index(),
         orderable: false
       }],
       lengthChange: false,
@@ -45483,7 +45488,17 @@ $(document).ready(function () {
 $(document).ready(function () {
   var t = setInterval(function () {
     if ($('#datatable-teams').length > 0) {
-      $('#datatable-teams').dataTable();
+      $('#datatable-teams').dataTable({
+        responsive: true,
+        order: [[1, "asc"]],
+        columnDefs: [{
+          targets: $("#datatable-teams").find("thead tr:first th.actions").index(),
+          orderable: false
+        }],
+        language: {
+          url: "/config/dataTables/lang/" + window.lang + ".json"
+        }
+      });
       clearInterval(t);
     }
   }, 1000);
@@ -45502,10 +45517,15 @@ $(document).ready(function () {
   var t = setInterval(function () {
     if ($('#datatable-users').length > 0) {
       $('#datatable-users').dataTable({
+        responsive: true,
+        order: [[1, "asc"]],
         columnDefs: [{
           targets: $("#datatable-users").find("thead tr:first th.actions").index(),
           orderable: false
-        }]
+        }],
+        language: {
+          url: "/config/dataTables/lang/" + window.lang + ".json"
+        }
       });
       clearInterval(t);
     }

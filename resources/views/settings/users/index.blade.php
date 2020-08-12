@@ -22,6 +22,9 @@
                                 <th>
                                     @Lang('general.roles')
                                 </th>
+                                <th>
+                                    @Lang('general.team')
+                                </th>
                                 <th class="text-center">
                                     @Lang('general.accountable')
                                 </th>
@@ -64,6 +67,11 @@
                                         @foreach($user->roles()->get() as $role)
                                             {{ $role->name }}<br>
                                         @endforeach
+                                    </td>
+                                    <td>
+                                        @if($user->team()->exists())
+                                            {{ $user->team()->first()->name }}
+                                        @endif
                                     </td>
                                     <td class="text-center">
                                         @if($user->accountable)

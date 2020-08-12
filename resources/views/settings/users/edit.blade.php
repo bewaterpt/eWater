@@ -25,6 +25,15 @@
                                 <label for="inputAccountable" class="mr-2">@Lang('forms.fields.accountable_bool')</label>
                                 <input type="checkbox" name="accountable" class="form-control-checkbox" {{$user->accountable ? 'checked' : ''}} id="inputAccountable">
                             </div>
+                            <div class="form-group col-md-12 text-left">
+                                <label for="inputTeam" class="mr-2">@Lang('forms.fields.team')</label>
+                                <select name="team" class="form-control selecpicker col-md-6" id="inputTeam">
+                                    <option value="none">@lang('forms.values.none')</option>
+                                    @foreach($teams as $team)
+                                        <option value="{{ $team->id }}" {{ $user->team()->exists() && $user->team()->first()->id === $team->id ? 'selected' : ''}}>{{ $team->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
                         </div>
                         <div class="mb-3">@Lang('general.roles')</div>
                         @include('components.multiselect_listbox', ['left' => $roles, 'right' => $user->roles()->get(), 'lField' => 'name', 'rField' => 'name'])

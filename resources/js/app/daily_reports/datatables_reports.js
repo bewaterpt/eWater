@@ -15,10 +15,11 @@ $(document).ready(() => {
     if ($("#reports").length > 0) {
         $("#reports").DataTable({
             responsive: true,
+            order: [[ 1, "asc" ]],
             // ordering: false,
             columnDefs: [
                 {
-                    targets: $("#reports").find("thead tr:first th").length,
+                    targets: $("#reports").find("thead tr:first th.actions").index(),
                     orderable: false,
                 }
             ],

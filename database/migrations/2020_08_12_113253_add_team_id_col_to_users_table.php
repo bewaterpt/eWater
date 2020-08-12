@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddDelegationColumnToUsersTable extends Migration
+class AddTeamIdColToUsersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,9 +14,9 @@ class AddDelegationColumnToUsersTable extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->bigInteger('delegation_id')->unsigned()->nullable();
+            $table->bigInteger('team_id')->unsigned()->nullable();
 
-            $table->foreign('delegation_id')->references('id')->on('delegations');
+            $table->foreign('team_id')->references('id')->on('teams');
         });
     }
 
@@ -28,8 +28,8 @@ class AddDelegationColumnToUsersTable extends Migration
     public function down()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropForeign(['delegation_id']);
-            $table->dropColumn('delegation_id');
+            $table->dropForeign(['team_id']);
+            $table->dropColumn('team_id');
         });
     }
 }

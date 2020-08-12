@@ -6,9 +6,9 @@ $(document).ready(() => {
         function pad(n){return n<10 ? '0'+n : n}
         return d.getUTCFullYear()+'-'
         + pad(d.getUTCMonth()+1)+'-'
-        + pad(d.getUTCDate())+'T'
-        + pad(d.getUTCHours())+':'
-        + pad(d.getUTCMinutes());
+        + pad(d.getUTCDate())
+        // + 'T'+pad(d.getUTCHours())+':'
+        // + pad(d.getUTCMinutes());
         // + pad(d.getUTCSeconds())+'Z'
     }
 
@@ -132,6 +132,8 @@ $(document).ready(() => {
                     km_departure: $('input[name="km-departure"]').val(),
                     km_arrival: $('input[name="km-arrival"]').val(),
                     comment: $('textarea').val(),
+                    datetime: $('#inputDatetime').val(),
+                    team: $('#inputTeam').children('option:selected').val(),
                 }
 
                 let totalKm = data.km_arrival - data.km_departure;
@@ -216,7 +218,7 @@ $(document).ready(() => {
                 dataId = $(event.relatedTarget).data('id');
             }
 
-            $(event.target).find('#comment .body').html("");
+            $(event.target).find('#content .body').html("");
             $(event.target).find('#modal-spinner').removeClass('d-none');
 
             $currAjax = $.ajax({
@@ -226,7 +228,7 @@ $(document).ready(() => {
                 contentType: 'json',
                 success: (response) => {
                     response = JSON.parse(response);
-                    $(event.target).find('#comment .body').html(response.comment);
+                    $(event.target).find('#content .body').html(response.content);
                     $(event.target).find('#modal-spinner').addClass('d-none');
                 },
                 error: (jqXHR, status, error) => {

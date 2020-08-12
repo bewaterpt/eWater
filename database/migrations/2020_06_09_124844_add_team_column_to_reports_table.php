@@ -28,7 +28,7 @@ class AddTeamColumnToReportsTable extends Migration
     public function down()
     {
         Schema::table('reports', function (Blueprint $table) {
-            $table->dropForeign('team_id');
+            $table->dropForeign(['team_id']);
             $table->dropColumn('team_id');
         });
     }

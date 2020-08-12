@@ -16,21 +16,31 @@
                     <form id="report" class="" method="post" action={{Route('daily_reports.create')}}>
                         @csrf
                         <fieldset>
-                            <div class="float-left col-md-2">
-                                <label for="inputPlate">@Lang('general.daily_reports.plate')</label>
-                                <input type="text" id="inputPlate" required name="plate" class="form-control" pattern="([A-Z]{2}-[0-9]{2}-[0-9]{2}|[0-9]{2}-[A-Z]{2}-[0-9]{2}|[0-9]{2}-[0-9]{2}-[A-Z]{2})">
-                                <label for="inputKmDeparture">@Lang('general.daily_reports.km_departure')</label>
-                                <input type="number" id="inputKmDeparture" required name="km-departure" class="form-control">
-                                <label for="inputKmArrival">@Lang('general.daily_reports.km_arrival')</label>
-                                <input type="number" id="inputKmArrival" required name="km-arrival" class="form-control">
-                                <div id="total-km-holder" class="border mt-3 rounded p-1">
-                                    <span id="title">@Lang('general.daily_reports.total_km'): </span>
-                                    <span id="value"></span>
+                            <div class="float-left col-md-2 p-0">
+                                <div class="col-md-11 p-0">
+                                    <label for="inputDatetime">@Lang('forms.fields.date')</label>
+                                    <input id="inputDatetime" required class="form-control datepicker" placeholder="Select Date" name="datetime" type="date" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}" required>
+                                    <label for="inputTeam">@Lang('forms.fields.team')</label>
+                                    <select id="inputTeam" required class="form-control selectpicker" placeholder="Select Date" name="team">
+                                        @foreach($teams as $team)
+                                            <option value="{{ $team->id }}">{{ $team->name }}</option>
+                                        @endforeach
+                                    </select>
+                                    <label for="inputPlate">@Lang('general.daily_reports.plate')</label>
+                                    <input type="text" id="inputPlate" required name="plate" class="form-control" pattern="([A-Z]{2}-[0-9]{2}-[0-9]{2}|[0-9]{2}-[A-Z]{2}-[0-9]{2}|[0-9]{2}-[0-9]{2}-[A-Z]{2})">
+                                    <label for="inputKmDeparture">@Lang('general.daily_reports.km_departure')</label>
+                                    <input type="number" id="inputKmDeparture" required name="km-departure" class="form-control">
+                                    <label for="inputKmArrival">@Lang('general.daily_reports.km_arrival')</label>
+                                    <input type="number" id="inputKmArrival" required name="km-arrival" class="form-control">
+                                    <div id="total-km-holder" class="border mt-3 rounded p-1">
+                                        <span id="title">@Lang('general.daily_reports.total_km'): </span>
+                                        <span id="value"></span>
+                                    </div>
                                 </div>
                             </div>
                             <div class="float-right col-md-10">
                                 <label for="inputComment">@Lang('general.daily_reports.comment')</label>
-                                <textarea name="comment" rows="7" id="inputComment" class="form-control text-editor float-right mh-100"></textarea>
+                                <textarea name="comment" rows="13" id="inputComment" class="form-control text-editor float-right mh-100"></textarea>
                             </div>
                         </fieldset>
 
@@ -56,7 +66,7 @@
                                             <th>@Lang('forms.fields.worker')</th>
                                             <th>@Lang('forms.fields.article')</th>
                                             <th>@Lang('forms.fields.hours')</th>
-                                            <th>@Lang('forms.fields.date')</th>
+                                            {{-- <th>@Lang('forms.fields.date')</th> --}}
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -82,9 +92,9 @@
                                             <td class="quantity">
                                                 <input type="number" required name="quantity" min="0" value="0" class="form-control" id="inputQuantity" required>
                                             </td>
-                                            <td class="date">
+                                            {{-- <td class="date">
                                                 <input id="inputDatetime" required class="form-control datepicker" placeholder="Select Date" name="datetime" type="datetime-local" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}" required>
-                                            </td>
+                                            </td> --}}
                                         </tr>
                                     </tbody>
                                 </table>

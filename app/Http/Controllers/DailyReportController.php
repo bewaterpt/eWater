@@ -8,6 +8,7 @@ use App\Models\DailyReports\Report;
 use App\Models\DailyReports\ReportLine;
 use App\Models\DailyReports\ProcessStatus;
 use App\Models\Connectors\OutonoObrasCC;
+use App\Models\Team;
 use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Artisan;
@@ -77,6 +78,7 @@ class DailyReportController extends Controller
             $report->km_arrival = $input['km_arrival'];
             $report->driven_km = $input['km_arrival'] - $input['km_departure'];
             $report->comment = $input['comment'];
+            $report->team()->associate($input['team']);
             $report->save();
 
             $works = $input['rows'];
@@ -95,7 +97,7 @@ class DailyReportController extends Controller
                         'article_id' => $reportRow['article'],
                         'work_number' => $workNumber,
                         'quantity' => $reportRow['quantity'],
-                        'entry_date' => (new DateTime($reportRow['datetime']))->format('Y-m-d H:i:s'),
+                        'entry_date' => (new DateTime($input['datetime']))->format('Y-m-d H:i:s'),
                         'report_id' => $report->id,
                         'created_by' => $user->id,
                         'user_id' => $reportRow['worker'],
@@ -124,11 +126,12 @@ class DailyReportController extends Controller
             $articles = Article::getDailyReportRelevantArticles()->pluck('descricao', 'cod')->map(function($descricao) {
                 return utf8_encode($descricao);
             });
+            $teams = Team::all();
             // dd($articles);
             $workers = User::whereHas('roles', function ($query) use ($currentUserRoles){
                 $query->whereIn('slug', $currentUserRoles);
             })->get();
-            return view('daily_reports.create', ['articles' => $this->helper->sortArray(array_flip($articles->toArray())), 'workers' => $workers]);
+            return view('daily_reports.create', ['articles' => $this->helper->sortArray(array_flip($articles->toArray())), 'workers' => $workers, 'teams' => $teams]);
         }
 
     }
@@ -286,7 +289,7 @@ class DailyReportController extends Controller
         if ($processStatus) {
             $data['status'] = 200;
             $data['msg'] = 'Success';
-            $data['comment'] = $processStatus->comment;
+            $data['content'] = $processStatus->comment;
         } else {
             $data['status'] = 404;
             $data['msg'] = 'Not Found';

@@ -44,6 +44,9 @@ return [
     'accountable' => 'Responsável?',
     'work_number' => '# Obra',
     'start_date' => 'Data de inicio',
+    'teams' => 'Equipas',
+    'team' => 'Equipa',
+    'user_count' => '# de Utilizadores',
     'daily_reports' => [
         'db_sync_success' => "Relatório sincronizado corretamente com o outono.",
         'daily_reports' => 'Relatórios Diários',
