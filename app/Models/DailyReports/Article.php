@@ -23,7 +23,7 @@ class Article extends Model
             map(function($element) {
                 // $element = str_split($element);
                 $str = "";
-                dd(mb_check_encoding($element));
+                dd(mb_detect_encoding($element));
                 foreach($element as $c) {
                     $str .= chr($c);
                 }
