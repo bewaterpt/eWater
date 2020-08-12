@@ -19,22 +19,7 @@ class Article extends Model
     }
 
     public static function getDailyReportRelevantArticles() {
-        dd(self::whereIn('cod', [1, 3, 4])->toSql());
-    /* pluck('descricao')->
-        map(function($element) {
-            // $element = str_split($element);
-            $elements = [
-                $element,
-                utf8_decode($element),
-                utf8_encode($element)
-            ];
-
-            dd($elements);
-            foreach($element as $c) {
-                $str .= chr($c);
-            }
-            return $element;
-        })*/
+        // dd(self::whereIn('cod', [1, 3, 4])->toSql());
         return self::whereIn('cod', [1, 3, 4]);
     }
 
