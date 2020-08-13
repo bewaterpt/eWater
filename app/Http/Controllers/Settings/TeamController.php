@@ -52,4 +52,57 @@ class TeamController extends Controller
 
         return redirect(route('settings.teams.list'));
     }
+
+    public function getTeamUsers(Request $request) {
+        $data = [
+            'status' => 500,
+            'msg' => 'Unexpected error',
+        ];
+
+        $tableH = "
+            <div class='table-responsive'>
+                <table class='table table-sm table-bordered table-striped'>
+                    <thead class='thead-light'>
+                        <tr>
+                            <th>" . trans('general.name') . "</th>
+                            <th class='text-center actions'><i class='fas fa-tools text-black'></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+        ";
+
+        $tableF = "
+                    </tbody>
+                </table>
+            </div>
+        ";
+
+        $team = Team::find($request->json('id'));
+
+        if ($team) {
+            $data['status'] = 200;
+            $data['msg'] = 'Success';
+            $data['content'] = $tableH;
+            $users = $team->users()->get()->map(function($user) use($data) {
+                return "<td>" . $user->name . "</td>
+                        <td class='actions text-center'>
+                            <a data-id='" . $user->id . "' class='btn-link dissossiate-user text-danger' href='#'>
+                                <i class='fas fa-times'></i>
+                            </a>
+                        </td>";
+            });
+
+            foreach($users as $user) {
+                $data['content'] .= $user;
+            }
+
+            $data['content'] .= $tableF;
+
+        } else {
+            $data['status'] = 404;
+            $data['msg'] = 'Not Found';
+        }
+
+        return json_encode($data);
+    }
 }

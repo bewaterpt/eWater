@@ -45506,6 +45506,49 @@ $(document).ready(function () {
 
 /***/ }),
 
+/***/ "./resources/js/app/settings/teams/teams.js":
+/*!**************************************************!*\
+  !*** ./resources/js/app/settings/teams/teams.js ***!
+  \**************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+$(document).ready(function () {
+  $('#modalTeamUsers').on('show.bs.modal', function (event) {
+    var dataId = '';
+
+    if (typeof $(event.relatedTarget).data('id') !== 'undefined') {
+      dataId = $(event.relatedTarget).data('id');
+    }
+
+    $(event.target).find('#content .body').html("");
+    $(event.target).find('#modal-spinner').removeClass('d-none');
+    $currAjax = $.ajax({
+      method: 'POST',
+      url: '/teams/get-users',
+      data: JSON.stringify({
+        id: dataId,
+        raw: false
+      }),
+      contentType: 'json',
+      success: function success(response) {
+        response = JSON.parse(response);
+        $(event.target).find('#content .body').html(response.content);
+        $(event.target).find('#modal-spinner').addClass('d-none');
+      },
+      error: function error(jqXHR, status, _error) {
+        $(event.target).find('#modal-spinner').addClass('d-none');
+        alert(_error);
+      },
+      complete: function complete() {
+        $(event.target).find('#modal-spinner').addClass('d-none');
+      }
+    });
+  });
+});
+
+/***/ }),
+
 /***/ "./resources/js/app/settings/users/datatables_users.js":
 /*!*************************************************************!*\
   !*** ./resources/js/app/settings/users/datatables_users.js ***!
@@ -46120,9 +46163,9 @@ tinymce.addI18n('pt_PT', {
 /***/ }),
 
 /***/ 0:
-/*!*******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** multi ./resources/js/app.js ./resources/js/app/utility/tinymce.js ./resources/js/app/settings/statuses/update.js ./resources/js/app/settings/users/update.js ./resources/js/app/settings/users/datatables_users.js ./resources/js/app/settings/teams/datatables_teams.js ./resources/js/app/settings/permissions/update.js ./resources/js/app/components/multiselect_listbox.js ./resources/js/app/components/info_box.js ./resources/js/app/daily_reports/dailyReports.js ./resources/js/app/daily_reports/datatables_reports.js ./resources/js/app/utility/fixes.js ./resources/sass/app.scss ***!
-  \*******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*!**************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** multi ./resources/js/app.js ./resources/js/app/utility/tinymce.js ./resources/js/app/settings/statuses/update.js ./resources/js/app/settings/users/update.js ./resources/js/app/settings/users/datatables_users.js ./resources/js/app/settings/teams/teams.js ./resources/js/app/settings/teams/datatables_teams.js ./resources/js/app/settings/permissions/update.js ./resources/js/app/components/multiselect_listbox.js ./resources/js/app/components/info_box.js ./resources/js/app/daily_reports/dailyReports.js ./resources/js/app/daily_reports/datatables_reports.js ./resources/js/app/utility/fixes.js ./resources/sass/app.scss ***!
+  \**************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -46131,6 +46174,7 @@ __webpack_require__(/*! C:\Users\bruno.martins\source\repos\outono\resources\js\
 __webpack_require__(/*! C:\Users\bruno.martins\source\repos\outono\resources\js\app\settings\statuses\update.js */"./resources/js/app/settings/statuses/update.js");
 __webpack_require__(/*! C:\Users\bruno.martins\source\repos\outono\resources\js\app\settings\users\update.js */"./resources/js/app/settings/users/update.js");
 __webpack_require__(/*! C:\Users\bruno.martins\source\repos\outono\resources\js\app\settings\users\datatables_users.js */"./resources/js/app/settings/users/datatables_users.js");
+__webpack_require__(/*! C:\Users\bruno.martins\source\repos\outono\resources\js\app\settings\teams\teams.js */"./resources/js/app/settings/teams/teams.js");
 __webpack_require__(/*! C:\Users\bruno.martins\source\repos\outono\resources\js\app\settings\teams\datatables_teams.js */"./resources/js/app/settings/teams/datatables_teams.js");
 __webpack_require__(/*! C:\Users\bruno.martins\source\repos\outono\resources\js\app\settings\permissions\update.js */"./resources/js/app/settings/permissions/update.js");
 __webpack_require__(/*! C:\Users\bruno.martins\source\repos\outono\resources\js\app\components\multiselect_listbox.js */"./resources/js/app/components/multiselect_listbox.js");

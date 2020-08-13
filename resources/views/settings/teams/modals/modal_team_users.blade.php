@@ -4,7 +4,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <i class="ri-information-line ri-xl text-info mr-2"></i>
-                <h5 class="modal-title" id="modalPrevStatusLabel">@Lang('general.daily_reports.process_status_comment')</h5>
+                <h5 class="modal-title" id="modalPrevStatusLabel">@Lang('general.teams.users_on_this_team')</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>

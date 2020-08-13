@@ -46,6 +46,7 @@ Route::group(['middleware' => ['web']], function () {
         Route::match(['get', 'patch'] ,'profile/edit', 'Settings\UserController@edit_self')->name('settings.users.edit_self');
         Route::post('daily-reports/process-status/get-comment', 'DailyReportController@getProcessStatusComment')->name('daily_reports.process_status.get_comment');
         Route::post('daily-reports/article/get-info', 'DailyReportController@getArticlePrice')->name('daily_reports.article.get_price');
+        Route::post('teams/get-users', 'Settings\TeamController@getTeamUsers')->name('settings.teams.get_users');
 
         /**
          * Routes within this group only allow usage for authenticated users with the proper permissions to use them

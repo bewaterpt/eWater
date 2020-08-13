@@ -17,7 +17,7 @@ class CreateInterruptionsTable extends Migration
             $table->id();
             $table->integer('work_id');
             $table->timestamp('start_date');
-            $table->timestamp('reinstatement_date');
+            $table->timestamp('reinstatement_date')->nullable();
             $table->boolean('scheduled')->default(0);
             $table->bigInteger('delegation_id')->unsigned();
             $table->bigInteger('user_id')->unsigned();
