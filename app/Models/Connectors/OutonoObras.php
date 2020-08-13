@@ -19,6 +19,6 @@ class OutonoObras extends Model
     }
 
     public static function exists($id) {
-        return self::where('id', $id)->exists();
+        return self::where('numObra', $id)->exists();
     }
 }

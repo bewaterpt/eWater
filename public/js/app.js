@@ -45250,6 +45250,34 @@ $(document).ready(function () {
 
       try {
         var data = {
+          id: $('div.card.work input.work-number').val()
+        };
+        $.ajax({
+          method: 'POST',
+          url: '/api/work-exists',
+          data: JSON.stringify(data),
+          contentType: 'json',
+          success: function success(response) {
+            if (response === false) {
+              alert($('#errors #workNotExists'));
+            }
+          },
+          error: function error(jqXHR, status, _error) {
+            $('#report button[type="submit"]').find('#spinner, #spinner-text').addClass('d-none');
+            $('#report button[type="submit"]').find('.btn-text').removeClass('d-none');
+            alert(_error.message);
+          }
+        });
+      } catch (error) {
+        $('#report button[type="submit"]').find('#spinner, #spinner-text').addClass('d-none');
+        $('#report button[type="submit"]').find('.btn-text').removeClass('d-none');
+        alert(error.message);
+        return;
+      } //border-danger
+
+
+      try {
+        var _data = {
           plate: $('input[name="plate"]').val(),
           km_departure: $('input[name="km-departure"]').val(),
           km_arrival: $('input[name="km-arrival"]').val(),
@@ -45257,7 +45285,7 @@ $(document).ready(function () {
           datetime: $('#inputDatetime').val(),
           team: $('#inputTeam').children('option:selected').val()
         };
-        var totalKm = data.km_arrival - data.km_departure;
+        var totalKm = _data.km_arrival - _data.km_departure;
         var userInsertedKm = 0;
         var rows = {};
         $('div.card.work').each(function (workIndex, work) {
@@ -45285,21 +45313,21 @@ $(document).ready(function () {
           throw new Error($('#errors #differentKm')[0].innerText);
         }
 
-        data.rows = rows;
+        _data.rows = rows;
         $.ajax({
           method: 'POST',
           url: $('#report').attr('action'),
-          data: JSON.stringify(data),
+          data: JSON.stringify(_data),
           contentType: 'json',
           success: function success(response) {
             $('#report button[type="submit"]').find('#spinner, #spinner-text').addClass('d-none');
             $('#report button[type="submit"]').find('.btn-text').removeClass('d-none');
             window.location.replace(response);
           },
-          error: function error(jqXHR, status, _error) {
+          error: function error(jqXHR, status, _error2) {
             $('#report button[type="submit"]').find('#spinner, #spinner-text').addClass('d-none');
             $('#report button[type="submit"]').find('.btn-text').removeClass('d-none');
-            alert(_error.message);
+            alert(_error2.message);
           },
           complete: function complete() {
             $('#report button[type="submit"]').find('#spinner, #spinner-text').addClass('d-none');
@@ -45345,9 +45373,9 @@ $(document).ready(function () {
           $(event.target).find('#content .body').html(response.content);
           $(event.target).find('#modal-spinner').addClass('d-none');
         },
-        error: function error(jqXHR, status, _error2) {
+        error: function error(jqXHR, status, _error3) {
           $(event.target).find('#modal-spinner').addClass('d-none');
-          alert(_error2);
+          alert(_error3);
         },
         complete: function complete() {
           $(event.target).find('#modal-spinner').addClass('d-none');
@@ -45545,6 +45573,7 @@ $(document).ready(function () {
       }
     });
   });
+  $('#inputColor').colorpicker();
 });
 
 /***/ }),

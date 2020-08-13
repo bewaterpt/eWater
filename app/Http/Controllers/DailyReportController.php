@@ -8,6 +8,7 @@ use App\Models\DailyReports\Report;
 use App\Models\DailyReports\ReportLine;
 use App\Models\DailyReports\ProcessStatus;
 use App\Models\Connectors\OutonoObrasCC;
+use App\Models\Connectors\OutonoObras;
 use App\Models\Team;
 use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Collection;
@@ -66,7 +67,6 @@ class DailyReportController extends Controller
      * @return View view()
      */
     public function create(Request $request) {
-
         if($request->isMethod('POST')) {
             $user = Auth::user();
             $input = $request->json()->all();

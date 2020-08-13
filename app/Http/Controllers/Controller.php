@@ -6,6 +6,7 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
+use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use App\Models\Permission;
 use App\Helpers\Helper;
@@ -15,6 +16,7 @@ use Auth;
 use View;
 use Route;
 use App\Models\DailyReports\Status;
+use App\Models\Connectors\OutonoObras;
 
 class Controller extends BaseController
 {
@@ -56,5 +58,9 @@ class Controller extends BaseController
 
     public function decodeId($id, $alt = false) {
         return $alt ? \Hashids::connection('alt')->decode($id) : \Hashids::decode($id);
+    }
+
+    public function workExists(Request $request) {
+        return json_encode(OutonoObras::exists($request->json('id')));
     }
 }

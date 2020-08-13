@@ -26,6 +26,7 @@
     "dependencies": {
         "@fortawesome/fontawesome-free": "^5.13.0",
         "@lottiefiles/lottie-player": "^0.5.1",
+        "bootstrap-colorpicker": "^3.2.0",
         "datatables.net": "^1.10.21",
         "datatables.net-bs4": "^1.10.21",
         "datatables.net-dt": "^1.10.21",

@@ -128,6 +128,34 @@ $(document).ready(() => {
 
             try {
                 let data = {
+                    id: $('div.card.work input.work-number').val()
+                }
+                $.ajax({
+                    method: 'POST',
+                    url: '/api/work-exists',
+                    data: JSON.stringify(data),
+                    contentType: 'json',
+                    success: (response) => {
+                        if (response === false) {
+                            alert($('#errors #workNotExists'));
+                        }
+                    },
+                    error: (jqXHR, status, error) => {
+                        $('#report button[type="submit"]').find('#spinner, #spinner-text').addClass('d-none');
+                        $('#report button[type="submit"]').find('.btn-text').removeClass('d-none');
+                        alert(error.message);
+                    },
+                });
+            } catch (error) {
+                $('#report button[type="submit"]').find('#spinner, #spinner-text').addClass('d-none');
+                $('#report button[type="submit"]').find('.btn-text').removeClass('d-none');
+                alert(error.message);
+                return
+            }
+            //border-danger
+
+            try {
+                let data = {
                     plate: $('input[name="plate"]').val(),
                     km_departure: $('input[name="km-departure"]').val(),
                     km_arrival: $('input[name="km-arrival"]').val(),
