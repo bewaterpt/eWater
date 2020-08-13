@@ -28,13 +28,14 @@ use Illuminate\Support\Facades\Route;
  *
  * @see App\Http\Kernel::class
  */
+
+Route::post('api/work-exists', 'Controller@workExists')->name('general.work_exists');
 Route::group(['middleware' => ['web']], function () {
 
     Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
     Route::post('login', 'Auth\LoginController@login');
     Route::post('logout', 'Auth\LoginController@logout')->name('logout');
     Route::get('locale/change/{locale}', 'Settings\SettingsController@change_locale')->name('settings.locale.change');
-    Route::post('api/work-exists', 'Controller@workExists')->name('general.work_exists');
 
     /**
      * Routes within this group only allow usage for authenticated users
