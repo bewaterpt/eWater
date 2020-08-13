@@ -34,6 +34,7 @@ Route::group(['middleware' => ['web']], function () {
     Route::post('login', 'Auth\LoginController@login');
     Route::post('logout', 'Auth\LoginController@logout')->name('logout');
     Route::get('locale/change/{locale}', 'Settings\SettingsController@change_locale')->name('settings.locale.change');
+    Route::post('api/work-exists', 'Controller@workExists')->name('general.work_exists');
 
     /**
      * Routes within this group only allow usage for authenticated users
@@ -47,7 +48,7 @@ Route::group(['middleware' => ['web']], function () {
         Route::post('daily-reports/process-status/get-comment', 'DailyReportController@getProcessStatusComment')->name('daily_reports.process_status.get_comment');
         Route::post('daily-reports/article/get-info', 'DailyReportController@getArticlePrice')->name('daily_reports.article.get_price');
         Route::post('teams/get-users', 'Settings\TeamController@getTeamUsers')->name('settings.teams.get_users');
-        Route::post('api/work-exists', 'Controller@workExists')->name('general.work_exists');
+
 
         /**
          * Routes within this group only allow usage for authenticated users with the proper permissions to use them
