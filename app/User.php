@@ -125,7 +125,7 @@ class User extends Authenticatable implements LdapAuthenticatable
         return $this->hasMany('App\Models\DailyReports\Report');
     }
 
-    public function team() {
-        return $this->belongsTo('App\Models\Team');
+    public function teams() {
+        return $this->belongsToMany('App\Models\Team');
     }
 }

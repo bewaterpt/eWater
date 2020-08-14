@@ -1,17 +1,21 @@
 $(document).ready(() => {
-    if ($("#multiselect-listbox").length > 0) {
-        $("#multiselect-listbox #btnContainer #addItems").on('click', (event) => {
+    if ($(".multiselect-listbox").length > 0) {
+        $(".multiselect-listbox #btnContainer #addItems").on('click', (event) => {
             event.preventDefault();
 
-            $("#multiselect-listbox #selectLeft").find(":selected").appendTo($("#multiselect-listbox #selectRight")[0]).prop('selected', false);
-            $("#multiselect-listbox #selectLeft").find(":selected").remove();
+            console.log(event.target);
+
+            $(event.target).closest(".multiselect-listbox").find("#selectLeft").find(":selected").appendTo($(event.target).closest(".multiselect-listbox").find("#selectRight")[0]).prop('selected', false);
+            $(event.target).closest(".multiselect-listbox").find("#selectLeft").find(":selected").remove();
         });
 
-        $("#multiselect-listbox #btnContainer #removeItems").on('click', (event) => {
+        $(".multiselect-listbox #btnContainer #removeItems").on('click', (event) => {
             event.preventDefault();
 
-            $("#multiselect-listbox #selectRight").find(":selected").appendTo($("#multiselect-listbox #selectLeft")[0]).prop('selected', false);
-            $("#multiselect-listbox #selectRight").find(":selected").remove();
+            console.log(event.target);
+
+            $(event.target).closest(".multiselect-listbox").find("#selectRight").find(":selected").appendTo($(event.target).closest(".multiselect-listbox").find("#selectLeft")[0]).prop('selected', false);
+            $(event.target).closest(".multiselect-listbox").find("#selectRight").find(":selected").remove();
         });
     }
 });

@@ -136,8 +136,9 @@ $(document).ready(() => {
                     data: JSON.stringify(data),
                     contentType: 'json',
                     success: (response) => {
-                        if (response === false) {
+                        if (parseBool(response) === false) {
                             alert($('#errors #workNotExists'));
+                            return;
                         }
                     },
                     error: (jqXHR, status, error) => {

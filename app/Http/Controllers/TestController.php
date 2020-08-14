@@ -82,5 +82,7 @@ class TestController extends Controller
         //         $entry->save();
         //     }
         // }
+
+        return view('tests.test');
     }
 }

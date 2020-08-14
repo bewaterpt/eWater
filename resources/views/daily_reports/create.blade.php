@@ -13,7 +13,7 @@
                     </span>
                 </div>
                 <div class="card-body">
-                    <form id="report" class="" method="post" action={{Route('daily_reports.create')}}>
+                    <form id="report" class="" method="post" action={{Route('daily_reports.store')}}>
                         @csrf
                         <fieldset>
                             <div class="float-left col-md-2 p-0">

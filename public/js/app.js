@@ -45072,7 +45072,16 @@ stopSpontaneousSrcolling(); // TinyMCE Langs
 __webpack_require__(/*! ./config/tinymce/lang/pt_PT */ "./resources/js/config/tinymce/lang/pt_PT.js");
 
 $(document).ready(function () {
-  $('[data-toggle="popover"]').popover();
+  $('[data-toggle="popover"]').popover({
+    html: true,
+    title: function title() {
+      console.log(this);
+      return $(document).find('#' + this.id + '.popover').find('#title').html();
+    },
+    content: function content() {
+      return $(document).find('#' + this.id + '.popover').find('#content').html();
+    }
+  });
 });
 
 /***/ }),
@@ -45096,16 +45105,18 @@ $(document).ready(function () {
 /***/ (function(module, exports) {
 
 $(document).ready(function () {
-  if ($("#multiselect-listbox").length > 0) {
-    $("#multiselect-listbox #btnContainer #addItems").on('click', function (event) {
+  if ($(".multiselect-listbox").length > 0) {
+    $(".multiselect-listbox #btnContainer #addItems").on('click', function (event) {
       event.preventDefault();
-      $("#multiselect-listbox #selectLeft").find(":selected").appendTo($("#multiselect-listbox #selectRight")[0]).prop('selected', false);
-      $("#multiselect-listbox #selectLeft").find(":selected").remove();
+      console.log(event.target);
+      $(event.target).closest(".multiselect-listbox").find("#selectLeft").find(":selected").appendTo($(event.target).closest(".multiselect-listbox").find("#selectRight")[0]).prop('selected', false);
+      $(event.target).closest(".multiselect-listbox").find("#selectLeft").find(":selected").remove();
     });
-    $("#multiselect-listbox #btnContainer #removeItems").on('click', function (event) {
+    $(".multiselect-listbox #btnContainer #removeItems").on('click', function (event) {
       event.preventDefault();
-      $("#multiselect-listbox #selectRight").find(":selected").appendTo($("#multiselect-listbox #selectLeft")[0]).prop('selected', false);
-      $("#multiselect-listbox #selectRight").find(":selected").remove();
+      console.log(event.target);
+      $(event.target).closest(".multiselect-listbox").find("#selectRight").find(":selected").appendTo($(event.target).closest(".multiselect-listbox").find("#selectLeft")[0]).prop('selected', false);
+      $(event.target).closest(".multiselect-listbox").find("#selectRight").find(":selected").remove();
     });
   }
 });
@@ -45258,8 +45269,9 @@ $(document).ready(function () {
           data: JSON.stringify(data),
           contentType: 'json',
           success: function success(response) {
-            if (response === false) {
+            if (parseBool(response) === false) {
               alert($('#errors #workNotExists'));
+              return;
             }
           },
           error: function error(jqXHR, status, _error) {
@@ -45617,12 +45629,15 @@ $(document).ready(function () {
   if ($("form#updateUser").length > 0) {
     $("form#updateUser").on('submit', function (event) {
       event.preventDefault();
-      $('form#updateUser').find('#selectRight option').each(function (index, role) {
-        if (index === $('form#updateUser').find('#selectRight option').length - 1) {
-          $('form#updateUser input#roles').val($('form#updateUser input#roles').val() + role.value);
-        } else {
-          $('form#updateUser input#roles').val($('form#updateUser input#roles').val() + role.value + ', ');
-        }
+      $('form#updateUser').find('.multiselect-listbox').each(function (index, multiselect) {
+        $('form#updateUser input#' + $(multiselect).attr('data-field')).val('');
+        $(multiselect).find('#selectRight option').each(function (index, item) {
+          if (index === $(multiselect).find('#selectRight option').length - 1) {
+            $('form#updateUser input#' + $(multiselect).attr('data-field')).val($('form#updateUser input#' + $(multiselect).attr('data-field')).val() + item.value);
+          } else {
+            $('form#updateUser input#' + $(multiselect).attr('data-field')).val($('form#updateUser input#' + $(multiselect).attr('data-field')).val() + item.value + ', ');
+          }
+        });
       });
       $('form#updateUser')[0].submit();
     });

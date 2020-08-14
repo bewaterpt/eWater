@@ -123,7 +123,8 @@ Route::group(['middleware' => ['web']], function () {
             // Daily Reports
             Route::get('daily-reports', 'DailyReportController@index')->name('daily_reports.list');
             Route::get('daily-reports/pending', 'DailyReportController@pending')->name('daily_reports.pending');
-            Route::match(['get', 'post'], 'daily-reports/create', 'DailyReportController@create')->name('daily_reports.create');
+            Route::get('daily-reports/create', 'DailyReportController@create')->name('daily_reports.create');
+            Route::post('daily-reports/store', 'DailyReportController@store')->name('daily_reports.store');
             // Route::get('daily-reports/first-approval', 'DailyReportController@firstApproval')->name('daily_reports.first_approval');
             // Route::get('daily-reports/second-approval', 'DailyReportController@secondApproval')->name('daily_reports.second_approval');
             // Route::get('daily-reports/approved', 'DailyReportController@approved')->name('daily_reports.approved');

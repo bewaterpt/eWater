@@ -49,7 +49,7 @@
                                 <div class="card-header border accordion-toggle collapsed col-md-12" id="work-{{ $workNumber }}" data-toggle="collapse" data-parent="#work-{{ $workNumber }}" href="#collapse-{{ $workNumber }}">
                                     <div class="d-inline-block mr-3">@Lang('general.daily_reports.work-number-x') {{ $workNumber }}</div>
                                     <div class="d-inline-block mr-3">{{ $report->linesByWorkNumber($workNumber)->sum('quantity') }}
-                                        @if($report->linesByWorkNumber($workNumber)->sum('quantity') > 1)
+                                        @if($report->linesByWorkNumber($workNumber)->sum('quantity') > 1 || $report->linesByWorkNumber($workNumber)->sum('quantity') === 0)
                                             @Lang('general.hours')
                                         @else
                                             @Lang('general.hour')
@@ -83,7 +83,7 @@
                                                         {{ $row->user()->first()->username }}
                                                     </td>
                                                     <td>
-                                                        {{ $row->getArticle()->descricao }}
+                                                        {{ dd($row->getArticle()->descricao) }}
                                                     </td>
                                                     <td>
                                                         {{ $row->quantity }}

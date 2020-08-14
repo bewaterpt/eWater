@@ -31,5 +31,14 @@ stopSpontaneousSrcolling();
 require('./config/tinymce/lang/pt_PT');
 
 $(document).ready(() => {
-    $('[data-toggle="popover"]').popover();
+    $('[data-toggle="popover"]').popover({
+        html: true,
+        title: function() {
+            console.log(this);
+            return $(document).find('#' + this.id + '.popover').find('#title').html()
+        },
+        content: function() {
+            return $(document).find('#' + this.id + '.popover').find('#content').html()
+        },
+    });
 });

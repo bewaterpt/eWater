@@ -58,7 +58,9 @@ class UserController extends Controller
     public function edit($userId) {
         $user = User::find($userId);
         $userRoleIds = $user->roles()->pluck('id');
-        $teams = Team::all();
+        $userTeamIds = $user->teams()->pluck('id');
+
+        $teams = Team::whereNotIn('id', $userTeamIds)->get();
         $roles = Role::whereNotIn('id', $userRoleIds)->get();
 
         return view('settings.users.edit', ['user' => $user, 'roles' => $roles, 'teams' => $teams]);
@@ -67,7 +69,6 @@ class UserController extends Controller
     public function update(Request $request, $userId) {
         $user = User::find($userId);
         $user->name = $request->input('name');
-        // dd(gettype($request->team));
 
         if ($request->has('accountable')) {
             $user->accountable = true;
@@ -75,24 +76,21 @@ class UserController extends Controller
             $user->accountable = false ;
         }
 
-        if($request->team === "none") {
-            if($user->team()->exists()) {
-                $user->team()->dissociate();
-            }
-        } else {
-            $user->team()->associate($request->team);
-        }
-
         $user->save();
 
-        $roleIds;
+        $roleIds = [];
         if ($request->input('roles')) {
             $roleIds = explode(', ', $request->input('roles'));
-        } else {
-            $roleIds = [];
         }
 
         $user->roles()->sync($roleIds);
+
+        $teamIds = [];
+        if($request->input('teams')) {
+            $teamIds = explode(', ', $request->input('teams'));
+        }
+
+        $user->teams()->sync($teamIds);
 
         return redirect(route('settings.users.list'));
     }

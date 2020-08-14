@@ -31,6 +31,7 @@ class TeamController extends Controller
     public function store(Request $request) {
         $team = new Team();
         $team->name = $request->name;
+        $team->color = $request->color;
         $team->save();
 
         return redirect(route('settings.teams.list'));
@@ -39,6 +40,7 @@ class TeamController extends Controller
     public function update(Request $request) {
         $team = Team::find($request->id);
         $team->name = $request->name;
+        $team->color = $request->color;
         $team->save();
 
         return redirect(route('settings.teams.list'));
@@ -47,7 +49,7 @@ class TeamController extends Controller
     public function delete(Request $request) {
         $team = Team::find($request->id);
 
-        $team->users()->update(['team_id' => null]);
+        $team->users()->sync([]);
         $team->delete();
 
         return redirect(route('settings.teams.list'));

@@ -41,8 +41,11 @@ class DailyReportController extends Controller
      */
     public function index(Request $request) {
         $user = Auth::user();
+        $reports = [];
+        if ($user->teams()->exists()) {
+            $reports = Report::whereIn('team_id', $user->teams()->pluck('id'))->get();
+        }
 
-        $reports = Report::all();
         $reportList = collect([]);
 
         // foreach($reports as $report) {
@@ -67,73 +70,71 @@ class DailyReportController extends Controller
      * @return View view()
      */
     public function create(Request $request) {
-        if($request->isMethod('POST')) {
-            $user = Auth::user();
-            $input = $request->json()->all();
+        $currentUserRoles = Auth::user()->roles()->pluck('slug');
+        $articles = Article::getDailyReportRelevantArticles()->pluck('descricao', 'cod')->map(function($descricao) {
+            return utf8_encode($descricao);
+        });
+        $teams = Team::all();
+        // dd($articles);
+        $workers = User::whereHas('roles', function ($query) use ($currentUserRoles){
+            $query->whereIn('slug', $currentUserRoles);
+        })->get();
+        return view('daily_reports.create', ['articles' => $this->helper->sortArray(array_flip($articles->toArray())), 'workers' => $workers, 'teams' => $teams]);
+    }
 
-            $report = new Report();
-            $report->creator()->associate($user->id);
-            $report->vehicle_plate = $input['plate'];
-            $report->km_departure = $input['km_departure'];
-            $report->km_arrival = $input['km_arrival'];
-            $report->driven_km = $input['km_arrival'] - $input['km_departure'];
-            $report->comment = $input['comment'];
-            $report->team()->associate($input['team']);
-            $report->save();
+    public function store(Request $request) {
+        $user = Auth::user();
+        $input = $request->json()->all();
 
-            $works = $input['rows'];
+        $report = new Report();
+        $report->creator()->associate($user->id);
+        $report->vehicle_plate = $input['plate'];
+        $report->km_departure = $input['km_departure'];
+        $report->km_arrival = $input['km_arrival'];
+        $report->driven_km = $input['km_arrival'] - $input['km_departure'];
+        $report->comment = $input['comment'];
+        $report->team()->associate($input['team']);
+        $report->save();
 
-            // dd($works);
+        $works = $input['rows'];
 
-            $lastInsertedEntryNumber = OutonoObrasCC::lastInsertedEntryNumber() + 1;
+        $lastInsertedEntryNumber = OutonoObrasCC::lastInsertedEntryNumber() + 1;
 
-            $rows = [];
+        $rows = [];
 
-            foreach ($works as $workNumber => $workData) {
+        foreach ($works as $workNumber => $workData) {
 
-                foreach ($workData as $reportRow) {
-                    $rows[] = [
-                        'entry_number' => $lastInsertedEntryNumber,
-                        'article_id' => $reportRow['article'],
-                        'work_number' => $workNumber,
-                        'quantity' => $reportRow['quantity'],
-                        'entry_date' => (new DateTime($input['datetime']))->format('Y-m-d H:i:s'),
-                        'report_id' => $report->id,
-                        'created_by' => $user->id,
-                        'user_id' => $reportRow['worker'],
-                        'worker' => $reportRow['worker'],
-                    ];
+            foreach ($workData as $reportRow) {
 
-                    $lastInsertedEntryNumber++;
-                }
+                $rows[] = [
+                    'entry_number' => $lastInsertedEntryNumber,
+                    'article_id' => $reportRow['article'],
+                    'work_number' => $workNumber,
+                    'quantity' => $reportRow['quantity'],
+                    'entry_date' => (new DateTime($input['datetime']))->format('Y-m-d H:i:s'),
+                    'report_id' => $report->id,
+                    'created_by' => $user->id,
+                    'user_id' => $reportRow['worker'],
+                    'worker' => $reportRow['worker'],
+                    'driven_km' => $reportRow['driven-km'],
+                ];
+
+                $lastInsertedEntryNumber++;
             }
-
-            $processCreated = new ProcessStatus();
-            $processCreated->report()->associate($report->id);
-            $processCreated->status()->associate(1);
-            $processCreated->user()->associate($user->id);
-            $processCreated->concluded_at = Carbon::now();
-            $processCreated->save();
-
-            $processCreated->stepForward();
-
-            ReportLine::insert($rows);
-
-            return route('daily_reports.list');
-
-        } else {
-            $currentUserRoles = Auth::user()->roles()->pluck('slug');
-            $articles = Article::getDailyReportRelevantArticles()->pluck('descricao', 'cod')->map(function($descricao) {
-                return utf8_encode($descricao);
-            });
-            $teams = Team::all();
-            // dd($articles);
-            $workers = User::whereHas('roles', function ($query) use ($currentUserRoles){
-                $query->whereIn('slug', $currentUserRoles);
-            })->get();
-            return view('daily_reports.create', ['articles' => $this->helper->sortArray(array_flip($articles->toArray())), 'workers' => $workers, 'teams' => $teams]);
         }
 
+        $processCreated = new ProcessStatus();
+        $processCreated->report()->associate($report->id);
+        $processCreated->status()->associate(1);
+        $processCreated->user()->associate($user->id);
+        $processCreated->concluded_at = Carbon::now();
+        $processCreated->save();
+
+        $processCreated->stepForward();
+
+        ReportLine::insert($rows);
+
+        return route('daily_reports.list');
     }
 
     /**
