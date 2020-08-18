@@ -72,9 +72,8 @@ class DailyReportController extends Controller
     public function create(Request $request) {
         $currentUserRoles = Auth::user()->roles()->pluck('slug');
         $articles = Article::getDailyReportRelevantArticles()->pluck('designation', 'id');
-        dd($articles);
         $teams = Team::all();
-        // dd($articles);
+
         $workers = User::whereHas('roles', function ($query) use ($currentUserRoles){
             $query->whereIn('slug', $currentUserRoles);
         })->get();
@@ -179,7 +178,7 @@ class DailyReportController extends Controller
             'msg' => 'Unexpected error',
         ];
 
-        $article = Artigos::find($request->input('id'));
+        $article = Article::find($request->input('id'));
 
         if ($article) {
             $data['status'] = 200;
@@ -301,7 +300,7 @@ class DailyReportController extends Controller
     public function edit(Request $request, $reportId) {
         $report = Report::find($reportId);
         $currentUserRoles = Auth::user()->roles()->pluck('slug');
-        $articles = Artigos::getDailyReportRelevantArticles()->pluck('cod', 'descricao');
+        $articles = Article::getDailyReportRelevantArticles()->pluck('id', 'designation');
         $workers = User::whereHas('roles', function ($query) {
             $query->whereIn('slug', $currentUserRoles);
         })->get();
