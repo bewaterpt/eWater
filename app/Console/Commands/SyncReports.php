@@ -6,6 +6,7 @@ use Illuminate\Console\Command;
 use App\Models\DailyReports\Report;
 use App\Models\Connectors\OutonoArtigos as Artigos;
 use App\Models\Connectors\OutonoObrasCC as ObrasCC;
+use App\Models\Article;
 use Illuminate\Support\Carbon;
 
 class SyncReports extends Command
@@ -49,6 +50,10 @@ class SyncReports extends Command
         //     });
         // });
 
+        if ($report->synced) {
+            return;
+        }
+
         $reportLines;
         $reportTransportationData;
 
@@ -75,33 +80,30 @@ class SyncReports extends Command
 
         foreach ($reportLines as $work_number => $lines) {
             $transportEntry = new obrasCC();
-            $transportArticle = Artigos::getTransportationArticle();
-            $transportEntry->numLanc = $transportEntry->lastInsertedEntryNumber()+1;
-            $transportEntry = new obrasCC();
-            $transportArticle = Artigos::getTransportationArticle();
+            $transportArticle = Article::getTransportationArticle();
             $transportEntry->numLanc = $transportEntry->lastInsertedEntryNumber()+1;
             $transportEntry->dtMov = Carbon::now()->format('Y-m-d h:i:s');
-            $transportEntry->clMov = $transportArticle->cod;
+            $transportEntry->clMov = $transportArticle->id;
             $transportEntry->tpMov = 'D';
             $transportEntry->numObra = $work_number;
             $transportEntry->dtDoc = $reportTransportationData[$work_number]['date'];
             $transportEntry->quantidade = $reportTransportationData[$work_number]['km'];
-            $transportEntry->precoUnitario = $transportArticle->precoUnitario;
+            $transportEntry->precoUnitario = $transportArticle->unit_price;
             $transportEntry->funcMov = $reportTransportationData[$work_number]['report']->creator()->first()->username;
             $transportEntry->anulado = false;
             $transportEntry->save();
 
             foreach ($lines as $line) {
                 $entry = new obrasCC();
-                $article = Artigos::getById($line->article_id);
+                $article = $line->article()->first()->id;
                 $entry->numLanc = $entry->lastInsertedEntryNumber()+1;
                 $entry->dtMov = Carbon::now()->format('Y-m-d h:i:s');
-                $entry->clMov = $article->cod;
+                $entry->clMov = $article->id;
                 $entry->tpMov = 'D';
                 $entry->numObra = $work_number;
                 $entry->dtDoc = $line->entry_date;
                 $entry->quantidade = $line->quantity;
-                $entry->precoUnitario = $article->precoUnitario;
+                $entry->precoUnitario = $article->unit_price;
                 $entry->funcMov = $line->user()->first()->username;
                 $entry->anulado = false;
                 $entry->save();

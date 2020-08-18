@@ -70,13 +70,14 @@ class DailyReportController extends Controller
      * @return View view()
      */
     public function create(Request $request) {
-        $currentUserRoles = Auth::user()->roles()->pluck('slug');
+        $currentUserTeams = Auth::user()->teams()->pluck('id');
         $articles = Article::getDailyReportRelevantArticles()->pluck('designation', 'id');
         $teams = Team::all();
 
-        $workers = User::whereHas('roles', function ($query) use ($currentUserRoles){
-            $query->whereIn('slug', $currentUserRoles);
+        $workers = User::whereHas('teams', function ($query) use ($currentUserTeams){
+            $query->whereIn('id', $currentUserTeams);
         })->get();
+
         return view('daily_reports.create', ['articles' => $this->helper->sortArray(array_flip($articles->toArray())), 'workers' => $workers, 'teams' => $teams]);
     }
 

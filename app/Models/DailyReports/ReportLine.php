@@ -3,7 +3,6 @@
 namespace App\Models\DailyReports;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Connectors\OutonoArtigos as Artigos;
 
 class ReportLine extends Model
 {
@@ -13,10 +12,6 @@ class ReportLine extends Model
         'updated_at',
         'entry_date',
     ];
-
-    public function getArticle() {
-        return Artigos::find($this->article_id);
-    }
 
     public function article() {
         return $this->belongsTo('App\Models\Article');
