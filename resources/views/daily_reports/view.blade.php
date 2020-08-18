@@ -83,7 +83,7 @@
                                                         {{ $row->user()->first()->username }}
                                                     </td>
                                                     <td>
-                                                        {{ dd($row->getArticle()->toSql()) }}
+                                                        {{ $row->article()->first()->designation }}
                                                     </td>
                                                     <td>
                                                         {{ $row->quantity }}

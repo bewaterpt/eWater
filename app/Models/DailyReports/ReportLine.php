@@ -3,7 +3,7 @@
 namespace App\Models\DailyReports;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Models\DailyReports\Article;
+use App\Models\Connectors\OutonoArtigos as Artigos;
 
 class ReportLine extends Model
 {
@@ -15,7 +15,11 @@ class ReportLine extends Model
     ];
 
     public function getArticle() {
-        return Article::find($this->article_id);
+        return Artigos::find($this->article_id);
+    }
+
+    public function article() {
+        return $this->belongsTo('App\Models\Article');
     }
 
     public function getTotal() {

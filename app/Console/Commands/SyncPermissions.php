@@ -8,7 +8,7 @@ use App\Models\Role;
 use Route;
 use DB;
 
-class UpdatePermissions extends Command
+class SyncPermissions extends Command
 {
     /**
      * The name and signature of the console command.

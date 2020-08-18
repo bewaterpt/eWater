@@ -9,7 +9,7 @@ use LdapRecord\Connection;
 use LdapRecord\Models\ActiveDirectory\Group;
 
 
-class UpdateADGroups extends Command
+class SyncADGroups extends Command
 {
     /**
      * The name and signature of the console command.

@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Models\DailyReports;
+namespace App\Models\Connectors;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Article extends Model
+class OutonoArtigos extends Model
 {
     const TRANSPORTATION_ARTICLE_ID = 2;
 
@@ -19,7 +19,6 @@ class Article extends Model
     }
 
     public static function getDailyReportRelevantArticles() {
-        // dd(self::whereIn('cod', [1, 3, 4])->toSql());
         return self::whereIn('cod', [1, 3, 4]);
     }
 

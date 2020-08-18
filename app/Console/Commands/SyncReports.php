@@ -4,7 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use App\Models\DailyReports\Report;
-use App\Models\DailyReports\Article;
+use App\Models\Connectors\OutonoArtigos as Artigos;
 use App\Models\Connectors\OutonoObrasCC as ObrasCC;
 use Illuminate\Support\Carbon;
 
@@ -75,10 +75,10 @@ class SyncReports extends Command
 
         foreach ($reportLines as $work_number => $lines) {
             $transportEntry = new obrasCC();
-            $transportArticle = Article::getTransportationArticle();
+            $transportArticle = Artigos::getTransportationArticle();
             $transportEntry->numLanc = $transportEntry->lastInsertedEntryNumber()+1;
             $transportEntry = new obrasCC();
-            $transportArticle = Article::getTransportationArticle();
+            $transportArticle = Artigos::getTransportationArticle();
             $transportEntry->numLanc = $transportEntry->lastInsertedEntryNumber()+1;
             $transportEntry->dtMov = Carbon::now()->format('Y-m-d h:i:s');
             $transportEntry->clMov = $transportArticle->cod;
@@ -93,7 +93,7 @@ class SyncReports extends Command
 
             foreach ($lines as $line) {
                 $entry = new obrasCC();
-                $article = Article::getById($line->article_id);
+                $article = Artigos::getById($line->article_id);
                 $entry->numLanc = $entry->lastInsertedEntryNumber()+1;
                 $entry->dtMov = Carbon::now()->format('Y-m-d h:i:s');
                 $entry->clMov = $article->cod;

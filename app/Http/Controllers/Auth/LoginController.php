@@ -116,7 +116,7 @@ class LoginController extends Controller
     protected function authenticated(Request $request, $user) {
 
         $ldapRoles = $user->ldap->groups()->get()->pluck('cn')->map(function ($cn) {
-            return $this->helper->transliterate($cn[0]);
+            return $this->helper->transliterate($cn[0], 1);
         })->toArray();
         $roles = Role::whereIn('slug', $ldapRoles)->pluck('id')->toArray();
 

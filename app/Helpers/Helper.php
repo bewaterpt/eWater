@@ -38,24 +38,30 @@ class Helper {
      *      2+ = Upper Case
      */
     public function transliterate(String $str, $case = 0) {
+
+        $newStr = '';
+        $chars = str_split(trim(utf8_decode($str)));
+        $chars = collect($chars)->map(function($char) {
+            return utf8_encode($char);
+        });
+
         $replacePairs = [
             '’' => '_', '“' => '_', '”' => '_',
             '«' => '_', '»' => '_', '–' => '_',
-            '@' => '_', '(' => '_', ')' => '_',
+            '@' => '_', '(' => '', ')' => '_',
             '[' => '_', ']' => '_', '{' => '_',
-            '}' => '_', '/' => '_', '|' => '_',
+            '}' => '', '/' => '_', '|' => '_',
             '\\' => '_', '#' => '_', '£' => '',
             '"' => '_', '!' => '', '.' => '_',
             '\'' => '_', '§' => '', '$' => '',
             '€' => '', '?' => '', '%' => '',
-            '&' => '_', '=' => '_', '(' => '_',
-            '+' => '_', '*' => '_', '´' => '',
-            '`' => '', '~' => '', '^' => '',
+            '&' => '_', '=' => '_', '+' => '_',
+            '*' => '_', '´' => '', '`' => '',
             'º' => '', 'ª' => '', '_' => '_',
             ':' => '_', ';' => '_', ',' => '',
             '<' => '', '>' => '', '¥' => '',
             '¤' => '', ' ' => '_', '-' => '_',
-
+            '~' => '', '^' => '',
 
             'a' => 'a', 'ã' => 'a', 'á' => 'a', 'à' => 'a', 'â' => 'a', 'ä' => 'a',
             'A' => 'A', 'Ã' => 'A', 'Á' => 'A', 'À' => 'A', 'Â' => 'A', 'Ä' => 'a',
@@ -136,15 +142,27 @@ class Helper {
             'Z' => 'Z'
         ];
 
+        $prevChar = null;
+        foreach ($chars as $index => $char){
+            $prevChar = $char;
+
+            if(in_array($char, [')', ']', '}']) && ($index + 1) == strlen($str)) {
+                $newStr .= '';
+            } else if (in_array($char, ['(', '[', '{']) && $prevChar = ''){
+                $newStr .= '_';
+            } else {
+                $newStr .= strtr($char, $replacePairs);
+            }
+        }
 
         // Return string translated with replaced pairs
 
         if ($case === 1) {
-            return strtolower(strtr($str, $replacePairs));
+            return mb_strtolower($newStr);
         } else if ($case > 1) {
-            return strtoupper(strtr($str, $replacePairs));
+            return mb_strtoupper($newStr);
         }
 
-        return mb_strtolower(strtr($str, $replacePairs));
+        return strtr($str, $replacePairs);
     }
 }

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\DailyReports\Article;
+use App\Models\Connectors\OutonoArtigos as Artigos;
 use App\Models\DailyReports\Report;
 use App\Models\DailyReports\ReportLine;
 use App\Models\DailyReports\ProcessStatus;
@@ -71,7 +71,7 @@ class DailyReportController extends Controller
      */
     public function create(Request $request) {
         $currentUserRoles = Auth::user()->roles()->pluck('slug');
-        $articles = Article::getDailyReportRelevantArticles()->pluck('descricao', 'cod')->map(function($descricao) {
+        $articles = Artigos::getDailyReportRelevantArticles()->pluck('descricao', 'cod')->map(function($descricao) {
             return utf8_encode($descricao);
         });
         $teams = Team::all();
@@ -180,7 +180,7 @@ class DailyReportController extends Controller
             'msg' => 'Unexpected error',
         ];
 
-        $article = Article::find($request->input('id'));
+        $article = Artigos::find($request->input('id'));
 
         if ($article) {
             $data['status'] = 200;
@@ -302,7 +302,7 @@ class DailyReportController extends Controller
     public function edit(Request $request, $reportId) {
         $report = Report::find($reportId);
         $currentUserRoles = Auth::user()->roles()->pluck('slug');
-        $articles = Article::getDailyReportRelevantArticles()->pluck('cod', 'descricao');
+        $articles = Artigos::getDailyReportRelevantArticles()->pluck('cod', 'descricao');
         $workers = User::whereHas('roles', function ($query) {
             $query->whereIn('slug', $currentUserRoles);
         })->get();
