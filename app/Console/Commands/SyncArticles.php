@@ -49,7 +49,7 @@ class SyncArticles extends Command
             Article::insert($articlesToSync->map(function($article) {
                 return [
                     'id' => $article->cod,
-                    'designation' => utf8_encode($article->descricao),
+                    'designation' => $article->descricao,
                     'unit_price' => $article->precoUnitario,
                     'fixed' => $article->fixo,
                     'slug' => $this->helper->transliterate($article->descricao, 1),
@@ -62,7 +62,7 @@ class SyncArticles extends Command
                     $newArticle = new Article();
                 }
 
-                $newArticle->designation = utf8_encode($articleToSync->descricao);
+                $newArticle->designation = $articleToSync->descricao;
                 $newArticle->unit_price = $articleToSync->precoUnitario;
                 $newArticle->fixed = $articleToSync->fixo;
                 $newArticle->slug = $this->helper->transliterate($articleToSync->descricao, 1);

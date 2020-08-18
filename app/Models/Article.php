@@ -22,8 +22,7 @@ class Article extends Model
     }
 
     public static function getDailyReportRelevantArticles() {
-        // dd(self::whereIn('cod', [1, 3, 4])->toSql());
-        return self::whereIn('cod', [1, 3, 4]);
+        return self::whereIn('id', [1, 3, 4]);
     }
 
     public static function getTransportationArticle() {

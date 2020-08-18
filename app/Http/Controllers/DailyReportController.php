@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Connectors\OutonoArtigos as Artigos;
+use App\Models\Article;
 use App\Models\DailyReports\Report;
 use App\Models\DailyReports\ReportLine;
 use App\Models\DailyReports\ProcessStatus;
@@ -71,9 +71,8 @@ class DailyReportController extends Controller
      */
     public function create(Request $request) {
         $currentUserRoles = Auth::user()->roles()->pluck('slug');
-        $articles = Artigos::getDailyReportRelevantArticles()->pluck('descricao', 'cod')->map(function($descricao) {
-            return utf8_encode($descricao);
-        });
+        $articles = Article::getDailyReportRelevantArticles()->pluck('designation', 'id');
+        dd($articles);
         $teams = Team::all();
         // dd($articles);
         $workers = User::whereHas('roles', function ($query) use ($currentUserRoles){
