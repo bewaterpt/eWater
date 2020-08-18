@@ -83,7 +83,7 @@
                                                         {{ $row->user()->first()->username }}
                                                     </td>
                                                     <td>
-                                                        {{ $row->article()->first()->designation }}
+                                                        {{ utf8_decode($row->article()->first()->designation) }}
                                                     </td>
                                                     <td>
                                                         {{ $row->quantity }}

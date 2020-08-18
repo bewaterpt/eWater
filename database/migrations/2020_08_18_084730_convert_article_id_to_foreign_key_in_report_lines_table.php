@@ -28,6 +28,7 @@ class ConvertArticleIdToForeignKeyInReportLinesTable extends Migration
     {
         Schema::table('report_lines', function (Blueprint $table) {
             $table->dropForeign(['article_id']);
+            $table->integer('article_id')->change();
         });
     }
 }
