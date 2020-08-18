@@ -15,7 +15,7 @@ class UserController extends Controller
 {
 
     public function index(Request $request) {
-        $users = User::all();
+        $users = User::all()->sortBy('name');
         return view('settings.users.index', ['users' => $users]);
     }
 
