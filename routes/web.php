@@ -29,7 +29,6 @@ use Illuminate\Support\Facades\Route;
  * @see App\Http\Kernel::class
  */
 
-Route::post('api/work-exists', 'Controller@workExists')->name('general.work_exists');
 Route::group(['middleware' => ['web']], function () {
 
     Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
@@ -148,7 +147,15 @@ Route::group(['middleware' => ['web']], function () {
             Route::post('teams/update/{id}', 'Settings\TeamController@update')->name('settings.teams.update');
             Route::get('teams/delete/{id}', 'Settings\TeamController@delete')->name('settings.teams.delete');
 
-            Route::get('test', 'TestController@index')->name('tests.test');
+            Route::get('works', 'WorkController@index')->name('works.list');
+            Route::get('works/create', 'WorkController@create')->name('works.create');
+            Route::post('works/store', 'WorkController@store')->name('works.store');
+            Route::get('works/edit/{id}', 'WorkController@edit')->name('works.edit');
+            Route::post('works/update/{id}', 'WorkController@update')->name('works.update');
+            Route::post('works/work-exists', 'WorkController@workExists')->name('works.exists');
+            // Route::get('works/delete/{id}', 'WorkController@delete')->name('settings.teams.delete');
+
+            Route::any('test', 'TestController@index')->name('tests.test');
         });
     });
 });

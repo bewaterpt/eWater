@@ -4,26 +4,20 @@ namespace App\Models\DailyReports;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\DailyReports\Status;
 use Auth;
 
 class ProcessStatus extends Model
 {
-    const STATUS_EXTRA = 3;
-    const STATUS_DB_SYNC = 6;
-    const STATUS_FINISHED = 7;
-    const STATUS_CANCELLED = 8;
+    protected $STATUS_EXTRA = 3;
+    protected $STATUS_DB_SYNC = 6;
+    protected $STATUS_FINISHED = 7;
+    protected $STATUS_CANCELLED = 8;
 
-    const EXCLUDED_STATUSES = [
-        self::STATUS_EXTRA,
-        self::STATUS_CANCELLED,
-        // self::STATUS_FINISHED
-    ];
+    protected $EXCLUDED_STATUSES = [];
 
-    const SELF_CONCLUDING_STATUSES = [
-        self::STATUS_FINISHED,
-        self::STATUS_CANCELLED
-    ];
+    protected $SELF_CONCLUDING_STATUSES = [];
 
 
     protected $dates = ['concluded_at'];
@@ -31,6 +25,23 @@ class ProcessStatus extends Model
     protected $touches = ['report'];
 
     protected $table = 'process_status';
+
+    public function __construct() {
+        $this->STATUS_EXTRA = Status::where('slug', 'extra')->first()->id;
+        $this->STATUS_DB_SYNC = Status::where('slug', 'database_sync')->first()->id;
+        $this->STATUS_FINISHED = Status::where('slug', 'finish')->first()->id;
+        $this->STATUS_CANCELLED = Status::where('slug', 'cancel')->first()->id;
+
+        $this->EXCLUDED_STATUSES = [
+            $this->STATUS_EXTRA,
+            $this->STATUS_CANCELLED,
+        ];
+
+        $this->SELF_CONCLUDING_STATUSES = [
+            $this->STATUS_FINISHED,
+            $this->STATUS_CANCELLED,
+        ];
+    }
 
     public function report() {
         return $this->belongsTo('App\Models\DailyReports\Report', 'process_id');
@@ -55,13 +66,13 @@ class ProcessStatus extends Model
         $nextStatusId = 0;
 
         if($status === 3) {
-            $nextStatusId = self::STATUS_EXTRA;
+            $nextStatusId = $this->STATUS_EXTRA;
         } else if($status === 7) {
-            $nextStatusId = self::STATUS_FINISHED;
+            $nextStatusId = $this->STATUS_FINISHED;
         } else if ($status === 8) {
-            $nextStatusId = self::STATUS_CANCELLED;
+            $nextStatusId = $this->STATUS_CANCELLED;
         } else {
-            $nextStatusId = Status::whereNotIn('id', self::EXCLUDED_STATUSES)->where('id', '>', $currentStatusId)->min('id');
+            $nextStatusId = Status::whereNotIn('id', $this->EXCLUDED_STATUSES)->where('id', '>', $currentStatusId)->min('id');
         }
 
         if ($currentStatusId === 3) {
@@ -75,7 +86,7 @@ class ProcessStatus extends Model
         $nextProcessStatus->report()->associate($this->report()->first()->id);
         $nextProcessStatus->status()->associate($nextStatusId);
         $nextProcessStatus->previous()->associate($this->id);
-        if(in_array($nextStatusId, self::SELF_CONCLUDING_STATUSES)) {
+        if(in_array($nextStatusId, $this->SELF_CONCLUDING_STATUSES)) {
             $nextProcessStatus->conclude($user->id);
         }
         $nextProcessStatus->save();
@@ -101,7 +112,7 @@ class ProcessStatus extends Model
     }
 
     public function stepExtra() {
-        return $this->stepForward(self::STATUS_EXTRA);
+        return $this->stepForward($this->STATUS_EXTRA);
     }
 
     public function conclude($user_id) {
@@ -113,11 +124,11 @@ class ProcessStatus extends Model
     }
 
     public function finish() {
-        return $this->stepForward(self::STATUS_FINISHED);
+        return $this->stepForward($this->STATUS_FINISHED);
     }
 
     public function cancel() {
-        return $this->stepForward(self::STATUS_CANCELLED);
+        return $this->stepForward($this->STATUS_CANCELLED);
     }
 
     public function closed() {

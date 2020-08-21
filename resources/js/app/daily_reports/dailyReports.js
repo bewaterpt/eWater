@@ -1,5 +1,9 @@
+const { readyException } = require("jquery");
+const { reject } = require("lodash");
+
 $(document).ready(() => {
 
+    let error = false;
     let today = new Date();
 
     function ISODateString(d){
@@ -68,6 +72,72 @@ $(document).ready(() => {
             });
         }
 
+        function formatAndSendReportData() {
+            let data = {
+                plate: $('input[name="plate"]').val(),
+                km_departure: $('input[name="km-departure"]').val(),
+                km_arrival: $('input[name="km-arrival"]').val(),
+                comment: $('textarea').val(),
+                datetime: $('#inputDatetime').val(),
+                team: $('#inputTeam').children('option:selected').val(),
+            }
+
+            let totalKm = data.km_arrival - data.km_departure;
+            let userInsertedKm = 0;
+            let rows = {};
+
+            $('div.card.work').each((workIndex, work) => {
+                console.log('Work: ', work);
+                let workNum = $(work).find('input.work-number').val();
+                let kmInserted = false;
+                rows[workNum] = {};
+                $(work).find('tbody tr').each((trIndex, tr) => {
+                    rows[workNum][trIndex] = {};
+                    rows[workNum][trIndex]['driven-km'] = $(work).find('input.driven-km').val()
+                    $(document).find('.card.work input:not(.work-number), select').each((inputIndex, input) => {
+                        if (input.name !== 'driven-km') {
+                            rows[workNum][trIndex][input.name] = input.value;
+                        }
+                    });
+                });
+            });
+
+            $(document).find('.card.work .card-header input[name=driven-km]').each((inputIndex, input) => {
+                userInsertedKm += parseInt(input.value);
+            });
+
+            console.log('Total: ', totalKm)
+            console.log('Inserted: ', userInsertedKm)
+            console.log(Math.abs(userInsertedKm - totalKm));
+
+            if(Math.abs(userInsertedKm - totalKm) !== 0) {
+                throw new Error($('#errors #differentKm')[0].innerText);
+            }
+
+            data.rows = rows;
+
+            $.ajax({
+                method: 'POST',
+                url: $('#report').attr('action'),
+                data: JSON.stringify(data),
+                contentType: 'json',
+                success: (response) => {
+                    $('#report button[type="submit"]').find('#spinner, #spinner-text').addClass('d-none');
+                    $('#report button[type="submit"]').find('.btn-text').removeClass('d-none');
+                    return response;
+                },
+                error: (jqXHR, status, error) => {
+                    $('#report button[type="submit"]').find('#spinner, #spinner-text').addClass('d-none');
+                    $('#report button[type="submit"]').find('.btn-text').removeClass('d-none');
+                    throw new Error(error.message);
+                },
+                complete: () => {
+                    $('#report button[type="submit"]').find('#spinner, #spinner-text').addClass('d-none');
+                    $('#report button[type="submit"]').find('.btn-text').removeClass('d-none');
+                },
+            });
+        }
+
         $('#addRow').on('click', (event) => {
             addRow(event);
         });
@@ -120,109 +190,49 @@ $(document).ready(() => {
             $('#inputDatetime').val(ISODateString(today));
         }
 
+        $('div.card.work input.work-number').on('change', (evt) => {
+            error = false;
+            let data = {
+                id: $(evt.target).val()
+            }
+
+            $.ajax({
+                method: 'POST',
+                url: '/works/work-exists',
+                data: JSON.stringify(data),
+                contentType: 'json',
+                success: (response) => {
+                    if (Boolean(parseInt(response)) === false) {
+                        $(evt.target).addClass('border-danger').addClass('bg-flamingo').focus();
+                    } else {
+                        $(evt.target).removeClass('border-danger').removeClass('bg-flamingo');
+                    }
+                    resolve();
+                },
+                error: (jqXHR, status, error) => {
+                    $('#report button[type="submit"]').find('#spinner, #spinner-text').addClass('d-none');
+                    $('#report button[type="submit"]').find('.btn-text').removeClass('d-none');
+                },
+            });
+        });
+
         $('#report').on('submit', (event) => {
             event.preventDefault();
 
             $('#report button[type="submit"]').find('#spinner, #spinner-text').removeClass('d-none');
             $('#report button[type="submit"]').find('.btn-text').addClass('d-none');
+            if(!error) {
+                try {
 
-            try {
-                let data = {
-                    id: $('div.card.work input.work-number').val()
+                } catch (error) {
+                    $('#report button[type="submit"]').find('#spinner, #spinner-text').addClass('d-none');
+                    $('#report button[type="submit"]').find('.btn-text').removeClass('d-none');
+                    alert(error.message);
+                    return
                 }
-                $.ajax({
-                    method: 'POST',
-                    url: '/api/work-exists',
-                    data: JSON.stringify(data),
-                    contentType: 'json',
-                    success: (response) => {
-                        if (parseBool(response) === false) {
-                            alert($('#errors #workNotExists'));
-                            return;
-                        }
-                    },
-                    error: (jqXHR, status, error) => {
-                        $('#report button[type="submit"]').find('#spinner, #spinner-text').addClass('d-none');
-                        $('#report button[type="submit"]').find('.btn-text').removeClass('d-none');
-                        alert(error.message);
-                    },
-                });
-            } catch (error) {
+            } else {
                 $('#report button[type="submit"]').find('#spinner, #spinner-text').addClass('d-none');
                 $('#report button[type="submit"]').find('.btn-text').removeClass('d-none');
-                alert(error.message);
-                return
-            }
-            //border-danger
-
-            try {
-                let data = {
-                    plate: $('input[name="plate"]').val(),
-                    km_departure: $('input[name="km-departure"]').val(),
-                    km_arrival: $('input[name="km-arrival"]').val(),
-                    comment: $('textarea').val(),
-                    datetime: $('#inputDatetime').val(),
-                    team: $('#inputTeam').children('option:selected').val(),
-                }
-
-                let totalKm = data.km_arrival - data.km_departure;
-                let userInsertedKm = 0;
-                let rows = {};
-
-                $('div.card.work').each((workIndex, work) => {
-                    workNum = $(work).find('input.work-number').val()
-                    kmInserted = false;
-                    rows[workNum] = {};
-                    $(work).find('tbody tr').each((trIndex, tr) => {
-                        rows[workNum][trIndex] = {};
-                        rows[workNum][trIndex]['driven-km'] = $(work).find('input.driven-km').val()
-                        $(document).find('.card.work input:not(.work-number), select').each((inputIndex, input) => {
-                            if (input.name !== 'driven-km') {
-                                rows[workNum][trIndex][input.name] = input.value;
-                            }
-                        });
-                    });
-                });
-
-                $(document).find('.card.work .card-header input[name=driven-km]').each((inputIndex, input) => {
-                    userInsertedKm += parseInt(input.value);
-                });
-
-
-                console.log('Total: ', totalKm)
-                console.log('Inserted: ', userInsertedKm)
-                console.log(Math.abs(userInsertedKm - totalKm));
-
-                if(Math.abs(userInsertedKm - totalKm) !== 0) {
-                    throw new Error($('#errors #differentKm')[0].innerText);
-                }
-
-                data.rows = rows;
-
-                $.ajax({
-                    method: 'POST',
-                    url: $('#report').attr('action'),
-                    data: JSON.stringify(data),
-                    contentType: 'json',
-                    success: (response) => {
-                        $('#report button[type="submit"]').find('#spinner, #spinner-text').addClass('d-none');
-                        $('#report button[type="submit"]').find('.btn-text').removeClass('d-none');
-                        window.location.replace(response);
-                    },
-                    error: (jqXHR, status, error) => {
-                        $('#report button[type="submit"]').find('#spinner, #spinner-text').addClass('d-none');
-                        $('#report button[type="submit"]').find('.btn-text').removeClass('d-none');
-                        alert(error.message);
-                    },
-                    complete: () => {
-                        $('#report button[type="submit"]').find('#spinner, #spinner-text').addClass('d-none');
-                        $('#report button[type="submit"]').find('.btn-text').removeClass('d-none');
-                    },
-                });
-            } catch (error) {
-                $('#report button[type="submit"]').find('#spinner, #spinner-text').addClass('d-none');
-                $('#report button[type="submit"]').find('.btn-text').removeClass('d-none');
-                alert(error.message);
             }
         });
 

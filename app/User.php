@@ -9,10 +9,11 @@ use LdapRecord\Laravel\Auth\AuthenticatesWithLdap;
 use LdapRecord\Laravel\Auth\LdapAuthenticatable;
 use LdapRecord\Laravel\Auth\HasLdapUser;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable implements LdapAuthenticatable
 {
-    use Notifiable, AuthenticatesWithLdap, HasLdapUser, SoftDeletes;
+    use Notifiable, AuthenticatesWithLdap, HasLdapUser, SoftDeletes, HasApiTokens;
 
     protected $primaryKey = 'id';
 

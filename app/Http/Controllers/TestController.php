@@ -15,7 +15,7 @@ class TestController extends Controller
         parent::__construct();
     }
 
-    public function index() {
+    public function index(Request $request) {
         // $reports = Report::notSynced()->get();
 
         // $collectionOfLines = $reports->map(function ($report) {
@@ -83,6 +83,8 @@ class TestController extends Controller
         //     }
         // }
 
-        return view('tests.test');
+
+
+        return intval(parent::workExists($request));
     }
 }

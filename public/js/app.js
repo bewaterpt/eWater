@@ -45128,9 +45128,16 @@ $(document).ready(function () {
   !*** ./resources/js/app/daily_reports/dailyReports.js ***!
   \********************************************************/
 /*! no static exports found */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
+
+var _require = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js"),
+    readyException = _require.readyException;
+
+var _require2 = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js"),
+    reject = _require2.reject;
 
 $(document).ready(function () {
+  var error = false;
   var today = new Date();
 
   function ISODateString(d) {
@@ -45205,6 +45212,67 @@ $(document).ready(function () {
       });
     };
 
+    var formatAndSendReportData = function formatAndSendReportData() {
+      var data = {
+        plate: $('input[name="plate"]').val(),
+        km_departure: $('input[name="km-departure"]').val(),
+        km_arrival: $('input[name="km-arrival"]').val(),
+        comment: $('textarea').val(),
+        datetime: $('#inputDatetime').val(),
+        team: $('#inputTeam').children('option:selected').val()
+      };
+      var totalKm = data.km_arrival - data.km_departure;
+      var userInsertedKm = 0;
+      var rows = {};
+      $('div.card.work').each(function (workIndex, work) {
+        console.log('Work: ', work);
+        var workNum = $(work).find('input.work-number').val();
+        var kmInserted = false;
+        rows[workNum] = {};
+        $(work).find('tbody tr').each(function (trIndex, tr) {
+          rows[workNum][trIndex] = {};
+          rows[workNum][trIndex]['driven-km'] = $(work).find('input.driven-km').val();
+          $(document).find('.card.work input:not(.work-number), select').each(function (inputIndex, input) {
+            if (input.name !== 'driven-km') {
+              rows[workNum][trIndex][input.name] = input.value;
+            }
+          });
+        });
+      });
+      $(document).find('.card.work .card-header input[name=driven-km]').each(function (inputIndex, input) {
+        userInsertedKm += parseInt(input.value);
+      });
+      console.log('Total: ', totalKm);
+      console.log('Inserted: ', userInsertedKm);
+      console.log(Math.abs(userInsertedKm - totalKm));
+
+      if (Math.abs(userInsertedKm - totalKm) !== 0) {
+        throw new Error($('#errors #differentKm')[0].innerText);
+      }
+
+      data.rows = rows;
+      $.ajax({
+        method: 'POST',
+        url: $('#report').attr('action'),
+        data: JSON.stringify(data),
+        contentType: 'json',
+        success: function success(response) {
+          $('#report button[type="submit"]').find('#spinner, #spinner-text').addClass('d-none');
+          $('#report button[type="submit"]').find('.btn-text').removeClass('d-none');
+          return response;
+        },
+        error: function error(jqXHR, status, _error) {
+          $('#report button[type="submit"]').find('#spinner, #spinner-text').addClass('d-none');
+          $('#report button[type="submit"]').find('.btn-text').removeClass('d-none');
+          throw new Error(_error.message);
+        },
+        complete: function complete() {
+          $('#report button[type="submit"]').find('#spinner, #spinner-text').addClass('d-none');
+          $('#report button[type="submit"]').find('.btn-text').removeClass('d-none');
+        }
+      });
+    };
+
     $('#addRow').on('click', function (event) {
       addRow(event);
     });
@@ -45254,102 +45322,46 @@ $(document).ready(function () {
       $('#inputDatetime').val(ISODateString(today));
     }
 
+    $('div.card.work input.work-number').on('change', function (evt) {
+      error = false;
+      var data = {
+        id: $(evt.target).val()
+      };
+      $.ajax({
+        method: 'POST',
+        url: '/works/work-exists',
+        data: JSON.stringify(data),
+        contentType: 'json',
+        success: function success(response) {
+          if (Boolean(parseInt(response)) === false) {
+            $(evt.target).addClass('border-danger').addClass('bg-flamingo').focus();
+          } else {
+            $(evt.target).removeClass('border-danger').removeClass('bg-flamingo');
+          }
+
+          resolve();
+        },
+        error: function error(jqXHR, status, _error2) {
+          $('#report button[type="submit"]').find('#spinner, #spinner-text').addClass('d-none');
+          $('#report button[type="submit"]').find('.btn-text').removeClass('d-none');
+        }
+      });
+    });
     $('#report').on('submit', function (event) {
       event.preventDefault();
       $('#report button[type="submit"]').find('#spinner, #spinner-text').removeClass('d-none');
       $('#report button[type="submit"]').find('.btn-text').addClass('d-none');
 
-      try {
-        var data = {
-          id: $('div.card.work input.work-number').val()
-        };
-        $.ajax({
-          method: 'POST',
-          url: '/api/work-exists',
-          data: JSON.stringify(data),
-          contentType: 'json',
-          success: function success(response) {
-            if (parseBool(response) === false) {
-              alert($('#errors #workNotExists'));
-              return;
-            }
-          },
-          error: function error(jqXHR, status, _error) {
-            $('#report button[type="submit"]').find('#spinner, #spinner-text').addClass('d-none');
-            $('#report button[type="submit"]').find('.btn-text').removeClass('d-none');
-            alert(_error.message);
-          }
-        });
-      } catch (error) {
-        $('#report button[type="submit"]').find('#spinner, #spinner-text').addClass('d-none');
-        $('#report button[type="submit"]').find('.btn-text').removeClass('d-none');
-        alert(error.message);
-        return;
-      } //border-danger
-
-
-      try {
-        var _data = {
-          plate: $('input[name="plate"]').val(),
-          km_departure: $('input[name="km-departure"]').val(),
-          km_arrival: $('input[name="km-arrival"]').val(),
-          comment: $('textarea').val(),
-          datetime: $('#inputDatetime').val(),
-          team: $('#inputTeam').children('option:selected').val()
-        };
-        var totalKm = _data.km_arrival - _data.km_departure;
-        var userInsertedKm = 0;
-        var rows = {};
-        $('div.card.work').each(function (workIndex, work) {
-          workNum = $(work).find('input.work-number').val();
-          kmInserted = false;
-          rows[workNum] = {};
-          $(work).find('tbody tr').each(function (trIndex, tr) {
-            rows[workNum][trIndex] = {};
-            rows[workNum][trIndex]['driven-km'] = $(work).find('input.driven-km').val();
-            $(document).find('.card.work input:not(.work-number), select').each(function (inputIndex, input) {
-              if (input.name !== 'driven-km') {
-                rows[workNum][trIndex][input.name] = input.value;
-              }
-            });
-          });
-        });
-        $(document).find('.card.work .card-header input[name=driven-km]').each(function (inputIndex, input) {
-          userInsertedKm += parseInt(input.value);
-        });
-        console.log('Total: ', totalKm);
-        console.log('Inserted: ', userInsertedKm);
-        console.log(Math.abs(userInsertedKm - totalKm));
-
-        if (Math.abs(userInsertedKm - totalKm) !== 0) {
-          throw new Error($('#errors #differentKm')[0].innerText);
+      if (!error) {
+        try {} catch (error) {
+          $('#report button[type="submit"]').find('#spinner, #spinner-text').addClass('d-none');
+          $('#report button[type="submit"]').find('.btn-text').removeClass('d-none');
+          alert(error.message);
+          return;
         }
-
-        _data.rows = rows;
-        $.ajax({
-          method: 'POST',
-          url: $('#report').attr('action'),
-          data: JSON.stringify(_data),
-          contentType: 'json',
-          success: function success(response) {
-            $('#report button[type="submit"]').find('#spinner, #spinner-text').addClass('d-none');
-            $('#report button[type="submit"]').find('.btn-text').removeClass('d-none');
-            window.location.replace(response);
-          },
-          error: function error(jqXHR, status, _error2) {
-            $('#report button[type="submit"]').find('#spinner, #spinner-text').addClass('d-none');
-            $('#report button[type="submit"]').find('.btn-text').removeClass('d-none');
-            alert(_error2.message);
-          },
-          complete: function complete() {
-            $('#report button[type="submit"]').find('#spinner, #spinner-text').addClass('d-none');
-            $('#report button[type="submit"]').find('.btn-text').removeClass('d-none');
-          }
-        });
-      } catch (error) {
+      } else {
         $('#report button[type="submit"]').find('#spinner, #spinner-text').addClass('d-none');
         $('#report button[type="submit"]').find('.btn-text').removeClass('d-none');
-        alert(error.message);
       }
     });
     $(document).on('change keyup', 'input[name="km-departure"], input[name="km-arrival"]', function (event) {

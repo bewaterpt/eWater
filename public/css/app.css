@@ -27495,6 +27495,10 @@ readers do not read off random characters that represent icons */
   background: white;
 }
 
+.bg-flamingo {
+  background: #dc112512 !important;
+}
+
 .fill-parent {
   position: absolute;
   top: 0;

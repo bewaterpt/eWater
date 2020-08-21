@@ -19,6 +19,14 @@ class OutonoObras extends Model
     }
 
     public static function exists($id) {
-        return self::where('numObra', $id)->exists();
+        return self::where('numObra', $id)->whereNotIn('codEstadoExecucao', [3, 4])->exists();
+    }
+
+    public function getStreet() {
+        return $this->belongsTo('App\Models\Connectors\OutonoRuas', 'codRua');
+    }
+
+    public function getType() {
+        return $this->belongsTo('App\Models\Connectors\OutonoObrasTipo', 'codObra');
     }
 }

@@ -3,10 +3,13 @@
 namespace App\Models\DailyReports;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Auth;
 
 class Status extends Model
 {
+    use SoftDeletes;
+
     public function userCanProgress($status = false) {
 
         if ($status) {

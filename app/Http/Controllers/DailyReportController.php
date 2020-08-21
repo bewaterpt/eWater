@@ -21,6 +21,9 @@ use Illuminate\Console\Command;
 
 class DailyReportController extends Controller
 {
+
+    public $workObject;
+
     /**
      * Class Constructor
      *
@@ -28,6 +31,7 @@ class DailyReportController extends Controller
      */
     public function __contruct() {
         parent::__construct();
+        $this->workObject = new OutonoObras();
     }
 
     /**
@@ -85,54 +89,61 @@ class DailyReportController extends Controller
         $user = Auth::user();
         $input = $request->json()->all();
 
-        $report = new Report();
-        $report->creator()->associate($user->id);
-        $report->vehicle_plate = $input['plate'];
-        $report->km_departure = $input['km_departure'];
-        $report->km_arrival = $input['km_arrival'];
-        $report->driven_km = $input['km_arrival'] - $input['km_departure'];
-        $report->comment = $input['comment'];
-        $report->team()->associate($input['team']);
-        $report->save();
+        try {
+            DB::beginTransaction();
+            $report = new Report();
+            $report->creator()->associate($user->id);
+            $report->vehicle_plate = $input['plate'];
+            $report->km_departure = $input['km_departure'];
+            $report->km_arrival = $input['km_arrival'];
+            $report->driven_km = $input['km_arrival'] - $input['km_departure'];
+            $report->comment = $input['comment'];
+            $report->team()->associate($input['team']);
+            $report->save();
 
-        $works = $input['rows'];
+            $works = $input['rows'];
 
-        $lastInsertedEntryNumber = OutonoObrasCC::lastInsertedEntryNumber() + 1;
+            $lastInsertedEntryNumber = OutonoObrasCC::lastInsertedEntryNumber() + 1;
 
-        $rows = [];
+            $rows = [];
 
-        foreach ($works as $workNumber => $workData) {
+            foreach ($works as $workNumber => $workData) {
 
-            foreach ($workData as $reportRow) {
+                foreach ($workData as $reportRow) {
 
-                $rows[] = [
-                    'entry_number' => $lastInsertedEntryNumber,
-                    'article_id' => $reportRow['article'],
-                    'work_number' => $workNumber,
-                    'quantity' => $reportRow['quantity'],
-                    'entry_date' => (new DateTime($input['datetime']))->format('Y-m-d H:i:s'),
-                    'report_id' => $report->id,
-                    'created_by' => $user->id,
-                    'user_id' => $reportRow['worker'],
-                    'worker' => $reportRow['worker'],
-                    'driven_km' => $reportRow['driven-km'],
-                ];
+                    $rows[] = [
+                        'entry_number' => $lastInsertedEntryNumber,
+                        'article_id' => $reportRow['article'],
+                        'work_number' => $workNumber,
+                        'quantity' => $reportRow['quantity'],
+                        'entry_date' => (new DateTime($input['datetime']))->format('Y-m-d H:i:s'),
+                        'report_id' => $report->id,
+                        'created_by' => $user->id,
+                        'user_id' => $reportRow['worker'],
+                        'worker' => $reportRow['worker'],
+                        'driven_km' => $reportRow['driven-km'],
+                    ];
 
-                $lastInsertedEntryNumber++;
+                    $lastInsertedEntryNumber++;
+                }
             }
+
+            $processCreated = new ProcessStatus();
+            $processCreated->report()->associate($report->id);
+            $processCreated->status()->associate(1);
+            $processCreated->user()->associate($user->id);
+            $processCreated->concluded_at = Carbon::now();
+            $processCreated->save();
+
+            $processCreated->stepForward();
+
+            ReportLine::insert($rows);
+            DB::commit();
+        } catch(\PDOException $e) {
+            DB::rollBack();
+
+            return redirect()->back()->withError(['test' => 'test'], 'custom');
         }
-
-        $processCreated = new ProcessStatus();
-        $processCreated->report()->associate($report->id);
-        $processCreated->status()->associate(1);
-        $processCreated->user()->associate($user->id);
-        $processCreated->concluded_at = Carbon::now();
-        $processCreated->save();
-
-        $processCreated->stepForward();
-
-        ReportLine::insert($rows);
-
         return route('daily_reports.list');
     }
 
@@ -147,6 +158,7 @@ class DailyReportController extends Controller
      * @return View view()
      */
     public function view(Request $request, $reportId) {
+        $this->workObject = new OutonoObras;
         $report = Report::find($reportId);
         $user = Auth::user();
 
@@ -161,7 +173,7 @@ class DailyReportController extends Controller
         // dd($report->lines()->get()->groupBy('work_number'));
         $processStatuses = $report->processStatus()->orderBy('created_at', 'desc')->orderBy('id', 'desc')->get();
 
-        return view('daily_reports.view', [ 'report' => $report, 'processStatuses' => $processStatuses ]);
+        return view('daily_reports.view', [ 'report' => $report, 'processStatuses' => $processStatuses, 'workObject' => $this->workObject]);
     }
 
     /**

@@ -47,15 +47,20 @@
                         @foreach($report->lines()->get()->groupBy('work_number') as $workNumber => $rows)
                             <div class="card mb-2 border-0">
                                 <div class="card-header border accordion-toggle collapsed col-md-12" id="work-{{ $workNumber }}" data-toggle="collapse" data-parent="#work-{{ $workNumber }}" href="#collapse-{{ $workNumber }}">
-                                    <div class="d-inline-block mr-3">@Lang('general.daily_reports.work-number-x') {{ $workNumber }}</div>
-                                    <div class="d-inline-block mr-3">{{ $report->linesByWorkNumber($workNumber)->sum('quantity') }}
+                                    <div class="d-inline-block mr-3" title="{{ trans('general.daily_reports.work_number') }}"># {{ $workNumber }}</div>
+                                    <div class="d-inline-block mr-3" title="{{ trans('general.daily_reports.work_type') }}">{{ $workObject->getById($workNumber)->first()->getType()->first()->descricao }}</div>
+                                    <div class="d-inline-block mr-3" title="{{ trans('general.daily_reports.work_hr', ['id' => $workNumber]) }}">{{ $report->linesByWorkNumber($workNumber)->sum('quantity') }}
                                         @if($report->linesByWorkNumber($workNumber)->sum('quantity') > 1 || $report->linesByWorkNumber($workNumber)->sum('quantity') === 0)
                                             @Lang('general.hours')
                                         @else
                                             @Lang('general.hour')
                                         @endif
                                     </div>
-                                    <div class="d-inline-block">{{ $report->linesByWorkNumber($workNumber)->first()->driven_km }} @Lang('general.daily_reports.km')</div>
+                                    <div class="d-inline-block mr-3" title="{{ trans('general.daily_reports.work_km', ['id' => $workNumber]) }}">{{ $report->linesByWorkNumber($workNumber)->first()->driven_km }} @Lang('general.daily_reports.km')</div>
+                                    <div class="d-inline-block" title="{{ trans('general.daily_reports.address') }}">{{ trim(implode(' ', $workObject->getById($workNumber)->first()->getStreet()->select('ART_TIPO', 'ART_TITULO', 'ART_DESIG', 'ART_LOCAL')->first()->toArray()))}}, </div>
+                                    <div class="d-inline-block" title="{{ trans('general.daily_reports.address') }}">
+                                        {{ $workObject->getById($workNumber)->first()->getStreet()->first()->getLocality()->first()->desig }}
+                                    </div>
                                     <div class="d-inline chevron float-right text-right"><i class="fas fa-chevron-up"></i></div>
                                 </div>
                                 <div class="card-body p-0 collapse in table-responsive" id="collapse-{{ $workNumber }}">

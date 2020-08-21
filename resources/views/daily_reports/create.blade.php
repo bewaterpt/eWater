@@ -47,7 +47,7 @@
                         <div id="original-work" class="work card mt-5 mb-4">
                             <div class="card-header col-md-12">
                                 <span class="d-inline">
-                                    @Lang('general.daily_reports.work-number-x') <input type="number" required class="work-number form-control col-md-2 d-inline border-bottom"/>
+                                    @Lang('general.daily_reports.work_number_x') <input type="number" required class="work-number form-control col-md-2 d-inline border-bottom"/>
                                 </span>
                                 &nbsp;&nbsp;
                                 <span class="d inline">
@@ -116,5 +116,6 @@
 </div>
 <div id="errors" class="d-none">
     <span id="differentKm"> @Lang('errors.different_km') </span>
+    <span id="workNotExists"> @Lang('errors.work_not_exists') </span>
 </div>
 @endsection
