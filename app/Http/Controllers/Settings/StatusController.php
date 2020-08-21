@@ -43,4 +43,20 @@ class StatusController extends Controller
 
         return redirect(route('settings.statuses.list'));
     }
+
+    public function toggleState($statusId) {
+        $status = Status::find($statusId);
+
+        if (!$status) {
+            return redirect()->back()->withErrors(__('settings.status_doesnt_exist'), 'custom');
+        }
+
+        if ($status->enabled()) {
+            $status->disable();
+        } else {
+            $status->enable();
+        }
+
+        return redirect()->back()->with('success');
+    }
 }

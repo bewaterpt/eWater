@@ -39,4 +39,18 @@ class Status extends Model
     public function roles() {
         return $this->belongsToMany('App\Models\Role');
     }
+
+    public function enabled() {
+        return $this->enabled;
+    }
+
+    public function enable() {
+        $this->enabled = true;
+        $this->save();
+    }
+
+    public function disable() {
+        $this->enabled = false;
+        $this->save();
+    }
 }

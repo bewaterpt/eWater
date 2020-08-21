@@ -62,7 +62,7 @@ Route::group(['middleware' => ['web']], function () {
             Route::get(__('routes.users.view'), 'Settings\UserController@view')->name('settings.users.view');
             Route::get(__('routes.users.edit'), 'Settings\UserController@edit')->name('settings.users.edit');
             Route::post(__('routes.users.update'), 'Settings\UserController@update')->name('settings.users.update');
-            Route::get('users/toggle/{id}', 'Settings\UserController@toggle_state')->name('settings.users.toggle_state');
+            Route::get('users/toggle/{id}', 'Settings\UserController@toggleState')->name('settings.users.toggle_state');
             Route::get('users/delete/{id}', 'Settings\UserController@delete')->name('settings.users.delete');
             Route::get('users/add', 'Settings\UserController@create')->name('settings.users.create');
 
@@ -118,6 +118,7 @@ Route::group(['middleware' => ['web']], function () {
             Route::match(['get', 'post'], 'statuses/edit/{id}', 'Settings\StatusController@edit')->name('settings.statuses.edit');
             Route::match(['get', 'post'], 'statuses/create', 'Settings\StatusController@create')->name('settings.statuses.create');
             Route::get('statuses/delete/{id}', 'Settings\StatusController@delete')->name('settings.statuses.delete');
+            Route::get('statuses/toggle/{id}', 'Settings\StatusController@toggleState')->name('settings.statuses.toggle_state');
 
             // Daily Reports
             Route::get('daily-reports', 'DailyReportController@index')->name('daily_reports.list');

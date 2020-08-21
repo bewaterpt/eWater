@@ -95,8 +95,8 @@ class UserController extends Controller
         return redirect(route('settings.users.list'));
     }
 
-    public function toggle_state($userId) {
-        $user = User::find($userId)->first();
+    public function toggleState($userId) {
+        $user = User::find($userId);
 
         if (!$user) {
             return redirect()->back()->withErrors(__('settings.user_doesnt_exist'), 'custom');
