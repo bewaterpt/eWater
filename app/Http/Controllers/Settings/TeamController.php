@@ -86,12 +86,14 @@ class TeamController extends Controller
             $data['msg'] = 'Success';
             $data['content'] = $tableH;
             $users = $team->users()->get()->map(function($user) use($data) {
-                return "<td>" . $user->name . "</td>
-                        <td class='actions text-center'>
-                            <a data-id='" . $user->id . "' class='btn-link dissossiate-user text-danger' href='#'>
-                                <i class='fas fa-times'></i>
-                            </a>
-                        </td>";
+                return "<tr>
+                            <td>" . $user->name . "</td>
+                            <td class='actions text-center'>
+                                <a data-id='" . $user->id . "' class='btn-link dissossiate-user text-danger' href='#'>
+                                    <i class='fas fa-times'></i>
+                                </a>
+                            </td>
+                        </tr>";
             });
 
             foreach($users as $user) {
