@@ -46,8 +46,15 @@
 
                         <div id="original-work" class="work card mt-5 mb-4">
                             <div class="card-header col-md-12">
-                                <span class="d-inline">
+                                <span id="error-popover" class="d-inline" data-placement="bottom" data-trigger="focus">
                                     @Lang('general.daily_reports.work_number_x') <input type="number" required class="work-number form-control col-md-2 d-inline border-bottom"/>
+                                    <div class="d-none popover popover-data">
+                                        <span id="title" class="replace">
+                                            @Lang('errors.error')
+                                        </span>
+                                        <span id="content" class="replace">
+                                        </span>
+                                    </div>
                                 </span>
                                 &nbsp;&nbsp;
                                 <span class="d inline">
@@ -116,6 +123,9 @@
 </div>
 <div id="errors" class="d-none">
     <span id="differentKm"> @Lang('errors.different_km') </span>
-    <span id="workNotExists"> @Lang('errors.work_not_exists') </span>
+    <span id="workNotExists" class='not-found'> @Lang('errors.work_not_exists')</span>
+    <span id="workCancelled" class="anulada">@Lang('errors.work_already_closed')</span>
+    <span id="workResolved" class="resolvida">@Lang('errors.work_already_closed')</span>
 </div>
+@include('layouts.partials.popover', ['id' => 'error', 'type' => 'error'])
 @endsection

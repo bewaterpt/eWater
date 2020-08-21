@@ -112,3 +112,14 @@
         }
     }
 }
+
+.popover-danger {
+    .popover-danger {
+        background-color: #dc112512;
+        border-color: $danger;
+    }
+
+    .popover-danger.right .arrow:after {
+        border-right-color: $danger;
+    }
+}

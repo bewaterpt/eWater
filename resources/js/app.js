@@ -35,10 +35,10 @@ $(document).ready(() => {
         html: true,
         title: function() {
             console.log(this);
-            return $(document).find('#' + this.id + '.popover').find('#title').html()
+            return $(document).find('#' + this.id + ' .popover').find('#title').html()
         },
         content: function() {
-            return $(document).find('#' + this.id + '.popover').find('#content').html()
+            return $(document).find('#' + this.id + ' .popover').find('#content').html()
         },
     });
 });

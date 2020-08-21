@@ -190,7 +190,7 @@ $(document).ready(() => {
             $('#inputDatetime').val(ISODateString(today));
         }
 
-        $('div.card.work input.work-number').on('change', (evt) => {
+        $('div.card.work input.work-number').on('focusout', (evt) => {
             error = false;
             let data = {
                 id: $(evt.target).val()
@@ -202,12 +202,26 @@ $(document).ready(() => {
                 data: JSON.stringify(data),
                 contentType: 'json',
                 success: (response) => {
-                    if (Boolean(parseInt(response)) === false) {
+                    response = JSON.parse(response);
+                    console.log("Response: ", response);
+                    if (response.value === false) {
+                        $(evt.target).parent().popover({
+                            html: true,
+                            title: function() {
+                                console.log(this);
+                                return $(document).find('#' + this.id + ' .popover').find('#title').html()
+                            },
+                            content: function() {
+                                return $(document).find('#' + this.id + ' .popover').find('#content').html()
+                            },
+                        });
+                        $(evt.target).parent().find('.popover #content').html($('#errors .' + response.reason).html());
                         $(evt.target).addClass('border-danger').addClass('bg-flamingo').focus();
+                        $('.popover:not(.popover-data)').addClass('popover-danger');
                     } else {
                         $(evt.target).removeClass('border-danger').removeClass('bg-flamingo');
+                        $(evt.target).parent().popover('dispose');
                     }
-                    resolve();
                 },
                 error: (jqXHR, status, error) => {
                     $('#report button[type="submit"]').find('#spinner, #spinner-text').addClass('d-none');

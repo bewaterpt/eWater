@@ -27543,6 +27543,15 @@ readers do not read off random characters that represent icons */
   line-height: 1.3333em;
 }
 
+.popover-danger .popover-danger {
+  background-color: #dc112512;
+  border-color: #dc3545;
+}
+
+.popover-danger .popover-danger.right .arrow:after {
+  border-right-color: #dc3545;
+}
+
 .multiselect-listbox #btnContainer {
   top: 0;
   right: 0;

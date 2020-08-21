@@ -181,7 +181,7 @@ class GenerateData extends Command
 
             $this->comment('Insert process statuses');
             $this->db->insert('insert into statuses (name, slug) values(?, ?)', ['Criado', 'created']);
-            // $this->db->insert('insert into statuses (name, slug) values(?, ?)', ['Em Edição', 'editing']);
+            $this->db->insert('insert into statuses (name, slug, enabled) values(?, ?, ?)', ['Em Edição', 'editing', false]);
             $this->db->insert('insert into statuses (name, slug) values(?, ?)', ['Estado Extra', 'extra']);
             $this->db->insert('insert into statuses (name, slug) values(?, ?)', ['Validação', 'validation']);
             $this->db->insert('insert into statuses (name, slug) values(?, ?)', ['Aprovação', 'approval']);

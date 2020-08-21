@@ -18,8 +18,8 @@ class OutonoObras extends Model
         return self::find($workId);
     }
 
-    public static function exists($id) {
-        return self::where('numObra', $id)->whereNotIn('codEstadoExecucao', [3, 4])->exists();
+    public function active() {
+        return in_array($this->codEstadoExecucao, [3, 4]) ? false : true;
     }
 
     public function getStreet() {
@@ -28,5 +28,9 @@ class OutonoObras extends Model
 
     public function getType() {
         return $this->belongsTo('App\Models\Connectors\OutonoObrasTipo', 'codObra');
+    }
+
+    public function executionStateText() {
+        return strtolower($this->belongsTo('App\Models\Connectors\OutonoEstadosExecucao', 'codEstadoExecucao')->first()->descricao);
     }
 }

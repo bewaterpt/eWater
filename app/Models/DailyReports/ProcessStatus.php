@@ -72,7 +72,7 @@ class ProcessStatus extends Model
         } else if ($status === 8) {
             $nextStatusId = $this->STATUS_CANCELLED;
         } else {
-            $nextStatusId = Status::whereNotIn('id', $this->EXCLUDED_STATUSES)->where('id', '>', $currentStatusId)->min('id');
+            $nextStatusId = Status::whereNotIn('id', $this->EXCLUDED_STATUSES)->where('id', '>', $currentStatusId)->where('enabled', true)->min('id');
         }
 
         if ($currentStatusId === 3) {
