@@ -16,4 +16,8 @@ class InterruptionController extends Controller
 
         return view('interruptions.index', ['interruptions' => $interruptions]);
     }
+
+    public function create() {
+        return view('interruptions.create');
+    }
 }

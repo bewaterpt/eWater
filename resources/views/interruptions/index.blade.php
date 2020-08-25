@@ -8,7 +8,7 @@
                 <div class="card-header">
                     @Lang('general.interruptions.interruptions')
                     <span class="float-right">
-                        <a class="">
+                        <a class="btn-link text-success" href="{{ route('interruptions.create') }}"><i class="fas fa-plus"></i></a>
                     </span>
                 </div>
                 <div class="card-body table-responsive">

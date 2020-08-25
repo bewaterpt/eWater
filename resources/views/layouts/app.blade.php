@@ -35,6 +35,11 @@
                         @else
                          <!-- MENU -->
                             <ul class="navbar-nav mr-auto">
+                                {{-- {{dd(collect(Route::getRoutes())->map(function ($route) {
+                                    return in_array('allowed', $route->gatherMiddleware()) ? $route->getName() : null;
+                                })->filter(function ($value) {
+                                    return !is_null($value);
+                                }))}} --}}
                                 @if($pmodel->can('settings.'))
                                     <li class="nav-item dropdown">
                                         <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
