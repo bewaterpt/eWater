@@ -15,7 +15,7 @@ $(document).ready(() => {
     if ($("#reports").length > 0) {
         $("#reports").DataTable({
             responsive: true,
-            order: [[ 1, "asc" ]],
+            order: [[ 1, "desc" ]],
             // ordering: false,
             columnDefs: [
                 {

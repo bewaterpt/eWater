@@ -124,7 +124,7 @@ $(document).ready(() => {
                 success: (response) => {
                     $('#report button[type="submit"]').find('#spinner, #spinner-text').addClass('d-none');
                     $('#report button[type="submit"]').find('.btn-text').removeClass('d-none');
-                    return response;
+                    window.location.replace(response);
                 },
                 error: (jqXHR, status, error) => {
                     $('#report button[type="submit"]').find('#spinner, #spinner-text').addClass('d-none');
@@ -237,7 +237,7 @@ $(document).ready(() => {
             $('#report button[type="submit"]').find('.btn-text').addClass('d-none');
             if(!error) {
                 try {
-
+                    formatAndSendReportData();
                 } catch (error) {
                     $('#report button[type="submit"]').find('#spinner, #spinner-text').addClass('d-none');
                     $('#report button[type="submit"]').find('.btn-text').removeClass('d-none');

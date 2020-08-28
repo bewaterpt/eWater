@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Artisan;
 use App\User;
 use DateTime;
 use Auth;
+use DB;
 use Route;
 use Illuminate\Console\Command;
 
@@ -47,7 +48,7 @@ class DailyReportController extends Controller
         $user = Auth::user();
         $reports = [];
         if ($user->teams()->exists()) {
-            $reports = Report::whereIn('team_id', $user->teams()->pluck('id'))->get();
+            $reports = Report::whereIn('team_id', $user->teams()->pluck('id'))->get()->sortByDesc('created_at');
         }
 
         $reportList = collect([]);

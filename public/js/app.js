@@ -45259,7 +45259,7 @@ $(document).ready(function () {
         success: function success(response) {
           $('#report button[type="submit"]').find('#spinner, #spinner-text').addClass('d-none');
           $('#report button[type="submit"]').find('.btn-text').removeClass('d-none');
-          return response;
+          window.location.replace(response);
         },
         error: function error(jqXHR, status, _error) {
           $('#report button[type="submit"]').find('#spinner, #spinner-text').addClass('d-none');
@@ -45367,7 +45367,9 @@ $(document).ready(function () {
       $('#report button[type="submit"]').find('.btn-text').addClass('d-none');
 
       if (!error) {
-        try {} catch (error) {
+        try {
+          formatAndSendReportData();
+        } catch (error) {
           $('#report button[type="submit"]').find('#spinner, #spinner-text').addClass('d-none');
           $('#report button[type="submit"]').find('.btn-text').removeClass('d-none');
           alert(error.message);
@@ -45448,7 +45450,7 @@ $(document).ready(function () {
   if ($("#reports").length > 0) {
     $("#reports").DataTable({
       responsive: true,
-      order: [[1, "asc"]],
+      order: [[1, "desc"]],
       // ordering: false,
       columnDefs: [{
         targets: $("#reports").find("thead tr:first th.actions").index(),
