@@ -222,7 +222,7 @@ class DailyReportController extends Controller
         }
         $newProcessStatus = $processStatus->stepForward();
 
-        if($newProcessStatus->status()->first()->id === ProcessStatus::STATUS_DB_SYNC) {
+        if($newProcessStatus->status()->first()->id === $processStatus->STATUS_DB_SYNC) {
             try {
                 Artisan::call('reports:sync ' . $processStatus->report()->first()->id);
                 $newProcessStatus->comment = __('general.daily_reports.db_sync_success');
