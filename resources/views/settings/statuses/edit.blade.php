@@ -23,7 +23,7 @@
                             </div>
                         </div>
                         <div class="mb-3">@Lang('general.daily_reports.')</div>
-                        @include('components.multiselect_listbox', ['left' => $roles, 'right' => $status->roles()->get(), 'lField' => 'name', 'rField' => 'name'])
+                        @include('components.multiselect_listbox', ['left' => $roles, 'right' => $status->roles()->get(), 'lField' => 'name', 'rField' => 'name', 'hiddenField' => 'roles'])
                         <button type="submit" class="btn btn-primary">@Lang('general.save')</button>
                       </form>
                 </div>
