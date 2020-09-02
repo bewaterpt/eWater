@@ -96,7 +96,12 @@ $(document).ready(() => {
                     rows[workNum][trIndex]['driven-km'] = $(work).find('input.driven-km').val()
                     $(document).find('.card.work input:not(.work-number), select').each((inputIndex, input) => {
                         if (input.name !== 'driven-km') {
-                            rows[workNum][trIndex][input.name] = input.value;
+                            if (input.name === 'quantity') {
+                                rows[workNum][trIndex][input.name] = parseFloat(input.value);
+                            } else {
+                                rows[workNum][trIndex][input.name] = input.value;
+                            }
+
                         }
                     });
                 });
