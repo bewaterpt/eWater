@@ -12,7 +12,6 @@
                     <form id="updateUser" method="POST" action={{Route('settings.users.update', ['id' => $user->id])}}>
                         @csrf
                         <input type="hidden" name="roles" id="roles"/>
-                        <input type="hidden" name="teams" id="teams"/>
                         <div class="form-row mb-2">
                             <div class="form-group col-md-6">
                                 <label for="inputName">@Lang('forms.fields.name')</label>
@@ -39,8 +38,6 @@
                         <div class="mb-3">@Lang('general.roles')</div>
                         @include('components.multiselect_listbox', ['left' => $roles, 'right' => $user->roles()->get(), 'lField' => 'name', 'rField' => 'name', 'hiddenField' => 'roles'])
                         <div class="mt-3 mb-3">@Lang('general.teams')</div>
-                        @include('components.multiselect_listbox', ['left' => $teams, 'right' => $user->teams()->get(), 'lField' => 'name', 'rField' => 'name', 'hiddenField' => 'teams'])
-                        <button type="submit" class="btn btn-primary">@Lang('general.save')</button>
                       </form>
                 </div>
             </div>
