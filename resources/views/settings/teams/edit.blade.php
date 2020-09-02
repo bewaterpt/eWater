@@ -18,6 +18,11 @@
                                 @error('name')
                                     <div class="alert alert-danger">{{ $message }}</div>
                                 @enderror
+                                <label for="inputColor">@Lang('forms.fields.color')</label>
+                                <input type="text" name="color" class="form-control @error('color') is-invalid @enderror" id="inputColor" value="">
+                                @error('name')
+                                    <div class="alert alert-danger">{{ $message }}</div>
+                                @enderror
                             </div>
                         </div>
                         <button type="submit" class="btn btn-primary float-right">@Lang('general.save')</button>

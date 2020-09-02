@@ -19,7 +19,7 @@
                                     <div class="alert alert-danger">{{ $message }}</div>
                                 @enderror
                                 <label for="inputColor">@Lang('forms.fields.color')</label>
-                                <input type="text" name="color" class="form-control @error('color') is-invalid @enderror" id="inputColor" value="" required>
+                                <input type="text" name="color" class="form-control @error('color') is-invalid @enderror" id="inputColor" value="">
                                 @error('name')
                                     <div class="alert alert-danger">{{ $message }}</div>
                                 @enderror
