@@ -9,8 +9,9 @@
                     @Lang('settings.teams.edit'): {{ $team->name }}
                 </div>
                 <div class="card-body">
-                    <form method="POST" action={{Route('settings.teams.update', ['id' => $team->id])}}>
+                    <form id="updateTeam" method="POST" action={{Route('settings.teams.update', ['id' => $team->id])}}>
                         @csrf
+                        <input type="hidden" name="users" id="users" />
                         <div class="form-row mb-2 justify-content-center">
                             <div class="form-group col-md-12">
                                 <label for="inputName">@Lang('forms.fields.name')</label>
@@ -20,7 +21,7 @@
                                 @enderror
                                 <label for="inputColor">@Lang('forms.fields.color')</label>
                                 <div id="teams-colorpicker" class="input-group">
-                                    <input type="text" name="color" class="form-control @error('color') is-invalid @enderror" id="inputColor" value="" autocomplete="off">
+                                    <input type="text" name="color" class="form-control @error('color') is-invalid @enderror" id="inputColor" value="{{ $team->color }}" autocomplete="off">
                                     <span class="input-group-append">
                                         <span class="input-group-text colorpicker-input-addon"><i></i></span>
                                     </span>
@@ -30,6 +31,8 @@
                                 @enderror
                             </div>
                         </div>
+                        <div class="mt-3 mb-3">@Lang('general.users')</div>
+                        @include('components.multiselect_listbox', ['left' => $users, 'right' => $team->users()->get(), 'lField' => 'name', 'rField' => 'name', 'hiddenField' => 'users'])
                         <button type="submit" class="btn btn-primary float-right">@Lang('general.save')</button>
                       </form>
                 </div>

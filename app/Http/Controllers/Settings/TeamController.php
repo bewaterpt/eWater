@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Settings;
 
 use App\Http\Controllers\Controller;
 use App\Models\Team;
+use App\User;
 use Illuminate\Http\Request;
 
 class TeamController extends Controller
@@ -13,19 +14,23 @@ class TeamController extends Controller
     }
 
     public function index() {
-        $teams = Team::all();
+        $teams = Team::all()->sortBy('name');
 
         return view('settings.teams.index', ['teams' => $teams]);
     }
 
     public function create() {
-        return view('settings.teams.create');
+        $users = User::all()->sortBy('name');
+
+        return view('settings.teams.create', ['users' => $users]);
     }
 
     public function edit(Request $request) {
         $team = Team::find($request->id);
+        $teamUserIds = $team->users()->pluck('id');
+        $users = User::whereNotIn('id', $teamUserIds)->get()->sortBy('name');
 
-        return view('settings.teams.edit', ['team' => $team]);
+        return view('settings.teams.edit', ['team' => $team, 'users' => $users]);
     }
 
     public function store(Request $request) {
@@ -42,6 +47,13 @@ class TeamController extends Controller
         $team->name = $request->name;
         $team->color = $request->color;
         $team->save();
+
+        $userIds = [];
+        if ($request->input('users')) {
+            $userIds = explode(', ', $request->input('users'));
+        }
+
+        $team->users()->sync($userIds);
 
         return redirect(route('settings.teams.list'));
     }

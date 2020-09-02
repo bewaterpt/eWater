@@ -30,8 +30,6 @@ mix.sass('resources/sass/app.scss', 'public/css')
     "resources/js/app/utility/tinymce.js",
 
     // View correspondent scripts
-    "resources/js/app/settings/statuses/update.js",
-    "resources/js/app/settings/users/update.js",
     "resources/js/app/settings/users/datatables_users.js",
     "resources/js/app/settings/teams/teams.js",
     "resources/js/app/settings/teams/datatables_teams.js",

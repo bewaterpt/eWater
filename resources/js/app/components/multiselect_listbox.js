@@ -18,4 +18,24 @@ $(document).ready(() => {
             $(event.target).closest(".multiselect-listbox").find("#selectRight").find(":selected").remove();
         });
     }
+
+    let form = $($('.multiselect-listbox')[0]).parent('form');
+    console.log(form);
+
+    form.on('submit', (event) => {
+        event.preventDefault()
+
+
+        form.find('.multiselect-listbox').each((index, multiselect) => {
+            form.find('input#'+$(multiselect).attr('data-field')).val('');
+            $(multiselect).find('#selectRight option').each((index, item) => {
+                if (index === ($(multiselect).find('#selectRight option').length-1)) {
+                    form.find('input#'+$(multiselect).attr('data-field')).val(form.find('input#'+$(multiselect).attr('data-field')).val() + item.value)
+                } else {
+                    form.find('input#'+$(multiselect).attr('data-field')).val(form.find('input#'+$(multiselect).attr('data-field')).val() + item.value + ', ')
+                }
+            });
+        })
+        form[0].submit();
+    });
 });

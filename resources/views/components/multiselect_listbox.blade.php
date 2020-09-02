@@ -3,9 +3,11 @@
         <div class="form-group col-md-5">
             <label for="selectLeft">@Lang('forms.fields.without_access')</label>
             <select class="form-control selectpicker" multiple id="selectLeft">
-                @foreach($left as $role)
-                    <option value="{{ $role->id }}">{{ $role->{$lField} }}</option>
-                @endforeach
+                @if($left !== null)
+                    @foreach($left as $role)
+                        <option value="{{ $role->id }}">{{ $role->{$lField} }}</option>
+                    @endforeach
+                @endif
             </select>
         </div>
         <div class="col-md-1 position-relative">
@@ -22,9 +24,11 @@
         <div class="form-group col-md-5">
             <label for="selectRight">@Lang('forms.fields.with_access')</label>
             <select class="form-control selectpicker" multiple id="selectRight">
-                @foreach($right as $rItem)
-                    <option value="{{ $rItem->id }}">{{ $rItem->{$rField} }}</option>
-                @endforeach
+                @if($right !== null)
+                    @foreach($right as $rItem)
+                        <option value="{{ $rItem->id }}">{{ $rItem->{$rField} }}</option>
+                    @endforeach
+                @endif
             </select>
         </div>
     </div>

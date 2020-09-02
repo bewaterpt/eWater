@@ -11,6 +11,7 @@
                 <div class="card-body">
                     <form method="POST" action={{Route('settings.teams.store')}}>
                         @csrf
+                        <input type="hidden" name="users" id="users" />
                         <div class="form-row mb-2 justify-content-center">
                             <div class="form-group col-md-12">
                                 <label for="inputName">@Lang('forms.fields.name')</label>
@@ -27,6 +28,8 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="mt-3 mb-3">@Lang('general.users')</div>
+                        @include('components.multiselect_listbox', ['left' => $users, 'right' => null, 'lField' => 'name', 'rField' => 'name', 'hiddenField' => 'users'])
                         <button type="submit" class="btn btn-primary float-right">@Lang('general.save')</button>
                       </form>
                 </div>
