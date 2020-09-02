@@ -18,7 +18,7 @@ mix.sass('resources/sass/app.scss', 'public/css')
     'datatables.net-dt',
     'datatables.net-bs4',
     'bootstrap',
-    'bootstrap-colorpicker',
+    // 'bootstrap-colorpicker',
     '@fortawesome/fontawesome-free',
     // 'remixicon',
 ]).js([

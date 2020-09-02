@@ -19,6 +19,7 @@ return [
         'with_access' => 'Pertence',
         'no_value' => 'N/A',
         'accountable_bool' => 'Reponsável?',
+        'color' => 'Cor',
     ],
     'placeholders' => [
         'name'=> 'Nome Apelido',

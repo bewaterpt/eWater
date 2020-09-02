@@ -30,5 +30,11 @@ $(document).ready(() => {
         });
     });
 
-    $('#inputColor').colorpicker();
+    if($('#teams-colorpicker').find('input').val() !== '') {
+        $('#teams-colorpicker').colorpicker({});
+    } else {
+        $('#teams-colorpicker').colorpicker({
+            color: window.getRandomVibrantColor(20)
+        });
+    }
 });
