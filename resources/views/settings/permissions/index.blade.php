@@ -6,7 +6,7 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">{{array_shift($rolesHeader)}}</div>
-                <div class="card-body overflow-x-auto">
+                <div class="card-body overflow-x-auto table-responsive">
                     <form id="settings-permissions" action="{{Route('settings.permissions.edit')}}" method="POST">
                         @csrf
                         <table class="table table-sm table-striped fix-first-col">

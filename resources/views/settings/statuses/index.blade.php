@@ -6,7 +6,7 @@
         <div class="col-md-11">
             <div class="card">
                 <div class="card-header">@Lang('general.statuses')</div>
-                <div class="card-body">
+                <div class="card-body table-responsive">
                     <table id="datatable-statuses" class="object-table table table-sm table-striped table-bordered" style="width: 100%">
                         <thead class="thead-light">
                             <tr>

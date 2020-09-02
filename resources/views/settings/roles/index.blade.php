@@ -6,7 +6,7 @@
         <div class="col-md-11">
             <div class="card">
                 <div class="card-header">@Lang('general.roles')</div>
-                <div class="card-body">
+                <div class="card-body table-responsive">
                     <table id="datatable-roles" class="object-table table table-bordered table-striped" style="width: 100%">
                         <thead>
                             <tr>

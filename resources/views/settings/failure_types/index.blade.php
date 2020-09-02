@@ -11,7 +11,7 @@
                         <a href="{{Route('settings.materials.create')}}"><i class="fas fa-plus"></i></a>
                     </span>
                 </div>
-                <div class="card-body">
+                <div class="card-body table-responsive">
                     <table id="datatable-users" class="object-table" style="width: 100%">
                         <thead>
                             <tr>

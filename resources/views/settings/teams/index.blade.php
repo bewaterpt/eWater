@@ -11,7 +11,7 @@
                             <a class="text-success" href="{{Route('settings.teams.create')}}"><i class="fas fa-plus"></i></a>
                         </span>
                     </div>
-                    <div class="card-body">
+                    <div class="card-body table-responsive">
                         <table id="datatable-teams" class="object-table table table-sm table-bordered table-striped" style="width: 100%">
                             <thead class="thead-light">
                                 <tr>

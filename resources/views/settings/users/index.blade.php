@@ -6,7 +6,7 @@
         <div class="col-md-11">
             <div class="card">
                 <div class="card-header">@Lang('settings.users.list')</div>
-                <div class="card-body">
+                <div class="card-body table-responsive">
                     <table id="datatable-users" class="object-table table table-sm table-striped" style="width: 100%">
                         <thead>
                             <tr>
