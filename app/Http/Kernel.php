@@ -74,6 +74,7 @@ class Kernel extends HttpKernel
     public function schedule(Schedule $schedule) {
         $schedule->command('telescope:prune')->weekly();
         $schedule->command('permissions:update')->dailyAt('08:00');
-        $schedule->command('roles:update')->dailyAt('08:00');
+        $schedule->command('roles:update')->dailyAt('08:05');
+        $schedule->command('reports:sync')->hourly();
     }
 }
