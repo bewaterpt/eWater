@@ -37,7 +37,7 @@
                         </div>
                         <div class="mb-3">@Lang('general.roles')</div>
                         @include('components.multiselect_listbox', ['left' => $roles, 'right' => $user->roles()->get(), 'lField' => 'name', 'rField' => 'name', 'hiddenField' => 'roles'])
-                        <div class="mt-3 mb-3">@Lang('general.teams')</div>
+                        <button type="submit" class="btn btn-primary">@Lang('general.save')</button>
                       </form>
                 </div>
             </div>

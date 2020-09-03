@@ -130,6 +130,7 @@ Route::group(['middleware' => ['web']], function () {
             // Route::get('daily-reports/approved', 'DailyReportController@approved')->name('daily_reports.approved');
             Route::get('daily-reports/{id}', 'DailyReportController@view')->name('daily_reports.view');
             Route::get('daily-reports/edit/{id}', 'DailyReportController@edit')->name('daily_reports.edit');
+            Route::post('daily-reports/update/{id}', 'DailyReportController@update')->name('daily_reports.update');
             Route::post('daily-reports/regress-status/{id}', 'DailyReportController@regressStatus')->name('daily_reports.prev');
             Route::post('daily-reports/extra-status/{id}', 'DailyReportController@progressExtra')->name('daily_reports.extra');
             Route::post('daily-reports/progress-status/{id}', 'DailyReportController@progressStatus')->name('daily_reports.next');

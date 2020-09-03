@@ -36,7 +36,7 @@ class Allowed
         // dd($permissionModel->can($currentRoute));
 
         if (!$permissionModel->can($currentRoute)) {
-            return redirect()->back()->withErrors(__('auth.permission_denied', ['route' => $currentRoute]), 'custom');
+            return redirect('/')->withErrors(__('auth.permission_denied', ['route' => $currentRoute]), 'custom');
         }
 
         return $next($request);

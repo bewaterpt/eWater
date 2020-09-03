@@ -129,4 +129,8 @@ class User extends Authenticatable implements LdapAuthenticatable
     public function teams() {
         return $this->belongsToMany('App\Models\Team');
     }
+
+    public function isAdmin() {
+        return $this->roles()->where('id', 1)->first() ? true : false ;
+    }
 }

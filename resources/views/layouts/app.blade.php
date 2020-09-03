@@ -11,7 +11,7 @@
 
         <!-- Fonts -->
         <link rel="dns-prefetch" href="//fonts.gstatic.com">
-        {{-- <link rel="icon" href="{{ asset('/favicon.png') }}" type="image/x-icon"/> --}}
+        <link rel="icon" href="{{ asset('/favicon.ico') }}" type="image/x-icon"/>
         <link href="https://fonts.googleapis.com/css?family=Courier" rel="stylesheet">
         <script src="https://cdn.tiny.cloud/1/cx6voesmf6uv8rlv64tv92yhqix2qj2puwg1cwcdvrshvn6r/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">

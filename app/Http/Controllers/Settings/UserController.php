@@ -85,14 +85,7 @@ class UserController extends Controller
 
         $user->roles()->sync($roleIds);
 
-        $teamIds = [];
-        if($request->input('teams')) {
-            $teamIds = explode(', ', $request->input('teams'));
-        }
-
-        $user->teams()->sync($teamIds);
-
-        return redirect(route('settings.users.list'));
+        return redirect()->back();
     }
 
     public function toggleState($userId) {

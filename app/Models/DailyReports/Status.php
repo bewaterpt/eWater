@@ -36,6 +36,28 @@ class Status extends Model
         }
     }
 
+    public function userCanEdit($status = false) {
+        if ($status) {
+            $status = self::find($status);
+        } else {
+            $status = $this;
+        }
+
+        $user = Auth::user();
+
+        if($user->isAdmin()) {
+            return true;
+        }
+
+        if ($this->id == Status::where('slug', 'validation')->first()->id) {
+            return true;
+        } else if ($this->id == Status::where('slug', 'approval')->first()->id && $user->roles()->whereIn('slug', 'aprovacao')->first()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public function roles() {
         return $this->belongsToMany('App\Models\Role');
     }

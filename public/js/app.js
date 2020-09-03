@@ -45250,6 +45250,7 @@ $(document).ready(function () {
     };
 
     var formatAndSendReportData = function formatAndSendReportData() {
+      var includeId = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
       var data = {
         plate: $('input[name="plate"]').val(),
         km_departure: $('input[name="km-departure"]').val(),
@@ -45258,6 +45259,11 @@ $(document).ready(function () {
         datetime: $('#inputDatetime').val(),
         team: $('#inputTeam').children('option:selected').val()
       };
+
+      if (includeId) {
+        data.id = $('#reportId').text();
+      }
+
       var totalKm = data.km_arrival - data.km_departure;
       var userInsertedKm = 0;
       var rows = {};
@@ -45269,9 +45275,13 @@ $(document).ready(function () {
         $(work).find('tbody tr').each(function (trIndex, tr) {
           rows[workNum][trIndex] = {};
           rows[workNum][trIndex]['driven-km'] = $(work).find('input.driven-km').val();
-          $(document).find('.card.work input:not(.work-number), select').each(function (inputIndex, input) {
+          $(tr).find('input:not(.work-number), select').each(function (inputIndex, input) {
             if (input.name !== 'driven-km') {
-              rows[workNum][trIndex][input.name] = input.value;
+              if (input.name === 'quantity') {
+                rows[workNum][trIndex][input.name] = parseFloat(parseFloat(input.value).toFixed(2));
+              } else {
+                rows[workNum][trIndex][input.name] = input.value;
+              }
             }
           });
         });
@@ -45315,6 +45325,9 @@ $(document).ready(function () {
     });
     $('a.remove-work').on('click', function (event) {
       removeWork(event);
+    });
+    $('a#removeRow').on('click', function (event) {
+      removeRow(event);
     });
     $('a.add-work').on('click', function (event) {
       var work = $(event.target).parents('.card').find('.card.work:last-of-type').clone();
@@ -45405,7 +45418,11 @@ $(document).ready(function () {
 
       if (!error) {
         try {
-          formatAndSendReportData();
+          if ($('#daily-reports-edit').length > 0) {
+            formatAndSendReportData(true);
+          } else {
+            formatAndSendReportData();
+          }
         } catch (error) {
           $('#report button[type="submit"]').find('#spinner, #spinner-text').addClass('d-none');
           $('#report button[type="submit"]').find('.btn-text').removeClass('d-none');

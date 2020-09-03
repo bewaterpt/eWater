@@ -65,18 +65,18 @@ class ProcessStatus extends Model
 
         $nextStatusId = 0;
 
-        if($status === 3) {
+        if ($currentStatusId === 3) {
+            $nextStatusId === $this->previous()->first();
+        }
+
+        if($status === $this->STATUS_EXTRA) {
             $nextStatusId = $this->STATUS_EXTRA;
-        } else if($status === 7) {
+        } else if($status === $this->STATUS_FINISHED) {
             $nextStatusId = $this->STATUS_FINISHED;
-        } else if ($status === 8) {
+        } else if ($status === $this->STATUS_CANCELLED) {
             $nextStatusId = $this->STATUS_CANCELLED;
         } else {
             $nextStatusId = Status::whereNotIn('id', $this->EXCLUDED_STATUSES)->where('id', '>', $currentStatusId)->where('enabled', true)->min('id');
-        }
-
-        if ($currentStatusId === 3) {
-            $nextStatusId === $this->previous()->first();
         }
 
         $this->conclude($user->id);

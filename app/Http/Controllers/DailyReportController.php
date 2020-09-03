@@ -315,9 +315,10 @@ class DailyReportController extends Controller
         $report = Report::find($reportId);
         $currentUserRoles = Auth::user()->roles()->pluck('slug');
         $articles = Article::getDailyReportRelevantArticles()->pluck('id', 'designation');
-        $workers = User::whereHas('roles', function ($query) {
+        $workers = User::whereHas('roles', function ($query) use ($currentUserRoles) {
             $query->whereIn('slug', $currentUserRoles);
         })->get();
+        $teams = Team::all();
 
         $works;
         $worksTranportData;
@@ -338,6 +339,67 @@ class DailyReportController extends Controller
             }
         }
 
-        return view('daily_reports.edit', ['report' => $report, 'workers' => $workers, 'articles' => $articles, 'works' => $works, 'transportData' => $worksTranportData]);
+        foreach($works as $work) {
+            $works[$work[0]->work_number] = collect($work);
+        }
+
+        return view('daily_reports.edit', ['report' => $report, 'workers' => $workers, 'articles' => $articles, 'works' => $works, 'transportData' => $worksTranportData, 'teams' => $teams]);
+    }
+
+    public function update(Request $request) {
+        $user = Auth::user();
+        $input = $request->json()->all();
+
+        try {
+            DB::beginTransaction();
+            $report = Report::find($request->id);
+            $report->vehicle_plate = $input['plate'];
+            $report->km_departure = $input['km_departure'];
+            $report->km_arrival = $input['km_arrival'];
+            $report->driven_km = $input['km_arrival'] - $input['km_departure'];
+            $report->comment = $input['comment'];
+            $report->save();
+
+            $report->team()->associate($input['team']);
+
+            $report->lines()->get()->map(function ($line) {
+                return $line->delete();
+            });
+
+            $works = $input['rows'];
+
+            $lastInsertedEntryNumber = OutonoObrasCC::lastInsertedEntryNumber() + 1;
+
+            $rows = [];
+
+            foreach ($works as $workNumber => $workData) {
+
+                foreach ($workData as $reportRow) {
+
+                    $rows[] = [
+                        'entry_number' => $lastInsertedEntryNumber,
+                        'article_id' => $reportRow['article'],
+                        'work_number' => $workNumber,
+                        'quantity' => $reportRow['quantity'],
+                        'entry_date' => (new DateTime($input['datetime']))->format('Y-m-d H:i:s'),
+                        'report_id' => $report->id,
+                        'created_by' => $user->id,
+                        'user_id' => $reportRow['worker'],
+                        'worker' => $reportRow['worker'],
+                        'driven_km' => $reportRow['driven-km'],
+                    ];
+
+                    $lastInsertedEntryNumber++;
+                }
+            }
+
+            ReportLine::insert($rows);
+            DB::commit();
+        } catch(\PDOException $e) {
+            DB::rollBack();
+
+            return redirect()->back()->withError(['test' => 'test'], 'custom');
+        }
+        return route('daily_reports.list');
     }
 }

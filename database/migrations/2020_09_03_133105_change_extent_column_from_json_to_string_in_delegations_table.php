@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class ChangeQuantityToIntOnReportLinesTable extends Migration
+class ChangeExtentColumnFromJsonToStringInDelegationsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class ChangeQuantityToIntOnReportLinesTable extends Migration
      */
     public function up()
     {
-        Schema::table('report_lines', function (Blueprint $table) {
-            $table->float('quantity', 9, 2)->change();
+        Schema::table('delegations', function (Blueprint $table) {
+            $table->string('map_extent')->change();
         });
     }
 
@@ -25,8 +25,8 @@ class ChangeQuantityToIntOnReportLinesTable extends Migration
      */
     public function down()
     {
-        Schema::table('report_lines', function (Blueprint $table) {
-            $table->integer('quantity')->change();
+        Schema::table('delegations', function (Blueprint $table) {
+            $table->json('map_extent')->change();
         });
     }
 }

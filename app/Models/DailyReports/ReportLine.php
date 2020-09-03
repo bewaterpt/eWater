@@ -14,6 +14,9 @@ class ReportLine extends Model
         'entry_date',
     ];
 
+    protected $touches = ['report'];
+
+
     public function article() {
         return $this->belongsTo('App\Models\Article');
     }

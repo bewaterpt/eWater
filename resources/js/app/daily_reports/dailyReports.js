@@ -17,6 +17,7 @@ $(document).ready(() => {
     }
 
     if($('#daily-reports-create').length > 0 || $('#daily-reports-edit').length > 0) {
+
         /**
          * Gets the selected article info
          *
@@ -72,7 +73,7 @@ $(document).ready(() => {
             });
         }
 
-        function formatAndSendReportData() {
+        function formatAndSendReportData(includeId = false) {
             let data = {
                 plate: $('input[name="plate"]').val(),
                 km_departure: $('input[name="km-departure"]').val(),
@@ -80,6 +81,10 @@ $(document).ready(() => {
                 comment: $('textarea').val(),
                 datetime: $('#inputDatetime').val(),
                 team: $('#inputTeam').children('option:selected').val(),
+            }
+
+            if(includeId) {
+                data.id = $('#reportId').text();
             }
 
             let totalKm = data.km_arrival - data.km_departure;
@@ -149,6 +154,10 @@ $(document).ready(() => {
         $('a.remove-work').on('click', (event) => {
             removeWork(event);
         });
+
+        $('a#removeRow').on('click', (event) => {
+            removeRow(event);
+        })
 
         $('a.add-work').on('click', (event) => {
             let work = $(event.target).parents('.card').find('.card.work:last-of-type').clone();
@@ -241,7 +250,11 @@ $(document).ready(() => {
             $('#report button[type="submit"]').find('.btn-text').addClass('d-none');
             if(!error) {
                 try {
-                    formatAndSendReportData();
+                    if ($('#daily-reports-edit').length > 0) {
+                        formatAndSendReportData(true);
+                    } else {
+                        formatAndSendReportData();
+                    }
                 } catch (error) {
                     $('#report button[type="submit"]').find('#spinner, #spinner-text').addClass('d-none');
                     $('#report button[type="submit"]').find('.btn-text').removeClass('d-none');
