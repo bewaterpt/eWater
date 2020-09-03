@@ -57,9 +57,9 @@
                                         @endif
                                     </div>
                                     <div class="d-inline-block mr-3" title="{{ trans('general.daily_reports.work_km', ['id' => $workNumber]) }}">{{ $report->linesByWorkNumber($workNumber)->first()->driven_km }} @Lang('general.daily_reports.km')</div>
-                                    <div class="d-inline-block" title="{{ trans('general.daily_reports.address') }}">{{ trim(implode(' ', $workObject->getById($workNumber)->first()->getStreet()->select('ART_TIPO', 'ART_TITULO', 'ART_DESIG', 'ART_LOCAL')->first()->toArray()))}}, </div>
+                                    <div class="d-inline-block" title="{{ trans('general.daily_reports.address') }}">{{ trim(implode(' ', $workObject->getById($workNumber)->getStreet()->select('ART_TIPO', 'ART_TITULO', 'ART_DESIG', 'ART_LOCAL')->first()->toArray()))}}, </div>
                                     <div class="d-inline-block" title="{{ trans('general.daily_reports.address') }}">
-                                        {{ $workObject->getById($workNumber)->first()->getStreet()->first()->getLocality()->first()->desig }}
+                                        {{ $workObject->getById($workNumber)->getStreet()->first()->getLocality()->first()->desig }}
                                     </div>
                                     <div class="d-inline chevron float-right text-right"><i class="fas fa-chevron-up"></i></div>
                                 </div>
