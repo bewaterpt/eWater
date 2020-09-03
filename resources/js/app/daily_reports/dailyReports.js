@@ -94,14 +94,13 @@ $(document).ready(() => {
                 $(work).find('tbody tr').each((trIndex, tr) => {
                     rows[workNum][trIndex] = {};
                     rows[workNum][trIndex]['driven-km'] = $(work).find('input.driven-km').val()
-                    $(document).find('.card.work input:not(.work-number), select').each((inputIndex, input) => {
+                    $(tr).find('input:not(.work-number), select').each((inputIndex, input) => {
                         if (input.name !== 'driven-km') {
                             if (input.name === 'quantity') {
-                                rows[workNum][trIndex][input.name] = parseFloat(input.value);
+                                rows[workNum][trIndex][input.name] = parseFloat(parseFloat(input.value).toFixed(2));
                             } else {
                                 rows[workNum][trIndex][input.name] = input.value;
                             }
-
                         }
                     });
                 });
