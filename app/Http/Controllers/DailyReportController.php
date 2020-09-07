@@ -47,9 +47,13 @@ class DailyReportController extends Controller
     public function index(Request $request) {
         $user = Auth::user();
         $reports = [];
-        if ($user->teams()->exists()) {
+        if ($user->isAdmin()) {
+            $reports = Report::All();
+        } else if ($user->teams()->exists()) {
             $reports = Report::whereIn('team_id', $user->teams()->pluck('id'))->get()->sortByDesc('created_at');
         }
+
+
 
         $reportList = collect([]);
 
