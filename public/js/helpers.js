@@ -38,3 +38,33 @@ window.getRandomVibrantColor = function rainbow(stepLimit) {
     return (c);
 }
 
+function decimalToTimeValue(totalHours, calculateDays = false, calculateSeconds = false) {
+	const sInDay = 86400;
+	const sInHr = 3600;
+	const sInMin = 60;
+	let totalSeconds = 0;
+	let days = 0, hours = 0, minutes = 0, seconds = 0;
+
+	totalSeconds = totalHours * sInHr;
+
+    if(calculateDays) {
+        if (totalSeconds >= sInDay) {
+            days = totalSeconds / sInDay;
+            totalSeconds = totalSeconds % sInDay;
+        }
+    }
+
+	if (totalSeconds >= sInHr) {
+		hours = totalSeconds / sInHr;
+		totalSeconds = totalSeconds % sInHr;
+	}
+
+	if (totalSeconds >= sInMin) {
+		minutes = totalSeconds / sInMin;
+		totalSeconds = totalSeconds % sInMin;
+	}
+
+	seconds = totalSeconds;
+
+	return (calculateDays ? `${parseInt(days)}d,`: "") + (hours < 10 ? "0" : "") + `${parseInt(hours)}` + (minutes < 10 ? "0" : "") + `:${parseInt(minutes)}` + (calculateSeconds ? (seconds < 10 ? "0" : "") + `:${parseInt(seconds)}` : "" );
+}

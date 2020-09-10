@@ -60,12 +60,12 @@
                                 <div class="card-header border accordion-toggle collapsed col-md-12" id="work-{{ $workNumber }}" data-toggle="collapse" data-parent="#work-{{ $workNumber }}" href="#collapse-{{ $workNumber }}">
                                     <div class="d-inline-block mr-3" title="{{ trans('general.daily_reports.work_number') }}"># {{ $workNumber }}</div>
                                     <div class="d-inline-block mr-3" title="{{ trans('general.daily_reports.work_type') }}">{{ $workObject->getById($workNumber)->getType()->first()->descricao }}</div>
-                                    <div class="d-inline-block mr-3" title="{{ trans('general.daily_reports.work_hr', ['id' => $workNumber]) }}">{{ $report->linesByWorkNumber($workNumber)->sum('quantity') }}
-                                        @if($report->linesByWorkNumber($workNumber)->sum('quantity') > 1 || $report->linesByWorkNumber($workNumber)->sum('quantity') === 0)
+                                    <div class="d-inline-block mr-3" title="{{ trans('general.daily_reports.work_hr', ['id' => $workNumber]) }}">{{ $helpers->decimalToTimeValue($report->linesByWorkNumber($workNumber)->sum('quantity')) }}
+                                        {{-- @if($report->linesByWorkNumber($workNumber)->sum('quantity') > 1 || $report->linesByWorkNumber($workNumber)->sum('quantity') === 0)
                                             @Lang('general.hours')
                                         @else
                                             @Lang('general.hour')
-                                        @endif
+                                        @endif --}}
                                     </div>
                                     <div class="d-inline-block mr-3" title="{{ trans('general.daily_reports.work_km', ['id' => $workNumber]) }}">{{ $report->linesByWorkNumber($workNumber)->first()->driven_km }} @Lang('general.daily_reports.km')</div>
                                     <div class="d-inline-block" title="{{ trans('general.daily_reports.address') }}">{{ trim(implode(' ', $workObject->getById($workNumber)->getStreet()->select('ART_TIPO', 'ART_TITULO', 'ART_DESIG', 'ART_LOCAL')->first()->toArray()))}}, </div>
@@ -102,12 +102,12 @@
                                                         {{ $row->article()->first()->designation }}
                                                     </td>
                                                     <td>
-                                                        {{ $row->quantity }}
-                                                        @if($row->quantity > 1)
+                                                        {{ $helpers->decimalToTimeValue($row->quantity) }}
+                                                        {{-- @if($row->quantity > 1)
                                                             @Lang('general.hours')
                                                         @else
                                                             @Lang('general.hour')
-                                                        @endif
+                                                        @endif --}}
                                                     </td>
                                                     <td>
                                                         {{ (new DateTime($row->entry_date))->format('Y-m-d') }}
