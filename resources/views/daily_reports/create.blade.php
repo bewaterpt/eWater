@@ -36,6 +36,10 @@
                                         <span id="title">@Lang('general.daily_reports.total_km'): </span>
                                         <span id="value"></span>
                                     </div>
+                                    <div id="total-hour-holder" class="border mt-3 rounded p-1">
+                                        <span id="title">@Lang('general.daily_reports.total_hr'): </span>
+                                        <span id="value"></span>
+                                    </div>
                                 </div>
                             </div>
                             <div class="float-right col-md-10">
@@ -58,7 +62,7 @@
                                 </span>
                                 &nbsp;&nbsp;
                                 <span class="d inline">
-                                    @Lang('general.daily_reports.driven-km') <input type="number" required class="driven-km form-control col-md-1 d-inline border-bottom" name="driven-km"/>
+                                    @Lang('general.daily_reports.driven-km') <input type="number" required class="driven-km form-control col-md-1 d-inline border-bottom" name="driven_km"/>
                                 </span>
                                 <span class="float-right mt-1">
                                     <a id="addRow" tabindex="-1" class="text-success" title="{{__('tooltips.daily_reports.add_row')}}" href="#"><i class="fas fa-plus"></i></a>
@@ -73,6 +77,7 @@
                                             <th>@Lang('forms.fields.worker')</th>
                                             <th>@Lang('forms.fields.article')</th>
                                             <th>@Lang('forms.fields.hours')</th>
+                                            {{-- <th class="info"></th> --}}
                                             {{-- <th>@Lang('forms.fields.date')</th> --}}
                                         </tr>
                                     </thead>
@@ -89,7 +94,7 @@
                                                 </select>
                                             </td>
                                             <td>
-                                                <select name="article" required class="form-control selectpicker" id="inputArticle" data-dropup-auto="false" required>
+                                                <select name="article_id" required class="form-control selectpicker" id="inputArticle" data-dropup-auto="false" required>
                                                     {{-- {{ dd($articles) }} --}}
                                                     @foreach($articles as $descricao => $cod)
                                                         <option value="{{ $cod }}">{{ $descricao }}</option>
@@ -99,6 +104,9 @@
                                             <td class="quantity">
                                                 <input type="number" required name="quantity" min="0" value="0" step=".01" class="form-control" id="inputQuantity" required>
                                             </td>
+                                            {{-- <td class="info">
+                                                <a id="info" class="btn info-tooltip ri-information-line text-info ri-lg cursor-info" data-toggle="tooltip" data-placement="right" data-trigger="hover" title="{!! trans('info.hours_as_quantity') !!}"></a>
+                                            </td> --}}
                                             {{-- <td class="date">
                                                 <input id="inputDatetime" required class="form-control datepicker" placeholder="Select Date" name="datetime" type="datetime-local" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}" required>
                                             </td> --}}
@@ -127,5 +135,5 @@
     <span id="workCancelled" class="anulada">@Lang('errors.work_already_closed')</span>
     <span id="workResolved" class="resolvida">@Lang('errors.work_already_closed')</span>
 </div>
-@include('layouts.partials.popover', ['id' => 'error', 'type' => 'error'])
+@include('components.popover', ['id' => 'error', 'type' => 'error'])
 @endsection
