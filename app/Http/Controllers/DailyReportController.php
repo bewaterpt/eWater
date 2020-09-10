@@ -18,6 +18,7 @@ use DateTime;
 use Auth;
 use DB;
 use Route;
+use Log;
 use Illuminate\Console\Command;
 
 class DailyReportController extends Controller
