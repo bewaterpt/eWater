@@ -118,7 +118,7 @@ class DailyReportController extends Controller
 
                     $rows[] = [
                         'entry_number' => $lastInsertedEntryNumber,
-                        'article_id' => $reportRow['article'],
+                        'article_id' => $reportRow['article_id'],
                         'work_number' => $workNumber,
                         'quantity' => $reportRow['quantity'],
                         'entry_date' => (new DateTime($input['datetime']))->format('Y-m-d H:i:s'),
@@ -387,7 +387,7 @@ class DailyReportController extends Controller
 
                     $rows[] = [
                         'entry_number' => $lastInsertedEntryNumber,
-                        'article_id' => $reportRow['article'],
+                        'article_id' => $reportRow['article_id'],
                         'work_number' => $workNumber,
                         'quantity' => $reportRow['quantity'],
                         'entry_date' => (new DateTime($input['datetime']))->format('Y-m-d H:i:s'),
