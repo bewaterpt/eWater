@@ -6,7 +6,7 @@
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-header">
-                        @Lang('general.daily_reports.report', ['number' => $report->id]) {{ $report->closed() ? '(' . __('general.daily_reports.closed_by_user_at_time', [ 'name' => $report->latestUpdate()->user()->name, 'time' => $report->latestUpdate()->concluded_at->diffForHumans()]) . ')' : '' }}
+                        @Lang('general.daily_reports.report', ['number' => $report->id]) {{ $report->closed() ? '(' . __('general.daily_reports.closed_by_user_at_time', [ 'name' => $report->latestUpdate()->user()->first()->name, 'time' => $report->latestUpdate()->concluded_at->diffForHumans()]) . ')' : '' }}
                         <span class="float-right">
                             @if(!$report->closed() && $report->getCurrentStatus()->first()->userCanProgress())
                                 <a href="{{ route('daily_reports.edit', ['id' => $report->id]) }}" class="text-info edit">
