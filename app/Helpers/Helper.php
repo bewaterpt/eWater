@@ -176,10 +176,8 @@ class Helper {
         $minutes = 0;
         $seconds = 0;
 
-        echo $totalHours."\n";
         $totalSeconds = $totalHours * $sInHr;
 
-        echo $totalSeconds."\n";
         if($calculateDays) {
             if ($totalSeconds >= $sInDay) {
                 $days = $totalSeconds / $sInDay;
@@ -187,7 +185,6 @@ class Helper {
             }
         }
 
-        echo $totalSeconds."\n";
         if ($totalSeconds >= $sInHr) {
             $hours = $totalSeconds / $sInHr;
             $totalSeconds = $totalSeconds % $sInHr;
