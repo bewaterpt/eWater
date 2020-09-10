@@ -65,6 +65,8 @@ $(document).ready(() => {
             if (tr.find('#inputDatetime').val() === '') {
                 tr.find('#inputDatetime').val(ISODateString(today));
             }
+
+            tr.find('#info-popover').popover();
             console.log(tr[0]);
             $(event.target).parents('.card.work').find('table#report-lines tbody').append(tr);
             // window.scrollTo(0, document.body.scrollHeight || document.documentElement.scrollHeight);
@@ -98,9 +100,9 @@ $(document).ready(() => {
                 rows[workNum] = {};
                 $(work).find('tbody tr').each((trIndex, tr) => {
                     rows[workNum][trIndex] = {};
-                    rows[workNum][trIndex]['driven-km'] = $(work).find('input.driven-km').val()
+                    rows[workNum][trIndex]['driven_km'] = $(work).find('input.driven-km').val()
                     $(tr).find('input:not(.work-number), select').each((inputIndex, input) => {
-                        if (input.name !== 'driven-km') {
+                        if (input.name !== 'driven_km') {
                             if (input.name === 'quantity') {
                                 rows[workNum][trIndex][input.name] = parseFloat(parseFloat(input.value).toFixed(2));
                             } else {
@@ -111,7 +113,7 @@ $(document).ready(() => {
                 });
             });
 
-            $(document).find('.card.work .card-header input[name=driven-km]').each((inputIndex, input) => {
+            $(document).find('.card.work .card-header input[name=driven_km]').each((inputIndex, input) => {
                 userInsertedKm += parseInt(input.value);
             });
 
@@ -161,12 +163,10 @@ $(document).ready(() => {
 
         $('a.add-work').on('click', (event) => {
             let work = $(event.target).parents('.card').find('.card.work:last-of-type').clone();
-            console.log(work);
             work.removeAttr('id');
 
             let trs = work.find('table#report-lines tbody tr');
             trs.each((index, tr) => {
-                console.log(index);
                 if (trs.length - (index + 1) == 0) {
                     return false
                 }
@@ -191,6 +191,13 @@ $(document).ready(() => {
             if (tr.find('#inputDatetime').val() === '') {
                 tr.find('#inputDatetime').val(ISODateString(today));
             }
+
+            tr.find('#info').tooltip({
+                html: true,
+                title: function() {
+                    return $(document).find('#' + this.id + '-tooltip .tooltip').find('#title').html()
+                },
+            });
             // window.scrollTo(0, document.body.scrollHeight || document.documentElement.scrollHeight);
 
             $(event.target).parents('.card').find('.card.work:last-of-type').after(work);
@@ -199,9 +206,17 @@ $(document).ready(() => {
                 event.preventDefault();
             });
         });
+
         if ($('#inputDatetime').val() === '') {
             $('#inputDatetime').val(ISODateString(today));
         }
+
+        $(".info-tooltip").tooltip({
+            html: true,
+            title: function() {
+                return $(document).find('#' + this.id + '-tooltip .tooltip').find('#title').html()
+            },
+        });
 
         $('div.card.work input.work-number').on('focusout', (evt) => {
             error = false;
@@ -222,7 +237,6 @@ $(document).ready(() => {
                             $(evt.target).parent().popover({
                                 html: true,
                                 title: function() {
-                                    console.log(this);
                                     return $(document).find('#' + this.id + ' .popover').find('#title').html()
                                 },
                                 content: function() {
