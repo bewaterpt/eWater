@@ -6,25 +6,36 @@
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-header">
-                        @Lang('general.daily_reports.report', ['number' => $report->id]) {{ $report->closed() ? '(' . __('general.daily_reports.closed_by_user_at_time', [ 'name' => $report->creator()->first()->name, 'time' => $report->latestUpdate()->concluded_at->diffForHumans()]) . ')' : '' }}
+                        @Lang('general.daily_reports.report', ['number' => $report->id]) {{ $report->closed() ? '(' . __('general.daily_reports.closed_by_user_at_time', [ 'name' => $report->latestUpdate()->user()->name, 'time' => $report->latestUpdate()->concluded_at->diffForHumans()]) . ')' : '' }}
                         <span class="float-right">
                             @if(!$report->closed() && $report->getCurrentStatus()->first()->userCanProgress())
+                                <a href="{{ route('daily_reports.edit', ['id' => $report->id]) }}" class="text-info edit">
+                                    <i class="fas fa-edit"></i>
+                                </a>
                                 <a class="btn-link back text-danger" title="{{__('tooltips.daily_reports.prev')}}" data-toggle="modal" data-target="#modalPrevStatus" href="#">
                                     <i class="fas fa-step-backward"></i>
                                 </a>
                                 {{-- <a class="btn-link branch text-primary" title="{{__('tooltips.daily_reports.extra')}}" data-toggle="modal" data-target="#modalExtraStatus" href="#">
                                     <i class="fas fa-code-branch"></i>
                                 </a> --}}
-                                <a class="btn-link back text-success" title="{{__('tooltips.daily_reports.next')}}" data-toggle="modal" data-target="#modalNextStatus" href="#">
+                                <a class="btn-link forward text-success" title="{{__('tooltips.daily_reports.next')}}" data-toggle="modal" data-target="#modalNextStatus" href="#">
                                     <i class="fas fa-step-forward"></i>
                                 </a>
                             @endif
+                            @include('layouts.partials.info_box', ['id' => 1])
+
                             @if($pmodel->can('daily_reports.cancel') && !$report->closed())
-                                <a href="{{ route('daily_reports.cancel', ['id' => $report->id]) }}" class="text-danger">
+                                <span class="mx-2 text-secondary">l</span>
+                                <a id="cancel-report" href="{{ route('daily_reports.cancel', ['id' => $report->id]) }}" class="text-danger">
                                     <i class="fas fa-ban"></i>
                                 </a>
                             @endif
-                            @include('layouts.partials.info_box', ['id' => 1])
+                            @if($report->closed() && $report->latestUpdate()->status()->first()->slug === 'cancel' && $pmodel->can('daily_reports.uncancel'))
+                                <span class="mx-2 text-secondary">l</span>
+                                <a id="uncancel-report" href="{{ route('daily_reports.uncancel', ['id' => $report->latestUpdate()->id]) }}" class="text-danger">
+                                    <i class="fas fa-history"></i>
+                                </a>
+                            @endif
                         </span>
                     </div>
                     <div class="card-body">
@@ -143,9 +154,12 @@
                                             <td class="actions text-center">
                                                 @if(!$report->closed())
                                                     @if(!$processStatus->concluded_at && $processStatus->status()->first()->userCanProgress())
-                                                        <a class="btn-link back text-danger" title="{{ __('tooltips.daily_reports.prev') }}" data-toggle="modal" data-target="#modalPrevStatus" href="#">
-                                                            <i class="fas fa-step-backward"></i>
-                                                        </a>
+                                                        @if ($processStatus->slug !== "validate")
+                                                            <a class="btn-link back text-danger" title="{{ __('tooltips.daily_reports.prev') }}" data-toggle="modal" data-target="#modalPrevStatus" href="#">
+                                                                <i class="fas fa-step-backward"></i>
+                                                            </a>
+                                                        @endif
+
                                                         {{-- <a class="btn-link branch text-primary" title="{{ __('tooltips.daily_reports.extra') }}" data-toggle="modal" data-target="#modalExtraStatus" href="#">
                                                             <i class="fas fa-code-branch"></i>
                                                         </a> --}}
@@ -196,5 +210,8 @@
     @include('daily_reports.modals.modal_comment')
     @include('layouts.partials.modal_info', ['id' => 1, 'content' => __('info.view_report'), 'subject' => __('general.daily_reports.daily_reports')])
     {{-- @include('daily_reports.partials.modal_extra', ['report' => $report]) --}}
+    <div id="prompts" class="d-none">
+        <span class="cancel-report">@Lang("prompts.cancel-report")</span>
+    </div>
 @endsection
 

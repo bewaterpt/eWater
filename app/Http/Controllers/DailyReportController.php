@@ -126,7 +126,7 @@ class DailyReportController extends Controller
                         'created_by' => $user->id,
                         'user_id' => $reportRow['worker'],
                         'worker' => $reportRow['worker'],
-                        'driven_km' => $reportRow['driven-km'],
+                        'driven_km' => $reportRow['driven_km'],
                     ];
 
                     $lastInsertedEntryNumber++;
@@ -141,6 +141,8 @@ class DailyReportController extends Controller
             $processCreated->save();
 
             $processCreated->stepForward();
+
+            Log::info('User {$user->name}({$user->username}) created report with id {$report->id} having {sizeof($rows)} lines.' . Carbon::now());
 
             ReportLine::insert($rows);
             DB::commit();
@@ -240,6 +242,8 @@ class DailyReportController extends Controller
                 return redirect()->back()->withErrors(__('errors.db_sync_failed') . '<b>' . $e->getMessage() . '</b>', 'custom');
             }
         }
+
+        Log::info('User {$user->name}({$user->username}) progressed report with id <insert id here> to state <insert state here> lines.' . Carbon::now());
 
         return redirect()->back()->with(__('general.daily_reports.db_sync_success'));
     }
@@ -366,11 +370,12 @@ class DailyReportController extends Controller
 
             $report->team()->associate($input['team']);
 
-            $report->lines()->get()->map(function ($line) {
+            $works = $input['rows'];
+
+            $report->lines()->get()->map(function ($line) use ($works) {
                 return $line->delete();
             });
 
-            $works = $input['rows'];
 
             $lastInsertedEntryNumber = OutonoObrasCC::lastInsertedEntryNumber() + 1;
 
@@ -390,7 +395,7 @@ class DailyReportController extends Controller
                         'created_by' => $user->id,
                         'user_id' => $reportRow['worker'],
                         'worker' => $reportRow['worker'],
-                        'driven_km' => $reportRow['driven-km'],
+                        'driven_km' => $reportRow['driven_km'],
                     ];
 
                     $lastInsertedEntryNumber++;
@@ -405,5 +410,12 @@ class DailyReportController extends Controller
             return redirect()->back()->withError(['test' => 'test'], 'custom');
         }
         return route('daily_reports.list');
+    }
+
+    public function uncancel(Request $request, $progressStatusId) {
+        $processStatus = ProcessStatus::find($progressStatusId);
+        $processStatus->uncancel();
+
+        return redirect()->back();
     }
 }

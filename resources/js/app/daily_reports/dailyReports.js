@@ -1,4 +1,4 @@
-const { readyException } = require("jquery");
+const { readyException, holdReady } = require("jquery");
 const { reject } = require("lodash");
 
 $(document).ready(() => {
@@ -131,18 +131,18 @@ $(document).ready(() => {
                 data: JSON.stringify(data),
                 contentType: 'json',
                 success: (response) => {
-                    $('#report button[type="submit"]').find('#spinner, #spinner-text').addClass('d-none');
+                    $('button[type="submit"]').find('#spinner, #spinner-text').addClass('d-none');
                     $('#report button[type="submit"]').find('.btn-text').removeClass('d-none');
                     window.location.replace(response);
                 },
                 error: (jqXHR, status, error) => {
-                    $('#report button[type="submit"]').find('#spinner, #spinner-text').addClass('d-none');
+                    $('button[type="submit"]').find('#spinner, #spinner-text').addClass('d-none');
                     $('#report button[type="submit"]').find('.btn-text').removeClass('d-none');
                     throw new Error(error.message);
                 },
                 complete: () => {
-                    $('#report button[type="submit"]').find('#spinner, #spinner-text').addClass('d-none');
-                    $('#report button[type="submit"]').find('.btn-text').removeClass('d-none');
+                    $('button[type="submit"]').find('#spinner, #spinner-text').addClass('d-none');
+                    $('button[type="submit"]').find('.btn-text').removeClass('d-none');
                 },
             });
         }
@@ -209,45 +209,48 @@ $(document).ready(() => {
                 id: $(evt.target).val()
             }
 
-            $.ajax({
-                method: 'POST',
-                url: '/works/work-exists',
-                data: JSON.stringify(data),
-                contentType: 'json',
-                success: (response) => {
-                    response = JSON.parse(response);
-                    console.log("Response: ", response);
-                    if (response.value === false) {
-                        $(evt.target).parent().popover({
-                            html: true,
-                            title: function() {
-                                console.log(this);
-                                return $(document).find('#' + this.id + ' .popover').find('#title').html()
-                            },
-                            content: function() {
-                                return $(document).find('#' + this.id + ' .popover').find('#content').html()
-                            },
-                        });
-                        $(evt.target).parent().find('.popover #content').html($('#errors .' + response.reason).html());
-                        $(evt.target).addClass('border-danger').addClass('bg-flamingo').focus();
-                        $('.popover:not(.popover-data)').addClass('popover-danger');
-                    } else {
-                        $(evt.target).removeClass('border-danger').removeClass('bg-flamingo');
-                        $(evt.target).parent().popover('dispose');
-                    }
-                },
-                error: (jqXHR, status, error) => {
-                    $('#report button[type="submit"]').find('#spinner, #spinner-text').addClass('d-none');
-                    $('#report button[type="submit"]').find('.btn-text').removeClass('d-none');
-                },
-            });
+            if (data.id !== "") {
+                $.ajax({
+                    method: 'POST',
+                    url: '/works/work-exists',
+                    data: JSON.stringify(data),
+                    contentType: 'json',
+                    success: (response) => {
+                        response = JSON.parse(response);
+                        console.log("Response: ", response);
+                        if (response.value === false) {
+                            $(evt.target).parent().popover({
+                                html: true,
+                                title: function() {
+                                    console.log(this);
+                                    return $(document).find('#' + this.id + ' .popover').find('#title').html()
+                                },
+                                content: function() {
+                                    return $(document).find('#' + this.id + ' .popover').find('#content').html()
+                                },
+                            });
+                            $(evt.target).parent().find('.popover #content').html($('#errors .' + response.reason).html());
+                            $(evt.target).addClass('border-danger').addClass('bg-flamingo').focus();
+                            $('.popover:not(.popover-data)').addClass('popover-danger');
+                        } else {
+                            $(evt.target).removeClass('border-danger').removeClass('bg-flamingo');
+                            $(evt.target).parent().popover('dispose');
+                        }
+                    },
+                    error: (jqXHR, status, error) => {
+                        $('button[type="submit"]').find('#spinner, #spinner-text').addClass('d-none');
+                        $('button[type="submit"]').find('.btn-text').removeClass('d-none');
+                    },
+                });
+            }
         });
+
 
         $('#report').on('submit', (event) => {
             event.preventDefault();
 
-            $('#report button[type="submit"]').find('#spinner, #spinner-text').removeClass('d-none');
-            $('#report button[type="submit"]').find('.btn-text').addClass('d-none');
+            $('button[type="submit"]').find('#spinner, #spinner-text').removeClass('d-none');
+            $('button[type="submit"]').find('.btn-text').addClass('d-none');
             if(!error) {
                 try {
                     if ($('#daily-reports-edit').length > 0) {
@@ -256,19 +259,39 @@ $(document).ready(() => {
                         formatAndSendReportData();
                     }
                 } catch (error) {
-                    $('#report button[type="submit"]').find('#spinner, #spinner-text').addClass('d-none');
-                    $('#report button[type="submit"]').find('.btn-text').removeClass('d-none');
+                    $('button[type="submit"]').find('#spinner, #spinner-text').addClass('d-none');
+                    $('button[type="submit"]').find('.btn-text').removeClass('d-none');
                     alert(error.message);
                     return
                 }
             } else {
-                $('#report button[type="submit"]').find('#spinner, #spinner-text').addClass('d-none');
-                $('#report button[type="submit"]').find('.btn-text').removeClass('d-none');
+                $('button[type="submit"]').find('#spinner, #spinner-text').addClass('d-none');
+                $('button[type="submit"]').find('.btn-text').removeClass('d-none');
             }
         });
 
         $(document).on('change keyup', 'input[name="km-departure"], input[name="km-arrival"]', (event) => {
             $('#total-km-holder #value').text(parseInt(($('input[name="km-arrival"]').val() - $('input[name="km-departure"]').val())));
+
+            if (parseInt(($('input[name="km-arrival"]').val() - $('input[name="km-departure"]').val())) < 0) {
+                $('#total-km-holder').addClass('text-danger');
+            } else {
+                $('#total-km-holder').removeClass('text-danger');
+            }
+        });
+
+        $(document).on('change keyup', 'input[name="quantity"]', (event) => {
+            console.log('Fired');
+
+            var totalHours = 0;
+
+            $('input[name="quantity"]').each(function (index, field) {
+                totalHours += parseFloat($(field).val()) || 0;
+            });
+
+            if (totalHours > 0) {
+                $('#total-hour-holder').find('#value').text(decimalToTimeValue(parseFloat(totalHours).toFixed(2)));
+            }
 
             if (parseInt(($('input[name="km-arrival"]').val() - $('input[name="km-departure"]').val())) < 0) {
                 $('#total-km-holder').addClass('text-danger');
@@ -311,4 +334,11 @@ $(document).ready(() => {
             });
         });
     }
+
+    $("#cancel-report").on("click", (event) => {
+        event.preventDefault();
+        if(confirm($("#prompts .cancel-report").text())) {
+            window.location.replace($(event.target).parent('a#cancel-report').attr('href'));
+        }
+    });
 });

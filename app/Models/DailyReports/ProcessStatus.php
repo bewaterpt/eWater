@@ -14,6 +14,7 @@ class ProcessStatus extends Model
     protected $STATUS_DB_SYNC = 6;
     protected $STATUS_FINISHED = 7;
     protected $STATUS_CANCELLED = 8;
+    protected $FIRST_STATUS = 1;
 
     protected $EXCLUDED_STATUSES = [];
 
@@ -31,6 +32,7 @@ class ProcessStatus extends Model
         $this->STATUS_DB_SYNC = Status::where('slug', 'database_sync')->first()->id;
         $this->STATUS_FINISHED = Status::where('slug', 'finish')->first()->id;
         $this->STATUS_CANCELLED = Status::where('slug', 'cancel')->first()->id;
+        $this->FIRST_STATUS = Status::where('slug', 'validation')->first()->id;
 
         $this->EXCLUDED_STATUSES = [
             $this->STATUS_EXTRA,
@@ -79,24 +81,27 @@ class ProcessStatus extends Model
             $nextStatusId = Status::whereNotIn('id', $this->EXCLUDED_STATUSES)->where('id', '>', $currentStatusId)->where('enabled', true)->min('id');
         }
 
-        $this->conclude($user->id);
+        if (!$this->status()->first()->id !== $nextStatusId) {
 
-        $nextProcessStatus = new self();
-        $nextProcessStatus->user()->associate($user->id);
-        $nextProcessStatus->report()->associate($this->report()->first()->id);
-        $nextProcessStatus->status()->associate($nextStatusId);
-        $nextProcessStatus->previous()->associate($this->id);
-        if(in_array($nextStatusId, $this->SELF_CONCLUDING_STATUSES)) {
-            $nextProcessStatus->conclude($user->id);
+            $this->conclude($user->id);
+
+            $nextProcessStatus = new self();
+            $nextProcessStatus->user()->associate($user->id);
+            $nextProcessStatus->report()->associate($this->report()->first()->id);
+            $nextProcessStatus->status()->associate($nextStatusId);
+            $nextProcessStatus->previous()->associate($this->id);
+            if(in_array($nextStatusId, $this->SELF_CONCLUDING_STATUSES)) {
+                $nextProcessStatus->conclude($user->id);
+            }
+
+            $nextProcessStatus->save();
         }
-        $nextProcessStatus->save();
 
         return $nextProcessStatus;
     }
 
     public function stepBack() {
         $user = Auth::user();
-        $currentStatusId = $this->status()->first()->id;
         $prevStatusId = $this->previous()->first()->status()->first()->id;
 
         $this->conclude($user->id);
@@ -111,6 +116,21 @@ class ProcessStatus extends Model
         return $nextProcessStatus;
     }
 
+    public function uncancel() {
+        $user = Auth::user();
+
+        $this->conclude($user->id);
+
+        $nextProcessStatus = new self();
+        $nextProcessStatus->user()->associate($user->id);
+        $nextProcessStatus->report()->associate($this->report()->first()->id);
+        $nextProcessStatus->status()->associate($this->FIRST_STATUS);
+        $nextProcessStatus->previous()->associate($this->id);
+        $nextProcessStatus->save();
+
+        return $nextProcessStatus;
+    }
+
     public function stepExtra() {
         return $this->stepForward($this->STATUS_EXTRA);
     }
@@ -118,6 +138,7 @@ class ProcessStatus extends Model
     public function conclude($user_id) {
         $this->concluded_at = Carbon::now();
         $this->user()->associate($user_id);
+        // dd($this);
         $this->save();
 
         return true;
