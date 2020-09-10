@@ -66,5 +66,5 @@ function decimalToTimeValue(totalHours, calculateDays = false, calculateSeconds 
 
 	seconds = totalSeconds;
 
-	return (calculateDays ? `${parseInt(days)}d,`: "") + (hours < 10 ? "0" : "") + `${parseInt(hours)}` + (minutes < 10 ? "0" : "") + `:${parseInt(minutes)}` + (calculateSeconds ? (seconds < 10 ? "0" : "") + `:${parseInt(seconds)}` : "" );
+	return (calculateDays ? `${parseInt(days)}d,`: "") + (hours < 10 ? "0" : "") + `${parseInt(hours)}` + (minutes < 10 ? ":0" : "") + `${parseInt(minutes)}` + (calculateSeconds ? (seconds < 10 ? ":0" : "") + `${parseInt(seconds)}` : "" );
 }
