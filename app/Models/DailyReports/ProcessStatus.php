@@ -117,9 +117,7 @@ class ProcessStatus extends Model
     }
 
     public function uncancel() {
-        $user = Auth::user();
-
-        $this->conclude($user->id);
+        $this->conclude($this->user_id);
 
         $nextProcessStatus = new self();
         $nextProcessStatus->user()->associate($user->id);
@@ -138,7 +136,6 @@ class ProcessStatus extends Model
     public function conclude($user_id) {
         $this->concluded_at = Carbon::now();
         $this->user()->associate($user_id);
-        // dd($this);
         $this->save();
 
         return true;
