@@ -176,8 +176,10 @@ class Helper {
         $minutes = 0;
         $seconds = 0;
 
+        echo $totalHours."\n";
         $totalSeconds = $totalHours * $sInHr;
 
+        echo $totalSeconds."\n";
         if($calculateDays) {
             if ($totalSeconds >= $sInDay) {
                 $days = $totalSeconds / $sInDay;
@@ -185,6 +187,7 @@ class Helper {
             }
         }
 
+        echo $totalSeconds."\n";
         if ($totalSeconds >= $sInHr) {
             $hours = $totalSeconds / $sInHr;
             $totalSeconds = $totalSeconds % $sInHr;
@@ -197,7 +200,7 @@ class Helper {
 
         $seconds = $totalSeconds;
 
-        return ($calculateDays ? $days . "d, ": "") . ($hours < 10 ? "0" : "") . $hours . ":" . ($minutes < 10 ? "0" : "") . $minutes . ($calculateSeconds ? ":" . ($seconds < 10 ? "0" : "") . $seconds : "");
+        return ($calculateDays ? $days . "d, ": "") . ($hours < 10 ? "0" : "") . intval($hours) . ":" . ($minutes < 10 ? "0" : "") . intval($minutes) . ($calculateSeconds ? ":" . ($seconds < 10 ? "0" : "") . intval($seconds) : "");
     }
 }
 
