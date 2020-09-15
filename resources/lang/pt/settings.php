@@ -18,5 +18,10 @@ return [
         'list' => 'Lista de materiais',
         'edit' => 'Editar material',
         'create' => 'Crear material',
+    ],
+    'teams' => [
+        'users_on_this_team' => 'Utilizadores nesta equipa',
+        'edit' => 'Editar Equipa',
+        'create' => 'Criar Equipa',
     ]
 ];
