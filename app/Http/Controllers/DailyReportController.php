@@ -116,7 +116,7 @@ class DailyReportController extends Controller
             foreach ($works as $workNumber => $workData) {
 
                 foreach ($workData as $reportRow) {
-                    if($workNumber) {
+                    // if($workNumber != 0) {
                         $rows[] = [
                             'entry_number' => $lastInsertedEntryNumber,
                             'article_id' => $reportRow['article_id'],
@@ -131,9 +131,11 @@ class DailyReportController extends Controller
                         ];
 
                         $lastInsertedEntryNumber++;
-                    }
+                    // }
                 }
             }
+
+            // dd($rows);
 
             $processCreated = new ProcessStatus();
             $processCreated->report()->associate($report->id);
@@ -144,8 +146,8 @@ class DailyReportController extends Controller
 
             $processCreated->stepForward();
 
-            Log::info('User {$user->name}({$user->username}) created report with id {$report->id} having {sizeof($rows)} lines.' . Carbon::now());
-            Log::debug('User {$user->name}({$user->username}) created the following lines <#>{json_encode($rows)}');
+            Log::info('User {$user->name}({$user->username}) created report with id {$report->id} having {sizeof($rows)} lines');
+            Log::info(sprintf('User %s(%s) created the following lines %s', $user->name, $user->username, json_encode($rows)));
             ReportLine::insert($rows);
             DB::commit();
         } catch(\PDOException $e) {

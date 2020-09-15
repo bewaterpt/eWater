@@ -77,7 +77,7 @@
                                             <th>@Lang('forms.fields.worker')</th>
                                             <th>@Lang('forms.fields.article')</th>
                                             <th>@Lang('forms.fields.hours')</th>
-                                            {{-- <th class="info"></th> --}}
+                                            <th class="info"></th>
                                             {{-- <th>@Lang('forms.fields.date')</th> --}}
                                         </tr>
                                     </thead>
@@ -104,9 +104,9 @@
                                             <td class="quantity">
                                                 <input type="number" required name="quantity" min="0" value="0" step=".01" class="form-control" id="inputQuantity" required>
                                             </td>
-                                            {{-- <td class="info">
+                                            <td class="info">
                                                 <a id="info" class="btn info-tooltip ri-information-line text-info ri-lg cursor-info" data-toggle="tooltip" data-placement="right" data-trigger="hover" title="{!! trans('info.hours_as_quantity') !!}"></a>
-                                            </td> --}}
+                                            </td>
                                             {{-- <td class="date">
                                                 <input id="inputDatetime" required class="form-control datepicker" placeholder="Select Date" name="datetime" type="datetime-local" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}" required>
                                             </td> --}}

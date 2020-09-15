@@ -86,7 +86,9 @@ class ProcessStatus extends Model
             $this->conclude($user->id);
 
             $nextProcessStatus = new self();
-            $nextProcessStatus->user()->associate($user->id);
+            if(in_array($nextStatusId, $this->SELF_CONCLUDING_STATUSES)) {
+                $nextProcessStatus->user()->associate($user->id);
+            }
             $nextProcessStatus->report()->associate($this->report()->first()->id);
             $nextProcessStatus->status()->associate($nextStatusId);
             $nextProcessStatus->previous()->associate($this->id);
@@ -107,7 +109,9 @@ class ProcessStatus extends Model
         $this->conclude($user->id);
 
         $nextProcessStatus = new self();
-        $nextProcessStatus->user()->associate($user->id);
+        // if(in_array($prevStatusId, $this->SELF_CONCLUDING_STATUSES)) {
+        //     $nextProcessStatus->user()->associate($user->id);
+        // }
         $nextProcessStatus->report()->associate($this->report()->first()->id);
         $nextProcessStatus->status()->associate($prevStatusId);
         $nextProcessStatus->previous()->associate($this->id);

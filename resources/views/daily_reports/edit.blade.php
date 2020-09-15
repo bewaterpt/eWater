@@ -6,7 +6,11 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header text-center">
-                    <button type="submit" class="btn float-left btn-primary" form="report">@Lang('forms.buttons.save')</button>
+                    <button type="submit" class="btn float-left btn-primary" form="report">
+                        <span class="btn-text">@Lang('forms.buttons.save')</span>
+                        <span id="spinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                        <span id="spinner-text" class="loading-text d-none">@Lang('general.loading')</span>
+                    </button>
                     @Lang('general.daily_reports.create')
                     <span class="float-right">
                         <a class="add-work btn btn-info text-white" title="{{__('tooltips.daily_reports.add_work')}}" href="#"><i class="fas fa-plus"></i> @Lang('general.daily_reports.add_work')</a>
@@ -77,12 +81,14 @@
                                                 <th>@Lang('forms.fields.worker')</th>
                                                 <th>@Lang('forms.fields.article')</th>
                                                 <th>@Lang('forms.fields.hours')</th>
+                                                <th class="info"></th>
                                                 {{-- <th>@Lang('forms.fields.date')</th> --}}
                                             </tr>
                                         </thead>
                                         <tbody>
                                             @foreach($lines as $line)
                                                 <tr class="{{ $loop->index === 0 ? 'first' : '' }}">
+                                                    <input type="hidden" name="id" value="{{ $line->id }}">
                                                     <td class="actions text-center">
                                                         <a id="removeRow" href="#" class="text-danger"><i class="fas fa-times"></i></a>
                                                     </td>
@@ -94,7 +100,7 @@
                                                         </select>
                                                     </td>
                                                     <td>
-                                                        <select name="article" required class="form-control selectpicker" id="inputArticle" data-dropup-auto="false">
+                                                        <select name="article_id" required class="form-control selectpicker" id="inputArticle" data-dropup-auto="false">
                                                             {{-- {{ dd($articles) }} --}}
                                                             @foreach($articles as $descricao => $cod)
                                                                 <option value="{{ $cod }}" {{ $cod === $line->article_id ? 'selected' : '' }}>{{ $descricao }}</option>
@@ -103,6 +109,9 @@
                                                     </td>
                                                     <td class="quantity">
                                                         <input type="number" value="{{ $line->quantity }}" required name="quantity" min="0" value="0" step=".01" class="form-control" id="inputQuantity">
+                                                    </td>
+                                                    <td class="info">
+                                                        <a id="info" class="btn info-tooltip ri-information-line text-info ri-lg cursor-info" data-toggle="tooltip" data-placement="right" data-trigger="hover" title="{!! trans('info.hours_as_quantity') !!}"></a>
                                                     </td>
                                                     {{-- <td class="date">
                                                         <input id="inputDatetime" required class="form-control datepicker" placeholder="Select Date" name="datetime" type="datetime-local" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}" required>
@@ -134,7 +143,7 @@
     <span id="workCancelled" class="anulada">@Lang('errors.work_already_closed')</span>
     <span id="workResolved" class="resolvida">@Lang('errors.work_already_closed')</span>
 </div>
-<div id="reportId">{{ $report->id }}</div>
+<div id="reportId" class="d-none">{{ $report->id }}</div>
 
-@include('layouts.partials.popover', ['id' => 'error', 'type' => 'error'])
+@include('components.popover', ['id' => 'error', 'type' => 'error'])
 @endsection

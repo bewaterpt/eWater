@@ -96,7 +96,7 @@
                                             @foreach($rows as $row)
                                                 <tr>
                                                     <td>
-                                                        {{ $row->user()->first()->username }}
+                                                        {{ $row->user()->first()->name }}
                                                     </td>
                                                     <td>
                                                         {{ $row->article()->first()->designation }}
@@ -179,7 +179,11 @@
                                                 {{ $processStatus->status()->first()->name }}
                                             </td>
                                             <td>
-                                                {{ $processStatus->user()->first()->name }}
+                                                @if($processStatus->user()->first())
+                                                    {{ $processStatus->user()->first()->name }}
+                                                @else
+                                                    @Lang('general.daily_reports.processing')
+                                                @endif
                                             </td>
                                             <td>
                                                 @if($processStatus->concluded_at)
