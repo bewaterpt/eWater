@@ -7,6 +7,7 @@ use App\Models\Article;
 use App\Models\DailyReports\Report;
 use App\Models\DailyReports\ReportLine;
 use App\Models\DailyReports\ProcessStatus;
+use App\Models\DailyReports\Status;
 use App\Models\Connectors\OutonoObrasCC;
 use App\Models\Connectors\OutonoObras;
 use App\Models\Team;
@@ -49,9 +50,9 @@ class DailyReportController extends Controller
         $user = Auth::user();
         $reports = [];
         if ($user->isAdmin()) {
-            $reports = Report::All();
+            $reports = Report::All()->sortByDesc('id');
         } else if ($user->teams()->exists()) {
-            $reports = Report::whereIn('team_id', $user->teams()->pluck('id'))->get()->sortByDesc('created_at');
+            $reports = Report::whereIn('team_id', $user->teams()->pluck('id'))->get()->sortByDesc('id');
         }
 
 
@@ -94,6 +95,8 @@ class DailyReportController extends Controller
     public function store(Request $request) {
         $user = Auth::user();
         $input = $request->json()->all();
+
+        dd($input);
 
         try {
             DB::beginTransaction();
@@ -174,6 +177,7 @@ class DailyReportController extends Controller
         $this->workObject = new OutonoObras;
         $report = Report::find($reportId);
         $user = Auth::user();
+        $statusObject = new Status();
 
         if (!$report) {
             return redirect()->back()->withErrors(__('errors.report_not_found'), 'custom');
@@ -186,7 +190,8 @@ class DailyReportController extends Controller
         // dd($report->lines()->get()->groupBy('work_number'));
         $processStatuses = $report->processStatus()->orderBy('created_at', 'desc')->orderBy('id', 'desc')->get();
 
-        return view('daily_reports.view', [ 'report' => $report, 'processStatuses' => $processStatuses, 'workObject' => $this->workObject]);
+
+        return view('daily_reports.view', [ 'report' => $report, 'processStatuses' => $processStatuses, 'workObject' => $this->workObject, 'statusObj' => $statusObject]);
     }
 
     /**
@@ -249,7 +254,7 @@ class DailyReportController extends Controller
             }
         }
 
-        Log::info('User {$user->name}({$user->username}) progressed report with id <insert id here> to state <insert state here> lines.' . Carbon::now());
+        Log::info(sprintf('User %s({%s}) progressed report with id %d to state %s lines.', Auth::user()->name, Auth::user()->username, $processStatus->report()->first()->id, $newProcessStatus->status()->first()->designation));
 
         return redirect()->back()->with(__('general.daily_reports.db_sync_success'));
     }
