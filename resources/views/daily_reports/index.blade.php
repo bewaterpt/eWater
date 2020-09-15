@@ -37,8 +37,8 @@
                             @foreach($reports as $report)
                                 <tr>
                                     <td class="actions text-center">
-                                        <a class="view" href="{{ route('daily_reports.view', ['id' => $report->id]) }}"><i class="fas fa-eye"></i></a>
-                                        {{-- <a href="{{ route('daily_reports.edit', ['id' => $report->id]) }}" class="edit"><i class="fas fa-edit"></i></a> --}}
+                                        <a href="{{ route('daily_reports.view', ['id' => $report->id]) }}" class="text-info mr-1 view"><i class="fas fa-eye"></i></a>
+                                        <a href="{{ route('daily_reports.edit', ['id' => $report->id]) }}" class="text-info edit"><i class="fas fa-edit"></i></a>
                                         {{-- <a class="" href="{{$user->id === Auth::user()->id ? Route('settings.users.edit_self') : Route('settings.users.edit', ['id' => $user->id])}}" title="@Lang('general.action_edit')"><i class="fas fa-user-edit"></i></a>
                                         @if($user->id !== Auth::user()->id)
                                             <a href="{{Route('settings.users.toggle_state', ['id' => $user->id])}}" class="{{ $user->enabled ? 'disable' : 'enable' }}" title="{{$user->enabled ? __('general.action_disable') : __('general.action_enable')}}">
