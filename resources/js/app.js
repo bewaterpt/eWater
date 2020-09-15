@@ -30,6 +30,12 @@ stopSpontaneousSrcolling();
 // TinyMCE Langs
 require('./config/tinymce/lang/pt_PT');
 
+$('button[type="submit"]').on('click', (e) => {
+    $(e.target).find('button[type="submit"]').attr('disabled', true);
+
+    return true;
+});
+
 $(document).ready(() => {
     $('[data-toggle="popover"]').popover({
         html: true,

@@ -1,13 +1,13 @@
-window.getRandomColor = function getRandomColor() {
+function getRandomColor() {
     var letters = '0123456789ABCDEF';
     var color = '#';
     for (var i = 0; i < 6; i++) {
         color += letters[Math.floor(Math.random() * 16)];
     }
     return color;
-}
+};
 
-window.getRandomBrightColor = function getRandomColorWithCustomBrightness(brightness = 255) {
+function getRandomBrightColor(brightness) {
     function randomChannel(brightness) {
         var r = 255-brightness;
         var n = 0|((Math.random() * r) + brightness);
@@ -15,9 +15,9 @@ window.getRandomBrightColor = function getRandomColorWithCustomBrightness(bright
         return (s.length==1) ? '0'+s : s;
     }
     return '#' + randomChannel(brightness) + randomChannel(brightness) + randomChannel(brightness);
-}
+};
 
-window.getRandomVibrantColor = function rainbow(stepLimit) {
+function getRandomVibrantColor(stepLimit) {
     // This function generates vibrant, "evenly spaced" colours (i.e. no clustering). This is ideal for creating easily distinguishable vibrant markers in Google Maps and other apps.
     // Adam Cole, 2011-Sept-14
     // HSV to RBG adapted from: http://mjijackson.com/2008/02/rgb-to-hsl-and-rgb-to-hsv-color-model-conversion-algorithms-in-javascript
@@ -36,10 +36,10 @@ window.getRandomVibrantColor = function rainbow(stepLimit) {
     }
     var c = "#" + ("00" + (~ ~(r * 255)).toString(16)).slice(-2) + ("00" + (~ ~(g * 255)).toString(16)).slice(-2) + ("00" + (~ ~(b * 255)).toString(16)).slice(-2);
     return (c);
-}
+};
 
-function decimalToTimeValue(totalHours, calculateDays = false, calculateSeconds = false) {
-	const sInDay = 86400;
+function decimalToTimeValue(totalHours, calculateDays, calculateSeconds) {
+    const sInDay = 86400;
 	const sInHr = 3600;
 	const sInMin = 60;
 	let totalSeconds = 0;
@@ -66,5 +66,5 @@ function decimalToTimeValue(totalHours, calculateDays = false, calculateSeconds 
 
 	seconds = totalSeconds;
 
-	return (calculateDays ? `${parseInt(days)}d,`: "") + (hours < 10 ? "0" : "") + `${parseInt(hours)}` + (minutes < 10 ? ":0" : ":") + `${parseInt(minutes)}` + (calculateSeconds ? (seconds < 10 ? ":0" : ":") + `${parseInt(seconds)}` : "" );
+	return (calculateDays ? parseInt(days) + "d": "") + (hours < 10 ? "0" : "") + parseInt(hours) + (minutes < 10 ? ":0" : ":") + parseInt(minutes) + (calculateSeconds ? (seconds < 10 ? ":0" : ":") + parseInt(seconds) : "" );
 }

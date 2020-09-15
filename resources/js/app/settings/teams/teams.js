@@ -34,7 +34,7 @@ $(document).ready(() => {
         $('#teams-colorpicker').colorpicker({});
     } else {
         $('#teams-colorpicker').colorpicker({
-            color: window.getRandomVibrantColor(20)
+            color: getRandomVibrantColor(20)
         });
     }
 });

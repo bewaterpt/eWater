@@ -12,7 +12,7 @@ $(document).ready(() => {
                 "advlist autolink lists link image charmap print preview hr anchor pagebreak",
                 "searchreplace visualblocks visualchars code",
                 "insertdatetime media nonbreaking table directionality",
-                "emoticons template paste textcolor colorpicker textpattern"
+                "emoticons template paste textpattern"
             ],
             toolbar: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image media",
             relative_urls: false,
