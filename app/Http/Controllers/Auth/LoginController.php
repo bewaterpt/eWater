@@ -129,6 +129,6 @@ class LoginController extends Controller
         $user->roles()->sync($roles);
         $user->notify(new ApprovalPending($user));
 
-        Log::info('User {$user->name}({$user->username}) logged in at ' . Carbon::now());
+        Log::info(sprintf('User %s(%s) logged in at ' . Carbon::now(), $user->name, $user->username));
     }
 }
