@@ -83,7 +83,13 @@ class UserController extends Controller
             $roleIds = explode(', ', $request->input('roles'));
         }
 
+        $teamIds = [];
+        if ($request->input('teams')) {
+            $teamIds = explode(', ', $request->input('teams'));
+        }
+
         $user->roles()->sync($roleIds);
+        $user->teams()->sync($teamIds);
 
         return redirect()->back();
     }
