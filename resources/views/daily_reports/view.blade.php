@@ -12,9 +12,11 @@
                                 <a href="{{ route('daily_reports.edit', ['id' => $report->id]) }}" class="text-info edit">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <a class="btn-link back text-danger" title="{{__('tooltips.daily_reports.prev')}}" data-toggle="modal" data-target="#modalPrevStatus" href="#">
-                                    <i class="fas fa-step-backward"></i>
-                                </a>
+                                @if($report->getCurrentStatus()->first()->slug !== $statusObj->where('enabled', true)->where('id', '!=', $statusObj->first()->id)->orderBy('id')->first()->slug)
+                                    <a class="btn-link back text-danger" title="{{__('tooltips.daily_reports.prev')}}" data-toggle="modal" data-target="#modalPrevStatus" href="#">
+                                        <i class="fas fa-step-backward"></i>
+                                    </a>
+                                @endif
                                 {{-- <a class="btn-link branch text-primary" title="{{__('tooltips.daily_reports.extra')}}" data-toggle="modal" data-target="#modalExtraStatus" href="#">
                                     <i class="fas fa-code-branch"></i>
                                 </a> --}}
@@ -154,7 +156,7 @@
                                             <td class="actions text-center">
                                                 @if(!$report->closed())
                                                     @if(!$processStatus->concluded_at && $processStatus->status()->first()->userCanProgress())
-                                                        @if ($processStatus->slug !== "validate")
+                                                        @if($processStatus->status()->first()->slug !== $statusObj->where('enabled', true)->where('id', '!=', $statusObj->first()->id)->orderBy('id')->first()->slug)
                                                             <a class="btn-link back text-danger" title="{{ __('tooltips.daily_reports.prev') }}" data-toggle="modal" data-target="#modalPrevStatus" href="#">
                                                                 <i class="fas fa-step-backward"></i>
                                                             </a>

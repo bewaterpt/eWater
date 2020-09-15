@@ -129,11 +129,5 @@
         </div>
     </div>
 </div>
-<div id="errors" class="d-none">
-    <span id="differentKm"> @Lang('errors.different_km') </span>
-    <span id="workNotExists" class='not-found'> @Lang('errors.work_not_exists')</span>
-    <span id="workCancelled" class="anulada">@Lang('errors.work_already_closed')</span>
-    <span id="workResolved" class="resolvida">@Lang('errors.work_already_closed')</span>
-</div>
 @include('components.popover', ['id' => 'error', 'type' => 'error'])
 @endsection

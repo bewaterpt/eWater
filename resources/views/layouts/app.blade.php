@@ -6,12 +6,13 @@
 
         <!-- CSRF Token -->
         <meta name="csrf-token" content="{{ csrf_token() }}">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
         <title>{{ config('app.name', 'Laravel') }}</title>
 
         <!-- Fonts -->
         <link rel="dns-prefetch" href="//fonts.gstatic.com">
-        <link rel="icon" href="{{ asset('/favicon.ico') }}" type="image/x-icon"/>
+        <link rel="icon" href="{{ asset('/favicon.png') }}" type="image/x-icon"/>
         <link href="https://fonts.googleapis.com/css?family=Courier" rel="stylesheet">
         <script src="https://cdn.tiny.cloud/1/cx6voesmf6uv8rlv64tv92yhqix2qj2puwg1cwcdvrshvn6r/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -42,7 +43,7 @@
                                 }))}} --}}
                                 @if($pmodel->can('settings.'))
                                     <li class="nav-item dropdown">
-                                        <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                        <a id="navbarDropdown" class="nav-link text-primary dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                             @Lang('settings.settings') <span class="caret"></span>
                                         </a>
 
@@ -73,7 +74,7 @@
                                 @endif
                                 @if($pmodel->can('daily_reports.'))
                                     <li class="nav-item dropdown">
-                                        <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                        <a id="navbarDropdown" class="nav-link text-primary dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                             @Lang('general.daily_reports.daily_reports') <span class="caret"></span>
                                         </a>
                                         {{-- {{dd(Route::currentRouteName())}} --}}
@@ -95,7 +96,7 @@
                                 @endif
                                 @if($pmodel->can('interruptions.'))
                                     <li class="nav-item dropdown">
-                                        <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                        <a id="navbarDropdown" class="nav-link text-primary dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                             @Lang('general.interruptions.interruptions') <span class="caret"></span>
                                         </a>
                                         <div class="dropdown-menu dropdown-menu" aria-labelledby="navbarDropdown">
@@ -198,6 +199,7 @@
         <script src="{{ asset('js/manifest.js') }}"></script>
         <script src="{{ asset('js/helpers.js') }}"></script>
         <script src="{{ asset('js/app.js') }}"></script>
+        @include('layouts.partials.errors')
     </body>
 </html>
 
