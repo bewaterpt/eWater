@@ -128,6 +128,8 @@ class DailyReportController extends Controller
                             'user_id' => $reportRow['worker'],
                             'worker' => $reportRow['worker'],
                             'driven_km' => $reportRow['driven_km'],
+                            'created_at' => Carbon::now(),
+                            'updated_at' => Carbon::now(),
                         ];
 
                         $lastInsertedEntryNumber++;
