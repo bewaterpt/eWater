@@ -116,21 +116,22 @@ class DailyReportController extends Controller
             foreach ($works as $workNumber => $workData) {
 
                 foreach ($workData as $reportRow) {
+                    if($workNumber) {
+                        $rows[] = [
+                            'entry_number' => $lastInsertedEntryNumber,
+                            'article_id' => $reportRow['article_id'],
+                            'work_number' => $workNumber,
+                            'quantity' => $reportRow['quantity'],
+                            'entry_date' => (new DateTime($input['datetime']))->format('Y-m-d H:i:s'),
+                            'report_id' => $report->id,
+                            'created_by' => $user->id,
+                            'user_id' => $reportRow['worker'],
+                            'worker' => $reportRow['worker'],
+                            'driven_km' => $reportRow['driven_km'],
+                        ];
 
-                    $rows[] = [
-                        'entry_number' => $lastInsertedEntryNumber,
-                        'article_id' => $reportRow['article_id'],
-                        'work_number' => $workNumber,
-                        'quantity' => $reportRow['quantity'],
-                        'entry_date' => (new DateTime($input['datetime']))->format('Y-m-d H:i:s'),
-                        'report_id' => $report->id,
-                        'created_by' => $user->id,
-                        'user_id' => $reportRow['worker'],
-                        'worker' => $reportRow['worker'],
-                        'driven_km' => $reportRow['driven_km'],
-                    ];
-
-                    $lastInsertedEntryNumber++;
+                        $lastInsertedEntryNumber++;
+                    }
                 }
             }
 
@@ -144,7 +145,7 @@ class DailyReportController extends Controller
             $processCreated->stepForward();
 
             Log::info('User {$user->name}({$user->username}) created report with id {$report->id} having {sizeof($rows)} lines.' . Carbon::now());
-
+            Log::debug('User {$user->name}({$user->username}) created the following lines <#>{json_encode($rows)}');
             ReportLine::insert($rows);
             DB::commit();
         } catch(\PDOException $e) {
