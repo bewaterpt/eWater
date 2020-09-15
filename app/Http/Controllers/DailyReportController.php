@@ -149,7 +149,7 @@ class DailyReportController extends Controller
 
             $processCreated->stepForward();
 
-            Log::info('User {$user->name}({$user->username}) created report with id {$report->id} having {sizeof($rows)} lines');
+            Log::info(sprintf('User %s(%s) created report with id %d having %d lines'), $user->name, $user->username, $report->id, sizeof($rows));
             Log::info(sprintf('User %s(%s) created the following lines %s', $user->name, $user->username, json_encode($rows)));
             ReportLine::insert($rows);
             DB::commit();
