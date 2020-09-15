@@ -66,7 +66,13 @@ $(document).ready(() => {
                 tr.find('#inputDatetime').val(ISODateString(today));
             }
 
-            tr.find('#info-popover').popover();
+            tr.find('#info').tooltip({
+                html: true,
+                title: function() {
+                    return $(document).find('#' + this.id + '-tooltip .tooltip').find('#title').html()
+                },
+            });
+
             console.log(tr[0]);
             $(event.target).parents('.card.work').find('table#report-lines tbody').append(tr);
             // window.scrollTo(0, document.body.scrollHeight || document.documentElement.scrollHeight);
@@ -101,7 +107,7 @@ $(document).ready(() => {
                 $('div.card.work').each((workIndex, work) => {
                     console.log('Work: ', work);
                     let workNum = $(work).find('input.work-number').val();
-                    if (workNum = 0) {
+                    if (workNum === 0) {
                         throw new Error($('#errors #unexpectedError'));
                     }
                     rows[workNum] = {};
@@ -154,9 +160,55 @@ $(document).ready(() => {
                         $('button[type="submit"]').find('.btn-text').removeClass('d-none');
                     },
                 });
-                clearInterval(interval);
             } else {
                 throw new Error($('#errors #waitForWorkCheck').text());
+            }
+        }
+
+        function checkWorkExists(evt) {
+            error = false;
+            let data = {
+                id: $(evt.target).val()
+            }
+
+            if (data.id !== "") {
+                if(window.verifyingWork && window.verifyingWork.readyState !== 4) {
+                    window.verifyingWork.abort();
+                }
+
+                window.verifyingWork = $.ajax({
+                    method: 'POST',
+                    url: '/works/work-exists',
+                    data: JSON.stringify(data),
+                    contentType: 'json',
+                    success: (response) => {
+                        response = JSON.parse(response);
+                        console.log("Response: ", response);
+                        if (response.value === false) {
+                            $(evt.target).parent().popover({
+                                html: true,
+                                title: function() {
+                                    return $(document).find('#' + this.id + ' .popover').find('#title').html()
+                                },
+                                content: function() {
+                                    return $(document).find('#' + this.id + ' .popover').find('#content').html()
+                                },
+                            });
+                            $(evt.target).parent().find('.popover #content').html($('#errors .' + response.reason).html());
+                            $(evt.target).addClass('border-danger').addClass('bg-flamingo').attr('data-error', true).focus();
+                            $('.popover:not(.popover-data)').addClass('popover-danger');
+                        } else {
+                            $(evt.target).removeClass('border-danger').removeClass('bg-flamingo').removeAttr('data-error');
+                            $(evt.target).parent().popover('dispose');
+                        }
+                    },
+                    error: (jqXHR, status, error) => {
+
+                    },
+                });
+            } else {
+                $(evt.target).removeClass('border-danger').removeClass('bg-flamingo').removeAttr('data-error');
+                $(evt.target).parent().popover('dispose');
             }
         }
 
@@ -209,6 +261,10 @@ $(document).ready(() => {
                     return $(document).find('#' + this.id + '-tooltip .tooltip').find('#title').html()
                 },
             });
+
+            $(work).find('input.work-number').on('keyup', (evt) => {
+                checkWorkExists(evt);
+            });
             // window.scrollTo(0, document.body.scrollHeight || document.documentElement.scrollHeight);
 
             $(event.target).parents('.card').find('.card.work:last-of-type').after(work);
@@ -230,51 +286,9 @@ $(document).ready(() => {
         });
 
         $('div.card.work input.work-number').on('keyup', (evt) => {
-            error = false;
-            let data = {
-                id: $(evt.target).val()
-            }
-
-            if (data.id !== "") {
-                if(window.verifyingWork && window.verifyingWork.readyState !== 4) {
-                    window.verifyingWork.abort();
-                }
-
-                window.verifyingWork = $.ajax({
-                    method: 'POST',
-                    url: '/works/work-exists',
-                    data: JSON.stringify(data),
-                    contentType: 'json',
-                    success: (response) => {
-                        response = JSON.parse(response);
-                        console.log("Response: ", response);
-                        if (response.value === false) {
-                            $(evt.target).parent().popover({
-                                html: true,
-                                title: function() {
-                                    return $(document).find('#' + this.id + ' .popover').find('#title').html()
-                                },
-                                content: function() {
-                                    return $(document).find('#' + this.id + ' .popover').find('#content').html()
-                                },
-                            });
-                            $(evt.target).parent().find('.popover #content').html($('#errors .' + response.reason).html());
-                            $(evt.target).addClass('border-danger').addClass('bg-flamingo').attr('data-error', true).focus();
-                            $('.popover:not(.popover-data)').addClass('popover-danger');
-                        } else {
-                            $(evt.target).removeClass('border-danger').removeClass('bg-flamingo').removeAttr('data-error');
-                            $(evt.target).parent().popover('dispose');
-                        }
-                    },
-                    error: (jqXHR, status, error) => {
-
-                    },
-                });
-            } else {
-                $(evt.target).removeClass('border-danger').removeClass('bg-flamingo').removeAttr('data-error');
-                $(evt.target).parent().popover('dispose');
-            }
+            checkWorkExists(evt);
         });
+
 
 
         $('#report').on('submit', (event) => {

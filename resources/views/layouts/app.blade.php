@@ -43,7 +43,7 @@
                                 }))}} --}}
                                 @if($pmodel->can('settings.'))
                                     <li class="nav-item dropdown">
-                                        <a id="navbarDropdown" class="nav-link text-primary dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                        <a id="navbarDropdown" class="nav-link dropdown-toggle {{ preg_match('/settings\./i', Route::currentRouteName()) ? 'text-primary' : '' }}" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                             @Lang('settings.settings') <span class="caret"></span>
                                         </a>
 
@@ -74,16 +74,16 @@
                                 @endif
                                 @if($pmodel->can('daily_reports.'))
                                     <li class="nav-item dropdown">
-                                        <a id="navbarDropdown" class="nav-link text-primary dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                        <a id="navbarDropdown" class="nav-link dropdown-toggle {{ preg_match('/daily_reports\./i', Route::currentRouteName()) ? 'text-primary' : '' }}" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                             @Lang('general.daily_reports.daily_reports') <span class="caret"></span>
                                         </a>
                                         {{-- {{dd(Route::currentRouteName())}} --}}
                                         <div class="dropdown-menu dropdown-menu" aria-labelledby="navbarDropdown">
                                             @if($pmodel->can('daily_reports.list'))
-                                                <a class="dropdown-item {{ Route::currentRouteName() == 'daily_reports.list' ? 'disabled active' : '' }}" href="{{ route('daily_reports.list')}}">@lang('general.daily_reports.list')</a>
+                                                <a class="dropdown-item {{ Route::currentRouteName() == 'daily_reports.list' ? 'disabled active bg-primary text-light' : '' }}" href="{{ route('daily_reports.list')}}">@lang('general.daily_reports.list')</a>
                                             @endif
                                             @if($pmodel->can('daily_reports.create'))
-                                                <a class="dropdown-item {{ Route::currentRouteName() == 'daily_reports.create' ? 'active disabled' : '' }}" href="{{ route('daily_reports.create')}}">@lang('general.daily_reports.create')</a>
+                                                <a class="dropdown-item {{ Route::currentRouteName() == 'daily_reports.create' ? 'disabled active bg-primary text-light' : '' }}" href="{{ route('daily_reports.create')}}">@lang('general.daily_reports.create')</a>
                                             @endif
                                             {{-- @if($pmodel->can('daily_reports.pending'))
                                                 <a class="dropdown-item {{Route::currentRouteName() == 'daily_reports.pending' ? 'active disabled' : ''}}" href="{{ route('daily_reports.pending')}}">@lang('general.daily_reports.pending')</a>
@@ -96,18 +96,18 @@
                                 @endif
                                 @if($pmodel->can('interruptions.'))
                                     <li class="nav-item dropdown">
-                                        <a id="navbarDropdown" class="nav-link text-primary dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                        <a id="navbarDropdown" class="nav-link dropdown-toggle {{ preg_match('/interruptions\./i', Route::currentRouteName()) ? 'text-primary' : '' }}" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                             @Lang('general.interruptions.interruptions') <span class="caret"></span>
                                         </a>
                                         <div class="dropdown-menu dropdown-menu" aria-labelledby="navbarDropdown">
                                             @if($pmodel->can('interruptions.list'))
-                                                <a class="dropdown-item {{ Route::currentRouteName() == 'interruptions.list' ? 'disabled active' : '' }}" href="{{ route('interruptions.list')}}">@lang('general.list_all')</a>
+                                                <a class="dropdown-item {{ Route::currentRouteName() == 'interruptions.list' ? 'disabled active bg-primary text-light' : '' }}" href="{{ route('interruptions.list')}}">@lang('general.list_all')</a>
                                             @endif
                                             @if($pmodel->can('interruptions.list_unscheduled'))
-                                                <a class="dropdown-item {{ Route::currentRouteName() == 'interruptions.list_unscheduled' ? 'disabled active' : '' }}" href="{{ route('interruptions.list_unscheduled')}}">@lang('general.list_unscheduled')</a>
+                                                <a class="dropdown-item {{ Route::currentRouteName() == 'interruptions.list_unscheduled' ? 'disabled active bg-primary text-light' : '' }}" href="{{ route('interruptions.list_unscheduled')}}">@lang('general.list_unscheduled')</a>
                                             @endif
                                             @if($pmodel->can('interruptions.list_scheduled'))
-                                                <a class="dropdown-item {{ Route::currentRouteName() == 'interruptions.list_scheduled' ? 'disabled active' : '' }}" href="{{ route('interruptions.list_scheduled')}}">@lang('general.list_scheduled')</a>
+                                                <a class="dropdown-item {{ Route::currentRouteName() == 'interruptions.list_scheduled' ? 'disabled active bg-primary text-light' : '' }}" href="{{ route('interruptions.list_scheduled')}}">@lang('general.list_scheduled')</a>
                                             @endif
                                         </div>
                                     </li>

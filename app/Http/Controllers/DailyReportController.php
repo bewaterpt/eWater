@@ -96,7 +96,7 @@ class DailyReportController extends Controller
         $user = Auth::user();
         $input = $request->json()->all();
 
-        dd($input);
+        // dd($input);
 
         try {
             DB::beginTransaction();
@@ -139,8 +139,6 @@ class DailyReportController extends Controller
                     // }
                 }
             }
-
-            // dd($rows);
 
             $processCreated = new ProcessStatus();
             $processCreated->report()->associate($report->id);
