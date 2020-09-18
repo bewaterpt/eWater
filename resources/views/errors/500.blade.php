@@ -28,7 +28,7 @@
                     </div>
 
                     <div class="ml-4 text-lg text-gray-500 uppercase tracking-wider">
-                        Erro na Aplicação, por favor utilize este link para informar o <a class="text-primary" href="mailto:helpdesk@bewater.com.pt?subject=ewater%20error&body={{config('app.url')}}/debug/exceptions/{{$uuid}}">helpdesk</a>
+                        A aplicação gerou um erro por favor informe o suporte, através do email <a class="text-primary" href="mailto:helpdesk@bewater.com.pt?subject=ewater%20error&body=Seguir este URL para visualizar o erro: {{config('app.url')}}/debug/exceptions/{{$uuid}}">helpdesk@bewater.com.pt</a>
                     </div>
                 </div>
             </div>
