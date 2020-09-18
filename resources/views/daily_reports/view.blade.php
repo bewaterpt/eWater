@@ -75,9 +75,11 @@
                                     @if($workObject->getById($workNumber))
                                         <div class="d-inline-block" title="{{ trans('general.daily_reports.address') }}">{{ trim(implode(' ', $workObject->getById($workNumber)->getStreet()->select('ART_TIPO', 'ART_TITULO', 'ART_DESIG', 'ART_LOCAL')->first()->toArray()))}}, </div>
                                     @endif
-                                    <div class="d-inline-block" title="{{ trans('general.daily_reports.address') }}">
-                                        {{ $workObject->getById($workNumber)->getStreet()->first()->getLocality()->first()->desig }}
-                                    </div>
+                                    @if($workObject->getById($workNumber))
+                                        <div class="d-inline-block" title="{{ trans('general.daily_reports.address') }}">
+                                            {{ $workObject->getById($workNumber)->getStreet()->first()->getLocality()->first()->desig }}
+                                        </div>
+                                    @endif
                                     <div class="d-inline chevron float-right text-right"><i class="fas fa-chevron-up"></i></div>
                                 </div>
                                 <div class="card-body p-0 collapse in table-responsive" id="collapse-{{ $workNumber }}">
