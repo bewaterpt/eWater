@@ -7,6 +7,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\DailyReports\Status;
 use Auth;
+use Log;
 
 class ProcessStatus extends Model
 {
@@ -81,11 +82,12 @@ class ProcessStatus extends Model
             $nextStatusId = Status::whereNotIn('id', $this->EXCLUDED_STATUSES)->where('id', '>', $currentStatusId)->where('enabled', true)->min('id');
         }
 
-        if (!$this->status()->first()->id !== $nextStatusId) {
+        $nextProcessStatus = new self();
+
+        if ($this->status()->first()->id !== $nextStatusId) {
 
             $this->conclude($user->id);
 
-            $nextProcessStatus = new self();
             if(in_array($nextStatusId, $this->SELF_CONCLUDING_STATUSES)) {
                 $nextProcessStatus->user()->associate($user->id);
             }
@@ -97,7 +99,11 @@ class ProcessStatus extends Model
             }
 
             $nextProcessStatus->save();
+        } else {
+            $nextProcessStatus = false;
         }
+
+        Log::info(sprintf('User %s(%s) progressed report with id %d to state %s(%s).', $user->name, $user->username, $this->report()->first()->id, $nextProcessStatus->status()->first()->name, $nextProcessStatus->status()->first()->slug));
 
         return $nextProcessStatus;
     }
@@ -117,11 +123,14 @@ class ProcessStatus extends Model
         $nextProcessStatus->previous()->associate($this->id);
         $nextProcessStatus->save();
 
+        Log::info(sprintf('User %s(%s) regressed report with id %d to state %s(%s).', $user->name, $user->username, $this->report()->first()->id, $nextProcessStatus->status()->first()->name, $nextProcessStatus->status()->first()->slug));
+
         return $nextProcessStatus;
     }
 
-    public function uncancel() {
-        $this->conclude($this->user_id);
+    public function restore() {
+        $user = Auth::user();
+        $this->conclude($user->id);
 
         $nextProcessStatus = new self();
         $nextProcessStatus->user()->associate($user->id);
@@ -129,6 +138,8 @@ class ProcessStatus extends Model
         $nextProcessStatus->status()->associate($this->FIRST_STATUS);
         $nextProcessStatus->previous()->associate($this->id);
         $nextProcessStatus->save();
+
+        Log::info(sprintf('User %s(%s) restored report with id %d to state %s(%s).', $user->name, $user->username, $this->report()->first()->id, $nextProcessStatus->status()->first()->name, $nextProcessStatus->status()->first()->slug));
 
         return $nextProcessStatus;
     }
@@ -171,5 +182,9 @@ class ProcessStatus extends Model
 
     public function hasComment() {
         return $this->comment !== null ? true : false;
+    }
+
+    public function getStatusDBSync() {
+        return $this->STATUS_DB_SYNC;
     }
 }
