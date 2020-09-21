@@ -89,7 +89,9 @@ $(() => {
                     team: $('#inputTeam').children('option:selected').val(),
                 }
 
-                if($('[data-error=true]').length > 0) {
+                let workNumbers = $('div.card.work input.work-number').map((_, work) => work.value).get();
+
+                if($('[data-error=true]').length > 0 || workNumbers.indexOf('0') > -1) {
                     throw new Error($('#errors #invalidWorkNumber').text());
                 }
 
@@ -261,7 +263,7 @@ $(() => {
                 },
             });
 
-            $(work).find('input.work-number').on('keyup', (evt) => {
+            $(work).find('input.work-number').on('keydown', (evt) => {
                 checkWorkExists(evt);
             });
             // window.scrollTo(0, document.body.scrollHeight || document.documentElement.scrollHeight);
