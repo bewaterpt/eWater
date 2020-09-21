@@ -1,7 +1,4 @@
-const { readyException, holdReady } = require("jquery");
-const { reject } = require("lodash");
-
-$(document).ready(() => {
+$(() => {
 
     let error = false;
     let today = new Date();
@@ -81,8 +78,8 @@ $(document).ready(() => {
             });
         }
 
-        function formatAndSendReportData(includeId = false) {
-            if ((window.verifyingWork && window.verifyingWork.readyState === 4)) {
+        function formatAndSendReportData(editing = false) {
+            if ((window.verifyingWork && window.verifyingWork.readyState === 4) || editing) {
                 let data = {
                     plate: $('input[name="plate"]').val(),
                     km_departure: $('input[name="km-departure"]').val(),
@@ -96,7 +93,7 @@ $(document).ready(() => {
                     throw new Error($('#errors #invalidWorkNumber').text());
                 }
 
-                if(includeId) {
+                if(editing) {
                     data.id = $('#reportId').text();
                 }
 
@@ -140,26 +137,28 @@ $(document).ready(() => {
 
                 data.rows = rows;
 
-                $.ajax({
-                    method: 'POST',
-                    url: $('#report').attr('action'),
-                    data: JSON.stringify(data),
-                    contentType: 'json',
-                    success: (response) => {
-                        $('button[type="submit"]').find('#spinner, #spinner-text').addClass('d-none');
-                        $('#report button[type="submit"]').find('.btn-text').removeClass('d-none');
-                        window.location.replace(response);
-                    },
-                    error: (jqXHR, status, error) => {
-                        $('button[type="submit"]').find('#spinner, #spinner-text').addClass('d-none');
-                        $('#report button[type="submit"]').find('.btn-text').removeClass('d-none');
-                        throw new Error(error.message);
-                    },
-                    complete: () => {
-                        $('button[type="submit"]').find('#spinner, #spinner-text').addClass('d-none');
-                        $('button[type="submit"]').find('.btn-text').removeClass('d-none');
-                    },
-                });
+                if(!window.createReportRequest) {
+                    window.createReportRequest = $.ajax({
+                        method: 'POST',
+                        url: $('#report').attr('action'),
+                        data: JSON.stringify(data),
+                        contentType: 'json',
+                        success: (response) => {
+                            $('button[type="submit"]').find('#spinner, #spinner-text').addClass('d-none');
+                            $('#report button[type="submit"]').find('.btn-text').removeClass('d-none');
+                            window.location.replace(response);
+                        },
+                        error: (jqXHR, status, error) => {
+                            $('button[type="submit"]').find('#spinner, #spinner-text').addClass('d-none');
+                            $('#report button[type="submit"]').find('.btn-text').removeClass('d-none');
+                            throw new Error(error.message);
+                        },
+                        complete: () => {
+                            $('button[type="submit"]').find('#spinner, #spinner-text').addClass('d-none');
+                            $('button[type="submit"]').find('.btn-text').removeClass('d-none');
+                        },
+                    });
+                }
             } else {
                 throw new Error($('#errors #waitForWorkCheck').text());
             }
