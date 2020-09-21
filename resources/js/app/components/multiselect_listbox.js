@@ -1,4 +1,4 @@
-$(document).ready(() => {
+$(() => {
     if ($(".multiselect-listbox").length > 0) {
         $(".multiselect-listbox #btnContainer #addItems").on('click', (event) => {
             event.preventDefault();

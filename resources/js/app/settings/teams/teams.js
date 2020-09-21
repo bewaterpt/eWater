@@ -1,4 +1,4 @@
-$(document).ready(() => {
+$(() => {
 
     $('#modalTeamUsers').on('show.bs.modal', (event) => {
         var dataId = '';

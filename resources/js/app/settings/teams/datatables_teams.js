@@ -1,5 +1,5 @@
 
-$(document).ready(() => {
+$(() => {
     let t = setInterval(() => {
         if ($('#datatable-teams').length > 0) {
             $('#datatable-teams').dataTable({

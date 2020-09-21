@@ -1,4 +1,4 @@
-$(document).ready(() => {
+$(() => {
 
     if ($('#settings-permissions').length > 0) {
         $('#settings-permissions').on('submit', function(event) {

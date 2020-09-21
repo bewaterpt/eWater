@@ -1,5 +1,5 @@
 
-$(document).ready(() => {
+$(() => {
 
     if ($('textarea.text-editor').length > 0) {
         let editor_config = {
