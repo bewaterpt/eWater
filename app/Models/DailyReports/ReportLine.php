@@ -8,6 +8,15 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class ReportLine extends Model
 {
 
+    protected $fillable = [
+        'entry_number',
+        'article_id',
+        'work_number',
+        'quantity',
+        'entry_date',
+        'driven_km',
+    ];
+
     public $timestamps = [
         'created_at',
         'updated_at',
