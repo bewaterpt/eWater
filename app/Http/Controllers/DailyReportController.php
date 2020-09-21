@@ -55,9 +55,7 @@ class DailyReportController extends Controller
             $reports = Report::whereIn('team_id', $user->teams()->pluck('id'))->get()->sortByDesc('id');
         }
 
-
-
-        $reportList = collect([]);
+        // $reportList = collect([]);
 
         // foreach($reports as $report) {
         //     if ($report->creator()->first()->id === $user->id || $this->statusModel->userCanProgress($report->getCurrentStatus()->first()->id) && !$report->closed()) {
@@ -87,7 +85,10 @@ class DailyReportController extends Controller
 
         $workers = User::whereHas('teams', function ($query) use ($currentUserTeams){
             $query->whereIn('id', $currentUserTeams);
+        })->whereHas('roles', function ($query) {
+            $query->where('slug', "!=", "admin");
         })->get();
+
 
         return view('daily_reports.create', ['articles' => $this->helper->sortArray(array_flip($articles->toArray())), 'workers' => $workers, 'teams' => $teams]);
     }
@@ -95,8 +96,6 @@ class DailyReportController extends Controller
     public function store(Request $request) {
         $user = Auth::user();
         $input = $request->json()->all();
-
-        // dd($input);
 
         try {
             DB::beginTransaction();
@@ -112,7 +111,6 @@ class DailyReportController extends Controller
 
             $works = $input['rows'];
 
-            $lastInsertedEntryNumber = OutonoObrasCC::lastInsertedEntryNumber() + 1;
 
             $rows = [];
 
@@ -121,7 +119,7 @@ class DailyReportController extends Controller
                 foreach ($workData as $reportRow) {
                     // if($workNumber != 0) {
                         $rows[] = [
-                            'entry_number' => $lastInsertedEntryNumber,
+                            'entry_number' => 0,
                             'article_id' => $reportRow['article_id'],
                             'work_number' => $workNumber,
                             'quantity' => $reportRow['quantity'],
@@ -135,7 +133,6 @@ class DailyReportController extends Controller
                             'updated_at' => Carbon::now(),
                         ];
 
-                        $lastInsertedEntryNumber++;
                     // }
                 }
             }
@@ -236,23 +233,27 @@ class DailyReportController extends Controller
             $processStatus->save();
         }
         $newProcessStatus = $processStatus->stepForward();
+        // Log::info(sprintf('User %s(%s) progressed report with id %d to state %s(%s) lines.', Auth::user()->name, Auth::user()->username, $processStatus->report()->first()->id, $newProcessStatus->status()->first()->name, $newProcessStatus->status()->first()->slug));
 
-        if($newProcessStatus->status()->first()->id === $processStatus->STATUS_DB_SYNC) {
-            try {
-                Artisan::call('reports:sync ' . $processStatus->report()->first()->id);
-                $newProcessStatus->comment = __('general.daily_reports.db_sync_success');
-                $newProcessStatus->save();
-                $newProcessStatus->stepForward();
-            } catch (\Exception $e) {
-                $newProcessStatus->comment = __('errors.db_sync_failed') . '<b>' . $e->getMessage() . '</b>';
-                $newProcessStatus->error = true;
-                $newProcessStatus->save();
-                $newProcessStatus->stepBack();
-                return redirect()->back()->withErrors(__('errors.db_sync_failed') . '<b>' . $e->getMessage() . '</b>', 'custom');
-            }
-        }
+        // if($newProcessStatus->status()->first()->id === $processStatus->getStatusDBSync()) {
+        //     try {
+        //         $output = null;
+        //         Artisan::call('reports:sync', ['report' => $processStatus->report()->first()->id], $output);
+        //         // dd($output);
+        //         // throw new \Exception($output);
+        //         $newProcessStatus->comment = __('general.daily_reports.db_sync_success');
+        //         $newProcessStatus->save();
+        //         $newProcessStatus->stepForward();
+        //     } catch (\Exception $e) {
+        //         $newProcessStatus->comment = __('errors.db_sync_failed', ['msg' => '<b>' . $e->getMessage() . '</b> at line <b>' . $e->getline() . '</b><br><br>Stack trace: <br>' . $e->getTraceAsString()]);
+        //         $newProcessStatus->error = true;
+        //         $newProcessStatus->save();
+        //         $newProcessStatus->stepBack();
+        //         return redirect()->back()->withErrors(__('errors.db_sync_failed', ['msg' => '<b>' . $e->getMessage() . '</b> at line <b>' . $e->getline() . '</b>']), 'custom');
+        //     }
+        // }
 
-        Log::info(sprintf('User %s({%s}) progressed report with id %d to state %s lines.', Auth::user()->name, Auth::user()->username, $processStatus->report()->first()->id, $newProcessStatus->status()->first()->designation));
+        // Log::info(sprintf('User %s(%s) progressed report with id %d to state %s(%s) lines.', Auth::user()->name, Auth::user()->username, $processStatus->report()->first()->id, $newProcessStatus->status()->first()->name, $newProcessStatus->status()->first()->slug));
 
         return redirect()->back()->with(__('general.daily_reports.db_sync_success'));
     }
@@ -385,9 +386,6 @@ class DailyReportController extends Controller
                 return $line->delete();
             });
 
-
-            $lastInsertedEntryNumber = OutonoObrasCC::lastInsertedEntryNumber() + 1;
-
             $rows = [];
 
             foreach ($works as $workNumber => $workData) {
@@ -395,7 +393,7 @@ class DailyReportController extends Controller
                 foreach ($workData as $reportRow) {
 
                     $rows[] = [
-                        'entry_number' => $lastInsertedEntryNumber,
+                        'entry_number' => 0,
                         'article_id' => $reportRow['article_id'],
                         'work_number' => $workNumber,
                         'quantity' => $reportRow['quantity'],
@@ -407,7 +405,6 @@ class DailyReportController extends Controller
                         'driven_km' => $reportRow['driven_km'],
                     ];
 
-                    $lastInsertedEntryNumber++;
                 }
             }
 
@@ -421,9 +418,9 @@ class DailyReportController extends Controller
         return route('daily_reports.list');
     }
 
-    public function uncancel(Request $request, $progressStatusId) {
+    public function restore(Request $request, $progressStatusId) {
         $processStatus = ProcessStatus::find($progressStatusId);
-        $processStatus->uncancel();
+        $processStatus->restore();
 
         return redirect()->back();
     }

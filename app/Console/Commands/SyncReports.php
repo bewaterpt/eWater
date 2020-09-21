@@ -4,11 +4,11 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use App\Models\DailyReports\Report;
-use App\Models\Connectors\OutonoArtigos as Artigos;
 use App\Models\Connectors\OutonoObrasCC as ObrasCC;
 use App\Models\Article;
 use Illuminate\Support\Carbon;
 use DB;
+USE Log;
 
 class SyncReports extends Command
 {
@@ -43,10 +43,12 @@ class SyncReports extends Command
      */
     public function handle()
     {
-        $report = null;
+        $reports = null;
         if ($this->argument('report')) {
+            Log::info(sprintf('Syncronizing report #%d.', $this->argument('report')));
             $reports = Report::where('id', $this->argument('report'))->where('synced', false)->get();
         } else {
+            Log::info('Syncronizing all pending reports.');
             $reports = Report::where('synced', false)->get();
         }
 
@@ -54,12 +56,15 @@ class SyncReports extends Command
             return;
         }
 
+        $transportArticle = Article::getTransportationArticle();
+        $entryNumber = ObrasCC::lastInsertedEntryNumber() + 1;
         $reportLines;
         $reportTransportationData;
         $transportEntries = collect([]);
         $entries = collect([]);
 
         DB::beginTransaction();
+
         try {
             foreach ($reports as $report) {
                 if ($report->getCurrentStatus()->first()->slug === 'database_sync') {
@@ -81,11 +86,12 @@ class SyncReports extends Command
 
                     $reportLines = collect($reportLines);
                     $reportTransportationData = collect($reportTransportationData);
+                    DB::enableQueryLog();
 
                     foreach ($reportLines as $work_number => $lines) {
+                        Log::info(sprintf('Inserting transportation entry for work #%d.', $work_number));
                         $transportEntry = new obrasCC();
-                        $transportArticle = Article::getTransportationArticle();
-                        $transportEntry->numLanc = $transportEntry->lastInsertedEntryNumber()+1;
+                        $transportEntry->numLanc = $entryNumber;
                         $transportEntry->dtMov = Carbon::now()->format('Y-m-d h:i:s');
                         $transportEntry->clMov = $transportArticle->id;
                         $transportEntry->tpMov = 'D';
@@ -95,35 +101,53 @@ class SyncReports extends Command
                         $transportEntry->precoUnitario = $transportArticle->unit_price;
                         $transportEntry->funcMov = $reportTransportationData[$work_number]['report']->creator()->first()->username;
                         $transportEntry->anulado = false;
-
-                        $transportEntries->push($transportEntry);
                         $transportEntry->save();
+                        $transportEntries->push($transportEntry);
+                        Log::info(sprintf('Inserted transportation entry for work #%d with the following data: %s.', $work_number, json_encode($transportEntry)));
+
+                        $entryNumber++;
 
                         foreach ($lines as $line) {
-                            $entry = new obrasCC();
+                            Log::info(sprintf('Inserting line for work #%d with article %s.', $work_number, $line->article()->first()->designation));
+
+                            // $entry = new obrasCC();
+                            $entry = [];
                             $article = $line->article()->first();
-                            $entry->numLanc = $entry->lastInsertedEntryNumber()+1;
-                            $entry->dtMov = Carbon::now()->format('Y-m-d h:i:s');
-                            $entry->clMov = $article->id;
-                            $entry->tpMov = 'D';
-                            $entry->numObra = $work_number;
-                            $entry->dtDoc = $line->entry_date;
-                            $entry->quantidade = $line->quantity;
-                            $entry->precoUnitario = $article->unit_price;
-                            $entry->funcMov = $line->user()->first()->username;
-                            $entry->anulado = false;
+                            $entry['numLanc'] = $entryNumber;
+                            $entry['dtMov'] = Carbon::now()->format('Y-m-d h:i:s');
+                            $entry['clMov'] = $article->id;
+                            $entry['tpMov'] = 'D';
+                            $entry['numObra'] = $work_number;
+                            $entry['dtDoc'] = $line->entry_date;
+                            $entry['quantidade'] = $line->quantity;
+                            $entry['precoUnitario'] = $article->unit_price;
+                            $entry['funcMov'] = $line->user()->first()->username;
+                            $entry['anulado'] = false;
+                            // $entry->save();
+                            $entryNumber++;
                             $entries->push($entry);
-                            $entry->save();
+                            Log::info(sprintf('Inserted line for work #%d with the following data: %s.', $work_number, json_encode($entry)));
                         }
+
+                        ObrasCC::insert($entries->toArray());
                     }
-                    $report->latestUpdate()->stepForward();
-                    $report->synced = true;
+
+                    if (!$this->arguments('report')) {
+                        $report->latestUpdate()->stepForward();
+                    }
+                    // $report->synced = true;
                     $report->save();
                 }
             }
-            DB::rollBack();
+
+            Log::info(sprintf('Inserted entries with the following data: %s.', json_encode($entries)));
+            Log::info(sprintf('Inserted transportation entries with the following data: %s.', json_encode($transportEntries)));
+
+            DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
+            Log::error(sprintf('Error occured while synchronizing report(s): %s.', json_encode($e->getMessage())));
+            throw new \Exception($e->getMessage());
             $this->error("Error ". $e->getMessage());
         }
     }
