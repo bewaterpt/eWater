@@ -97,6 +97,8 @@ class DailyReportController extends Controller
         $user = Auth::user();
         $input = $request->json()->all();
 
+        Log::info(sprintf('User %s(%s) is creating a report with the following input data %s', $user->name, $user->username, json_encode($input)));
+
         try {
             DB::beginTransaction();
             $report = new Report();
@@ -133,6 +135,8 @@ class DailyReportController extends Controller
                             'updated_at' => Carbon::now(),
                         ];
 
+                    // } else {
+                    //     return route('daily_reports.create');
                     // }
                 }
             }
@@ -152,8 +156,6 @@ class DailyReportController extends Controller
             DB::commit();
         } catch(\PDOException $e) {
             DB::rollBack();
-
-            return redirect()->back()->withError(['test' => 'test'], 'custom');
         }
         return route('daily_reports.list');
     }
@@ -235,23 +237,20 @@ class DailyReportController extends Controller
         $newProcessStatus = $processStatus->stepForward();
         // Log::info(sprintf('User %s(%s) progressed report with id %d to state %s(%s) lines.', Auth::user()->name, Auth::user()->username, $processStatus->report()->first()->id, $newProcessStatus->status()->first()->name, $newProcessStatus->status()->first()->slug));
 
-        // if($newProcessStatus->status()->first()->id === $processStatus->getStatusDBSync()) {
-        //     try {
-        //         $output = null;
-        //         Artisan::call('reports:sync', ['report' => $processStatus->report()->first()->id], $output);
-        //         // dd($output);
-        //         // throw new \Exception($output);
-        //         $newProcessStatus->comment = __('general.daily_reports.db_sync_success');
-        //         $newProcessStatus->save();
-        //         $newProcessStatus->stepForward();
-        //     } catch (\Exception $e) {
-        //         $newProcessStatus->comment = __('errors.db_sync_failed', ['msg' => '<b>' . $e->getMessage() . '</b> at line <b>' . $e->getline() . '</b><br><br>Stack trace: <br>' . $e->getTraceAsString()]);
-        //         $newProcessStatus->error = true;
-        //         $newProcessStatus->save();
-        //         $newProcessStatus->stepBack();
-        //         return redirect()->back()->withErrors(__('errors.db_sync_failed', ['msg' => '<b>' . $e->getMessage() . '</b> at line <b>' . $e->getline() . '</b>']), 'custom');
-        //     }
-        // }
+        if($newProcessStatus->status()->first()->id === $processStatus->getStatusDBSync()) {
+            // try {
+            //     $output = null;
+            //     Artisan::call('reports:sync', ['report' => $processStatus->report()->first()->id], $output);
+            //     $newProcessStatus->comment = __('general.daily_reports.db_sync_success');
+            //     $newProcessStatus->save();
+            // } catch (\Exception $e) {
+            //     $newProcessStatus->comment = __('errors.db_sync_failed', ['msg' => '<b>' . $e->getMessage() . '</b> at line <b>' . $e->getline() . '</b><br><br>Stack trace: <br>' . $e->getTraceAsString()]);
+            //     $newProcessStatus->error = true;
+            //     $newProcessStatus->save();
+            //     $newProcessStatus->stepBack();
+            //     return redirect()->back()->withErrors(__('errors.db_sync_failed', ['msg' => '<b>' . $e->getMessage() . '</b> at line <b>' . $e->getline() . '</b>']), 'custom');
+            // }
+        }
 
         // Log::info(sprintf('User %s(%s) progressed report with id %d to state %s(%s) lines.', Auth::user()->name, Auth::user()->username, $processStatus->report()->first()->id, $newProcessStatus->status()->first()->name, $newProcessStatus->status()->first()->slug));
 
@@ -376,9 +375,8 @@ class DailyReportController extends Controller
             $report->km_arrival = $input['km_arrival'];
             $report->driven_km = $input['km_arrival'] - $input['km_departure'];
             $report->comment = $input['comment'];
-            $report->save();
-
             $report->team()->associate($input['team']);
+            $report->save();
 
             $works = $input['rows'];
 
