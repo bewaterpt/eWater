@@ -32,9 +32,9 @@
                                     <i class="fas fa-ban"></i>
                                 </a>
                             @endif
-                            @if($report->closed() && $report->latestUpdate()->status()->first()->slug === 'cancel' && $pmodel->can('daily_reports.uncancel'))
+                            @if($report->closed() && in_array($report->latestUpdate()->status()->first()->slug, ['cancel', 'finish']) && $pmodel->can('daily_reports.restore'))
                                 <span class="mx-2 text-secondary">l</span>
-                                <a id="uncancel-report" href="{{ route('daily_reports.uncancel', ['id' => $report->latestUpdate()->id]) }}" class="text-danger">
+                                <a id="restore-report" href="{{ route('daily_reports.restore', ['id' => $report->latestUpdate()->id]) }}" class="text-danger">
                                     <i class="fas fa-history"></i>
                                 </a>
                             @endif
