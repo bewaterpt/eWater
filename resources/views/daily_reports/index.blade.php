@@ -62,12 +62,12 @@
                                         {{ $report->getCurrentStatus()->first()->name }}
                                     </td>
                                     <td>
-                                        {{ $report->getTotalHours() }}
-                                        @if($report->getTotalHours() > 1)
+                                        {{ $helpers->decimalToTimeValue($report->getTotalHours()) }}
+                                        {{-- @if($report->getTotalHours() > 1)
                                             @Lang('general.hours')
                                         @else
                                             @Lang('general.hour')
-                                        @endif
+                                        @endif --}}
                                     </td>
                                     <td>
                                         {{ $report->getTotalKm() }} @Lang('general.daily_reports.km')
