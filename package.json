@@ -14,7 +14,7 @@
         "bootstrap": "^4.5.0",
         "cross-env": "^7.0",
         "jquery": "^3.5.1",
-        "laravel-mix": "^5.0.1",
+        "laravel-mix": "^5.0.5",
         "lodash": "^4.17.19",
         "parcel-bundler": "^1.12.4",
         "popper.js": "^1.12",
@@ -24,6 +24,7 @@
         "vue-template-compiler": "^2.6.11"
     },
     "dependencies": {
+        "@babel/preset-env": "^7.11.5",
         "@fortawesome/fontawesome-free": "^5.13.0",
         "@lottiefiles/lottie-player": "^0.5.1",
         "bootstrap-colorpicker": "^3.2.0",
