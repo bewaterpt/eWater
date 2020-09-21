@@ -66,15 +66,4 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'allowed' => \App\Http\Middleware\Allowed::class,
     ];
-
-    protected $commands = [
-        App\Console\Commands\GenerateData::class,
-    ];
-
-    public function schedule(Schedule $schedule) {
-        $schedule->command('telescope:prune')->weekly();
-        $schedule->command('permissions:update')->dailyAt('08:00');
-        $schedule->command('roles:update')->dailyAt('08:05');
-        $schedule->command('reports:sync')->hourly();
-    }
 }
