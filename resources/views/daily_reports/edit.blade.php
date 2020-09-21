@@ -40,6 +40,10 @@
                                         <span id="title">@Lang('general.daily_reports.total_km'): </span>
                                         <span id="value">{{ $report->km_arrival - $report->km_departure }}</span>
                                     </div>
+                                    <div id="total-hour-holder" class="border mt-3 rounded p-1">
+                                        <span id="title">@Lang('general.daily_reports.total_hr'): </span>
+                                        <span id="value">{{ $helpers->decimalToTimeValue($report->getTotalHours()) }}</span>
+                                    </div>
                                 </div>
                             </div>
                             <div class="float-right col-md-10">
@@ -66,7 +70,7 @@
                                     </span>
                                     &nbsp;&nbsp;
                                     <span class="d inline">
-                                        @Lang('general.daily_reports.driven-km') <input type="number" value="{{ $lines->first()->driven_km }}" required class="driven-km form-control col-md-1 d-inline border-bottom" name="driven-km"/>
+                                        @Lang('general.daily_reports.driven-km') <input type="number" value="{{ $lines->first()->driven_km }}" required class="driven-km form-control col-md-1 d-inline border-bottom" name="driven_km"/>
                                     </span>
                                     <span class="float-right mt-1">
                                         <a id="addRow" tabindex="-1" class="text-success" title="{{__('tooltips.daily_reports.add_row')}}" href="#"><i class="fas fa-plus"></i></a>
