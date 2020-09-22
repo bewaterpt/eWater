@@ -330,10 +330,12 @@ class DailyReportController extends Controller
 
     public function edit(Request $request, $reportId) {
         $report = Report::find($reportId);
-        $currentUserRoles = Auth::user()->roles()->pluck('slug');
+        $currentUserTeams = Auth::user()->teams()->pluck('id');
         $articles = Article::getDailyReportRelevantArticles()->pluck('id', 'designation');
-        $workers = User::whereHas('roles', function ($query) use ($currentUserRoles) {
-            $query->whereIn('slug', $currentUserRoles);
+        $workers = User::whereHas('teams', function ($query) use ($currentUserTeams){
+            $query->whereIn('id', $currentUserTeams);
+        })->whereHas('roles', function ($query) {
+            $query->where('slug', "!=", "admin");
         })->get();
         $teams = Team::all();
 

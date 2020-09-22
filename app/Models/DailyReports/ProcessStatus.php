@@ -133,7 +133,6 @@ class ProcessStatus extends Model
         $this->conclude($user->id);
 
         $nextProcessStatus = new self();
-        $nextProcessStatus->user()->associate($user->id);
         $nextProcessStatus->report()->associate($this->report()->first()->id);
         $nextProcessStatus->status()->associate($this->FIRST_STATUS);
         $nextProcessStatus->previous()->associate($this->id);
