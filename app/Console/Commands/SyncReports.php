@@ -152,9 +152,9 @@ class SyncReports extends Command
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error(sprintf('Error occured while synchronizing report(s): %s.', json_encode($e->getMessage())));
-            throw new \Exception($e->getMessage());
-            $this->error("Error ". $e->getMessage());
+            Log::error(sprintf('Error occured while synchronizing report(s): %s.', $e->getMessage() . ' ocurred at line ' . $e->getLine()));
+            $this->error("Error ". $e->getMessage() . ' at line ' . $e->getLine());
+            throw new \Exception($e->getMessage() . ' at line ' . $e->getLine());
         }
     }
 }
