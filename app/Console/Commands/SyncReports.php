@@ -58,6 +58,8 @@ class SyncReports extends Command
             $reports = Report::where('synced', false)->get();
         }
 
+        dd($reports);
+
         if (!$reports) {
             return;
         }
