@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\DailyReports\Status;
 use Auth;
 use Log;
+use App\User;
 
 class ProcessStatus extends Model
 {
@@ -62,8 +63,15 @@ class ProcessStatus extends Model
         return $this->belongsTo('App\Models\DailyReports\ProcessStatus', 'previous_status');
     }
 
-    public function stepForward($status = false) {
-        $user = Auth::user();
+    public function stepForward($status = false, $userId = null) {
+        $user = null;
+
+        if ($userId) {
+            $user = User::find($userId);
+        } else {
+            $user = Auth::user();
+        }
+
         $currentStatusId = $this->status()->first()->id;
 
         $nextStatusId = 0;
