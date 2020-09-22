@@ -17,7 +17,7 @@ class SyncReports extends Command
      *
      * @var string
      */
-    protected $signature = 'reports:sync {report?}';
+    protected $signature = 'reports:sync {report?} {userid?}';
 
     /**
      * The console command description.
@@ -43,6 +43,11 @@ class SyncReports extends Command
      */
     public function handle()
     {
+        $userId = null;
+        if ($this->argument('userid')) {
+            $userId = $this->argument('userid');
+        }
+
         $reports = null;
         if ($this->argument('report')) {
             $reportIds = explode(',', $this->argument('report'));
@@ -65,7 +70,7 @@ class SyncReports extends Command
 
         DB::beginTransaction();
 
-        try {
+        // try {
             foreach ($reports as $report) {
                 if ($report->getCurrentStatus()->first()->slug === 'database_sync') {
                     $reportLines = [];
@@ -137,7 +142,7 @@ class SyncReports extends Command
 
                     }
 
-                    $report->latestUpdate()->stepForward();
+                    $report->latestUpdate()->stepForward(false, $userId);
 
                     $report->synced = true;
                     $report->save();
@@ -150,11 +155,11 @@ class SyncReports extends Command
 
             Log::info(sprintf('Inserted entries with the following data: %s.', json_encode($entries)));
             DB::commit();
-        } catch (\Exception $e) {
-            DB::rollBack();
-            Log::error(sprintf('Error occured while synchronizing report(s): %s.', $e->getMessage() . ' ocurred at line ' . $e->getLine()));
-            $this->error("Error ". $e->getMessage() . ' at line ' . $e->getLine());
-            throw new \Exception($e->getMessage() . ' at line ' . $e->getLine());
-        }
+        // } catch (\Exception $e) {
+        //     DB::rollBack();
+        //     Log::error(sprintf('Error occured while synchronizing report(s): %s.', $e->getMessage() . ' ocurred at line ' . $e->getLine()));
+        //     $this->error("Error ". $e->getMessage() . ' at line ' . $e->getLine());
+        //     throw new \Exception($e->getMessage() . ' at line ' . $e->getLine());
+        // }
     }
 }
