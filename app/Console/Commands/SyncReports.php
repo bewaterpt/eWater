@@ -58,8 +58,6 @@ class SyncReports extends Command
             $reports = Report::where('synced', false)->get();
         }
 
-        dd($reports);
-
         if (!$reports) {
             return;
         }
@@ -141,6 +139,7 @@ class SyncReports extends Command
                             $entries->push($entry);
                             Log::info(sprintf('Inserted line for work #%d with the following data: %s.', $work_number, json_encode($entry)));
                         }
+
                     }
 
                     $report->latestUpdate()->stepForward(false, $userId);
@@ -152,7 +151,7 @@ class SyncReports extends Command
                 $i = 0;
                 $entryNumber++;
             }
-            dd($entries);
+
             print_r($entries->chunk(200)->map(function ($chunk) {
                 return ObrasCC::insert($chunk->toArray());
             }));
