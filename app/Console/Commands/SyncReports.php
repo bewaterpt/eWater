@@ -17,7 +17,7 @@ class SyncReports extends Command
      *
      * @var string
      */
-    protected $signature = 'reports:sync {report?} {userid?}';
+    protected $signature = 'reports:sync {reports?} {userid?}';
 
     /**
      * The console command description.
@@ -49,9 +49,9 @@ class SyncReports extends Command
         }
 
         $reports = null;
-        if ($this->argument('report')) {
-            $reportIds = explode(',', $this->argument('report'));
-            Log::info(sprintf('Syncronizing report(s) with id(s) [%s].', $this->argument('report')));
+        if ($this->argument('reports') && ('reports') != 0) {
+            $reportIds = explode(',', $this->argument('reports'));
+            Log::info(sprintf('Syncronizing report(s) with id(s) [%s].', $this->argument('reports')));
             $reports = Report::whereIn('id', $reportIds)->where('synced', false)->get();
         } else {
             Log::info('Syncronizing all pending reports.');
@@ -151,7 +151,11 @@ class SyncReports extends Command
                 $i = 0;
             }
 
-            echo ObrasCC::insert($entries->toArray());
+            dd($entries->chunk(200)->map(function ($chunk) {
+                return ObrasCC::insert($chunk->toArray());
+            }));
+
+
 
             Log::info(sprintf('Inserted entries with the following data: %s.', json_encode($entries)));
             DB::commit();

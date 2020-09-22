@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use GuzzleHttp\Client;
+use Excel;
 
 class syncAddresses extends Command
 {
@@ -12,7 +13,7 @@ class syncAddresses extends Command
      *
      * @var string
      */
-    protected $signature = 'command:name';
+    protected $signature = 'addresses:update';
 
     /**
      * The console command description.
@@ -38,6 +39,13 @@ class syncAddresses extends Command
      */
     public function handle()
     {
-        file_get_contents('/srv/postal_codes/data/codigos_postais.csv');
+        $rows = Excel::toCollection([], '/srv/postal_codes/data/codigos_postais.csv');
+        foreach($rows as $key => $row) {
+            if($key = 0) {
+
+            }
+
+            dd($row);
+        }
     }
 }
