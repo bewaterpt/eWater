@@ -70,7 +70,7 @@ class SyncReports extends Command
 
         DB::beginTransaction();
 
-        // try {
+        try {
             foreach ($reports as $report) {
                 if ($report->getCurrentStatus()->first()->slug === 'database_sync') {
                     $reportLines = [];
@@ -114,7 +114,6 @@ class SyncReports extends Command
                         $transportEntry['funcMov'] = $reportTransportationData[$work_number]['report']->creator()->first()->username;
                         $transportEntry['anulado'] = false;
 
-                        $entryNumber++;
                         $entries->push($transportEntry);
                         Log::info(sprintf('Inserted transportation entry for work #%d with the following data: %s.', $work_number, json_encode($transportEntry)));
 
@@ -124,6 +123,8 @@ class SyncReports extends Command
 
                             $entry = [];
                             $article = $line->article()->first();
+                            $line->entry_number = $entryNumber;
+                            $line->save();
                             $entry['numLanc'] = $entryNumber;
                             $entry['dtMov'] = Carbon::now()->format('Y-m-d h:i:s');
                             $entry['clMov'] = $article->id;
@@ -135,11 +136,9 @@ class SyncReports extends Command
                             $entry['funcMov'] = $line->user()->first()->username;
                             $entry['anulado'] = false;
 
-                            $entryNumber++;
                             $entries->push($entry);
                             Log::info(sprintf('Inserted line for work #%d with the following data: %s.', $work_number, json_encode($entry)));
                         }
-
                     }
 
                     $report->latestUpdate()->stepForward(false, $userId);
@@ -149,6 +148,7 @@ class SyncReports extends Command
                 }
 
                 $i = 0;
+                $entryNumber++;
             }
 
             print_r($entries->chunk(200)->map(function ($chunk) {
@@ -157,11 +157,11 @@ class SyncReports extends Command
 
             Log::info(sprintf('Inserted entries with the following data: %s.', json_encode($entries)));
             DB::commit();
-        // } catch (\Exception $e) {
-        //     DB::rollBack();
-        //     Log::error(sprintf('Error occured while synchronizing report(s): %s.', $e->getMessage() . ' ocurred at line ' . $e->getLine()));
-        //     $this->error("Error ". $e->getMessage() . ' at line ' . $e->getLine());
-        //     throw new \Exception($e->getMessage() . ' at line ' . $e->getLine());
-        // }
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error(sprintf('Error occured while synchronizing report(s): %s.', $e->getMessage() . ' ocurred at line ' . $e->getLine()));
+            $this->error("Error ". $e->getMessage() . ' at line ' . $e->getLine());
+            throw new \Exception($e->getMessage() . ' at line ' . $e->getLine());
+        }
     }
 }

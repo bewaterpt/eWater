@@ -116,8 +116,14 @@ class ProcessStatus extends Model
         return $nextProcessStatus;
     }
 
-    public function stepBack() {
-        $user = Auth::user();
+    public function stepBack($userId = null) {
+        $user = null;
+
+        if ($userId) {
+            $user = User::find($userId);
+        } else {
+            $user = Auth::user();
+        }
         $prevStatusId = $this->previous()->first()->status()->first()->id;
 
         $this->conclude($user->id);
