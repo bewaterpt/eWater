@@ -150,7 +150,7 @@ class SyncReports extends Command
                 $i = 0;
                 $entryNumber++;
             }
-
+            dd($entries);
             print_r($entries->chunk(200)->map(function ($chunk) {
                 return ObrasCC::insert($chunk->toArray());
             }));
