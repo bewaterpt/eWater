@@ -49,7 +49,7 @@ class SyncReports extends Command
         }
 
         $reports = null;
-        if ($this->argument('reports') && ('reports') != 0) {
+        if ($this->argument('reports') && $this->argument('reports') != 0) {
             $reportIds = explode(',', $this->argument('reports'));
             Log::info(sprintf('Syncronizing report(s) with id(s) [%s].', $this->argument('reports')));
             $reports = Report::whereIn('id', $reportIds)->where('synced', false)->get();
@@ -151,11 +151,9 @@ class SyncReports extends Command
                 $i = 0;
             }
 
-            dd($entries->chunk(200)->map(function ($chunk) {
+            print_r($entries->chunk(200)->map(function ($chunk) {
                 return ObrasCC::insert($chunk->toArray());
             }));
-
-
 
             Log::info(sprintf('Inserted entries with the following data: %s.', json_encode($entries)));
             DB::commit();
