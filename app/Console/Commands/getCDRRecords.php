@@ -45,7 +45,7 @@ class getCDRRecords extends Command
     public function handle()
     {
         $pbx = Pbx::first();
-        dd(Http::post($pbx->getFormattedApiUrl() . '/login',[
+        dd(Http::post($pbx->getFormattedApiUrl() . 'login',[
             'username' => $pbx->username,
             'password' => md5(Crypt::decryptString($pbx->password)),
             'port' => 0
