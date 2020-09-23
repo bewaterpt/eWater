@@ -35,7 +35,7 @@ class CallController extends Controller
 
         $input = (object) $request->input();
 
-        if (!Pbx::where('url', $input->url)) {
+        if (!Pbx::where('url', $input->url)->first()) {
             $pbx = new Pbx();
             $pbx->designation = $input->designation;
             $pbx->protocol = $input->protocol;
