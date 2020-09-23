@@ -13,6 +13,12 @@ $(() => {
         // + pad(d.getUTCSeconds())+'Z'
     }
 
+    if($('#daily-reports-create').length > 0) {
+        if ($('#inputDatetime').val() === '') {
+            $('#inputDatetime').val(ISODateString(today));
+        }
+    }
+
     if($('#daily-reports-create').length > 0 || $('#daily-reports-edit').length > 0) {
 
         /**
@@ -59,9 +65,9 @@ $(() => {
             tr.find('#removeRow').on('click', (e) => {
                 removeRow(e);
             });
-            if (tr.find('#inputDatetime').val() === '') {
-                tr.find('#inputDatetime').val(ISODateString(today));
-            }
+            // if (tr.find('#inputDatetime').val() === '') {
+            //     tr.find('#inputDatetime').val(ISODateString(today));
+            // }
 
             tr.find('#info').tooltip({
                 html: true,
@@ -252,9 +258,9 @@ $(() => {
             tr.find('#removeRow').on('click', (event) => {
                 removeLine(event);
             });
-            if (tr.find('#inputDatetime').val() === '') {
-                tr.find('#inputDatetime').val(ISODateString(today));
-            }
+            // if (tr.find('#inputDatetime').val() === '') {
+            //     tr.find('#inputDatetime').val(ISODateString(today));
+            // }
 
             tr.find('#info').tooltip({
                 html: true,
@@ -274,10 +280,6 @@ $(() => {
                 event.preventDefault();
             });
         });
-
-        if ($('#inputDatetime').val() === '') {
-            $('#inputDatetime').val(ISODateString(today));
-        }
 
         $(".info-tooltip").tooltip({
             html: true,

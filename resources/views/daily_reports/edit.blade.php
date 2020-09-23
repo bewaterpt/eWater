@@ -23,11 +23,11 @@
                             <div class="float-left col-md-2 p-0">
                                 <div class="col-md-11 p-0">
                                     <label for="inputDatetime">@Lang('forms.fields.date')</label>
-                                    <input id="inputDatetime" value="{{ $report->lines()->first()->entry_date }}" required class="form-control datepicker" placeholder="Select Date" name="datetime" type="date" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}" required>
+                                    <input id="inputDatetime" value="{{ explode(' ', $report->lines()->first()->entry_date)[0] }}" required class="form-control datepicker" placeholder="Select Date" name="datetime" type="date" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}" required>
                                     <label for="inputTeam">@Lang('forms.fields.team')</label>
                                     <select id="inputTeam" required class="form-control selectpicker" placeholder="Select Date" name="team">
                                         @foreach($teams as $team)
-                                            <option value="{{ $team->id }}" {{ $team->id === $report->team()->first('id') ? 'selected' : ''}}>{{ $team->name }}</option>
+                                            <option value="{{ $team->id }}" {{ $team->id == $report->team()->first()->id ? 'selected' : ''}}>{{ $team->name }}</option>
                                         @endforeach
                                     </select>
                                     <label for="inputPlate">@Lang('general.daily_reports.plate')</label>
@@ -99,7 +99,7 @@
                                                     <td>
                                                         <select type="text" name="worker" required class="form-control" id="inputWorker">
                                                             @foreach ($workers as $worker)
-                                                                <option value="{{ $worker->id }}" {{ $worker->id === $line->worker ? 'selected' : '' }}>{{ $worker->name }}</option>
+                                                                <option value="{{ $worker->id }}" {{ $worker->id == $line->worker ? 'selected' : '' }}>{{ $worker->name }}</option>
                                                             @endforeach
                                                         </select>
                                                     </td>
@@ -107,7 +107,7 @@
                                                         <select name="article_id" required class="form-control selectpicker" id="inputArticle" data-dropup-auto="false">
                                                             {{-- {{ dd($articles) }} --}}
                                                             @foreach($articles as $descricao => $cod)
-                                                                <option value="{{ $cod }}" {{ $cod === $line->article_id ? 'selected' : '' }}>{{ $descricao }}</option>
+                                                                <option value="{{ $cod }}" {{ $cod == $line->article_id ? 'selected' : '' }}>{{ $descricao }}</option>
                                                             @endforeach
                                                         </select>
                                                     </td>

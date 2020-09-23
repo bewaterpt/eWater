@@ -23,7 +23,7 @@ $(() => {
                     orderable: false,
                 }
             ],
-            // lengthChange: false,
+            lengthChange: true,
             language: {
                 url: "/config/dataTables/lang/" + window.lang + ".json"
             }

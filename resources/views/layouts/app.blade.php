@@ -181,7 +181,7 @@
                         <div class="container">
                             <div class="row justify-content-center">
                                 <div class="col-md-8 alert alert-danger">
-                                    <ul>
+                                    <ul class="mb-0">
                                         @foreach ($errors->custom->all() as $error)
                                             <li>{!! $error !!}</li>
                                         @endforeach
