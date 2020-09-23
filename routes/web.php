@@ -161,6 +161,12 @@ Route::group(['middleware' => ['web']], function () {
             Route::post('works/work-exists', 'WorkController@workExists')->name('works.exists');
             // Route::get('works/delete/{id}', 'WorkController@delete')->name('settings.teams.delete');
 
+            Route::get('calls', 'Yealink\CallController@index')->name('calls.list');
+            Route::get('calls/pbx', 'Yealink\CallController@pbxList')->name('calls.pbx.list');
+            Route::get('calls/pbx/create', 'Yealink\CallController@create')->name('calls.pbx.create');
+            Route::post('calls/pbx/store', 'Yealink\CallController@store')->name('calls.pbx.store');
+            Route::get('calls/pbx/edit/{id}', 'WorYealink\CallControllerkController@edit')->name('calls.pbx.edit');
+
             Route::any('test', 'TestController@index')->name('tests.test');
         });
     });
