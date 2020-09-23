@@ -20,7 +20,7 @@ class CallController extends Controller
     public function pbxList(Request $request) {
         $pbxList = Pbx::all();
 
-        dd($request);
+        // dd($request);
 
         return view('calls.pbx.index', ['pbxList' => $pbxList]);
     }
