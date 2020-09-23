@@ -112,6 +112,19 @@
                                         </div>
                                     </li>
                                 @endif
+                                @if($pmodel->can('calls.'))
+                                    <li class="nav-item dropdown">
+                                        <a id="navbarDropdown" class="nav-link dropdown-toggle {{ preg_match('/calls\./i', Route::currentRouteName()) ? 'text-primary' : '' }}" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                            @Lang('settings.calls') <span class="caret"></span>
+                                        </a>
+
+                                        <div class="dropdown-menu dropdown-menu" aria-labelledby="navbarDropdown">
+                                            @if($pmodel->can('calls.pbx.list'))
+                                                <a title="" class="dropdown-item {{Route::currentRouteName() == 'calls.pbx.list' ? 'bg-primary text-white disabled' : ''}}" href="{{ route('calls.pbx.list')}}">@lang('general.pbx_list')</a>
+                                            @endif
+                                        </div>
+                                    </li>
+                                @endif
                             </ul>
                         @endguest
                         <!-- Right Side Of Navbar -->
