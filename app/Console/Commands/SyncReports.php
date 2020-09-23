@@ -142,7 +142,9 @@ class SyncReports extends Command
 
                     }
 
-                    $report->latestUpdate()->stepForward(false, $userId);
+                    if (!$this->argument('reports')) {
+                        $report->latestUpdate()->stepForward(false, $userId);
+                    }
 
                     $report->synced = true;
                     $report->save();

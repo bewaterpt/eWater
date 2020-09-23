@@ -238,18 +238,19 @@ class DailyReportController extends Controller
         // Log::info(sprintf('User %s(%s) progressed report with id %d to state %s(%s) lines.', Auth::user()->name, Auth::user()->username, $processStatus->report()->first()->id, $newProcessStatus->status()->first()->name, $newProcessStatus->status()->first()->slug));
 
         if($newProcessStatus->status()->first()->id === $processStatus->getStatusDBSync()) {
-            // try {
-            //     $output = null;
-            //     Artisan::call('reports:sync', ['report' => $processStatus->report()->first()->id], $output);
-            //     $newProcessStatus->comment = __('general.daily_reports.db_sync_success');
-            //     $newProcessStatus->save();
-            // } catch (\Exception $e) {
-            //     $newProcessStatus->comment = __('errors.db_sync_failed', ['msg' => '<b>' . $e->getMessage() . '</b> at line <b>' . $e->getline() . '</b><br><br>Stack trace: <br>' . $e->getTraceAsString()]);
-            //     $newProcessStatus->error = true;
-            //     $newProcessStatus->save();
-            //     $newProcessStatus->stepBack();
-            //     return redirect()->back()->withErrors(__('errors.db_sync_failed', ['msg' => '<b>' . $e->getMessage() . '</b> at line <b>' . $e->getline() . '</b>']), 'custom');
-            // }
+            try {
+                $output = null;
+                Artisan::call('reports:sync', ['report' => $processStatus->report()->first()->id], $output);
+                $newProcessStatus->comment = __('general.daily_reports.db_sync_success');
+                $newProcessStatus->save();
+                $newProcessStatus->stepForward();
+            } catch (\Exception $e) {
+                $newProcessStatus->comment = __('errors.db_sync_failed', ['msg' => '<b>' . $e->getMessage() . '</b> at line <b>' . $e->getline() . '</b><br><br>Stack trace: <br>' . $e->getTraceAsString()]);
+                $newProcessStatus->error = true;
+                $newProcessStatus->save();
+                $newProcessStatus->stepBack();
+                return redirect()->back()->withErrors(__('errors.db_sync_failed', ['msg' => '<b>' . $e->getMessage() . '</b> at line <b>' . $e->getline() . '</b>']), 'custom');
+            }
         }
 
         // Log::info(sprintf('User %s(%s) progressed report with id %d to state %s(%s) lines.', Auth::user()->name, Auth::user()->username, $processStatus->report()->first()->id, $newProcessStatus->status()->first()->name, $newProcessStatus->status()->first()->slug));
