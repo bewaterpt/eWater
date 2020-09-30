@@ -20,12 +20,7 @@
                                     <div class="alert alert-danger">{{ $message }}</div>
                                 @enderror
                                 <label for="inputColor">@Lang('forms.fields.color')</label>
-                                <div id="teams-colorpicker" class="input-group">
-                                    <input type="text" name="color" class="form-control @error('color') is-invalid @enderror" id="inputColor" value="" autocomplete="off">
-                                    <span class="input-group-append">
-                                        <span class="input-group-text colorpicker-input-addon"><i></i></span>
-                                    </span>
-                                </div>
+                                <input type="text" name="color" class="form-control @error('color') is-invalid @enderror" id="inputColor" value="" autocomplete="off">
                             </div>
                         </div>
                         <div class="mt-3 mb-3">@Lang('general.users')</div>

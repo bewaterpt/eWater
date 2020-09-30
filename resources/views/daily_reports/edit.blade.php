@@ -54,7 +54,6 @@
                             </div>
                         </fieldset>
 
-                        {{-- {{ dd($works) }} --}}
                         @foreach($works as $work_id => $lines)
                             <div {{ $loop->index === 0 ? 'id=\"original-work\""' : '' }} class="work card mt-5 mb-4">
                                 <div class="card-header col-md-12">

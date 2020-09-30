@@ -38,9 +38,9 @@ $(() => {
             }
         };
 
-        tinymce.init(editor_config);
+        tinyMCE.init(editor_config);
 
-        window.mce = tinymce.init(editor_config);;
+        window.mce = tinyMCE.init(editor_config);;
 
         // $('#formNextStatus').on('sumbit', () => {
         //     $('#inputComment').val(quill.root.innerHTML);

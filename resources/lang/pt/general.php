@@ -89,4 +89,6 @@ return [
         'affected_area' => 'Área afetada',
         'reinstatement_date' => 'Data de Restabelecimento',
     ],
+    'url' => "Endereço Web",
+    'delegation' => 'Delegação',
 ];

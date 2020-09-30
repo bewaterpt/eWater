@@ -20,6 +20,10 @@ return [
         'no_value' => 'N/A',
         'accountable_bool' => 'Reponsável?',
         'color' => 'Cor',
+        'protocol' => 'Protocolo',
+        'url' => 'Endereço Web',
+        'port' => 'Porta',
+        'api_base_url' => 'Endereço base da API',
     ],
     'placeholders' => [
         'name'=> 'Nome Apelido',

@@ -8,7 +8,7 @@
                 <div class="card-header">@Lang('settings.users.list')</div>
                 <div class="card-body table-responsive">
                     <table id="datatable-users" class="object-table table table-sm table-striped" style="width: 100%">
-                        <thead>
+                        <thead class="thead-light">
                             <tr>
                                 <th class="actions text-center px-0">
                                     <i class="fas fa-tools text-black sorting_disabled"></i>
