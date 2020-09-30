@@ -36503,7 +36503,7 @@ module.exports = g;
 
 /***/ 1:
 /*!*********************************************************************************************************!*\
-  !*** multi datatables.net datatables.net-dt datatables.net-bs4 bootstrap @fortawesome/fontawesome-free ***!
+  !*** multi datatables.net datatables.net-dt datatables.net-bs4 @fortawesome/fontawesome-free bootstrap ***!
   \*********************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
@@ -36511,8 +36511,8 @@ module.exports = g;
 __webpack_require__(/*! datatables.net */"./node_modules/datatables.net/js/jquery.dataTables.js");
 __webpack_require__(/*! datatables.net-dt */"./node_modules/datatables.net-dt/js/dataTables.dataTables.js");
 __webpack_require__(/*! datatables.net-bs4 */"./node_modules/datatables.net-bs4/js/dataTables.bootstrap4.js");
-__webpack_require__(/*! bootstrap */"./node_modules/bootstrap/dist/js/bootstrap.js");
-module.exports = __webpack_require__(/*! @fortawesome/fontawesome-free */"./node_modules/@fortawesome/fontawesome-free/js/fontawesome.js");
+__webpack_require__(/*! @fortawesome/fontawesome-free */"./node_modules/@fortawesome/fontawesome-free/js/fontawesome.js");
+module.exports = __webpack_require__(/*! bootstrap */"./node_modules/bootstrap/dist/js/bootstrap.js");
 
 
 /***/ })

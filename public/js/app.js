@@ -45091,6 +45091,10 @@ stopSpontaneousSrcolling(); // TinyMCE Langs
 
 __webpack_require__(/*! ./config/tinymce/lang/pt_PT */ "./resources/js/config/tinymce/lang/pt_PT.js");
 
+$('button[type="submit"]').on('click', function (e) {
+  $(e.target).find('button[type="submit"]').attr('disabled', true);
+  return true;
+});
 $(document).ready(function () {
   $('[data-toggle="popover"]').popover({
     html: true,
@@ -45106,14 +45110,51 @@ $(document).ready(function () {
 
 /***/ }),
 
-/***/ "./resources/js/app/components/info_box.js":
-/*!*************************************************!*\
-  !*** ./resources/js/app/components/info_box.js ***!
-  \*************************************************/
+/***/ "./resources/js/app/calls/calls.js":
+/*!*****************************************!*\
+  !*** ./resources/js/app/calls/calls.js ***!
+  \*****************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
+$(function () {
+  if ($('#calls-pbx-create')) {
+    $('#calls-pbx-create .show-password').on('mousedown mouseup', function (evt) {
+      if ($(evt.target).parent('a').siblings('input').attr('type') === 'password') {
+        $(evt.target).parent('a').siblings('input').attr('type', 'text');
+      } else {
+        $(evt.target).parent('a').siblings('input').attr('type', 'password');
+      }
+    });
+  }
+});
 
+/***/ }),
+
+/***/ "./resources/js/app/calls/datatables_pbx.js":
+/*!**************************************************!*\
+  !*** ./resources/js/app/calls/datatables_pbx.js ***!
+  \**************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+$(function () {
+  if ($("#datatable-pbx").length > 0) {
+    $("#datatable-pbx").DataTable({
+      responsive: true,
+      order: [[1, "desc"]],
+      // ordering: false,
+      columnDefs: [{
+        targets: $("#datatable-pbx").find("thead tr:first th.actions").index(),
+        orderable: false
+      }],
+      lengthChange: true,
+      language: {
+        url: "/config/dataTables/lang/" + window.lang + ".json"
+      }
+    });
+  }
+});
 
 /***/ }),
 
@@ -45124,7 +45165,7 @@ $(document).ready(function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-$(document).ready(function () {
+$(function () {
   if ($(".multiselect-listbox").length > 0) {
     $(".multiselect-listbox #btnContainer #addItems").on('click', function (event) {
       event.preventDefault();
@@ -45160,20 +45201,29 @@ $(document).ready(function () {
 
 /***/ }),
 
+/***/ "./resources/js/app/components/tooltip.js":
+/*!************************************************!*\
+  !*** ./resources/js/app/components/tooltip.js ***!
+  \************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+$(function () {
+  $("a[data-toggle='tooltip']").tooltip({
+    html: true
+  });
+});
+
+/***/ }),
+
 /***/ "./resources/js/app/daily_reports/dailyReports.js":
 /*!********************************************************!*\
   !*** ./resources/js/app/daily_reports/dailyReports.js ***!
   \********************************************************/
 /*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-var _require = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js"),
-    readyException = _require.readyException;
-
-var _require2 = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js"),
-    reject = _require2.reject;
-
-$(document).ready(function () {
+$(function () {
   var error = false;
   var today = new Date();
 
@@ -45185,6 +45235,12 @@ $(document).ready(function () {
     return d.getUTCFullYear() + '-' + pad(d.getUTCMonth() + 1) + '-' + pad(d.getUTCDate()); // + 'T'+pad(d.getUTCHours())+':'
     // + pad(d.getUTCMinutes());
     // + pad(d.getUTCSeconds())+'Z'
+  }
+
+  if ($('#daily-reports-create').length > 0) {
+    if ($('#inputDatetime').val() === '') {
+      $('#inputDatetime').val(ISODateString(today));
+    }
   }
 
   if ($('#daily-reports-create').length > 0 || $('#daily-reports-edit').length > 0) {
@@ -45235,12 +45291,16 @@ $(document).ready(function () {
       tr.removeClass('first');
       tr.find('#removeRow').on('click', function (e) {
         removeRow(e);
+      }); // if (tr.find('#inputDatetime').val() === '') {
+      //     tr.find('#inputDatetime').val(ISODateString(today));
+      // }
+
+      tr.find('#info').tooltip({
+        html: true,
+        title: function title() {
+          return $(document).find('#' + this.id + '-tooltip .tooltip').find('#title').html();
+        }
       });
-
-      if (tr.find('#inputDatetime').val() === '') {
-        tr.find('#inputDatetime').val(ISODateString(today));
-      }
-
       console.log(tr[0]);
       $(event.target).parents('.card.work').find('table#report-lines tbody').append(tr); // window.scrollTo(0, document.body.scrollHeight || document.documentElement.scrollHeight);
 
@@ -45250,74 +45310,139 @@ $(document).ready(function () {
     };
 
     var formatAndSendReportData = function formatAndSendReportData() {
-      var includeId = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
-      var data = {
-        plate: $('input[name="plate"]').val(),
-        km_departure: $('input[name="km-departure"]').val(),
-        km_arrival: $('input[name="km-arrival"]').val(),
-        comment: $('textarea').val(),
-        datetime: $('#inputDatetime').val(),
-        team: $('#inputTeam').children('option:selected').val()
-      };
+      var editing = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
 
-      if (includeId) {
-        data.id = $('#reportId').text();
-      }
+      if (window.verifyingWork && window.verifyingWork.readyState === 4 || editing) {
+        var data = {
+          plate: $('input[name="plate"]').val(),
+          km_departure: $('input[name="km-departure"]').val(),
+          km_arrival: $('input[name="km-arrival"]').val(),
+          comment: $('textarea').val(),
+          datetime: $('#inputDatetime').val(),
+          team: $('#inputTeam').children('option:selected').val()
+        };
+        var workNumbers = $('div.card.work input.work-number').map(function (_, work) {
+          return work.value;
+        }).get();
 
-      var totalKm = data.km_arrival - data.km_departure;
-      var userInsertedKm = 0;
-      var rows = {};
-      $('div.card.work').each(function (workIndex, work) {
-        console.log('Work: ', work);
-        var workNum = $(work).find('input.work-number').val();
-        var kmInserted = false;
-        rows[workNum] = {};
-        $(work).find('tbody tr').each(function (trIndex, tr) {
-          rows[workNum][trIndex] = {};
-          rows[workNum][trIndex]['driven-km'] = $(work).find('input.driven-km').val();
-          $(tr).find('input:not(.work-number), select').each(function (inputIndex, input) {
-            if (input.name !== 'driven-km') {
-              if (input.name === 'quantity') {
-                rows[workNum][trIndex][input.name] = parseFloat(parseFloat(input.value).toFixed(2));
-              } else {
-                rows[workNum][trIndex][input.name] = input.value;
+        if ($('[data-error=true]').length > 0 || workNumbers.indexOf('0') > -1) {
+          throw new Error($('#errors #invalidWorkNumber').text());
+        }
+
+        if (editing) {
+          data.id = $('#reportId').text();
+        }
+
+        var totalKm = data.km_arrival - data.km_departure;
+        var userInsertedKm = 0;
+        var rows = {};
+        $('div.card.work').each(function (workIndex, work) {
+          console.log('Work: ', work);
+          var workNum = $(work).find('input.work-number').val();
+
+          if (workNum === 0) {
+            throw new Error($('#errors #unexpectedError'));
+          }
+
+          rows[workNum] = {};
+          $(work).find('tbody tr').each(function (trIndex, tr) {
+            rows[workNum][trIndex] = {};
+            rows[workNum][trIndex]['driven_km'] = $(work).find('input.driven-km').val();
+            $(tr).find('input:not(.work-number), select').each(function (inputIndex, input) {
+              if (input.name !== 'driven_km') {
+                if (input.name === 'quantity') {
+                  rows[workNum][trIndex][input.name] = parseFloat(parseFloat(input.value).toFixed(2));
+                } else {
+                  rows[workNum][trIndex][input.name] = input.value;
+                }
               }
-            }
+            });
           });
         });
-      });
-      $(document).find('.card.work .card-header input[name=driven-km]').each(function (inputIndex, input) {
-        userInsertedKm += parseInt(input.value);
-      });
-      console.log('Total: ', totalKm);
-      console.log('Inserted: ', userInsertedKm);
-      console.log(Math.abs(userInsertedKm - totalKm));
+        $(document).find('.card.work .card-header input[name=driven_km]').each(function (inputIndex, input) {
+          userInsertedKm += parseInt(input.value);
+        });
+        console.log('Total: ', totalKm);
+        console.log('Inserted: ', userInsertedKm);
+        console.log(Math.abs(userInsertedKm - totalKm));
 
-      if (Math.abs(userInsertedKm - totalKm) !== 0) {
-        throw new Error($('#errors #differentKm')[0].innerText);
-      }
-
-      data.rows = rows;
-      $.ajax({
-        method: 'POST',
-        url: $('#report').attr('action'),
-        data: JSON.stringify(data),
-        contentType: 'json',
-        success: function success(response) {
-          $('#report button[type="submit"]').find('#spinner, #spinner-text').addClass('d-none');
-          $('#report button[type="submit"]').find('.btn-text').removeClass('d-none');
-          window.location.replace(response);
-        },
-        error: function error(jqXHR, status, _error) {
-          $('#report button[type="submit"]').find('#spinner, #spinner-text').addClass('d-none');
-          $('#report button[type="submit"]').find('.btn-text').removeClass('d-none');
-          throw new Error(_error.message);
-        },
-        complete: function complete() {
-          $('#report button[type="submit"]').find('#spinner, #spinner-text').addClass('d-none');
-          $('#report button[type="submit"]').find('.btn-text').removeClass('d-none');
+        if (Math.abs(userInsertedKm - totalKm) !== 0) {
+          throw new Error($('#errors #differentKm').text());
         }
-      });
+
+        data.rows = rows;
+
+        if (!window.createReportRequest) {
+          window.createReportRequest = $.ajax({
+            method: 'POST',
+            url: $('#report').attr('action'),
+            data: JSON.stringify(data),
+            contentType: 'json',
+            success: function success(response) {
+              $('button[type="submit"]').find('#spinner, #spinner-text').addClass('d-none');
+              $('#report button[type="submit"]').find('.btn-text').removeClass('d-none');
+              window.location.replace(response);
+            },
+            error: function error(jqXHR, status, _error) {
+              $('button[type="submit"]').find('#spinner, #spinner-text').addClass('d-none');
+              $('#report button[type="submit"]').find('.btn-text').removeClass('d-none');
+              throw new Error(_error.message);
+            },
+            complete: function complete() {
+              $('button[type="submit"]').find('#spinner, #spinner-text').addClass('d-none');
+              $('button[type="submit"]').find('.btn-text').removeClass('d-none');
+            }
+          });
+        }
+      } else {
+        throw new Error($('#errors #waitForWorkCheck').text());
+      }
+    };
+
+    var checkWorkExists = function checkWorkExists(evt) {
+      error = false;
+      var data = {
+        id: $(evt.target).val()
+      };
+
+      if (data.id !== "") {
+        if (window.verifyingWork && window.verifyingWork.readyState !== 4) {
+          window.verifyingWork.abort();
+        }
+
+        window.verifyingWork = $.ajax({
+          method: 'POST',
+          url: '/works/work-exists',
+          data: JSON.stringify(data),
+          contentType: 'json',
+          success: function success(response) {
+            response = JSON.parse(response);
+            console.log("Response: ", response);
+
+            if (response.value === false) {
+              $(evt.target).parent().popover({
+                html: true,
+                title: function title() {
+                  return $(document).find('#' + this.id + ' .popover').find('#title').html();
+                },
+                content: function content() {
+                  return $(document).find('#' + this.id + ' .popover').find('#content').html();
+                }
+              });
+              $(evt.target).parent().find('.popover #content').html($('#errors .' + response.reason).html());
+              $(evt.target).addClass('border-danger').addClass('bg-flamingo').attr('data-error', true).focus();
+              $('.popover:not(.popover-data)').addClass('popover-danger');
+            } else {
+              $(evt.target).removeClass('border-danger').removeClass('bg-flamingo').removeAttr('data-error');
+              $(evt.target).parent().popover('dispose');
+            }
+          },
+          error: function error(jqXHR, status, _error2) {}
+        });
+      } else {
+        $(evt.target).removeClass('border-danger').removeClass('bg-flamingo').removeAttr('data-error');
+        $(evt.target).parent().popover('dispose');
+      }
     };
 
     $('#addRow').on('click', function (event) {
@@ -45331,12 +45456,9 @@ $(document).ready(function () {
     });
     $('a.add-work').on('click', function (event) {
       var work = $(event.target).parents('.card').find('.card.work:last-of-type').clone();
-      console.log(work);
       work.removeAttr('id');
       var trs = work.find('table#report-lines tbody tr');
       trs.each(function (index, tr) {
-        console.log(index);
-
         if (trs.length - (index + 1) == 0) {
           return false;
         }
@@ -45355,66 +45477,39 @@ $(document).ready(function () {
       tr.removeClass('first');
       tr.find('#removeRow').on('click', function (event) {
         removeLine(event);
+      }); // if (tr.find('#inputDatetime').val() === '') {
+      //     tr.find('#inputDatetime').val(ISODateString(today));
+      // }
+
+      tr.find('#info').tooltip({
+        html: true,
+        title: function title() {
+          return $(document).find('#' + this.id + '-tooltip .tooltip').find('#title').html();
+        }
       });
-
-      if (tr.find('#inputDatetime').val() === '') {
-        tr.find('#inputDatetime').val(ISODateString(today));
-      } // window.scrollTo(0, document.body.scrollHeight || document.documentElement.scrollHeight);
-
+      $(work).find('input.work-number').on('keydown keyup', function (evt) {
+        checkWorkExists(evt);
+      }); // window.scrollTo(0, document.body.scrollHeight || document.documentElement.scrollHeight);
 
       $(event.target).parents('.card').find('.card.work:last-of-type').after(work);
       $('a[href="#"]').click(function (event) {
         event.preventDefault();
       });
     });
-
-    if ($('#inputDatetime').val() === '') {
-      $('#inputDatetime').val(ISODateString(today));
-    }
-
-    $('div.card.work input.work-number').on('focusout', function (evt) {
-      error = false;
-      var data = {
-        id: $(evt.target).val()
-      };
-      $.ajax({
-        method: 'POST',
-        url: '/works/work-exists',
-        data: JSON.stringify(data),
-        contentType: 'json',
-        success: function success(response) {
-          response = JSON.parse(response);
-          console.log("Response: ", response);
-
-          if (response.value === false) {
-            $(evt.target).parent().popover({
-              html: true,
-              title: function title() {
-                console.log(this);
-                return $(document).find('#' + this.id + ' .popover').find('#title').html();
-              },
-              content: function content() {
-                return $(document).find('#' + this.id + ' .popover').find('#content').html();
-              }
-            });
-            $(evt.target).parent().find('.popover #content').html($('#errors .' + response.reason).html());
-            $(evt.target).addClass('border-danger').addClass('bg-flamingo').focus();
-            $('.popover:not(.popover-data)').addClass('popover-danger');
-          } else {
-            $(evt.target).removeClass('border-danger').removeClass('bg-flamingo');
-            $(evt.target).parent().popover('dispose');
-          }
-        },
-        error: function error(jqXHR, status, _error2) {
-          $('#report button[type="submit"]').find('#spinner, #spinner-text').addClass('d-none');
-          $('#report button[type="submit"]').find('.btn-text').removeClass('d-none');
-        }
-      });
+    $(".info-tooltip").tooltip({
+      html: true,
+      title: function title() {
+        return $(document).find('#' + this.id + '-tooltip .tooltip').find('#title').html();
+      }
+    });
+    $('div.card.work input.work-number').on('keyup', function (evt) {
+      checkWorkExists(evt);
     });
     $('#report').on('submit', function (event) {
       event.preventDefault();
-      $('#report button[type="submit"]').find('#spinner, #spinner-text').removeClass('d-none');
-      $('#report button[type="submit"]').find('.btn-text').addClass('d-none');
+      event.stopPropagation();
+      $('button[type="submit"]').find('#spinner, #spinner-text').removeClass('d-none');
+      $('button[type="submit"]').find('.btn-text').addClass('d-none');
 
       if (!error) {
         try {
@@ -45424,18 +45519,35 @@ $(document).ready(function () {
             formatAndSendReportData();
           }
         } catch (error) {
-          $('#report button[type="submit"]').find('#spinner, #spinner-text').addClass('d-none');
-          $('#report button[type="submit"]').find('.btn-text').removeClass('d-none');
+          $('button[type="submit"]').find('#spinner, #spinner-text').addClass('d-none');
+          $('button[type="submit"]').find('.btn-text').removeClass('d-none');
           alert(error.message);
           return;
         }
       } else {
-        $('#report button[type="submit"]').find('#spinner, #spinner-text').addClass('d-none');
-        $('#report button[type="submit"]').find('.btn-text').removeClass('d-none');
+        $('button[type="submit"]').find('#spinner, #spinner-text').addClass('d-none');
+        $('button[type="submit"]').find('.btn-text').removeClass('d-none');
       }
     });
     $(document).on('change keyup', 'input[name="km-departure"], input[name="km-arrival"]', function (event) {
       $('#total-km-holder #value').text(parseInt($('input[name="km-arrival"]').val() - $('input[name="km-departure"]').val()));
+
+      if (parseInt($('input[name="km-arrival"]').val() - $('input[name="km-departure"]').val()) < 0) {
+        $('#total-km-holder').addClass('text-danger');
+      } else {
+        $('#total-km-holder').removeClass('text-danger');
+      }
+    });
+    $(document).on('change keyup', 'input[name="quantity"]', function (event) {
+      console.log('Fired');
+      var totalHours = 0;
+      $('input[name="quantity"]').each(function (index, field) {
+        totalHours += parseFloat($(field).val()) || 0;
+      });
+
+      if (totalHours > 0) {
+        $('#total-hour-holder').find('#value').text(decimalToTimeValue(parseFloat(totalHours).toFixed(2)));
+      }
 
       if (parseInt($('input[name="km-arrival"]').val() - $('input[name="km-departure"]').val()) < 0) {
         $('#total-km-holder').addClass('text-danger');
@@ -45477,6 +45589,14 @@ $(document).ready(function () {
       });
     });
   }
+
+  $("#cancel-report").on("click", function (event) {
+    event.preventDefault();
+
+    if (confirm($("#prompts .cancel-report").text())) {
+      window.location.replace($(event.target).parent('a#cancel-report').attr('href'));
+    }
+  });
 });
 
 /***/ }),
@@ -45488,7 +45608,7 @@ $(document).ready(function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-$(document).ready(function () {
+$(function () {
   if ($("#report-process-status").length > 0) {
     $("#report-process-status").DataTable({
       responsive: true,
@@ -45510,7 +45630,7 @@ $(document).ready(function () {
         targets: $("#reports").find("thead tr:first th.actions").index(),
         orderable: false
       }],
-      lengthChange: false,
+      lengthChange: true,
       language: {
         url: "/config/dataTables/lang/" + window.lang + ".json"
       }
@@ -45527,7 +45647,7 @@ $(document).ready(function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-$(document).ready(function () {
+$(function () {
   if ($('#settings-permissions').length > 0) {
     var getPermissionAttributes = function getPermissionAttributes(element) {
       element = element.split('][');
@@ -45575,6 +45695,34 @@ $(document).ready(function () {
 
 /***/ }),
 
+/***/ "./resources/js/app/settings/roles/datatables_roles.js":
+/*!*************************************************************!*\
+  !*** ./resources/js/app/settings/roles/datatables_roles.js ***!
+  \*************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+$(function () {
+  var t = setInterval(function () {
+    if ($('#datatable-roles').length > 0) {
+      $('#datatable-roles').dataTable({
+        responsive: true,
+        order: [[1, "asc"]],
+        columnDefs: [{
+          targets: $("#datatable-roles").find("thead tr:first th.actions").index(),
+          orderable: false
+        }],
+        language: {
+          url: "/config/dataTables/lang/" + window.lang + ".json"
+        }
+      });
+      clearInterval(t);
+    }
+  }, 1000);
+});
+
+/***/ }),
+
 /***/ "./resources/js/app/settings/teams/datatables_teams.js":
 /*!*************************************************************!*\
   !*** ./resources/js/app/settings/teams/datatables_teams.js ***!
@@ -45582,7 +45730,7 @@ $(document).ready(function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-$(document).ready(function () {
+$(function () {
   var t = setInterval(function () {
     if ($('#datatable-teams').length > 0) {
       $('#datatable-teams').dataTable({
@@ -45610,7 +45758,7 @@ $(document).ready(function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-$(document).ready(function () {
+$(function () {
   $('#modalTeamUsers').on('show.bs.modal', function (event) {
     var dataId = '';
 
@@ -45647,7 +45795,7 @@ $(document).ready(function () {
     $('#teams-colorpicker').colorpicker({});
   } else {
     $('#teams-colorpicker').colorpicker({
-      color: window.getRandomVibrantColor(20)
+      color: getRandomVibrantColor(20)
     });
   }
 });
@@ -45661,7 +45809,7 @@ $(document).ready(function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-$(document).ready(function () {
+$(function () {
   var t = setInterval(function () {
     if ($('#datatable-users').length > 0) {
       $('#datatable-users').dataTable({
@@ -45700,7 +45848,7 @@ $(document).ready(function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-$(document).ready(function () {
+$(function () {
   if ($('textarea.text-editor').length > 0) {
     var editor_config = {
       path_absolute: "/",
@@ -45708,7 +45856,7 @@ $(document).ready(function () {
       language: 'pt_PT',
       menubar: false,
       statusbar: false,
-      plugins: ["advlist autolink lists link image charmap print preview hr anchor pagebreak", "searchreplace visualblocks visualchars code", "insertdatetime media nonbreaking table directionality", "emoticons template paste textcolor colorpicker textpattern"],
+      plugins: ["advlist autolink lists link image charmap print preview hr anchor pagebreak", "searchreplace visualblocks visualchars code", "insertdatetime media nonbreaking table directionality", "emoticons template paste textpattern"],
       toolbar: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image media",
       relative_urls: false,
       file_browser_callback: function file_browser_callback(field_name, url, type, win) {
@@ -45732,8 +45880,8 @@ $(document).ready(function () {
         });
       }
     };
-    tinymce.init(editor_config);
-    window.mce = tinymce.init(editor_config);
+    tinyMCE.init(editor_config);
+    window.mce = tinyMCE.init(editor_config);
     ; // $('#formNextStatus').on('sumbit', () => {
     //     $('#inputComment').val(quill.root.innerHTML);
     // });
@@ -46245,9 +46393,9 @@ tinymce.addI18n('pt_PT', {
 /***/ }),
 
 /***/ 0:
-/*!*******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** multi ./resources/js/app.js ./resources/js/app/utility/tinymce.js ./resources/js/app/settings/users/datatables_users.js ./resources/js/app/settings/teams/teams.js ./resources/js/app/settings/teams/datatables_teams.js ./resources/js/app/settings/permissions/update.js ./resources/js/app/components/multiselect_listbox.js ./resources/js/app/components/info_box.js ./resources/js/app/daily_reports/dailyReports.js ./resources/js/app/daily_reports/datatables_reports.js ./resources/js/app/utility/fixes.js ./resources/sass/app.scss ***!
-  \*******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*!*****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** multi ./resources/js/app.js ./resources/js/app/utility/tinymce.js ./resources/js/app/settings/users/datatables_users.js ./resources/js/app/settings/teams/teams.js ./resources/js/app/settings/teams/datatables_teams.js ./resources/js/app/settings/permissions/update.js ./resources/js/app/components/multiselect_listbox.js ./resources/js/app/components/tooltip.js ./resources/js/app/daily_reports/dailyReports.js ./resources/js/app/daily_reports/datatables_reports.js ./resources/js/app/calls/calls.js ./resources/js/app/calls/datatables_pbx.js ./resources/js/app/settings/roles/datatables_roles.js ./resources/js/app/utility/fixes.js ./resources/sass/app.scss ***!
+  \*****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -46258,9 +46406,12 @@ __webpack_require__(/*! C:\Users\bruno.martins\source\repos\outono\resources\js\
 __webpack_require__(/*! C:\Users\bruno.martins\source\repos\outono\resources\js\app\settings\teams\datatables_teams.js */"./resources/js/app/settings/teams/datatables_teams.js");
 __webpack_require__(/*! C:\Users\bruno.martins\source\repos\outono\resources\js\app\settings\permissions\update.js */"./resources/js/app/settings/permissions/update.js");
 __webpack_require__(/*! C:\Users\bruno.martins\source\repos\outono\resources\js\app\components\multiselect_listbox.js */"./resources/js/app/components/multiselect_listbox.js");
-__webpack_require__(/*! C:\Users\bruno.martins\source\repos\outono\resources\js\app\components\info_box.js */"./resources/js/app/components/info_box.js");
+__webpack_require__(/*! C:\Users\bruno.martins\source\repos\outono\resources\js\app\components\tooltip.js */"./resources/js/app/components/tooltip.js");
 __webpack_require__(/*! C:\Users\bruno.martins\source\repos\outono\resources\js\app\daily_reports\dailyReports.js */"./resources/js/app/daily_reports/dailyReports.js");
 __webpack_require__(/*! C:\Users\bruno.martins\source\repos\outono\resources\js\app\daily_reports\datatables_reports.js */"./resources/js/app/daily_reports/datatables_reports.js");
+__webpack_require__(/*! C:\Users\bruno.martins\source\repos\outono\resources\js\app\calls\calls.js */"./resources/js/app/calls/calls.js");
+__webpack_require__(/*! C:\Users\bruno.martins\source\repos\outono\resources\js\app\calls\datatables_pbx.js */"./resources/js/app/calls/datatables_pbx.js");
+__webpack_require__(/*! C:\Users\bruno.martins\source\repos\outono\resources\js\app\settings\roles\datatables_roles.js */"./resources/js/app/settings/roles/datatables_roles.js");
 __webpack_require__(/*! C:\Users\bruno.martins\source\repos\outono\resources\js\app\utility\fixes.js */"./resources/js/app/utility/fixes.js");
 module.exports = __webpack_require__(/*! C:\Users\bruno.martins\source\repos\outono\resources\sass\app.scss */"./resources/sass/app.scss");
 
