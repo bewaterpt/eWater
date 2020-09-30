@@ -177,7 +177,7 @@ class DailyReportController extends Controller
         $statusObject = new Status();
 
         if (!$report) {
-            return redirect()->back()->withErrors(__('errors.report_not_found'), 'custom');
+            return redirect()->back()->withErrors(__('errors.report_not_found', ['reportId' => $reportId]), 'custom');
         }
 
         // if ($report->creator()->first()->id !== $user->id && !$this->statusModel->userCanProgress($report->getCurrentStatus()->first()->id)) {
