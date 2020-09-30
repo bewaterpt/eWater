@@ -98,6 +98,23 @@ return [
             'username' => env('OUTONO_USERNAME', 'sa'),
             'password' => env('OUTONO_PASSWORD', 'Kaala2014.'),
         ],
+        'telescope' => [
+            'driver' => env('TELESCOPE_CONNECTION', 'mysql'),
+            'host' => env('TELESCOPE_HOST', '127.0.0.1'),
+            'port' => env('TELESCOPE_PORT', '3306'),
+            'database' => env('TELESCOPE_DATABASE', 'forge'),
+            'username' => env('TELESCOPE_USERNAME', 'forge'),
+            'password' => env('TELESCOPE_PASSWORD', ''),
+            'charset' => 'utf8',
+            'collation' => 'utf8_general_ci',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'strict' => true,
+            'engine' => null,
+            'options' => extension_loaded('pdo_mysql') ? array_filter([
+                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+            ]) : [],
+        ],
 
     ],
 
