@@ -75,6 +75,8 @@ class SyncReports extends Command
                     $userId = $report->user_id;
                 }
 
+                $this->ask('Enter to continue');
+
                 if ($report->getCurrentStatus()->first()->slug === 'database_sync') {
                     $reportLines = [];
                     $reportTransportationData = [];
