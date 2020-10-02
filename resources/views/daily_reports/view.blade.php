@@ -9,9 +9,9 @@
                         @Lang('general.daily_reports.report', ['number' => $report->id]) {{ $report->closed() ? '(' . __('general.daily_reports.closed_by_user_at_time', [ 'name' => $report->latestUpdate()->user()->first()->name, 'time' => $report->latestUpdate()->concluded_at->diffForHumans()]) . ')' : '' }}
                         <span class="float-right">
                             @if(!$report->closed() && $report->getCurrentStatus()->first()->userCanProgress() && !$report->synced)
-                                {{-- <a href="{{ route('daily_reports.edit', ['id' => $report->id]) }}" class="text-info edit">
+                                <a href="{{ route('daily_reports.edit', ['id' => $report->id]) }}" class="text-info edit">
                                     <i class="fas fa-edit"></i>
-                                </a> --}}
+                                </a>
                                 @if($report->getCurrentStatus()->first()->slug !== $statusObj->where('enabled', true)->where('id', '!=', $statusObj->first()->id)->orderBy('id')->first()->slug)
                                     <a class="btn-link back text-danger" title="{{__('tooltips.daily_reports.prev')}}" data-toggle="modal" data-target="#modalPrevStatus" href="#">
                                         <i class="fas fa-step-backward"></i>
