@@ -98,7 +98,7 @@ class GetCDRRecords extends Command
             'extid' => 'all',
             'starttime' => $cdrObj->latest('created_at')->first() ? $cdrObj->latest('created_at')->first()->created_at->format('Y-m-d H:i:s') : Carbon::now()->subMonths(4)->format('Y-m-d H:i:s'),
             'endtime' => Carbon::now()->format('Y-m-d H:i:s'),
-            'allowedip' => '172.16.69.240'
+            // 'allowedip' => '172.16.69.240'
         ];
 
         $contentLength = strlen(json_encode($content));

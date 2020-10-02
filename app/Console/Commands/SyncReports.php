@@ -169,8 +169,8 @@ class SyncReports extends Command
             DB::commit();
 
         } catch (\Exception $e) {
-            DB::rollBack();
             DB::connection('outono')->rollBack();
+            DB::rollBack();
 
             Log::error(sprintf('Error occured while synchronizing report(s): %s.', $e->getMessage() . ' ocurred at line ' . $e->getLine()));
             $this->error("Error ". $e->getMessage() . ' at line ' . $e->getLine());
