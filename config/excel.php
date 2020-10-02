@@ -71,9 +71,10 @@ return [
         'csv'         => [
             'delimiter'              => ',',
             'enclosure'              => '"',
-            'escape_character'       => '\\',
+            'escape_character'       => '',
             'contiguous'             => false,
             'input_encoding'         => 'UTF-8',
+            'use_bom'                => true
         ],
     ],
 
@@ -163,7 +164,7 @@ return [
         | storing reading or downloading. Here you can customize that path.
         |
         */
-        'local_path'  => sys_get_temp_dir(),
+        'local_path'  => storage_path()."/temp",
 
         /*
         |--------------------------------------------------------------------------

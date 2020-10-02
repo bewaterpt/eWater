@@ -1,7 +1,7 @@
 <?php
 return [
     'error' => 'Erro',
-    'different_km' => 'Por favor verifique os Kilometros inseridos e certifique-se que coincidem com os kilometros de partida e chegada.',
+    'different_km' => 'Os valores totais dos kilometros não coincidem, se existem kilometros a ser registados sem número de obra associado, coloque-os nos comentários por favor.',
     'db_sync_failed' => "A sincronização com o outono falhou, por favor contacte o departamento de informática e indique a mensagem que se segue&#58 :msg",
     'work_not_exists' => 'O número de obra introduzido não é válido, por favor verifique se o introduziu corretamente.',
     'work_already_closed' => 'Esta obra encontra-se resolvida.',

@@ -14,8 +14,9 @@ use Illuminate\Support\Carbon;
 use GuzzleHttp\Client;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\CDRRecordImport;
+use Box\Spout\Reader\Common\Creator\ReaderEntityFactory as REF;
 
-class getCDRRecords extends Command
+class GetCDRRecords extends Command
 {
     /**
      * The name and signature of the console command.
@@ -48,6 +49,9 @@ class getCDRRecords extends Command
      */
     public function handle()
     {
+
+        $tempFile = storage_path().'/temp/yealinkcdr.csv';
+
         $errors = config('app.yealink_error_codes');
         $pbx = Pbx::first();
         $cdrObj = new CDRRecord();
@@ -69,6 +73,8 @@ class getCDRRecords extends Command
             'port' => 0,
         ];
 
+        unset($md5Password);
+
         $contentLength = strlen(json_encode($content));
 
         $response = $guzzleClient->request('POST', $pbx->getFormattedApiUrl() . 'login', [
@@ -82,7 +88,7 @@ class getCDRRecords extends Command
         $response = json_decode($response->getBody()->getContents(), true);
 
         if ($response['status'] === "Failed") {
-            $this->error($response['errno'] . ': ' . $errors[$response['errno']]);
+            $this->error($pbx->getFormattedApiUrl() . 'login: ' . $response['errno'] . ': ' . $errors[$response['errno']]);
             die;
         }
 
@@ -90,7 +96,7 @@ class getCDRRecords extends Command
 
         $content = [
             'extid' => 'all',
-            'starttime' => $cdrObj->latest('created_at')->first() ? $cdrObj->latest('created_at')->first() : Carbon::now()->subMonths(4)->format('Y-m-d H:i:s'),
+            'starttime' => $cdrObj->latest('created_at')->first() ? $cdrObj->latest('created_at')->first()->created_at->format('Y-m-d H:i:s') : Carbon::now()->subMonths(4)->format('Y-m-d H:i:s'),
             'endtime' => Carbon::now()->format('Y-m-d H:i:s'),
             'allowedip' => '172.16.69.240'
         ];
@@ -108,7 +114,7 @@ class getCDRRecords extends Command
         $response = json_decode($response->getBody()->getContents(), true);
 
         if ($response['status'] === "Failed") {
-            $this->error($response['errno'] . ': ' . $errors[$response['errno']]);
+            $this->error($pbx->getFormattedApiUrl() . 'cdr/get_random?token=' . $token . ': ' . $response['errno'] . ': ' . $errors[$response['errno']]);
             die;
         }
 
@@ -123,12 +129,73 @@ class getCDRRecords extends Command
         $contentLength = strlen(json_encode($content));
 
         $response = $guzzleClient->request('POST', $pbx->getFormattedApiUrl() . 'cdr/download?extid=all&starttime=' . $startTime . '&endtime=' . $endTime . '&token=' . $token . '&random=' . $randomCdrId);
+        file_put_contents($tempFile, trim($response->getBody()->getContents()));
+        unset($response, $content, $contentLength, $randomCdrId, $startTime, $endTime, $guzzleClient, $cdrObj);
+        $reader = REF::createReaderFromFile($tempFile);
+        $reader->open($tempFile);
+        $index = 0;
+        $rowCount = 0;
+        $cdrs = [];
+        // (new CDRRecordImport($pbx->id))->withOutput($this->output)->import($tempFile);
 
+        $this->info('Counting Rows');
+        foreach ($reader->getSheetIterator() as $sheet) {
+            foreach ($sheet->getRowIterator() as $row) {
+                $rowCount++;
+            }
+        }
 
-        $response = $response->getBody()->getContents();
-        Excel::import(new CDRRecordImport, $response);
-        dd(null);
-        dd($response);
+        foreach ($reader->getSheetIterator() as $sheet) {
+
+            $rows = $sheet->getRowIterator();
+            // dd($rows);
+            $bar = $this->output->createProgressBar($rowCount);
+            $bar->start();
+
+            foreach ($rows as $row) {
+                if ($index !== 0) {
+                    // do stuff with the row
+                    $cells = $row->getCells();
+
+                    if(sizeOf($cdrs) === 500) {
+                        CDRRecord::insert($cdrs);
+                        $cdrs = [];
+                    }
+
+                    $cdrs[] = [
+                        'callid' => $cells[0]->getValue(),
+                        'timestart' => $cells[1]->getValue(),
+                        'callfrom' => $cells[2]->getValue(),
+                        'callto' => $cells[3]->getValue(),
+                        'callduration' => $cells[4]->getValue(),
+                        'talkduration' => $cells[5]->getValue(),
+                        'waitduration' => $cells[4]->getValue() - $cells[5]->getValue(),
+                        'srctrunkname'=> $cells[6]->getValue(),
+                        'dsttrunkname' => $cells[7]->getValue(),
+                        'status' => $cells[8]->getValue(),
+                        'type' => $cells[9]->getValue(),
+                        'pincode' => $cells[10]->getValue(),
+                        'recording' => $cells[11]->getValue(),
+                        'didnumber' => $cells[12]->getValue(),
+                        'sn' => $cells[13]->getValue(),
+                        'pbx_id' => $pbx->id
+                    ];
+
+                    $bar->advance();
+                    unset($cells, $row);
+                    gc_collect_cycles();
+                } else {
+                    $index++;
+                }
+            }
+            $reader->close();
+            CDRRecord::insert($cdrs);
+            $bar->finish();
+        }
+
+        // dd();
+        // dd(CDRRecord::all());
+        // dd($response);
         // dd($pbx->getFormattedApiUrl() . 'login');
         // dd(md5(Crypt::decryptString($pbx->password)));
     }

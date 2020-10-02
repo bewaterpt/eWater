@@ -1,6 +1,7 @@
 $(() => {
 
     let error = false;
+    let kmError = false;
     let today = new Date();
 
     function ISODateString(d){
@@ -139,7 +140,8 @@ $(() => {
                 console.log('Inserted: ', userInsertedKm)
                 console.log(Math.abs(userInsertedKm - totalKm));
 
-                if(Math.abs(userInsertedKm - totalKm) !== 0) {
+                if(Math.abs(userInsertedKm - totalKm) !== 0 && kmError == false) {
+                    kmError = true;
                     throw new Error($('#errors #differentKm').text());
                 }
 

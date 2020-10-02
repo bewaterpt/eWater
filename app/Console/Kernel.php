@@ -21,6 +21,7 @@ class Kernel extends ConsoleKernel
         Commands\CustomMigrateFresh::class,
         Commands\DeleteAllArticles::class,
         Commands\GenerateData::class,
+        Commands\GetCDRRecords::class,
         Commands\syncAddresses::class,
         Commands\SyncADGroups::class,
         Commands\SyncArticles::class,
@@ -38,6 +39,7 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')->hourly();
         $schedule->command('telescope:prune')->weekly();
+        $schedule->command('calls:get')->dailyAt('07:00');
         $schedule->command('permissions:update')->dailyAt('08:00');
         $schedule->command('roles:update')->dailyAt('08:05');
         // $schedule->command('reports:sync')->hourly();

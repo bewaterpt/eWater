@@ -19,8 +19,8 @@ class CreateCdrRecordsTable extends Migration
             $table->id();
             $table->string('callid');
             $table->timestamp('timestart');
-            $table->string('callfrom', 15);
-            $table->string('callto', 15);
+            $table->string('callfrom');
+            $table->string('callto');
             $table->smallInteger('callduration');
             $table->smallInteger('talkduration');
             $table->smallInteger('waitduration');

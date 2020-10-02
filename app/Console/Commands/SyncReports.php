@@ -64,6 +64,7 @@ class SyncReports extends Command
         $entries = collect([]);
 
         DB::beginTransaction();
+        DB::connection('outono')->beginTransaction();
 
         try {
             foreach ($reports as $report) {
@@ -75,7 +76,7 @@ class SyncReports extends Command
                     $userId = $report->user_id;
                 }
 
-                $this->ask('Enter to continue');
+                $this->info('Synchronizing report #' . $report->id);
 
                 if ($report->getCurrentStatus()->first()->slug === 'database_sync') {
                     $reportLines = [];
@@ -158,15 +159,19 @@ class SyncReports extends Command
                 $i = 0;
                 $entryNumber++;
             }
-
             print_r($entries->chunk(200)->map(function ($chunk) {
                 return ObrasCC::insert($chunk->toArray());
             }));
+            // $entries = $error;
 
             Log::info(sprintf('Inserted entries with the following data: %s.', json_encode($entries)));
+            DB::connection('outono')->commit();
             DB::commit();
+
         } catch (\Exception $e) {
             DB::rollBack();
+            DB::connection('outono')->rollBack();
+
             Log::error(sprintf('Error occured while synchronizing report(s): %s.', $e->getMessage() . ' ocurred at line ' . $e->getLine()));
             $this->error("Error ". $e->getMessage() . ' at line ' . $e->getLine());
             throw new \Exception($e->getMessage() . ' at line ' . $e->getLine());

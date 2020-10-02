@@ -199,5 +199,21 @@ class Helper {
 
         return ($calculateDays ? $days . "d, ": "") . ($hours < 10 ? "0" : "") . intval($hours) . ":" . ($minutes < 10 ? "0" : "") . intval($minutes) . ($calculateSeconds ? ":" . ($seconds < 10 ? "0" : "") . intval($seconds) : "");
     }
+
+    function part($path, $offset, $rows) {
+        $buffer = array();
+        $buffer['content'] = '';
+        $buffer['pointer'] = array();
+        $handle = fopen($path, "r");
+        fseek($handle, $offset);
+        if( $handle ) {
+            for( $i = 0; $i < $rows; $i++ ) {
+                $buffer['content'] .= fgets($handle);
+                $buffer['pointer'] = mb_strlen($buffer['content']);
+            }
+        }
+        fclose($handle);
+        return($buffer);
+    }
 }
 

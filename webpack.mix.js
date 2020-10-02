@@ -33,7 +33,7 @@ mix.sass('resources/sass/app.scss', 'public/css')
     "resources/js/app/daily_reports/dailyReports.js",
     "resources/js/app/daily_reports/datatables_reports.js",
     "resources/js/app/calls/calls.js",
-    "resources/js/app/calls/datatables_pbx.js",
+    "resources/js/app/calls/datatables_calls.js",
     "resources/js/app/settings/roles/datatables_roles.js",
     "resources/js/app/utility/fixes.js",
 ], "public/js/app.js").babel([
@@ -52,6 +52,8 @@ mix.sass('resources/sass/app.scss', 'public/css')
     "resources/js/app/components/tooltip.js",
     "resources/js/app/daily_reports/dailyReports.js",
     "resources/js/app/daily_reports/datatables_reports.js",
+    "resources/js/app/calls/calls.js",
+    "resources/js/app/calls/datatables_calls.js",
     "resources/js/app/settings/roles/datatables_roles.js",
     "resources/js/app/utility/fixes.js",
 ], "public/js/app.es5.js")
