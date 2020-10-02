@@ -43,11 +43,6 @@ class SyncReports extends Command
      */
     public function handle()
     {
-        $userId = null;
-        if ($this->argument('userid')) {
-            $userId = $this->argument('userid');
-        }
-
         $reports = null;
         if ($this->argument('reports') && $this->argument('reports') != 0) {
             $reportIds = explode(',', $this->argument('reports'));
@@ -72,6 +67,14 @@ class SyncReports extends Command
 
         try {
             foreach ($reports as $report) {
+
+                $userId = null;
+                if ($this->argument('userid')) {
+                    $userId = $this->argument('userid');
+                } else {
+                    $userId = $report->user_id;
+                }
+
                 if ($report->getCurrentStatus()->first()->slug === 'database_sync') {
                     $reportLines = [];
                     $reportTransportationData = [];
