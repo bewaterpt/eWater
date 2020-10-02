@@ -35,18 +35,17 @@ $(() => {
                 }
             ],
             lengthChange: true,
-            // dom: "lfrtip",
-    //         language: {
-    //             paginate: {
-    //                 previous: '<i class="fa fa-angle-left"></i>',
-    //                 next: '<i class="fa fa-angle-right"></i>'
-    //             },
-    //             sProcessing: loadingHTML,
-    //             sEmptyTable: "No Records",
-    //             url: "/config/dataTables/lang/" + window.lang + ".json"
-    //         },
-            // autoWidth: false,
-            // processing: true,
+            language: {
+                paginate: {
+                    previous: '<i class="fa fa-angle-left"></i>',
+                    next: '<i class="fa fa-angle-right"></i>'
+                },
+                sProcessing: loadingHTML,
+                sEmptyTable: "No Records",
+                url: "/config/dataTables/lang/" + window.lang + ".json"
+            },
+            autoWidth: false,
+            processing: true,
             serverSide: true,
             ajax: '/calls',
             // lengthMenu: [[10, 50, 100], [10, 50, 100]],
@@ -61,14 +60,14 @@ $(() => {
                 {data: 'waitduration', name: 'waitduration', searchable: true},
                 {data: 'type', name: 'type', searchable: true}
             ],
-            // drawCallback: function(settings){
+            drawCallback: function(settings){
 
-            //     var data = this.api().ajax.json();
+                var data = this.api().ajax.json();
 
-            //     // if(data){
-            //     //     checkRecordNumber(this, data);
-            //     // }
-            // },
+                // if(data){
+                //     checkRecordNumber(this, data);
+                // }
+            },
             // initComplete:function( settings, json){
             //     checkRecordNumber(this, json);
             // }
