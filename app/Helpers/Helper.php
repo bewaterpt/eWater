@@ -166,7 +166,7 @@ class Helper {
         return strtr($str, $replacePairs);
     }
 
-    public function decimalToTimeValue($totalHours, $calculateDays = false, $calculateSeconds = false) {
+    public function decimalHoursToTimeValue($totalHours, $calculateDays = false, $calculateSeconds = false) {
         $sInDay = 86400;
         $sInHr = 3600;
         $sInMin = 60;
@@ -214,6 +214,38 @@ class Helper {
         }
         fclose($handle);
         return($buffer);
+    }
+
+    public static function decimalSecondsToTimeValue($totalSeconds, $calculateDays = false, $calculateSeconds = false) {
+        $sInDay = 86400;
+        $sInHr = 3600;
+        $sInMin = 60;
+        // $totalSeconds = 0;
+        $days = 0;
+        $hours = 0;
+        $minutes = 0;
+        $seconds = 0;
+
+        if($calculateDays) {
+            if ($totalSeconds >= $sInDay) {
+                $days = $totalSeconds / $sInDay;
+                $totalSeconds = $totalSeconds % $sInDay;
+            }
+        }
+
+        if ($totalSeconds >= $sInHr) {
+            $hours = $totalSeconds / $sInHr;
+            $totalSeconds = $totalSeconds % $sInHr;
+        }
+
+        if ($totalSeconds >= $sInMin) {
+            $minutes = $totalSeconds / $sInMin;
+            $totalSeconds = $totalSeconds % $sInMin;
+        }
+
+        $seconds = $totalSeconds;
+
+        return ($calculateDays ? $days . "d, ": "") . ($hours !== 0 ? ($hours < 10 ? "0" : "") . intval($hours) . "h:": "") . ($minutes !== 0 ? ($minutes < 10 ? "0" : "") . intval($minutes) . "m:" : "") . ($calculateSeconds ? ($seconds < 10 ? "0" : "") . intval($seconds) . "s" : "");
     }
 }
 

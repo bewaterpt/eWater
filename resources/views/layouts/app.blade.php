@@ -212,7 +212,7 @@
         <script src="{{ asset('js/manifest.js') }}"></script>
         <script src="{{ asset('js/helpers.js') }}"></script>
         <script src="{{ asset('js/app.js') }}"></script>
-        @include('layouts.partials.errors')
+        @include('errors.partials.errors')
     </body>
 </html>
 

@@ -16,6 +16,8 @@ try {
     require('datatables.net');
     // require('datatables.net-dt');
     require('datatables.net-bs4');
+    require('moment');
+    require('chart.js');
 } catch (e) {}
 
 /**

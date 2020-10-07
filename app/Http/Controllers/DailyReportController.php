@@ -416,7 +416,7 @@ class DailyReportController extends Controller
 
             return redirect()->back()->withError(['test' => 'test'], 'custom');
         }
-        return route('daily_reports.list');
+        return route('daily_reports.view', ['id' => $request->id]);
     }
 
     public function restore(Request $request, $progressStatusId) {

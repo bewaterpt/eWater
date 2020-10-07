@@ -7,10 +7,12 @@ use Illuminate\Http\Request;
 use App\Models\Yealink\Pbx;
 use App\Models\Delegation;
 use Illuminate\Support\Facades\Crypt;
+use App\Helpers\Helper;
 use Log;
 use Auth;
 use DB;
 use App\Models\Yealink\CDRRecord;
+use Illuminate\Support\Carbon;
 
 class CallController extends Controller
 {
@@ -56,7 +58,7 @@ class CallController extends Controller
     }
 
     public function index(Request $request) {
-
+        $helper = new Helper();
         if ($request->ajax()) {
             $input = $request->input();
 
@@ -112,11 +114,14 @@ class CallController extends Controller
                 // }
 
                 $data[] = [
-                    'actions' => $actions,
-                    'callid' => $row->callid,
-                    'callduration' => $row->callduration,
-                    'talkduration' => $row->talkduration,
-                    'waitduration' => $row->waitduration,
+                    // 'actions' => $actions,
+                    'callfrom' => $row->callfrom,
+                    'callto' => $row->callto,
+                    'timestart' => $row->timestart,
+                    'callduration' => Helper::decimalSecondsToTimeValue($row->callduration, false, true),
+                    'talkduration' => Helper::decimalSecondsToTimeValue($row->talkduration, false, true),
+                    'waitduration' => Helper::decimalSecondsToTimeValue($row->waitduration, false, true),
+                    'status' => $row->status,
                     'type' => $row->type,
                     // 'actions' => $actions
                 ];
@@ -136,5 +141,52 @@ class CallController extends Controller
         }
 
         return view('calls.index');
+    }
+
+    public function getMonthlyWaitTimeInfo(Request $request) {
+        $data = [
+            'status' => 500,
+            'message' => __('errors.unexpected_error'),
+        ];
+
+        $input = (object) $request->json()->all();
+
+        $dateFormat = 'Y-m-d H:i:s';
+        $cdrData = CDRRecord::selectRaw('monthname(timestart) month, avg(waitduration) avgwaitduration,min(waitduration) minwaitduration, max(waitduration) maxwaitduration')
+                    ->whereBetween('timestart', [Carbon::now()->startOfYear()->format($dateFormat), Carbon::now()->endOfYear()->format($dateFormat)])
+                    ->whereNotIn('callto', [6501, 6502])
+                    ->where('status', 'ANSWERED')
+                    ->where('waitduration', '>', 10);
+
+        if ($input->inbound) {
+            $cdrData = $cdrData->where('type', 'Inbound');
+        }
+
+        $cdrData = $cdrData->groupBy('month')->get();
+
+        $data['min'] = $cdrData->map(function($item) {
+                            return floor($item->minwaitduration);
+                        });
+
+        $data['max'] = $cdrData->map(function($item) {
+                            return floor($item->maxwaitduration);
+                        });
+
+        $data['avg'] = $cdrData->map(function($item) {
+            return floor($item->avgwaitduration);
+        });
+
+        $data['labels'] = CDRRecord::selectRaw('monthname(timestart) month')
+                          ->distinct('month')
+                          ->whereBetween('timestart', [Carbon::now()->startOfYear()->format($dateFormat), Carbon::now()->endOfYear()->format($dateFormat)])
+                          ->get()
+                          ->map(function($item) {
+                              return $item->month;
+                          });
+
+        $data['status'] = 200;
+        $data['message'] = 'Success';
+
+        return json_encode($data);
     }
 }

@@ -42,7 +42,7 @@
                                     </div>
                                     <div id="total-hour-holder" class="border mt-3 rounded p-1">
                                         <span id="title">@Lang('general.daily_reports.total_hr'): </span>
-                                        <span id="value">{{ $helpers->decimalToTimeValue($report->getTotalHours()) }}</span>
+                                        <span id="value">{{ $helpers->decimalHoursToTimeValue($report->getTotalHours()) }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -126,12 +126,26 @@
                                 </div>
                             </div>
                         @endforeach
-                        <button type="submit" class="btn btn-primary">
+                        <button type="submit" class="btn btn-primary d-inline-block">
                             <span class="btn-text">@Lang('forms.buttons.save')</span>
                             <span id="spinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
                             <span id="spinner-text" class="loading-text d-none">@Lang('general.loading')</span>
                         </button>
-                        <span class="float-right">
+                        <div id="warnings" class="w-auto d-inline-block">
+                            <div class="justify-content-center">
+                                <div id="inferiorKmWarn" class="alert alert-warning m-0 d-none p-1">
+                                    <ul class="mb-0">
+                                        <li>@Lang('errors.inferior_km_warning')</li>
+                                    </ul>
+                                </div>
+                                <div id="superiorKmErr" class="alert alert-danger m-0 d-none p-1">
+                                    <ul class="mb-0">
+                                        <li>@Lang('errors.superior_km_error')</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <span class="float-right d-inline-block">
                             <a class="add-work btn btn-info text-white" title="{{__('tooltips.daily_reports.add_work')}}" href="#"><i class="fas fa-plus"></i> @Lang('general.daily_reports.add_work')</a>
                         </span>
                       </form>

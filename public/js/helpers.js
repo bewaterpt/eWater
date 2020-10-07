@@ -68,3 +68,24 @@ function decimalToTimeValue(totalHours, calculateDays, calculateSeconds) {
 
 	return (calculateDays ? parseInt(days) + "d": "") + (hours < 10 ? "0" : "") + parseInt(hours) + (minutes < 10 ? ":0" : ":") + parseInt(minutes) + (calculateSeconds ? (seconds < 10 ? ":0" : ":") + parseInt(seconds) : "" );
 }
+
+function decimalSecondsToTimeValue(totalSeconds) {
+    const sInDay = 86400;
+	const sInHr = 3600;
+	const sInMin = 60;
+	let days = 0, hours = 0, minutes = 0, seconds = 0;
+
+	if (totalSeconds >= sInHr) {
+		hours = totalSeconds / sInHr;
+		totalSeconds = totalSeconds % sInHr;
+	}
+
+	if (totalSeconds >= sInMin) {
+		minutes = totalSeconds / sInMin;
+		totalSeconds = totalSeconds % sInMin;
+	}
+
+	seconds = totalSeconds;
+
+    return (hours !== 0 ? (hours < 10 ? "0" : "") + parseInt(hours) + ':' : '') + (minutes < 10 ? "0" : "") + parseInt(minutes) + ':' + (seconds < 10 ? "0" : "") + parseInt(seconds);
+}

@@ -91,4 +91,5 @@ return [
     ],
     'url' => "Endereço Web",
     'delegation' => 'Delegação',
+    'statistics' => 'Estatísticas',
 ];

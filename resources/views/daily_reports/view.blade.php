@@ -41,6 +41,17 @@
                         </span>
                     </div>
                     <div class="card-body">
+                        @if ($report->inferiorKm())
+                            <div id="warnings" class="w-100 mb-3">
+                                <div class="row">
+                                    <div class="col"></div>
+                                    <div id="inferiorKmWarn" class="text-center col-md-10 alert alert-warning m-0 p-1">
+                                        <span>@Lang('errors.inferior_km_warning')</span>
+                                    </div>
+                                    <div class="col"></div>
+                                </div>
+                            </div>
+                        @endif
                         @if($report->comment)
                             <label for="comment">@Lang('general.daily_reports.comment')</label>
                             <div id="comment" class="comment border rounded mh-25 pt-2 px-2 mb-3">
@@ -48,12 +59,22 @@
                             </div>
                         @endif
                         <div class="col-md-12 m-0 p-0 mb-2">
-                            <span></span>
                             <div class="d-inline report-creator mr-3 text-left">
                                 @lang('general.created_by_user_at_time', [ 'name' => $report->creator()->first()->name, 'time' =>  $report->created_at->diffForHumans()])
                             </div>
                             <div class="d-inline report-created-at text-right">
                                 @Lang('general.updated_time_ago', ['time' => $report->updated_at->diffForHumans()])
+                            </div>
+                            <div class="float-right">
+                                <div class="d-inline report-creator mr-3 text-left">
+                                    @Lang('general.daily_reports.km_departure'): {{ $report->km_departure }} Km
+                                </div>
+                                <div class="d-inline report-creator mr-3 text-left">
+                                    @Lang('general.daily_reports.km_arrival'): {{ $report->km_arrival }} Km
+                                </div>
+                                <div class="d-inline report-created-at text-right">
+                                    @Lang('general.daily_reports.total_km'): {{ $report->getTotalKm() }} Km
+                                </div>
                             </div>
                         </div>
 
@@ -64,7 +85,7 @@
                                     @if($workObject->getById($workNumber))
                                         <div class="d-inline-block mr-3" title="{{ trans('general.daily_reports.work_type') }}">{{ $workObject->getById($workNumber)->getType()->first()->descricao }}</div>
                                     @endif
-                                    <div class="d-inline-block mr-3" title="{{ trans('general.daily_reports.work_hr', ['id' => $workNumber]) }}">{{ $helpers->decimalToTimeValue($report->linesByWorkNumber($workNumber)->sum('quantity')) }}
+                                    <div class="d-inline-block mr-3" title="{{ trans('general.daily_reports.work_hr', ['id' => $workNumber]) }}">{{ $helpers->decimalHoursToTimeValue($report->linesByWorkNumber($workNumber)->sum('quantity')) }}
                                         {{-- @if($report->linesByWorkNumber($workNumber)->sum('quantity') > 1 || $report->linesByWorkNumber($workNumber)->sum('quantity') === 0)
                                             @Lang('general.hours')
                                         @else
@@ -110,7 +131,7 @@
                                                         {{ $row->article()->first()->designation }}
                                                     </td>
                                                     <td>
-                                                        {{ $helpers->decimalToTimeValue($row->quantity) }}
+                                                        {{ $helpers->decimalHoursToTimeValue($row->quantity) }}
                                                         {{-- @if($row->quantity > 1)
                                                             @Lang('general.hours')
                                                         @else

@@ -64,6 +64,7 @@ mix.sass('resources/sass/app.scss', 'public/css')
     // 'bootstrap-colorpicker',
     '@fortawesome/fontawesome-free',
     'bootstrap',
+    'moment',
     // 'remixicon',
 ]);
 // .polyfill({

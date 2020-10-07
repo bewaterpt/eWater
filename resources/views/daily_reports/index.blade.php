@@ -10,8 +10,8 @@
                     <table id="reports" class="table table-sm table-striped table-bordered" style="width: 100%">
                         <thead class="thead-light">
                             <tr>
-                                <th class="text-center px-0 actions sorting_disabled">
-                                    <i class="fas fa-tools text-black "></i>
+                                <th class="text-center px-0 actions sorting-disabled">
+                                    <i class="p-0 fas fa-tools text-black "></i>
                                 </th>
                                 <th>
                                     @Lang('general.daily_reports.report_number')
@@ -31,6 +31,9 @@
                                 <th>
                                     @Lang('general.date')
                                 </th>
+                                <th class="text-center px-0 sorting-disabled">
+                                    <i class="p-0 ri-lg ri-alert-line text-black"></i>
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -47,7 +50,7 @@
                                         {{ $report->getCurrentStatus()->first()->name }}
                                     </td>
                                     <td>
-                                        {{ $helpers->decimalToTimeValue($report->getTotalHours()) }}
+                                        {{ $helpers->decimalHoursToTimeValue($report->getTotalHours()) }}
                                         {{-- @if($report->getTotalHours() > 1)
                                             @Lang('general.hours')
                                         @else
@@ -62,6 +65,11 @@
                                     </td>
                                     <td>
                                         {{ (new DateTime($report->lines()->first()->entry_date))->format('Y-m-d') }}
+                                    </td>
+                                    <td class="text-center px-0">
+                                        @if ($report->processStatus()->where('error', true)->count() > 0)
+                                            <i class="ri-lg ri-alert-line text-danger"></i>
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach

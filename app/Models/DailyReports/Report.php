@@ -72,6 +72,18 @@ class Report extends Model
         return $this->km_arrival - $this->km_departure;
     }
 
+    public function getLinesTotalKm() {
+        return $this->lines()->sum('driven_km');
+    }
+
+    public function getKmDifference() {
+        return $this->getLinesTotalKm() - $this->getTotalKm();
+    }
+
+    public function inferiorKm() {
+        return $this->getKmDifference() < 0;
+    }
+
     public static function notSynced() {
         return self::where('synced', false);
     }

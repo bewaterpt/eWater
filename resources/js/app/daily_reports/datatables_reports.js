@@ -19,7 +19,7 @@ $(() => {
             // ordering: false,
             columnDefs: [
                 {
-                    targets: $("#reports").find("thead tr:first th.actions").index(),
+                    targets: 'sorting-disabled',
                     orderable: false,
                 }
             ],

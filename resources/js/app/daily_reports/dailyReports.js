@@ -14,9 +14,18 @@ $(() => {
         // + pad(d.getUTCSeconds())+'Z'
     }
 
+    function finalDateString(d){
+        function pad(n){return n<10 ? '0'+n : n}
+        let d2 = Date.now();
+        return d.getUTCFullYear() + '-'
+        + pad(d.getUTCMonth() + 1) + '-'
+        + pad(d.getUTCDate())
+        + '00:00:00';
+    }
+
     if($('#daily-reports-create').length > 0) {
         if ($('#inputDatetime').val() === '') {
-            $('#inputDatetime').val(ISODateString(today));
+            $('#inputDatetime').val(ISODateString(today)).attr('max', ISODateString(today));
         }
     }
 
@@ -43,6 +52,25 @@ $(() => {
                 }
             });
         }
+
+        setInterval(() => {
+            let userInsertedKm = 0;
+            let totalKm = $('input[name="km-arrival"]').val() - $('input[name="km-departure"]').val();
+            $(document).find('.card.work .card-header input[name=driven_km]').each((inputIndex, input) => {
+                userInsertedKm += parseInt(input.value);
+            });
+
+            if(userInsertedKm - totalKm < 0) {
+                $("#warnings #superiorKmErr").addClass('d-none');
+                $("#warnings #inferiorKmWarn").removeClass('d-none');
+            } else if(userInsertedKm - totalKm > 0) {
+                $("#warnings #inferiorKmWarn").addClass('d-none');
+                $("#warnings #superiorKmErr").removeClass('d-none');
+            } else {
+                $("#warnings #superiorKmErr").addClass('d-none');
+                $("#warnings #inferiorKmWarn").addClass('d-none');
+            }
+        }, 1000);
 
         /**
          * Removes desired table row
@@ -98,6 +126,10 @@ $(() => {
 
                 let workNumbers = $('div.card.work input.work-number').map((_, work) => work.value).get();
 
+                if(new Date(data.datetime) > today) {
+                    throw new Error($('#errors #invalidDate').text());
+                }
+
                 if($('[data-error=true]').length > 0 || workNumbers.indexOf('0') > -1) {
                     throw new Error($('#errors #invalidWorkNumber').text());
                 }
@@ -140,9 +172,13 @@ $(() => {
                 console.log('Inserted: ', userInsertedKm)
                 console.log(Math.abs(userInsertedKm - totalKm));
 
-                if(Math.abs(userInsertedKm - totalKm) !== 0 && kmError == false) {
+                if(userInsertedKm - totalKm < 0 && kmError == false) {
                     kmError = true;
-                    throw new Error($('#errors #differentKm').text());
+                    throw new Error($('#errors #inferiorKm').text());
+                } else if(userInsertedKm - totalKm > 0) {
+                    throw new Error($('#errors #superiorKm').text());
+                } else if (userInsertedKm - totalKm < 0 && $('#inputComment').val().length < 15) {
+                    throw new Error($('#errors #inferiorKmWarn').text());
                 }
 
                 data.rows = rows;
