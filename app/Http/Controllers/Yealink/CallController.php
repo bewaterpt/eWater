@@ -149,24 +149,60 @@ class CallController extends Controller
             'message' => __('errors.unexpected_error'),
         ];
 
+        $agents = [
+            110 => 'Abel Gomes',
+            113 => 'Natália Inácio',
+            114 => 'Manuela Dias',
+            115 => 'Ana Reis',
+            116 => 'Mónica Dinis',
+            117 => 'Manuel Henriques',
+        ];
+
         $input = (object) $request->json()->all();
 
         $dateFormat = 'Y-m-d H:i:s';
+        // $cdrTransfers = DB::table('cdr_records as cdrs')->selectRaw('cdrs.callid, cdrs.callto, cdrs.callduration')->where('type', 'transfer')->where('callduration', function ($query) {
+        //     $query->selectRaw('max(callduration)')->from('ewater.cdr_records')->where('callid', 'cdrs.callid');
+        // })
+        // // ->get();
+        // ->toSql();
+        // // dd($cdrTransfers);
+        // $cdrTransfersCallIds = $cdrTransfers->get()->map(function ($item) {
+        //     return $item->callid;
+        // })->toArray();
+
+
+        // $cdrTransfersMaxDuration = CDRRecord::selectRaw('max(callduration)')->whereIn('callid', function ($query) {
+        //     $query->selectRaw()
+        // });
         $cdrData = CDRRecord::selectRaw('monthname(timestart) month, avg(waitduration) avgwaitduration,min(waitduration) minwaitduration, max(waitduration) maxwaitduration')
                     ->whereBetween('timestart', [Carbon::now()->startOfYear()->format($dateFormat), Carbon::now()->endOfYear()->format($dateFormat)])
                     ->whereNotIn('callto', [6501, 6502])
-                    ->where('status', 'ANSWERED')
-                    ->where('waitduration', '>', 10);
+                    ->where('status', 'ANSWERED');
 
-        if ($input->inbound) {
-            $cdrData = $cdrData->where('type', 'Inbound');
+        // $cdrData = CDRRecord::selectRaw('callid')
+        //             ->whereBetween('timestart', [Carbon::now()->startOfYear()->format($dateFormat), Carbon::now()->endOfYear()->format($dateFormat)])
+        //             ->whereNotIn('callto', [6501, 6502])
+        //             ->whereNotIn('callid', $cdrTransfersCallIds)
+        //             ->where('status', 'ANSWERED');
+
+        if(sizeof((array) $input) > 0) {
+            if ($input->inbound) {
+                // $cdrTransfers = $cdrTransfers->where('type', 'inbound');
+                $cdrData = $cdrData->where('type', 'Inbound');
+            }
         }
 
+
+        // $cdrTransfers = $cdrTransfers->groupBy('callid')->get();
+        // $cdrData = $cdrData->groupBy('month')->get();
         $cdrData = $cdrData->groupBy('month')->get();
 
-        $data['min'] = $cdrData->map(function($item) {
-                            return floor($item->minwaitduration);
-                        });
+
+        // dd(array_merge($cdrData->toArray(), $cdrTransfers->toArray()));
+        // $data['min'] = $cdrData->map(function($item) {
+        //                     return floor($item->minwaitduration);
+        //                 });
 
         $data['max'] = $cdrData->map(function($item) {
                             return floor($item->maxwaitduration);
