@@ -14,15 +14,6 @@ $(() => {
         // + pad(d.getUTCSeconds())+'Z'
     }
 
-    function finalDateString(d){
-        function pad(n){return n<10 ? '0'+n : n}
-        let d2 = Date.now();
-        return d.getUTCFullYear() + '-'
-        + pad(d.getUTCMonth() + 1) + '-'
-        + pad(d.getUTCDate())
-        + '00:00:00';
-    }
-
     if($('#daily-reports-create').length > 0) {
         if ($('#inputDatetime').val() === '') {
             $('#inputDatetime').val(ISODateString(today)).attr('max', ISODateString(today));
@@ -53,24 +44,24 @@ $(() => {
             });
         }
 
-        setInterval(() => {
-            let userInsertedKm = 0;
-            let totalKm = $('input[name="km-arrival"]').val() - $('input[name="km-departure"]').val();
-            $(document).find('.card.work .card-header input[name=driven_km]').each((inputIndex, input) => {
-                userInsertedKm += parseInt(input.value);
-            });
+        // setInterval(() => {
+        //     let userInsertedKm = 0;
+        //     let totalKm = $('input[name="km-arrival"]').val() - $('input[name="km-departure"]').val();
+        //     $(document).find('.card.work .card-header input[name=driven_km]').each((inputIndex, input) => {
+        //         userInsertedKm += parseInt(input.value);
+        //     });
 
-            if(userInsertedKm - totalKm < 0) {
-                $("#warnings #superiorKmErr").addClass('d-none');
-                $("#warnings #inferiorKmWarn").removeClass('d-none');
-            } else if(userInsertedKm - totalKm > 0) {
-                $("#warnings #inferiorKmWarn").addClass('d-none');
-                $("#warnings #superiorKmErr").removeClass('d-none');
-            } else {
-                $("#warnings #superiorKmErr").addClass('d-none');
-                $("#warnings #inferiorKmWarn").addClass('d-none');
-            }
-        }, 1000);
+        //     if(userInsertedKm - totalKm < 0) {
+        //         $("#warnings #superiorKmErr").addClass('d-none');
+        //         $("#warnings #inferiorKmWarn").removeClass('d-none');
+        //     } else if(userInsertedKm - totalKm > 0) {
+        //         $("#warnings #inferiorKmWarn").addClass('d-none');
+        //         $("#warnings #superiorKmErr").removeClass('d-none');
+        //     } else {
+        //         $("#warnings #superiorKmErr").addClass('d-none');
+        //         $("#warnings #inferiorKmWarn").addClass('d-none');
+        //     }
+        // }, 1000);
 
         /**
          * Removes desired table row
@@ -270,7 +261,8 @@ $(() => {
         })
 
         $('a.add-work').on('click', (event) => {
-            let work = $(event.target).parents('.card').find('.card.work:last-of-type').clone();
+            console.log('Target: ', event.target);
+            let work = $(event.target).parents('.card').find('.work').last().clone();
             work.removeAttr('id');
 
             let trs = work.find('table#report-lines tbody tr');
@@ -284,7 +276,7 @@ $(() => {
             work.find('#addRow').on('click', (event) => {
                 addRow(event);
             });
-
+            console.log('Work: ', work);
             work.find('a.remove-work').on('click', (event) => {
                 removeWork(event);
             });
@@ -312,7 +304,7 @@ $(() => {
             });
             // window.scrollTo(0, document.body.scrollHeight || document.documentElement.scrollHeight);
 
-            $(event.target).parents('.card').find('.card.work:last-of-type').after(work);
+            $(event.target).parents('.card').find('.work').last().after(work);
 
             $('a[href="#"]').click(function(event) {
                 event.preventDefault();
