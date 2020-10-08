@@ -119,6 +119,9 @@
                                         </a>
 
                                         <div class="dropdown-menu dropdown-menu" aria-labelledby="navbarDropdown">
+                                            @if($pmodel->can('calls.list'))
+                                                <a title="" class="dropdown-item {{Route::currentRouteName() == 'calls.list' ? 'bg-primary text-white disabled' : ''}}" href="{{ route('calls.list')}}">@lang('general.calls_list')</a>
+                                            @endif
                                             @if($pmodel->can('calls.pbx.list'))
                                                 <a title="" class="dropdown-item {{Route::currentRouteName() == 'calls.pbx.list' ? 'bg-primary text-white disabled' : ''}}" href="{{ route('calls.pbx.list')}}">@lang('general.pbx_list')</a>
                                             @endif

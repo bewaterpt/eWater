@@ -266,7 +266,7 @@ $(function () {
 
   if ($('#daily-reports-create').length > 0) {
     if ($('#inputDatetime').val() === '') {
-      $('#inputDatetime').val(ISODateString(today));
+      $('#inputDatetime').val(ISODateString(today)).attr('max', ISODateString(today));
     }
   }
 
@@ -294,7 +294,24 @@ $(function () {
           }
         }
       });
-    };
+    }; // setInterval(() => {
+    //     let userInsertedKm = 0;
+    //     let totalKm = $('input[name="km-arrival"]').val() - $('input[name="km-departure"]').val();
+    //     $(document).find('.card.work .card-header input[name=driven_km]').each((inputIndex, input) => {
+    //         userInsertedKm += parseInt(input.value);
+    //     });
+    //     if(userInsertedKm - totalKm < 0) {
+    //         $("#warnings #superiorKmErr").addClass('d-none');
+    //         $("#warnings #inferiorKmWarn").removeClass('d-none');
+    //     } else if(userInsertedKm - totalKm > 0) {
+    //         $("#warnings #inferiorKmWarn").addClass('d-none');
+    //         $("#warnings #superiorKmErr").removeClass('d-none');
+    //     } else {
+    //         $("#warnings #superiorKmErr").addClass('d-none');
+    //         $("#warnings #inferiorKmWarn").addClass('d-none');
+    //     }
+    // }, 1000);
+
     /**
      * Removes desired table row
      *
@@ -352,6 +369,10 @@ $(function () {
           return work.value;
         }).get();
 
+        if (new Date(data.datetime) > today) {
+          throw new Error($('#errors #invalidDate').text());
+        }
+
         if ($('[data-error=true]').length > 0 || workNumbers.indexOf('0') > -1) {
           throw new Error($('#errors #invalidWorkNumber').text());
         }
@@ -393,9 +414,13 @@ $(function () {
         console.log('Inserted: ', userInsertedKm);
         console.log(Math.abs(userInsertedKm - totalKm));
 
-        if (Math.abs(userInsertedKm - totalKm) !== 0 && kmError == false) {
+        if (userInsertedKm - totalKm < 0 && kmError == false) {
           kmError = true;
-          throw new Error($('#errors #differentKm').text());
+          throw new Error($('#errors #inferiorKm').text());
+        } else if (userInsertedKm - totalKm > 0) {
+          throw new Error($('#errors #superiorKm').text());
+        } else if (userInsertedKm - totalKm < 0 && $('#inputComment').val().length < 15) {
+          throw new Error($('#errors #inferiorKmWarn').text());
         }
 
         data.rows = rows;
@@ -483,7 +508,8 @@ $(function () {
       removeRow(event);
     });
     $('a.add-work').on('click', function (event) {
-      var work = $(event.target).parents('.card').find('.card.work:last-of-type').clone();
+      console.log('Target: ', event.target);
+      var work = $(event.target).parents('.card').find('.work').last().clone();
       work.removeAttr('id');
       var trs = work.find('table#report-lines tbody tr');
       trs.each(function (index, tr) {
@@ -496,6 +522,7 @@ $(function () {
       work.find('#addRow').on('click', function (event) {
         addRow(event);
       });
+      console.log('Work: ', work);
       work.find('a.remove-work').on('click', function (event) {
         removeWork(event);
       });
@@ -519,7 +546,7 @@ $(function () {
         checkWorkExists(evt);
       }); // window.scrollTo(0, document.body.scrollHeight || document.documentElement.scrollHeight);
 
-      $(event.target).parents('.card').find('.card.work:last-of-type').after(work);
+      $(event.target).parents('.card').find('.work').last().after(work);
       $('a[href="#"]').click(function (event) {
         event.preventDefault();
       });
@@ -645,7 +672,7 @@ $(function () {
       order: [[1, "desc"]],
       // ordering: false,
       columnDefs: [{
-        targets: $("#reports").find("thead tr:first th.actions").index(),
+        targets: 'sorting-disabled',
         orderable: false
       }],
       lengthChange: true,
@@ -656,13 +683,91 @@ $(function () {
   }
 });
 $(function () {
-  if ($('#calls-pbx-create')) {
+  if ($('#calls-pbx-create').length > 0) {
     $('#calls-pbx-create .show-password').on('mousedown mouseup', function (evt) {
       if ($(evt.target).parent('a').siblings('input').attr('type') === 'password') {
         $(evt.target).parent('a').siblings('input').attr('type', 'text');
       } else {
         $(evt.target).parent('a').siblings('input').attr('type', 'password');
       }
+    });
+  }
+
+  if ($("#calls-dashboard").length > 0) {
+    var monthlyWaitTimeInfoCtx = $("#monthlyWaitTimeInfo")[0].getContext('2d');
+    queryData = {
+      inbound: true,
+      dates: false
+    };
+    window.monthlyWaitTimeInfoAjax = $.ajax({
+      method: 'POST',
+      url: '/calls/get_monthly_wait_time_info',
+      contentType: 'json',
+      data: JSON.stringify(queryData),
+      success: function success(response) {
+        chartData = JSON.parse(response);
+        window.monthlyWaitTimeInfoChart = new Chart(monthlyWaitTimeInfoCtx, {
+          type: 'bar',
+          data: {
+            labels: chartData.labels,
+            datasets: [// {
+            //     label: $("#labels #minMonthlyWaitTime").text(),
+            //     data: chartData.min,
+            //     backgroundColor: 'rgba(255, 99, 132, 0.2)',
+            //     borderColor: 'rgba(255, 99, 132, 1)',
+            //     borderWidth: 1
+            // },
+            {
+              label: $("#labels #maxMonthlyWaitTime").text(),
+              data: chartData.max,
+              backgroundColor: 'rgba(43, 132, 99, 0.2)',
+              borderColor: 'rgba(43, 132, 99, 0.2)',
+              borderWidth: 1
+            }, {
+              label: $("#labels #averageMonthlyWaitTime").text(),
+              data: chartData.avg,
+              backgroundColor: 'rgba(43, 34, 200, 0.2)',
+              borderColor: 'rgba(43, 34, 200, 1)',
+              borderWidth: 1,
+              type: 'line',
+              fill: false
+            }]
+          },
+          options: {
+            title: {
+              display: true,
+              text: $("#titles #minMaxExternalMonthlyWaitTime").text()
+            },
+            scales: {
+              yAxes: [{
+                ticks: {
+                  beginAtZero: true,
+                  userCallback: function userCallback(item) {
+                    return decimalSecondsToTimeValue(item);
+                  }
+                }
+              }]
+            }
+          }
+        }); // if (response.value === false) {
+        //     $(evt.target).parent().popover({
+        //         html: true,
+        //         title: function() {
+        //             return $(document).find('#' + this.id + ' .popover').find('#title').html()
+        //         },
+        //         content: function() {
+        //             return $(document).find('#' + this.id + ' .popover').find('#content').html()
+        //         },
+        //     });
+        //     $(evt.target).parent().find('.popover #content').html($('#errors .' + response.reason).html());
+        //     $(evt.target).addClass('border-danger').addClass('bg-flamingo').attr('data-error', true).focus();
+        //     $('.popover:not(.popover-data)').addClass('popover-danger');
+        // } else {
+        //     $(evt.target).removeClass('border-danger').removeClass('bg-flamingo').removeAttr('data-error');
+        //     $(evt.target).parent().popover('dispose');
+        // }
+      },
+      error: function error(jqXHR, status, _error5) {}
     });
   }
 });
@@ -694,33 +799,35 @@ $(function () {
         orderable: false
       }],
       lengthChange: true,
-      // dom: "lfrtip",
-      //         language: {
-      //             paginate: {
-      //                 previous: '<i class="fa fa-angle-left"></i>',
-      //                 next: '<i class="fa fa-angle-right"></i>'
-      //             },
-      //             sProcessing: loadingHTML,
-      //             sEmptyTable: "No Records",
-      //             url: "/config/dataTables/lang/" + window.lang + ".json"
-      //         },
-      // autoWidth: false,
-      // processing: true,
+      language: {
+        paginate: {
+          previous: '<i class="fa fa-angle-left"></i>',
+          next: '<i class="fa fa-angle-right"></i>'
+        },
+        sProcessing: loadingHTML,
+        sEmptyTable: "No Records",
+        url: "/config/dataTables/lang/" + window.lang + ".json"
+      },
+      autoWidth: false,
+      processing: true,
       serverSide: true,
       ajax: '/calls',
       // lengthMenu: [[10, 50, 100], [10, 50, 100]],
       // displayLength: 10,
       // pagingType: 'simple',
-      sorting: [[1, 'desc']],
-      columns: [{
-        data: 'actions',
-        name: 'actions',
-        "class": 'actions text-center px-0 sorting_disabled',
-        searchable: false,
-        sortable: false
+      sorting: [[2, 'desc']],
+      columns: [// {data: 'actions',name: 'actions', class: 'actions text-center px-0 sorting_disabled', searchable: false, sortable: false},
+      {
+        data: 'callfrom',
+        name: 'callfrom',
+        searchable: true
       }, {
-        data: 'callid',
-        name: 'callid',
+        data: 'callto',
+        name: 'callto',
+        searchable: true
+      }, {
+        data: 'timestart',
+        name: 'timestart',
         searchable: true
       }, {
         data: 'callduration',
@@ -735,16 +842,19 @@ $(function () {
         name: 'waitduration',
         searchable: true
       }, {
+        data: 'status',
+        name: 'status',
+        searchable: true
+      }, {
         data: 'type',
         name: 'type',
         searchable: true
-      }] // drawCallback: function(settings){
-      //     var data = this.api().ajax.json();
-      //     // if(data){
-      //     //     checkRecordNumber(this, data);
-      //     // }
-      // },
-      // initComplete:function( settings, json){
+      }],
+      drawCallback: function drawCallback(settings) {
+        var data = this.api().ajax.json(); // if(data){
+        //     checkRecordNumber(this, data);
+        // }
+      } // initComplete:function( settings, json){
       //     checkRecordNumber(this, json);
       // }
 

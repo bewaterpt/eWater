@@ -68,7 +68,11 @@
                                     </td>
                                     <td class="text-center px-0">
                                         @if ($report->processStatus()->where('error', true)->count() > 0)
-                                            <i class="ri-lg ri-alert-line text-danger"></i>
+                                            <i class="ri-lg ri-alert-line text-danger" title="{{ __('info.report_has_errors') }}"></i>
+                                        @else
+                                            @if ($report->inferiorKm())
+                                                <i class="fas fa-bullhorn text-warning" title="{{ __('info.report_km_difference') }}"></i>
+                                            @endif
                                         @endif
                                     </td>
                                 </tr>
