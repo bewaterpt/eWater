@@ -20,7 +20,6 @@ class ReportLine extends Model
     public $timestamps = [
         'created_at',
         'updated_at',
-        'entry_date',
     ];
 
     protected $touches = ['report'];
