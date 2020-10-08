@@ -50,6 +50,7 @@ class GetCDRRecords extends Command
     public function handle()
     {
 
+        $this->info('Applying settings');
         $tempFile = storage_path().'/temp/yealinkcdr.csv';
 
         $errors = config('app.yealink_error_codes');
@@ -58,7 +59,7 @@ class GetCDRRecords extends Command
         $guzzleClient = new Client([
             'verify' => false,
         ]);
-        $md5Password = md5(Crypt::decryptString($pbx->password));
+        $this->comment('Done');
 
         // dd(json_encode(['username' => $pbx->username,
         // 'password' => md5("B3jBf06d"),
@@ -67,13 +68,12 @@ class GetCDRRecords extends Command
         // 'verify' => false,
         // "url" => "192.168.21.12:8083/REPORTS",
         // "urltag" => "1"]));
+        $this->info('Authenticating with Yealink PBX');
         $content = [
             'username' => $pbx->username,
-            'password' => $md5Password,
+            'password' => md5(Crypt::decryptString($pbx->password)),
             'port' => 0,
         ];
-
-        unset($md5Password);
 
         $contentLength = strlen(json_encode($content));
 
@@ -93,10 +93,12 @@ class GetCDRRecords extends Command
         }
 
         $token = $response['token'];
+        $this->comment('Done');
 
+        $this->info('Getting random CDR file name');
         $content = [
             'extid' => 'all',
-            'starttime' => $cdrObj->latest('created_at')->first() ? $cdrObj->latest('created_at')->first()->created_at->format('Y-m-d H:i:s') : Carbon::now()->subMonths(4)->format('Y-m-d H:i:s'),
+            'starttime' => $cdrObj->latest('timestart')->first() ? Carbon::parse($cdrObj->latest('timestart')->first()->timestart)->format('Y-m-d H:i:s') : Carbon::now()->subMonths(6)->format('Y-m-d H:i:s'),
             'endtime' => Carbon::now()->format('Y-m-d H:i:s'),
             // 'allowedip' => '172.16.69.240'
         ];
@@ -122,6 +124,9 @@ class GetCDRRecords extends Command
         $startTime = $response['starttime'];
         $endTime = $response['endtime'];
 
+        $this->comment('Done');
+
+        $this->info('Downloading CDR file');
         $content = [
 
         ];
@@ -136,6 +141,7 @@ class GetCDRRecords extends Command
         $index = 0;
         $rowCount = 0;
         $cdrs = [];
+        $this->comment('Done');
         // (new CDRRecordImport($pbx->id))->withOutput($this->output)->import($tempFile);
 
         $this->info('Counting Rows');
@@ -144,7 +150,9 @@ class GetCDRRecords extends Command
                 $rowCount++;
             }
         }
+        $this->comment('Done');
 
+        $this->info('Inserting records in the database');
         foreach ($reader->getSheetIterator() as $sheet) {
 
             $rows = $sheet->getRowIterator();
@@ -192,6 +200,8 @@ class GetCDRRecords extends Command
             CDRRecord::insert($cdrs);
             $bar->finish();
         }
+        $this->info("");
+        $this->comment('Done. Bye Bye');
 
         // dd();
         // dd(CDRRecord::all());

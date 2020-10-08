@@ -51,13 +51,16 @@ $(() => {
             // lengthMenu: [[10, 50, 100], [10, 50, 100]],
             // displayLength: 10,
             // pagingType: 'simple',
-            sorting: [[1, 'desc']],
+            sorting: [[2, 'desc']],
             columns: [
-                {data: 'actions',name: 'actions', class: 'actions text-center px-0 sorting_disabled', searchable: false, sortable: false},
-                {data: 'callid', name: 'callid', searchable: true},
+                // {data: 'actions',name: 'actions', class: 'actions text-center px-0 sorting_disabled', searchable: false, sortable: false},
+                {data: 'callfrom', name: 'callfrom', searchable: true},
+                {data: 'callto', name: 'callto', searchable: true},
+                {data: 'timestart', name: 'timestart', searchable: true},
                 {data: 'callduration', name: 'callduration', searchable: true},
                 {data: 'talkduration', name: 'talkduration', searchable: true},
                 {data: 'waitduration', name: 'waitduration', searchable: true},
+                {data: 'status', name: 'status', searchable: true},
                 {data: 'type', name: 'type', searchable: true}
             ],
             drawCallback: function(settings){

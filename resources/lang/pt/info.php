@@ -31,4 +31,6 @@ return [
     'hours_as_quantity' => "<div>1 Hora = 1</div>
                             <div>30 minutos = 0.5</div>
                             <div>1h:30m = 1.5</div>",
+    'report_km_difference' => "Existe uma incoerência entre os valores de quilómetragem deste relatório.",
+    'report_has_errors' => "Existem erros neste relatório.",
 ];
