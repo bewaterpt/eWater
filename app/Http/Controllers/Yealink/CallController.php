@@ -136,7 +136,6 @@ class CallController extends Controller
             ];
 
             echo json_encode($output);
-
             die;
         }
 
