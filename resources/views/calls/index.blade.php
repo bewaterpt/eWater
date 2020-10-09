@@ -7,7 +7,7 @@
             <div class="card">
                 <div class="card-header">
                     @Lang('calls.pbx.list')
-                    <span class="float-right">
+                    {{-- <span class="float-right">
                         <div class="dropdown show">
                             <a class="text-info dropdown-toggle" id="exportSelector" href="#" target="_blank" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="button">
                                 <i class="fas fa-file-export"></i>
@@ -18,7 +18,7 @@
                                 <a class="text-info dropdown-item" href="#"></a>
                             </div>
                         </div>
-                    </span>
+                    </span> --}}
                 </div>
                 <div class="card-body table-responsive">
                     <table id="datatable-calls" class="object-table table table-sm table-striped" style="width: 100%">

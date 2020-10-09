@@ -23,5 +23,12 @@ return [
         'users_on_this_team' => 'Utilizadores nesta equipa',
         'edit' => 'Editar Equipa',
         'create' => 'Criar Equipa',
+    ],
+    'calls' => [
+        'calls' => 'Chamadas',
+        'list' => 'Listar Chamadas',
+        'pbx' => [
+            'list' => 'Listar Centrais Tel.'
+        ],
     ]
 ];
