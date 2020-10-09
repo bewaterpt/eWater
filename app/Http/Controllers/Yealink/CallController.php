@@ -17,8 +17,21 @@ use Illuminate\Support\Carbon;
 class CallController extends Controller
 {
 
+    protected $agents = [
+        110 => 'Abel Gomes',
+        113 => 'Natália Inácio',
+        114 => 'Manuela Dias',
+        115 => 'Ana Reis',
+        116 => 'Mónica Dinis',
+        117 => 'Manuel Henriques',
+    ];
+
+    protected $agentsForQuery = null;
+
     public function __construct() {
         parent::__construct();
+
+        $this->agentsForQuery = implode('|', array_keys($this->agents));
     }
 
     public function pbxList(Request $request) {
@@ -104,7 +117,7 @@ class CallController extends Controller
             // Add rows to array
             $data = [];
             foreach ($rows as $row) {
-                // dd($row);
+
                 $actions = '';
                 // if ($this->permission_model->checkPermission($this->group_id, 'settings/roles/edit_role')) {
                 //     $actions .= '<a class="btn btn-edit-element confirm-edit-ajax" href="#" data-id="'.$row->getId().'" data-title="'.$row->name.'"  title="'.trans('global.edit').'"><i class="fal fa-pencil"></i></a>';
@@ -148,79 +161,70 @@ class CallController extends Controller
             'message' => __('errors.unexpected_error'),
         ];
 
-        $agents = [
-            110 => 'Abel Gomes',
-            113 => 'Natália Inácio',
-            114 => 'Manuela Dias',
-            115 => 'Ana Reis',
-            116 => 'Mónica Dinis',
-            117 => 'Manuel Henriques',
-        ];
-
         $input = (object) $request->json()->all();
 
         $dateFormat = 'Y-m-d H:i:s';
-        // $cdrTransfers = DB::table('cdr_records as cdrs')->selectRaw('cdrs.callid, cdrs.callto, cdrs.callduration')->where('type', 'transfer')->where('callduration', function ($query) {
-        //     $query->selectRaw('max(callduration)')->from('ewater.cdr_records')->where('callid', 'cdrs.callid');
-        // })
-        // // ->get();
-        // ->toSql();
-        // // dd($cdrTransfers);
-        // $cdrTransfersCallIds = $cdrTransfers->get()->map(function ($item) {
-        //     return $item->callid;
-        // })->toArray();
+        $waitDurations = [];
 
+        $cdrTransfers = collect(DB::select(DB::raw(
+            "select monthname(cdrs.timestart) month, cdrs.callid, cdrs.callto, cdrs.waitduration
+            from ewater.cdr_records as cdrs
+            where type = 'transfer'
+            and callto rlike " . $this->agentsForQuery . "
+             and callduration = (
+                select max(callduration) from ewater.cdr_records where callid = cdrs.callid and type = 'transfer'
+            );"
+        )));
 
-        // $cdrTransfersMaxDuration = CDRRecord::selectRaw('max(callduration)')->whereIn('callid', function ($query) {
-        //     $query->selectRaw()
-        // });
-        $cdrData = CDRRecord::selectRaw('monthname(timestart) month, avg(waitduration) avgwaitduration,min(waitduration) minwaitduration, max(waitduration) maxwaitduration')
-                    ->whereBetween('timestart', [Carbon::now()->startOfYear()->format($dateFormat), Carbon::now()->endOfYear()->format($dateFormat)])
-                    ->whereNotIn('callto', [6501, 6502])
-                    ->where('status', 'ANSWERED');
-
-        // $cdrData = CDRRecord::selectRaw('callid')
-        //             ->whereBetween('timestart', [Carbon::now()->startOfYear()->format($dateFormat), Carbon::now()->endOfYear()->format($dateFormat)])
-        //             ->whereNotIn('callto', [6501, 6502])
-        //             ->whereNotIn('callid', $cdrTransfersCallIds)
-        //             ->where('status', 'ANSWERED');
-
-        if(sizeof((array) $input) > 0) {
-            if ($input->inbound) {
-                // $cdrTransfers = $cdrTransfers->where('type', 'inbound');
-                $cdrData = $cdrData->where('type', 'Inbound');
-            }
-        }
-
-
-        // $cdrTransfers = $cdrTransfers->groupBy('callid')->get();
-        // $cdrData = $cdrData->groupBy('month')->get();
-        $cdrData = $cdrData->groupBy('month')->get();
-
-
-        // dd(array_merge($cdrData->toArray(), $cdrTransfers->toArray()));
-        // $data['min'] = $cdrData->map(function($item) {
-        //                     return floor($item->minwaitduration);
-        //                 });
-
-        $data['max'] = $cdrData->map(function($item) {
-                            return floor($item->maxwaitduration);
-                        });
-
-        $data['avg'] = $cdrData->map(function($item) {
-            return floor($item->avgwaitduration);
+        $cdrTransfers->map(function ($item) use (&$waitDurations, &$transferWaitDurations){
+            $waitDurations[$item->month][] = $item->waitduration;
         });
 
-        $data['labels'] = CDRRecord::selectRaw('monthname(timestart) month')
-                          ->distinct('month')
-                          ->whereBetween('timestart', [Carbon::now()->startOfYear()->format($dateFormat), Carbon::now()->endOfYear()->format($dateFormat)])
-                          ->get()
-                          ->map(function($item) {
-                              return $item->month;
-                          });
+        // dd($waitDurations);
 
+        $cdrTransfersCallIds = $cdrTransfers->map(function ($item) {
+            return $item->callid;
+        })->toArray();
+
+        $cdrInbound = CDRRecord::selectRaw('monthname(timestart) month, waitduration')
+                    ->whereBetween('timestart', [Carbon::now()->startOfYear()->format($dateFormat), Carbon::now()->endOfYear()->format($dateFormat)])
+                    ->whereNotIn('callto', [6501, 6502])
+                    ->whereNotIn('callid', $cdrTransfersCallIds)
+                    ->where('type', 'inbound')
+                    ->where('callto', 'rlike', $this->agentsForQuery)
+                    ->where('status', 'ANSWERED')
+                    ->get();
+                    // ->toSql();
+
+        // dd($this->agentsForQuery);
+
+        $cdrInbound->map(function ($item) use (&$waitDurations, &$inboundWaitDurations){
+            $waitDurations[$item->month][] = $item->waitduration;
+        });
+
+        $waitDurations = collect($waitDurations);
+
+        $months = CDRRecord::selectRaw('monthname(timestart) month')
+                    ->distinct('month')
+                    ->whereBetween('timestart', [Carbon::now()->subMonths(12)->format($dateFormat), Carbon::now()->format($dateFormat)])
+                    ->get()
+                    ->map(function($item) {
+                        return $item->month;
+                    })->toArray();
+
+        foreach ($months as $month) {
+            $data['test_values'][] = $waitDurations->get($month);
+            $data['wavg'][] = round(Helper::weightedAverage($waitDurations->get($month)));
+            $data['max'][] = max($waitDurations->get($month));
+            $data['avg'][] = round(array_sum($waitDurations->get($month)) / count($waitDurations->get($month)));
+        }
+
+        $data['labels'] = $months;
         $data['status'] = 200;
         $data['message'] = 'Success';
+
+        // dd($data);
+        // dd($data);
 
         return json_encode($data);
     }

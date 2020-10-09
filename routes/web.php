@@ -168,6 +168,7 @@ Route::group(['middleware' => ['web']], function () {
             Route::get('calls/pbx/edit/{id}', 'Yealink\CallController@edit')->name('calls.pbx.edit');
             Route::get('calls/export', 'Yealink\CallController@edit')->name('calls.export');
             Route::match(['get', 'post'], 'calls/get_monthly_wait_time_info', 'Yealink\CallController@getMonthlyWaitTimeInfo')->name('calls.charts.get_monthly_wait_time_info');
+            Route::match(['get', 'post'], 'calls/get_monthly_call_number_info', 'Yealink\CallController@getMonthlyCallNumberInfo')->name('calls.charts.get_monthly_call_number_info');
 
             Route::any('test', 'TestController@index')->name('tests.test');
         });

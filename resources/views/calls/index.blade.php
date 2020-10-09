@@ -65,6 +65,14 @@
                         <canvas id="monthlyWaitTimeInfo">
                         </canvas>
                     </div>
+                    <div class="col-md-12 float-left" width="100%" height="100%">
+                        <canvas id="monthlyCallNumberInfo">
+                        </canvas>
+                    </div>
+                    <div class="col-md-12 float-left" width="100%" height="100%">
+                        <canvas id="monthlyLostCallNumberInfo">
+                        </canvas>
+                    </div>
                 </div>
             </div>
         </div>

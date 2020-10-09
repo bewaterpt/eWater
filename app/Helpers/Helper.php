@@ -5,20 +5,52 @@ use App\Models\DailyReports\ReportLine;
 use App\Models\DailyReports\Report;
 class Helper {
 
-    protected function isAssoc(array $arr)
+    public static function weightedAverage($values) {
+        $sum = 0;
+        foreach ($values as $i => $value) {
+            $sum += $value;
+        }
+
+        $avg = $sum / count($values);
+
+        $error = array();
+
+        $max_error = 0;
+
+        foreach ($values as $i => $value) {
+            $error[$i] = abs($avg - $value);
+            $max_error = max($error[$i], $max_error);
+        }
+
+        $total_weight = 0;
+        $weighted_sum = 0;
+
+        foreach ($values as $i => $value) {
+            $weight = 1 - ($error[$i] / $max_error);
+            $weight = $weight * $weight; // square
+            $total_weight += $weight;
+            $weighted_sum += $weight * $value;
+        }
+
+        $weighted_average = $weighted_sum / $total_weight;
+
+        return $weighted_average;
+    }
+
+    protected static function isAssoc(array $arr)
     {
         return array_keys($arr) !== range(0, count($arr) - 1);
     }
 
-    public function sortArray($arr){
-        if($this->isAssoc($arr)){
+    public static function sortArray($arr){
+        if(self::isAssoc($arr)){
             ksort($arr);
         } else{
             asort($arr);
         }
         foreach ($arr as $a){
             if(is_array($a)){
-                $a = $this->sortArray($a);
+                $a = self::sortArray($a);
             }
         }
 

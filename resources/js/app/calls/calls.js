@@ -11,9 +11,10 @@ $(() => {
 
     if($("#calls-dashboard").length > 0) {
         let monthlyWaitTimeInfoCtx = $("#monthlyWaitTimeInfo")[0].getContext('2d');
-
+        let monthlyCallNumberInfoCtx = $("#monthlyCallNumberInfo")[0].getContext('2d');
+        let monthlyLostCallNumberInfoCtx = $("#monthlyLostCallNumberInfo")[0].getContext('2d');
         queryData = {
-            inbound: true,
+            inbound: false,
             dates: false,
         }
 
@@ -24,18 +25,13 @@ $(() => {
             data: JSON.stringify(queryData),
             success: (response) => {
                 chartData = JSON.parse(response);
+
+                console.log(chartData.test_values);
                 window.monthlyWaitTimeInfoChart = new Chart(monthlyWaitTimeInfoCtx, {
                     type: 'bar',
                     data: {
                         labels: chartData.labels,
                         datasets: [
-                            // {
-                            //     label: $("#labels #minMonthlyWaitTime").text(),
-                            //     data: chartData.min,
-                            //     backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                            //     borderColor: 'rgba(255, 99, 132, 1)',
-                            //     borderWidth: 1
-                            // },
                             {
                                 label: $("#labels #maxMonthlyWaitTime").text(),
                                 data: chartData.max,
@@ -48,6 +44,15 @@ $(() => {
                                 data: chartData.avg,
                                 backgroundColor: 'rgba(43, 34, 200, 0.2)',
                                 borderColor: 'rgba(43, 34, 200, 1)',
+                                borderWidth: 1,
+                                type: 'line',
+                                fill: false,
+                            },
+                            {
+                                label: $("#labels #averageMonthlyWaitTime").text(),
+                                data: chartData.wavg,
+                                backgroundColor: 'rgba(200, 34, 43, 0.2)',
+                                borderColor: 'rgba(200, 34, 43, 1)',
                                 borderWidth: 1,
                                 type: 'line',
                                 fill: false,
@@ -71,23 +76,139 @@ $(() => {
                         }
                     }
                 });
-                // if (response.value === false) {
-                //     $(evt.target).parent().popover({
-                //         html: true,
-                //         title: function() {
-                //             return $(document).find('#' + this.id + ' .popover').find('#title').html()
-                //         },
-                //         content: function() {
-                //             return $(document).find('#' + this.id + ' .popover').find('#content').html()
-                //         },
-                //     });
-                //     $(evt.target).parent().find('.popover #content').html($('#errors .' + response.reason).html());
-                //     $(evt.target).addClass('border-danger').addClass('bg-flamingo').attr('data-error', true).focus();
-                //     $('.popover:not(.popover-data)').addClass('popover-danger');
-                // } else {
-                //     $(evt.target).removeClass('border-danger').removeClass('bg-flamingo').removeAttr('data-error');
-                //     $(evt.target).parent().popover('dispose');
-                // }
+            },
+            error: (jqXHR, status, error) => {
+
+            },
+        });
+
+        window.monthlyCallNumberAjax = $.ajax({
+            method: 'POST',
+            url: '/calls/get_monthly_call_number_info',
+            contentType: 'json',
+            data: JSON.stringify(queryData),
+            success: (response) => {
+                console.log(response);
+                chartData = JSON.parse(response);
+
+                console.log(chartData.test_values);
+                window.monthlyCallNumberInfoChart = new Chart(monthlyCallNumberInfoCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: chartData.labels,
+                        datasets: [
+                            {
+                                label: $("#labels #monthlyTotalCalls").text(),
+                                data: chartData.total,
+                                backgroundColor: 'rgba(43, 132, 99, 0.2)',
+                                borderColor: 'rgba(43, 132, 99, 0.2)',
+                                borderWidth: 1
+                            },
+                            {
+                                label: $("#labels #monthlyFrontOfficeCalls").text(),
+                                data: chartData.frontOffice,
+                                backgroundColor: 'rgba(43, 34, 200, 0.2)',
+                                borderColor: 'rgba(43, 34, 200, 1)',
+                                borderWidth: 1,
+                                type: 'line',
+                                fill: false,
+                            },
+                            {
+                                label: $("#labels #monthlyGenericCalls").text(),
+                                data: chartData.wavg,
+                                backgroundColor: 'rgba(200, 34, 43, 0.2)',
+                                borderColor: 'rgba(200, 34, 43, 1)',
+                                borderWidth: 1,
+                                type: 'line',
+                                fill: false,
+                            },
+                            {
+                                label: $("#labels #monthlyInternalCalls").text(),
+                                data: chartData.wavg,
+                                backgroundColor: 'rgba(200, 34, 140, 0.2)',
+                                borderColor: 'rgba(200, 34, 140, 1)',
+                                borderWidth: 1,
+                                type: 'line',
+                                fill: false,
+                            },
+                        ],
+                    },
+                    options: {
+                        title: {
+                            display: true,
+                            text: $("#titles #minMaxExternalMonthlyWaitTime").text(),
+                        },
+                        scales: {
+                            yAxes: [{
+                                ticks: {
+                                    beginAtZero: true,
+                                    userCallback: (item) => {
+                                        return decimalSecondsToTimeValue(item);
+                                    }
+                                }
+                            }]
+                        }
+                    }
+                });
+
+                window.monthlyLostCallNumberInfoChart = new Chart(monthlyLostCallNumberInfoCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: chartData.labels,
+                        datasets: [
+                            {
+                                label: $("#labels #monthlyTotalLostCalls").text(),
+                                data: chartData.totalLost,
+                                backgroundColor: 'rgba(43, 132, 99, 0.2)',
+                                borderColor: 'rgba(43, 132, 99, 0.2)',
+                                borderWidth: 1
+                            },
+                            {
+                                label: $("#labels #monthlyFrontOfficeLostCalls").text(),
+                                data: chartData.frontOfficeLost,
+                                backgroundColor: 'rgba(43, 34, 200, 0.2)',
+                                borderColor: 'rgba(43, 34, 200, 1)',
+                                borderWidth: 1,
+                                type: 'line',
+                                fill: false,
+                            },
+                            {
+                                label: $("#labels #monthlyGenericLostCalls").text(),
+                                data: chartData.genericLost,
+                                backgroundColor: 'rgba(200, 34, 43, 0.2)',
+                                borderColor: 'rgba(200, 34, 43, 1)',
+                                borderWidth: 1,
+                                type: 'line',
+                                fill: false,
+                            },
+                            {
+                                label: $("#labels #monthlyInternalLostCalls").text(),
+                                data: chartData.internalLost,
+                                backgroundColor: 'rgba(200, 34, 140, 0.2)',
+                                borderColor: 'rgba(200, 34, 140, 1)',
+                                borderWidth: 1,
+                                type: 'line',
+                                fill: false,
+                            },
+                        ],
+                    },
+                    options: {
+                        title: {
+                            display: true,
+                            text: $("#titles #minMaxExternalMonthlyWaitTime").text(),
+                        },
+                        scales: {
+                            yAxes: [{
+                                ticks: {
+                                    beginAtZero: true,
+                                    userCallback: (item) => {
+                                        return decimalSecondsToTimeValue(item);
+                                    }
+                                }
+                            }]
+                        }
+                    }
+                });
             },
             error: (jqXHR, status, error) => {
 

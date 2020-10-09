@@ -44,24 +44,24 @@ $(() => {
             });
         }
 
-        // setInterval(() => {
-        //     let userInsertedKm = 0;
-        //     let totalKm = $('input[name="km-arrival"]').val() - $('input[name="km-departure"]').val();
-        //     $(document).find('.card.work .card-header input[name=driven_km]').each((inputIndex, input) => {
-        //         userInsertedKm += parseInt(input.value);
-        //     });
+        setInterval(() => {
+            let userInsertedKm = 0;
+            let totalKm = $('input[name="km-arrival"]').val() - $('input[name="km-departure"]').val();
+            $(document).find('.card.work .card-header input[name=driven_km]').each((inputIndex, input) => {
+                userInsertedKm += parseInt(input.value);
+            });
 
-        //     if(userInsertedKm - totalKm < 0) {
-        //         $("#warnings #superiorKmErr").addClass('d-none');
-        //         $("#warnings #inferiorKmWarn").removeClass('d-none');
-        //     } else if(userInsertedKm - totalKm > 0) {
-        //         $("#warnings #inferiorKmWarn").addClass('d-none');
-        //         $("#warnings #superiorKmErr").removeClass('d-none');
-        //     } else {
-        //         $("#warnings #superiorKmErr").addClass('d-none');
-        //         $("#warnings #inferiorKmWarn").addClass('d-none');
-        //     }
-        // }, 1000);
+            if(userInsertedKm - totalKm < 0) {
+                $("#warnings #superiorKmErr").addClass('d-none');
+                $("#warnings #inferiorKmWarn").removeClass('d-none');
+            } else if(userInsertedKm - totalKm > 0) {
+                $("#warnings #inferiorKmWarn").addClass('d-none');
+                $("#warnings #superiorKmErr").removeClass('d-none');
+            } else {
+                $("#warnings #superiorKmErr").addClass('d-none');
+                $("#warnings #inferiorKmWarn").addClass('d-none');
+            }
+        }, 1000);
 
         /**
          * Removes desired table row
