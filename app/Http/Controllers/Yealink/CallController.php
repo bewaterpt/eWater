@@ -264,6 +264,104 @@ class CallController extends Controller
         return json_encode($data);
     }
 
+    public function getMonthlyCallNumberInfo() {
+
+        $cdrs = CDRRecord::selectRaw('distinct count(callid) as count, monthname(timestart) month')
+                // ->join('cdr_records as cdrComp', function ($join) {
+                //     $join->on('cdr.callid', '=', 'cdrComp.callid')->on('cdr.callduration', '<', 'cdrComp.callduration');
+                // })
+                ->where('status', '<>', 'NO ANSWER')
+                ->groupBy('month');
+
+        $total = [];
+        $cdrsTotal = clone $cdrs;
+        $cdrsTotal->get()->map(function($item) use (&$total){
+            $total[$item->month][] = $item->count;
+        });
+
+        $cdrsFront = clone $cdrs;
+        $cdrsFront->where('callto', 'rlike', $this->agentsForQuery)->where('type', '<>', 'Internal');
+
+        $frontOffice = [];
+        $cdrsFront->get()->map(function($item) use (&$frontOffice){
+            $frontOffice[$item->month][] = $item->count;
+        });
+
+        $cdrsGeneric = clone $cdrs;
+        $cdrsGeneric->where('callto', 'not rlike', $this->agentsForQuery)->where('type', '<>', 'Internal');
+
+        $generic = [];
+        $cdrsGeneric->get()->map(function($item) use (&$generic){
+            $generic[$item->month][] = $item->count;
+        });
+
+        $cdrsInternal = clone $cdrs;
+        $cdrsInternal->where('type', 'Internal');
+
+        $internal = [];
+        $cdrsInternal->get()->map(function($item) use (&$internal){
+            $internal[$item->month][] = $item->count;
+        });
+
+        $cdrsLost = CDRRecord::selectRaw('distinct count(callid) as count, monthname(timestart) month')
+                    ->where('status', 'NO ANSWER')
+                    ->groupBy('month');
+
+        $totalLost = [];
+        $cdrsLost->get()->map(function($item) use (&$totalLost){
+            $totalLost[$item->month][] = $item->count;
+        });
+
+        $cdrsFrontLost = clone $cdrsLost;
+        $cdrsFrontLost->where('callto', 'rlike', $this->agentsForQuery)->where('type', '<>', 'Internal');
+
+        $frontOfficeLost = [];
+        $cdrsFrontLost->get()->map(function($item) use (&$frontOfficeLost){
+            $frontOfficeLost[$item->month][] = $item->count;
+        });
+
+        $cdrsGenericLost = clone $cdrsLost;
+        $cdrsGenericLost->where('callto', 'not rlike', $this->agentsForQuery)->where('type', '<>', 'Internal');
+
+        $genericLost = [];
+        $cdrsGenericLost->get()->map(function($item) use (&$genericLost){
+            $genericLost[$item->month][] = $item->count;
+        });
+
+        $cdrsInternalLost = clone $cdrsLost;
+        $cdrsInternalLost->where('type', 'Internal');
+
+        $internalLost = [];
+        $cdrsInternalLost->get()->map(function($item) use (&$internalLost){
+            $internalLost[$item->month][] = $item->count;
+        });
+
+        $months = CDRRecord::selectRaw('monthname(timestart) month')
+                ->distinct('month')
+                ->whereBetween('timestart', [Carbon::now()->subMonths(12)->format($this->dateFormat), Carbon::now()->format($this->dateFormat)])
+                ->get()
+                ->map(function($item) {
+                    return $item->month;
+                })->toArray();
+
+        foreach ($months as $month) {
+            $data['total'][] = !isset($total[$month]) ? 0 : $total[$month][0];
+            $data['frontOffice'][] = !isset($frontOffice[$month]) ? 0 : $frontOffice[$month][0];
+            $data['generic'][] = !isset($generic[$month]) ? 0 : $generic[$month][0];
+            $data['internal'][] = !isset($internal[$month]) ? 0 : $internal[$month][0];
+            $data['totalLost'][] = !isset($totalLost[$month]) ? 0 : $totalLost[$month][0];
+            $data['frontOfficeLost'][] = !isset($frontOfficeLost[$month]) ? 0 : $frontOfficeLost[$month][0];
+            $data['genericLost'][] = !isset($genericLost[$month]) ? 0 : $genericLost[$month][0];
+            $data['internalLost'][] =!isset($internalLost[$month]) ? 0 :  $internalLost[$month][0];
+        }
+
+        $data['labels'] = $months;
+
+        // dd($data);
+
+        return json_encode($data);
+    }
+
     public function export($filetype = 'csv') {
         $renderer = false;
 

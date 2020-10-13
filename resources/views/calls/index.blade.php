@@ -9,16 +9,20 @@
                     @Lang('general.statistics')
                 </div>
                 <div class="card-body">
-                    <div class="col-md-6 float-left" width="100%" height="100%">
+                    <div class="col-md-6 d-inline-block" width="100%" height="100%">
                         <canvas id="monthlyWaitTimeInfo">
                         </canvas>
                     </div>
-                    <div class="col-md-6 float-right" width="100%" height="100%">
+                    <div class="col-md-6 d-inline-block float-right" width="100%" height="100%">
                         <canvas id="monthlyCallNumberInfo">
                         </canvas>
                     </div>
-                    <div class="col-md-12 float-left" width="100%" height="100%">
+                    <div class="col-md-6 d-inline-block" width="100%" height="100%">
                         <canvas id="monthlyLostCallNumberInfo">
+                        </canvas>
+                    </div>
+                    <div class="col-md-6 d-inline-block float-right" width="100%" height="100%">
+                        <canvas id="placeholder">
                         </canvas>
                     </div>
                 </div>
@@ -107,14 +111,24 @@
     @include('calls.modals.modal_export')
     <div id="labels" class="d-none">
         <div id="averageMonthlyWaitTime">@Lang('charts.labels.average_wait_time_in_sec')</div>
+        <div id="weightedAverageMonthlyWaitTime">@Lang('charts.labels.weighted_average_wait_time_in_sec')</div>
         <div id="maxMonthlyWaitTime">@Lang('charts.labels.max_wait_time_in_sec')</div>
-        <div id="minMonthlyWaitTime">@Lang('charts.labels.min_wait_time_in_sec')</div>
+        <div id="monthlyTotalCalls">@Lang('charts.labels.monthly_total_calls')</div>
+        <div id="monthlyFrontOfficeCalls">@Lang('charts.labels.monthly_front_office_calls')</div>
+        <div id="monthlyGenericCalls">@Lang('charts.labels.monthly_generic_calls')</div>
+        <div id="monthlyInternalCalls">@Lang('charts.labels.monthly_internal_calls')</div>
+        <div id="monthlyTotalLostCalls">@Lang('charts.labels.monthly_total_lost_calls')</div>
+        <div id="monthlyFrontOfficeLostCalls">@Lang('charts.labels.monthly_front_office_lost_calls')</div>
+        <div id="monthlyGenericLostCalls">@Lang('charts.labels.monthly_generic_lost_calls')</div>
+        <div id="monthlyInternalLostCalls">@Lang('charts.labels.monthly_internal_lost_calls')</div>
     </div>
     <div id="titles" class="d-none">
         <div id="averageMonthlyWaitTime">@Lang('charts.titles.average_monthly_wait_time')</div>
         <div id="minMaxMonthlyWaitTime">@Lang('charts.titles.min_max_monthly_wait_time')</div>
         <div id="minMaxExternalMonthlyWaitTime">@Lang('charts.titles.min_max_monthly_wait_time_inbound')</div>
         <div id="averageExternalMonthlyWaitTime">@Lang('charts.titles.average_monthly_wait_time_inbound')</div>
+        <div id="totalCallsByTypeAndMonthExcludeLost">@Lang('charts.titles.total_calls_type_month_not_lost')</div>
+        <div id="totalLostCallsByTypeAndMonth">@Lang('charts.titles.total_lost_calls_type_month_not_lost')</div>
     </div>
 </div>
 @endsection

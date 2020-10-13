@@ -61626,7 +61626,7 @@ $(function () {
               type: 'line',
               fill: false
             }, {
-              label: $("#labels #averageMonthlyWaitTime").text(),
+              label: $("#labels #weightedAverageMonthlyWaitTime").text(),
               data: chartData.wavg,
               backgroundColor: 'rgba(200, 34, 43, 0.2)',
               borderColor: 'rgba(200, 34, 43, 1)',
@@ -61684,7 +61684,7 @@ $(function () {
               fill: false
             }, {
               label: $("#labels #monthlyGenericCalls").text(),
-              data: chartData.wavg,
+              data: chartData.generic,
               backgroundColor: 'rgba(200, 34, 43, 0.2)',
               borderColor: 'rgba(200, 34, 43, 1)',
               borderWidth: 1,
@@ -61692,7 +61692,7 @@ $(function () {
               fill: false
             }, {
               label: $("#labels #monthlyInternalCalls").text(),
-              data: chartData.wavg,
+              data: chartData.internal,
               backgroundColor: 'rgba(200, 34, 140, 0.2)',
               borderColor: 'rgba(200, 34, 140, 1)',
               borderWidth: 1,
@@ -61703,15 +61703,15 @@ $(function () {
           options: {
             title: {
               display: true,
-              text: $("#titles #minMaxExternalMonthlyWaitTime").text()
+              text: $("#titles #totalCallsByTypeAndMonthExcludeLost").text()
             },
             scales: {
               yAxes: [{
                 ticks: {
-                  beginAtZero: true,
-                  userCallback: function userCallback(item) {
-                    return decimalSecondsToTimeValue(item);
-                  }
+                  beginAtZero: true // userCallback: (item) => {
+                  //     return decimalSecondsToTimeValue(item);
+                  // }
+
                 }
               }]
             }
@@ -61756,15 +61756,15 @@ $(function () {
           options: {
             title: {
               display: true,
-              text: $("#titles #minMaxExternalMonthlyWaitTime").text()
+              text: $("#titles #totalLostCallsByTypeAndMonth").text()
             },
             scales: {
               yAxes: [{
                 ticks: {
-                  beginAtZero: true,
-                  userCallback: function userCallback(item) {
-                    return decimalSecondsToTimeValue(item);
-                  }
+                  beginAtZero: true // userCallback: (item) => {
+                  //     return decimalSecondsToTimeValue(item);
+                  // }
+
                 }
               }]
             }
