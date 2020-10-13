@@ -265,6 +265,11 @@ class CallController extends Controller
     }
 
     public function export($filetype = 'csv') {
-        return (new CDRRecordExport())->download(__('calls.call_records') . '.' . $filetype, null, ['X-ewater-filename' => __('calls.call_records') . '.' . $filetype]);
+        $renderer = false;
+
+        if ($filetype == 'pdf') {
+            $renderer = \Maatwebsite\Excel\Excel::MPDF;
+        }
+        return (new CDRRecordExport())->download(__('calls.call_records') . '.' . $filetype, ($renderer ? $renderer : null), ['X-ewater-filename' => __('calls.call_records') . '.' . $filetype]);
     }
 }

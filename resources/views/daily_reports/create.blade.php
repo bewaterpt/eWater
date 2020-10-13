@@ -9,7 +9,7 @@
                     <button type="submit" class="btn float-left btn-primary" form="report">@Lang('forms.buttons.save')</button>
                     @Lang('general.daily_reports.create')
                     <span class="float-right">
-                        <a class="add-work btn btn-info text-white" title="{{__('tooltips.daily_reports.add_work')}}" href="#"><i class="fas fa-plus"></i> @Lang('general.daily_reports.add_work')</a>
+                        <a class="add-work btn btn-primary text-white" title="{{__('tooltips.daily_reports.add_work')}}" href="#"><i class="fas fa-plus"></i> @Lang('general.daily_reports.add_work')</a>
                     </span>
                 </div>
                 <div class="card-body">
@@ -135,7 +135,7 @@
                             </div>
                         </div>
                         <span class="float-right d-inline-block">
-                            <a class="add-work btn btn-info text-white" title="{{__('tooltips.daily_reports.add_work')}}" href="#"><i class="fas fa-plus"></i> @Lang('general.daily_reports.add_work')</a>
+                            <a class="add-work btn btn-primary text-white" title="{{__('tooltips.daily_reports.add_work')}}" href="#"><i class="fas fa-plus"></i> @Lang('general.daily_reports.add_work')</a>
                         </span>
                       </form>
                 </div>

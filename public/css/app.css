@@ -27551,6 +27551,10 @@ readers do not read off random characters that represent icons */
   top: 57%;
 }
 
+.dropdown-menu.min-w-0 {
+  min-width: 0 !important;
+}
+
 .multiselect-listbox #btnContainer {
   top: 0;
   right: 0;

@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="w-100 px-4" id="calls-dashboard">
+<div class="w-100 px-5" id="calls-dashboard">
     <div class="row justify-content-center">
         <div class="col-md-12">
             <div class="card mb-3">
@@ -28,13 +28,13 @@
                     @Lang('calls.pbx.list')
                     <span class="float-right">
                         <div class="dropdown show">
-                            <a class="text-info dropdown-toggle" id="exportSelector" href="#" target="_blank" data-backdrop="false" data-keyboard="false" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="button">
+                            <a class="text-primary dropdown-toggle" id="exportSelector" href="#" target="_blank" data-backdrop="false" data-keyboard="false" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="button">
                                 <i class="fas fa-file-export"></i>
                             </a>
-                            <div id="export" class="dropdown-menu" aria-labelledby="exportSelector">
-                                <a class="text-info dropdown-item" href="{{ route('calls.export') }}" data-toggle="modal" data-target="#modalExport">CSV <i class="fas fa-file-csv"></i></a>
-                                <a class="text-info dropdown-item" href="#"></a>
-                                <a class="text-info dropdown-item" href="#"></a>
+                            <div id="export" class="dropdown-menu min-w-0" aria-labelledby="exportSelector">
+                                <a class="text-primary dropdown-item" href="{{ route('calls.export') }}" data-toggle="modal" data-target="#modalExport"><i class="fas fa-file-csv"></i> CSV</a>
+                                <a class="text-primary dropdown-item" href="{{ route('calls.export', ['filetype' => 'xlsx']) }}" data-toggle="modal" data-target="#modalExport"><i class="fas fa-file-excel"></i> XLSX</a>
+                                {{-- <a class="text-primary dropdown-item" href="{{ route('calls.export', ['filetype' => 'pdf']) }}" data-toggle="modal" data-target="#modalExport"><i class="fas fa-file-pdf"></i> PDF</a> --}}
                             </div>
                         </div>
                     </span>

@@ -133,3 +133,10 @@
     right: 20px;
     top: 57%;
 }
+
+.dropdown-menu {
+
+    &.min-w-0 {
+        min-width: 0 !important;
+    }
+}
