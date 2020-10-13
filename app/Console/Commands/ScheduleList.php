@@ -7,7 +7,7 @@ use Illuminate\Console\Scheduling\Schedule;
 
 class ScheduleList extends Command
 {
-    protected $signature = 'schedule:list';
+    protected $signature = 'schedule:listdeprecated';
     protected $description = 'List when scheduled commands are executed.';
 
     /**
