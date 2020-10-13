@@ -14,7 +14,7 @@
                     <div class="body p-2">
                         {!! $content !!}
                     </div>
-                    @include('layouts.partials.spinner_backdrop')
+                    @include('layouts.partials.spinner_backdrop', ['show' => false])
                 </div>
             </div>
             <div class="modal-footer">

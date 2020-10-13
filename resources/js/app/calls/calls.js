@@ -214,5 +214,33 @@ $(() => {
 
             },
         });
+
+        $('#export a').on('click', function() {
+            $.ajax({
+                method: 'GET',
+                url: $(this).attr('href'),
+                contentType: 'json',
+                success: function(result, status, xhr) {
+
+                    var disposition = xhr.getResponseHeader('content-disposition');
+                    var matches = /"([^"]*)"/.exec(disposition);
+                    var filename = (matches != null && matches[1] ? matches[1] : xhr.getResponseHeader('X-ewater-filename'));
+
+                    // The actual download
+                    var blob = new Blob([result], {
+                        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                    });
+                    var link = document.createElement('a');
+                    link.href = window.URL.createObjectURL(blob);
+                    link.download = filename;
+
+                    document.body.appendChild(link);
+
+                    link.click();
+                    document.body.removeChild(link);
+                    $('#modalExport').modal('hide');
+                }
+            });
+        });
     }
-})
+});

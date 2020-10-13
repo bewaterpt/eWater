@@ -36,7 +36,7 @@ $('button[type="submit"]').on('click', (e) => {
     return true;
 });
 
-$(document).ready(() => {
+$(() => {
     $('[data-toggle="popover"]').popover({
         html: true,
         title: function() {
@@ -46,5 +46,10 @@ $(document).ready(() => {
         content: function() {
             return $(document).find('#' + this.id + ' .popover').find('#content').html()
         },
+    });
+
+    $('[data-onload]').each(function() {
+        console.log(this);
+        customOnload(this, $(this).attr('data-onload'));
     });
 });

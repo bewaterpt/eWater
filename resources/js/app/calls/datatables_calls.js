@@ -13,7 +13,7 @@ $(() => {
             // ordering: false,
             columnDefs: [
                 {
-                    targets: $("#datatable-pbx").find("thead tr:first th.actions").index(),
+                    targets: 'actions',
                     orderable: false,
                 }
             ],
@@ -30,7 +30,7 @@ $(() => {
             searching: true,
             columnDefs: [
                 {
-                    targets: $("#datatable-pbx").find("thead tr:first th.actions").index(),
+                    targets: 'actions',
                     orderable: false,
                 }
             ],
@@ -54,9 +54,9 @@ $(() => {
             sorting: [[2, 'desc']],
             columns: [
                 // {data: 'actions',name: 'actions', class: 'actions text-center px-0 sorting_disabled', searchable: false, sortable: false},
+                {data: 'timestart', name: 'timestart', searchable: true},
                 {data: 'callfrom', name: 'callfrom', searchable: true},
                 {data: 'callto', name: 'callto', searchable: true},
-                {data: 'timestart', name: 'timestart', searchable: true},
                 {data: 'callduration', name: 'callduration', searchable: true},
                 {data: 'talkduration', name: 'talkduration', searchable: true},
                 {data: 'waitduration', name: 'waitduration', searchable: true},

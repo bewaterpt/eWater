@@ -1,24 +1,43 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container" id="calls-dashboard">
+<div class="w-100 px-4" id="calls-dashboard">
     <div class="row justify-content-center">
         <div class="col-md-12">
+            <div class="card mb-3">
+                <div class="card-header text-center text-bold">
+                    @Lang('general.statistics')
+                </div>
+                <div class="card-body">
+                    <div class="col-md-6 float-left" width="100%" height="100%">
+                        <canvas id="monthlyWaitTimeInfo">
+                        </canvas>
+                    </div>
+                    <div class="col-md-6 float-right" width="100%" height="100%">
+                        <canvas id="monthlyCallNumberInfo">
+                        </canvas>
+                    </div>
+                    <div class="col-md-12 float-left" width="100%" height="100%">
+                        <canvas id="monthlyLostCallNumberInfo">
+                        </canvas>
+                    </div>
+                </div>
+            </div>
             <div class="card">
                 <div class="card-header">
                     @Lang('calls.pbx.list')
-                    {{-- <span class="float-right">
+                    <span class="float-right">
                         <div class="dropdown show">
-                            <a class="text-info dropdown-toggle" id="exportSelector" href="#" target="_blank" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="button">
+                            <a class="text-info dropdown-toggle" id="exportSelector" href="#" target="_blank" data-backdrop="false" data-keyboard="false" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="button">
                                 <i class="fas fa-file-export"></i>
                             </a>
-                            <div class="dropdown-menu" aria-labelledby="exportSelector">
-                                <a class="text-info dropdown-item" href="{{Route('calls.export')}}">CSV <i class="fas fa-file-csv"></i></a>
+                            <div id="export" class="dropdown-menu" aria-labelledby="exportSelector">
+                                <a class="text-info dropdown-item" href="{{ route('calls.export') }}" data-toggle="modal" data-target="#modalExport">CSV <i class="fas fa-file-csv"></i></a>
                                 <a class="text-info dropdown-item" href="#"></a>
                                 <a class="text-info dropdown-item" href="#"></a>
                             </div>
                         </div>
-                    </span> --}}
+                    </span>
                 </div>
                 <div class="card-body table-responsive">
                     <table id="datatable-calls" class="object-table table table-sm table-striped" style="width: 100%">
@@ -28,13 +47,13 @@
                                     <i class="fas fa-tools text-black sorting_disabled"></i>
                                 </th> --}}
                                 <th>
+                                    @Lang('forms.fields.timestart')
+                                </th>
+                                <th>
                                     @Lang('forms.fields.call_from')
                                 </th>
                                 <th>
                                     @Lang('forms.fields.call_to')
-                                </th>
-                                <th>
-                                    @Lang('forms.fields.timestart')
                                 </th>
                                 <th>
                                     @Lang('forms.fields.call_duration')
@@ -55,28 +74,37 @@
                         </thead>
                         <tbody>
                         </tbody>
+                        {{-- <tfoot>
+                            <td class='dt-search'>
+                                <input type="date" name='timestart' data-onload="date">
+                            </td>
+                            <td class='dt-search'>
+                                <input type="number" name="callfrom">
+                            </td>
+                            <td class='dt-search'>
+                                <input type="number" name="callto">
+                            </td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td class='dt-search'>
+                                <select name="type" id="">
+                                    <option value="null">@lang('general.select_one')</option>
+                                    <option value="Inbound">@lang('calls.inbound')</option>
+                                    <option value="Transfer">@lang('calls.transfer')</option>
+                                </select>
+                            </td>
+                        </tfoot> --}}
                     </table>
                     {{-- {{ $cdrs->links() }} --}}
-                    <hr class="mt-4 mb-3">
-                    <div class="col-md-12 text-center text-bold mb-4">
-                        @Lang('general.statistics')
-                    </div>
-                    <div class="col-md-12 float-left" width="100%" height="100%">
-                        <canvas id="monthlyWaitTimeInfo">
-                        </canvas>
-                    </div>
-                    <div class="col-md-12 float-left" width="100%" height="100%">
-                        <canvas id="monthlyCallNumberInfo">
-                        </canvas>
-                    </div>
-                    <div class="col-md-12 float-left" width="100%" height="100%">
-                        <canvas id="monthlyLostCallNumberInfo">
-                        </canvas>
-                    </div>
+                    {{-- <hr class="mt-4 mb-3"> --}}
+
                 </div>
             </div>
         </div>
     </div>
+    @include('calls.modals.modal_export')
     <div id="labels" class="d-none">
         <div id="averageMonthlyWaitTime">@Lang('charts.labels.average_wait_time_in_sec')</div>
         <div id="maxMonthlyWaitTime">@Lang('charts.labels.max_wait_time_in_sec')</div>

@@ -10,6 +10,8 @@
 
         <title>{{ config('app.name', 'Laravel') }}</title>
 
+        <!-- Scripts -->
+
         <!-- Fonts -->
         <link rel="dns-prefetch" href="//fonts.gstatic.com">
         <link rel="icon" href="{{ asset('/favicon.png') }}" type="image/x-icon"/>
@@ -115,15 +117,15 @@
                                 @if($pmodel->can('calls.'))
                                     <li class="nav-item dropdown">
                                         <a id="navbarDropdown" class="nav-link dropdown-toggle {{ preg_match('/calls\./i', Route::currentRouteName()) ? 'text-primary' : '' }}" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                            @Lang('settings.calls.calls') <span class="caret"></span>
+                                            @Lang('calls.calls') <span class="caret"></span>
                                         </a>
 
                                         <div class="dropdown-menu dropdown-menu" aria-labelledby="navbarDropdown">
                                             @if($pmodel->can('calls.list'))
-                                                <a title="" class="dropdown-item {{Route::currentRouteName() == 'calls.list' ? 'bg-primary text-white disabled' : ''}}" href="{{ route('calls.list')}}">@lang('settings.calls.list')</a>
+                                                <a title="" class="dropdown-item {{Route::currentRouteName() == 'calls.list' ? 'bg-primary text-white disabled' : ''}}" href="{{ route('calls.list')}}">@lang('calls.list')</a>
                                             @endif
                                             @if($pmodel->can('calls.pbx.list'))
-                                                <a title="" class="dropdown-item {{Route::currentRouteName() == 'calls.pbx.list' ? 'bg-primary text-white disabled' : ''}}" href="{{ route('calls.pbx.list')}}">@lang('settings.calls.pbx.list')</a>
+                                                <a title="" class="dropdown-item {{Route::currentRouteName() == 'calls.pbx.list' ? 'bg-primary text-white disabled' : ''}}" href="{{ route('calls.pbx.list')}}">@lang('calls.pbx.list')</a>
                                             @endif
                                         </div>
                                     </li>

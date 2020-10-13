@@ -13,6 +13,8 @@ use Auth;
 use DB;
 use App\Models\Yealink\CDRRecord;
 use Illuminate\Support\Carbon;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\CDRRecordExport;
 
 class CallController extends Controller
 {
@@ -27,6 +29,15 @@ class CallController extends Controller
     ];
 
     protected $agentsForQuery = null;
+
+    protected $dateFormat = 'Y-m-d H:i:s';
+
+    protected $operators = [
+        'timestart' => 'like',
+        'callfrom' => '=',
+        'callto' => 'like',
+        'type' => '='
+    ];
 
     public function __construct() {
         parent::__construct();
@@ -97,22 +108,58 @@ class CallController extends Controller
                 }
             }
 
-            $model = new CDRRecord(); // get model
-            $rows = $model::orderBy($sortCol, $sortDir); // set order
-
-            // Set filters
-            /* Filter Placeholder */
+            $cdrs = DB::table('cdr_records as cdrTrans')
+                    ->select('cdrTrans.*')
+                    ->join('cdr_records as cdrTransComp', function ($join) {
+                        $join->on('cdrTrans.callid', '=', 'cdrTransComp.callid')->on('cdrTrans.callduration', '>', 'cdrTransComp.callduration');
+                    })
+                    ->where('cdrTrans.type', 'Transfer')
+                    ->whereBetween('cdrTrans.timestart', [Carbon::now()->subMonths(12)->format($this->dateFormat), Carbon::now()->format($this->dateFormat)])
+                    ->whereNotIn('cdrTrans.callto', [6501, 6502])
+                    ->where('cdrTrans.callto', 'rlike', $this->agentsForQuery)
+                    ->where('cdrTrans.status', 'ANSWERED');
 
             foreach ($searchCols as $searchCol) {
-                $rows->orWhere($searchCol['name'], 'like', '%' . $searchCol['value'] . '%');
+                $op = $this->operators[$searchCol['name']];
+                $cdrs->where('cdrTrans.'.$searchCol['name'], $op, ($op == 'like' || $op == 'rlike' ? '%' :'') . $searchCol['value'] . ($op == 'like' || $op == 'rlike' ? '%' :''));
             }
 
+            $cdrs = DB::table('cdr_records as cdrInb')
+                    ->select('cdrInb.*')
+                    ->where('cdrInb.type', 'Inbound')
+                    ->whereBetween('cdrInb.timestart', [Carbon::now()->subMonths(12)->format($this->dateFormat), Carbon::now()->format($this->dateFormat)])
+                    ->whereNotIn('cdrInb.callto', [6501, 6502])
+                    ->where('cdrInb.callto', 'rlike', $this->agentsForQuery)
+                    ->where('cdrInb.status', 'ANSWERED')
+                    ->union($cdrs)
+
+                    ->orderBy($sortCol, $sortDir); // set order
+
+
+            foreach ($searchCols as $searchCol) {
+                $op = $this->operators[$searchCol['name']];
+                $cdrs->where($searchCol['name'], $op, ($op == 'like' || $op == 'rlike' ? '%' :'') . $searchCol['value'] . ($op == 'like' || $op == 'rlike' ? '%' :''));
+            }
+
+            // Set filters
+            // /* Filter Placeholder */
+
+            $testArr = $cdrs->get()->map(function ($item) {
+                return $item->callid;
+            })->toArray();
+
+            $testCount = collect(array_count_values($testArr));
+
+            $testCount = $testCount->map(function ($item) {
+                return $item === 2 ? true : false;
+            });
+
             // Get row count
-            $total = $rows->count();
+            $total = $cdrs->count();
 
             // Set limit and offset and get rows
-            $rows->take($limit)->skip($offset);
-            $rows = $rows->get();
+            $cdrs->take($limit)->skip($offset);
+            $rows = $cdrs->get();
 
             // Add rows to array
             $data = [];
@@ -128,9 +175,9 @@ class CallController extends Controller
 
                 $data[] = [
                     // 'actions' => $actions,
+                    'timestart' => $row->timestart,
                     'callfrom' => $row->callfrom,
                     'callto' => $row->callto,
-                    'timestart' => $row->timestart,
                     'callduration' => Helper::decimalSecondsToTimeValue($row->callduration, false, true),
                     'talkduration' => Helper::decimalSecondsToTimeValue($row->talkduration, false, true),
                     'waitduration' => Helper::decimalSecondsToTimeValue($row->waitduration, false, true),
@@ -163,42 +210,30 @@ class CallController extends Controller
 
         $input = (object) $request->json()->all();
 
-        $dateFormat = 'Y-m-d H:i:s';
         $waitDurations = [];
 
-        $cdrTransfers = collect(DB::select(DB::raw(
-            "select monthname(cdrs.timestart) month, cdrs.callid, cdrs.callto, cdrs.waitduration
-            from ewater.cdr_records as cdrs
-            where type = 'transfer'
-            and callto rlike " . $this->agentsForQuery . "
-             and callduration = (
-                select max(callduration) from ewater.cdr_records where callid = cdrs.callid and type = 'transfer'
-            );"
-        )));
+        $cdrs = DB::table('cdr_records as cdrTrans')
+                ->selectRaw('month(cdrTrans.timestart) month, cdrTrans.waitduration')
+                ->join('cdr_records as cdrTransComp', function ($join) {
+                    $join->on('cdrTrans.callid', '=', 'cdrTransComp.callid')->on('cdrTrans.callduration', '>', 'cdrTransComp.callduration');
+                })
+                ->where('cdrTrans.type', 'Transfer')
+                ->whereBetween('cdrTrans.timestart', [Carbon::now()->subMonths(12)->format($this->dateFormat), Carbon::now()->format($this->dateFormat)])
+                ->whereNotIn('cdrTrans.callto', [6501, 6502])
+                ->where('cdrTrans.callto', 'rlike', $this->agentsForQuery)
+                ->where('cdrTrans.status', 'ANSWERED');
 
-        $cdrTransfers->map(function ($item) use (&$waitDurations, &$transferWaitDurations){
-            $waitDurations[$item->month][] = $item->waitduration;
-        });
+        $cdrs = DB::table('cdr_records as cdrInb')
+                ->selectRaw('monthname(cdrInb.timestart) month, cdrInb.waitduration')
+                ->where('cdrInb.type', 'Inbound')
+                ->whereBetween('cdrInb.timestart', [Carbon::now()->subMonths(12)->format($this->dateFormat), Carbon::now()->format($this->dateFormat)])
+                ->whereNotIn('cdrInb.callto', [6501, 6502])
+                ->where('cdrInb.callto', 'rlike', $this->agentsForQuery)
+                ->where('cdrInb.status', 'ANSWERED')
+                ->union($cdrs)
+                ->get();
 
-        // dd($waitDurations);
-
-        $cdrTransfersCallIds = $cdrTransfers->map(function ($item) {
-            return $item->callid;
-        })->toArray();
-
-        $cdrInbound = CDRRecord::selectRaw('monthname(timestart) month, waitduration')
-                    ->whereBetween('timestart', [Carbon::now()->startOfYear()->format($dateFormat), Carbon::now()->endOfYear()->format($dateFormat)])
-                    ->whereNotIn('callto', [6501, 6502])
-                    ->whereNotIn('callid', $cdrTransfersCallIds)
-                    ->where('type', 'inbound')
-                    ->where('callto', 'rlike', $this->agentsForQuery)
-                    ->where('status', 'ANSWERED')
-                    ->get();
-                    // ->toSql();
-
-        // dd($this->agentsForQuery);
-
-        $cdrInbound->map(function ($item) use (&$waitDurations, &$inboundWaitDurations){
+        $cdrs->map(function ($item) use (&$waitDurations){
             $waitDurations[$item->month][] = $item->waitduration;
         });
 
@@ -206,7 +241,7 @@ class CallController extends Controller
 
         $months = CDRRecord::selectRaw('monthname(timestart) month')
                     ->distinct('month')
-                    ->whereBetween('timestart', [Carbon::now()->subMonths(12)->format($dateFormat), Carbon::now()->format($dateFormat)])
+                    ->whereBetween('timestart', [Carbon::now()->subMonths(12)->format($this->dateFormat), Carbon::now()->format($this->dateFormat)])
                     ->get()
                     ->map(function($item) {
                         return $item->month;
@@ -227,5 +262,9 @@ class CallController extends Controller
         // dd($data);
 
         return json_encode($data);
+    }
+
+    public function export($filetype = 'csv') {
+        return (new CDRRecordExport())->download(__('calls.call_records') . '.' . $filetype, null, ['X-ewater-filename' => __('calls.call_records') . '.' . $filetype]);
     }
 }

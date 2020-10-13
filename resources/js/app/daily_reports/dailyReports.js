@@ -4,16 +4,6 @@ $(() => {
     let kmError = false;
     let today = new Date();
 
-    function ISODateString(d){
-        function pad(n){return n<10 ? '0'+n : n}
-        return d.getUTCFullYear()+'-'
-        + pad(d.getUTCMonth()+1)+'-'
-        + pad(d.getUTCDate())
-        // + 'T'+pad(d.getUTCHours())+':'
-        // + pad(d.getUTCMinutes());
-        // + pad(d.getUTCSeconds())+'Z'
-    }
-
     if($('#daily-reports-create').length > 0) {
         if ($('#inputDatetime').val() === '') {
             $('#inputDatetime').val(ISODateString(today)).attr('max', ISODateString(today));

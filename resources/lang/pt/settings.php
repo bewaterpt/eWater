@@ -24,11 +24,4 @@ return [
         'edit' => 'Editar Equipa',
         'create' => 'Criar Equipa',
     ],
-    'calls' => [
-        'calls' => 'Chamadas',
-        'list' => 'Listar Chamadas',
-        'pbx' => [
-            'list' => 'Listar Centrais Tel.'
-        ],
-    ]
 ];

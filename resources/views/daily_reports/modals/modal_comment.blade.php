@@ -13,7 +13,7 @@
                 <div class="col-md-12" id="content">
                     <div class="body p-2">
                     </div>
-                    @include('layouts.partials.spinner_backdrop')
+                    @include('layouts.partials.spinner_backdrop', ['show' => false])
                 </div>
             </div>
             <div class="modal-footer">

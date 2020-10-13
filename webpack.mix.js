@@ -22,6 +22,7 @@ mix.sass('resources/sass/app.scss', 'public/css')
 
     // Utility Scripts
     "resources/js/app/utility/tinymce.js",
+    "resources/js/app/utility/datatables.js",
 
     // View correspondent scripts
     "resources/js/app/settings/users/datatables_users.js",
@@ -42,6 +43,7 @@ mix.sass('resources/sass/app.scss', 'public/css')
 
     // Utility Scripts
     "resources/js/app/utility/tinymce.js",
+    "resources/js/app/utility/datatables.js",
 
     // View correspondent scripts
     "resources/js/app/settings/users/datatables_users.js",
