@@ -17,6 +17,7 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         Commands\AddUserToRole::class,
         Commands\ClearCache::class,
+        Commands\ClearTemp::class,
         Commands\CreateNewRole::class,
         Commands\CustomMigrateFresh::class,
         Commands\DeleteAllArticles::class,
@@ -42,6 +43,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('calls:get')->dailyAt('07:00');
         $schedule->command('permissions:update')->dailyAt('08:00');
         $schedule->command('roles:update')->dailyAt('08:05');
+        $schedule->command('file:cleartemp')->dailyAt('04:00');
         // $schedule->command('reports:sync')->hourly();
     }
 

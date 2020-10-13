@@ -51,7 +51,7 @@ class GetCDRRecords extends Command
     {
 
         $this->info('Applying settings');
-        $tempFile = storage_path().'/temp/yealinkcdr.csv';
+        $tempFile = storage_path('app').'/temp/yealinkcdr.csv';
 
         $errors = config('app.yealink_error_codes');
         $pbx = Pbx::first();

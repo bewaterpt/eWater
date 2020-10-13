@@ -61554,7 +61554,7 @@ $('button[type="submit"]').on('click', function (e) {
   $(e.target).find('button[type="submit"]').attr('disabled', true);
   return true;
 });
-$(document).ready(function () {
+$(function () {
   $('[data-toggle="popover"]').popover({
     html: true,
     title: function title() {
@@ -61564,6 +61564,10 @@ $(document).ready(function () {
     content: function content() {
       return $(document).find('#' + this.id + ' .popover').find('#content').html();
     }
+  });
+  $('[data-onload]').each(function () {
+    console.log(this);
+    customOnload(this, $(this).attr('data-onload'));
   });
 });
 
@@ -61769,6 +61773,29 @@ $(function () {
       },
       error: function error(jqXHR, status, _error2) {}
     });
+    $('#export a').on('click', function () {
+      $.ajax({
+        method: 'GET',
+        url: $(this).attr('href'),
+        contentType: 'json',
+        success: function success(result, status, xhr) {
+          var disposition = xhr.getResponseHeader('content-disposition');
+          var matches = /"([^"]*)"/.exec(disposition);
+          var filename = matches != null && matches[1] ? matches[1] : xhr.getResponseHeader('X-ewater-filename'); // The actual download
+
+          var blob = new Blob([result], {
+            type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+          });
+          var link = document.createElement('a');
+          link.href = window.URL.createObjectURL(blob);
+          link.download = filename;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          $('#modalExport').modal('hide');
+        }
+      });
+    });
   }
 });
 
@@ -61792,7 +61819,7 @@ $(function () {
       order: [[1, "desc"]],
       // ordering: false,
       columnDefs: [{
-        targets: $("#datatable-pbx").find("thead tr:first th.actions").index(),
+        targets: 'actions',
         orderable: false
       }],
       lengthChange: true,
@@ -61807,7 +61834,7 @@ $(function () {
       responsive: true,
       searching: true,
       columnDefs: [{
-        targets: $("#datatable-pbx").find("thead tr:first th.actions").index(),
+        targets: 'actions',
         orderable: false
       }],
       lengthChange: true,
@@ -61830,16 +61857,16 @@ $(function () {
       sorting: [[2, 'desc']],
       columns: [// {data: 'actions',name: 'actions', class: 'actions text-center px-0 sorting_disabled', searchable: false, sortable: false},
       {
+        data: 'timestart',
+        name: 'timestart',
+        searchable: true
+      }, {
         data: 'callfrom',
         name: 'callfrom',
         searchable: true
       }, {
         data: 'callto',
         name: 'callto',
-        searchable: true
-      }, {
-        data: 'timestart',
-        name: 'timestart',
         searchable: true
       }, {
         data: 'callduration',
@@ -61980,16 +62007,6 @@ $(function () {
   var error = false;
   var kmError = false;
   var today = new Date();
-
-  function ISODateString(d) {
-    function pad(n) {
-      return n < 10 ? '0' + n : n;
-    }
-
-    return d.getUTCFullYear() + '-' + pad(d.getUTCMonth() + 1) + '-' + pad(d.getUTCDate()); // + 'T'+pad(d.getUTCHours())+':'
-    // + pad(d.getUTCMinutes());
-    // + pad(d.getUTCSeconds())+'Z'
-  }
 
   if ($('#daily-reports-create').length > 0) {
     if ($('#inputDatetime').val() === '') {
@@ -62612,6 +62629,36 @@ $(function () {
 
 /***/ }),
 
+/***/ "./resources/js/app/utility/datatables.js":
+/*!************************************************!*\
+  !*** ./resources/js/app/utility/datatables.js ***!
+  \************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+var _this = this;
+
+$(function () {
+  $('table[id^=datatable] tfoot .dt-search').find('select, input').each(function () {
+    $(_this).on('keyup change', function () {
+      performDTsearch($(_this).parents('table')[0].id, _this.value, $(_this).parent('td').index());
+    });
+  });
+
+  function performDTsearch(tableId, searchVal, index) {
+    var _this2 = this;
+
+    dataTable = $('#' + tableId).DataTable();
+    jQTable = $(tableId);
+    jQTable.find('tfoot .dt-search').each(function () {
+      dataTable.column($(_this2).index()).search('');
+    });
+    dataTable.column(index).search(searchVal).draw();
+  }
+});
+
+/***/ }),
+
 /***/ "./resources/js/app/utility/fixes.js":
 /*!*******************************************!*\
   !*** ./resources/js/app/utility/fixes.js ***!
@@ -63179,14 +63226,15 @@ tinymce.addI18n('pt_PT', {
 /***/ }),
 
 /***/ 0:
-/*!*******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** multi ./resources/js/app.js ./resources/js/app/utility/tinymce.js ./resources/js/app/settings/users/datatables_users.js ./resources/js/app/settings/teams/teams.js ./resources/js/app/settings/teams/datatables_teams.js ./resources/js/app/settings/permissions/update.js ./resources/js/app/components/multiselect_listbox.js ./resources/js/app/components/tooltip.js ./resources/js/app/daily_reports/dailyReports.js ./resources/js/app/daily_reports/datatables_reports.js ./resources/js/app/calls/calls.js ./resources/js/app/calls/datatables_calls.js ./resources/js/app/settings/roles/datatables_roles.js ./resources/js/app/utility/fixes.js ./resources/sass/app.scss ***!
-  \*******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*!************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** multi ./resources/js/app.js ./resources/js/app/utility/tinymce.js ./resources/js/app/utility/datatables.js ./resources/js/app/settings/users/datatables_users.js ./resources/js/app/settings/teams/teams.js ./resources/js/app/settings/teams/datatables_teams.js ./resources/js/app/settings/permissions/update.js ./resources/js/app/components/multiselect_listbox.js ./resources/js/app/components/tooltip.js ./resources/js/app/daily_reports/dailyReports.js ./resources/js/app/daily_reports/datatables_reports.js ./resources/js/app/calls/calls.js ./resources/js/app/calls/datatables_calls.js ./resources/js/app/settings/roles/datatables_roles.js ./resources/js/app/utility/fixes.js ./resources/sass/app.scss ***!
+  \************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(/*! C:\Users\bruno.martins\source\repos\outono\resources\js\app.js */"./resources/js/app.js");
 __webpack_require__(/*! C:\Users\bruno.martins\source\repos\outono\resources\js\app\utility\tinymce.js */"./resources/js/app/utility/tinymce.js");
+__webpack_require__(/*! C:\Users\bruno.martins\source\repos\outono\resources\js\app\utility\datatables.js */"./resources/js/app/utility/datatables.js");
 __webpack_require__(/*! C:\Users\bruno.martins\source\repos\outono\resources\js\app\settings\users\datatables_users.js */"./resources/js/app/settings/users/datatables_users.js");
 __webpack_require__(/*! C:\Users\bruno.martins\source\repos\outono\resources\js\app\settings\teams\teams.js */"./resources/js/app/settings/teams/teams.js");
 __webpack_require__(/*! C:\Users\bruno.martins\source\repos\outono\resources\js\app\settings\teams\datatables_teams.js */"./resources/js/app/settings/teams/datatables_teams.js");

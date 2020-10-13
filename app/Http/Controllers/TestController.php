@@ -9,6 +9,7 @@ use App\Models\Connectors\OutonoObrasCC as ObrasCC;
 use Illuminate\Support\Carbon;
 use Log;
 use DB;
+use Storage;
 use App\Models\Article;
 class TestController extends Controller
 {
@@ -18,7 +19,7 @@ class TestController extends Controller
     }
 
     public function index(Request $request) {
-
-        // return intval(parent::workExists($request));
+        $stg = new Storage();
+        dd(Storage::disk('local')->files('temp'));
     }
 }

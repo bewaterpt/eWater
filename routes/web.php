@@ -170,7 +170,7 @@ Route::group(['middleware' => ['web']], function () {
             Route::match(['get', 'post'], 'calls/get_monthly_wait_time_info', 'Yealink\CallController@getMonthlyWaitTimeInfo')->name('calls.charts.get_monthly_wait_time_info');
             Route::match(['get', 'post'], 'calls/get_monthly_call_number_info', 'Yealink\CallController@getMonthlyCallNumberInfo')->name('calls.charts.get_monthly_call_number_info');
 
-            Route::any('test/{?filetype}', 'Yealink\CallController@export')->name('tests.test');
+            Route::match(['get', 'post'], 'test', 'TestController@index')->name('tests.test');
         });
     });
 });
