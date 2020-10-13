@@ -61833,6 +61833,7 @@ $(function () {
     window.datatable_calls = $("#datatable-calls").DataTable({
       responsive: true,
       searching: true,
+      order: [[0, "desc"]],
       columnDefs: [{
         targets: 'actions',
         orderable: false
@@ -61854,7 +61855,6 @@ $(function () {
       // lengthMenu: [[10, 50, 100], [10, 50, 100]],
       // displayLength: 10,
       // pagingType: 'simple',
-      sorting: [[2, 'desc']],
       columns: [// {data: 'actions',name: 'actions', class: 'actions text-center px-0 sorting_disabled', searchable: false, sortable: false},
       {
         data: 'timestart',

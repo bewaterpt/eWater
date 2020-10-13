@@ -4,8 +4,8 @@ namespace App\Exports;
 
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\Exportable;
-use Maatwebsite\Excel\Concerns\withMapping;
-use Maatwebsite\Excel\Concerns\withHeadings;
+use Maatwebsite\Excel\Concerns\WithMapping;
+use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithColumnFormatting;
 use Maatwebsite\Excel\Concerns\FromQuery;
@@ -14,7 +14,7 @@ use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use Illuminate\Support\Carbon;
 use App\Models\Yealink\CDRRecord;
 use DB;
-class CDRRecordExport implements FromQuery, withMapping, withHeadings, ShouldAutoSize
+class CDRRecordExport implements FromQuery, WithMapping, WithHeadings, ShouldAutoSize
 {
     use Exportable;
 
