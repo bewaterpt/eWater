@@ -83,11 +83,16 @@ class DailyReportController extends Controller
         $articles = Article::getDailyReportRelevantArticles()->pluck('designation', 'id');
         $teams = Team::all();
 
-        $workers = User::whereHas('teams', function ($query) use ($currentUserTeams){
-            $query->whereIn('id', $currentUserTeams);
-        })->whereHas('roles', function ($query) {
-            $query->where('slug', "!=", "admin");
-        })->get();
+        $workers = null;
+        if (Auth::user()->isAdmin()) {
+            $workers = User::all();
+        } else {
+            $workers = User::whereHas('teams', function ($query) use ($currentUserTeams){
+                $query->whereIn('id', $currentUserTeams);
+            })->whereHas('roles', function ($query) {
+                $query->where('slug', "!=", "admin");
+            })->get();
+        }
 
 
         return view('daily_reports.create', ['articles' => $this->helper->sortArray(array_flip($articles->toArray())), 'workers' => $workers, 'teams' => $teams]);
@@ -333,11 +338,18 @@ class DailyReportController extends Controller
         $report = Report::find($reportId);
         $currentUserTeams = Auth::user()->teams()->pluck('id');
         $articles = Article::getDailyReportRelevantArticles()->pluck('id', 'designation');
-        $workers = User::whereHas('teams', function ($query) use ($currentUserTeams){
-            $query->whereIn('id', $currentUserTeams);
-        })->whereHas('roles', function ($query) {
-            $query->where('slug', "!=", "admin");
-        })->get();
+        $workers = null;
+
+        if (Auth::user()->isAdmin()) {
+            $workers = User::all();
+        } else {
+            $workers = User::whereHas('teams', function ($query) use ($currentUserTeams){
+                $query->whereIn('id', $currentUserTeams);
+            })->whereHas('roles', function ($query) {
+                $query->where('slug', "!=", "admin");
+            })->get();
+        }
+
         $teams = Team::all();
 
         $works;
