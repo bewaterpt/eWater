@@ -23,7 +23,7 @@
     </head>
     <body>
         <div id="app">
-            <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
+            <nav class="navbar navbar-expand-md navbar-light shadow-sm {{ $isImpersonating ? 'alert-danger' : 'bg-white' }}">
                 <div class="container">
                     <a class="navbar-brand" href="{{ url('/') }}">
                         {{ config('app.name', 'Laravel') }} {{--<img class="float-left" src="{{ asset('/favicon.png') }}" style="max-width: 30px"/>--}}
@@ -147,20 +147,25 @@
                             @else
                                 <li class="nav-item dropdown">
                                     <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                        {{ Auth::user()->name }} <span class="caret"></span>
+                                        {{ Auth::user()->name }} {{ $isImpersonating ? '(' . __('general.impersonated_by') . $impersonator->name . ')' : ''}}  <span class="caret"></span>
                                     </a>
 
                                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                                         {{-- <a class="dropdown-item {{ Route::currentRouteName() == 'settings.users.edit_self' ? 'bg-primary text-white' : '' }}" href="{{ route('settings.users.edit_self') }}">
                                             @Lang('general.edit_profile')
                                         </a> --}}
-                                        <a class="dropdown-item" href="{{ route('logout') }}"  onclick="
-                                            event.preventDefault();
-                                            document.getElementById('logout-form').submit();"
-                                        >
-                                            @Lang('general.logout')
-                                        </a>
-
+                                        @if(!$isImpersonating)
+                                            <a class="dropdown-item" href="{{ route('logout') }}"  onclick="
+                                                event.preventDefault();
+                                                document.getElementById('logout-form').submit();"
+                                            >
+                                                @Lang('general.logout')
+                                            </a>
+                                        @else
+                                            <a href="{{ route('impersonate.leave') }}" class="dropdown-item">
+                                                @Lang('general.leave_impersonation')
+                                            </a>
+                                        @endIf
                                         <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                                             @csrf
                                         </form>

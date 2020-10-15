@@ -240,7 +240,7 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
         'Adldap' => Adldap\Laravel\Facades\Adldap::class,
-
+        'Option' => App\Custom\Classes\Option::class,
     ],
 
     'yealink_error_codes' => [

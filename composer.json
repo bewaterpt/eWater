@@ -20,7 +20,7 @@
         "hashids/hashids": "^3.0",
         "hmazter/laravel-schedule-list": "^2.2",
         "intervention/image": "^2.5",
-        "jazmy/jaz-form-builder": "dev-master",
+        "lab404/laravel-impersonate": "^1.7",
         "laravel/framework": "^8.0",
         "laravel/helpers": "^1.2",
         "laravel/sanctum": "^2.4",

@@ -8,12 +8,13 @@ use Illuminate\Notifications\Notifiable;
 use LdapRecord\Laravel\Auth\AuthenticatesWithLdap;
 use LdapRecord\Laravel\Auth\LdapAuthenticatable;
 use LdapRecord\Laravel\Auth\HasLdapUser;
+use Lab404\Impersonate\Models\Impersonate;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable implements LdapAuthenticatable
 {
-    use Notifiable, AuthenticatesWithLdap, HasLdapUser, SoftDeletes, HasApiTokens;
+    use Notifiable, AuthenticatesWithLdap, HasLdapUser, SoftDeletes, HasApiTokens, Impersonate;
 
     protected $primaryKey = 'id';
 
@@ -132,5 +133,9 @@ class User extends Authenticatable implements LdapAuthenticatable
 
     public function isAdmin() {
         return $this->roles()->where('id', 1)->first() ? true : false ;
+    }
+
+    public function canImpersonate() {
+        return $this->isAdmin();
     }
 }

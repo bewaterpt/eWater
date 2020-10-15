@@ -51,14 +51,19 @@
                                                 <a href="{{Route('settings.users.delete', ['id' => $user['id']])}}" class="delete" title="@Lang('general.action_delete')"><i class="fas fa-trash-alt"></i></a>
                                             @endif --}}
                                         @endif
+                                        @canImpersonate
+                                        <a href="{{ Route('impersonate', ['id' => $user->getAttributes()['id']]) }}" class="" title="">
+                                            <i class="fas fa-people-arrows"></i>
+                                        </a>
+                                        @endCanImpersonate
                                     </td>
                                     <td>
-                                        <a href="{{Route('settings.users.view', ['id' => $user->getAttributes()['id']])}}">
-                                            {{$user->name}}
+                                        <a href="{{ Route('settings.users.view', ['id' => $user->getAttributes()['id']]) }}">
+                                            {{ $user->name }}
                                         </a>
                                     </td>
                                     <td>
-                                        {{$user->username}}
+                                        {{ $user->username }}
                                     </td>
                                     <td>
                                         @if($user->username==="admbm")

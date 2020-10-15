@@ -49,6 +49,7 @@ Route::group(['middleware' => ['web']], function () {
         Route::post('daily-reports/article/get-info', 'DailyReportController@getArticlePrice')->name('daily_reports.article.get_price');
         Route::post('teams/get-users', 'Settings\TeamController@getTeamUsers')->name('settings.teams.get_users');
 
+        Route::impersonate();
 
         /**
          * Routes within this group only allow usage for authenticated users with the proper permissions to use them
@@ -170,13 +171,14 @@ Route::group(['middleware' => ['web']], function () {
             Route::match(['get', 'post'], 'calls/get_monthly_wait_time_info', 'Yealink\CallController@getMonthlyWaitTimeInfo')->name('calls.charts.get_monthly_wait_time_info');
             Route::match(['get', 'post'], 'calls/get_monthly_call_number_info', 'Yealink\CallController@getMonthlyCallNumberInfo')->name('calls.charts.get_monthly_call_number_info');
 
+            Route::get('forms', 'FormController@index')->name('settings.forms.list');
+            Route::get('forms/create', 'FormController@create')->name('settings.forms.create');
+            Route::post('forms/store', 'FormController@store')->name('settings.forms.store');
+            Route::get('forms/edit', 'FormController@edit')->name('settings.forms.edit');
+            Route::post('forms/update', 'FormController@update')->name('settings.forms.update');
+            Route::match(['post'], 'forms/view', 'FormController@view')->name('settings.forms.view');
+
             Route::match(['get', 'post'], 'test', 'TestController@index')->name('tests.test');
         });
     });
 });
-
-
-// Custom Laravel Filemanager routes
-// Route::group(['prefix' => 'laravel-filemanager', 'middleware' => ['web', 'auth']], function () {
-//     \UniSharp\LaravelFilemanager\Lfm::routes();
-// });
