@@ -95,4 +95,6 @@ return [
     'delegation' => 'Delegação',
     'statistics' => 'Estatísticas',
     'add_field' => 'Adicionar campo',
+    'leave_impersonation' => 'Sair da personificação',
+    'impersonated_by' => 'Personificado por: '
 ];
