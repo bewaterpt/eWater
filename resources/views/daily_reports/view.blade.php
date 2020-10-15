@@ -4,6 +4,18 @@
     <div id="daily-reports-view" class="container">
         <div class="row justify-content-center">
             <div class="col-md-12">
+                <div class="change-report col-md-12 px-0 py-3">
+                    @if(!$report->isFirst())
+                        <a href="{{ route('daily_reports.view', ['id' => $report->getPreviousId()]) }}" class="btn btn-primary">
+                            <i class="fas fa-chevron-left"></i> @Lang('general.daily_reports.previous_report')
+                        </a>
+                    @endif
+                    @if (!$report->isLast())
+                        <a href="{{ route('daily_reports.view', ['id' => $report->getNextId()]) }}" class="btn btn-primary float-right">
+                            @Lang('general.daily_reports.next_report') <i class="fas fa-chevron-right"></i>
+                        </a>
+                    @endif
+                </div>
                 <div class="card">
                     <div class="card-header">
                         @Lang('general.daily_reports.report', ['number' => $report->id]) {{ $report->closed() ? '(' . __('general.daily_reports.closed_by_user_at_time', [ 'name' => $report->latestUpdate()->user()->first()->name, 'time' => $report->latestUpdate()->concluded_at->diffForHumans()]) . ')' : '' }}
@@ -234,6 +246,18 @@
                             </table>
                         </div>
                     </div>
+                </div>
+                <div class="change-report col-md-12 px-0 py-3">
+                    @if(!$report->isFirst())
+                        <a href="{{ route('daily_reports.view', ['id' => $report->getPreviousId()]) }}" class="btn btn-primary">
+                            <i class="fas fa-chevron-left"></i> @Lang('general.daily_reports.previous_report')
+                        </a>
+                    @endif
+                    @if (!$report->isLast())
+                        <a href="{{ route('daily_reports.view', ['id' => $report->getNextId()]) }}" class="btn btn-primary float-right">
+                            @Lang('general.daily_reports.next_report') <i class="fas fa-chevron-right"></i>
+                        </a>
+                    @endif
                 </div>
             </div>
         </div>

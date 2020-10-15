@@ -91,4 +91,21 @@ class Report extends Model
     public function team() {
         return $this->belongsTo('App\Models\Team');
     }
+
+    public function getPreviousId() {
+        return $this->all()->where('id', '<', $this->id)->max('id');
+    }
+
+    public function getNextId() {
+        return $this->all()->where('id', '>', $this->id)->min('id');
+    }
+
+
+    public function isFirst() {
+        return $this->all()->where('id', '<', $this->id)->max('id') == null;
+    }
+
+    public function isLast() {
+        return $this->all()->where('id', '>', $this->id)->min('id') == null;
+    }
 }

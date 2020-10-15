@@ -80,7 +80,9 @@ return [
         'add_work' => 'Adicionar Obra',
         'forward_process' => 'Avançar para o proximo passo',
         'backward_process' => 'Retroceder para o passo anterior',
-        'process_status_comment' => 'Nota/Comentário da operação'
+        'process_status_comment' => 'Nota/Comentário da operação',
+        'previous_report' => 'Relatório anterior',
+        'next_report' => 'Relatório Seguinte',
     ],
     'interruptions' => [
         'interruptions' => 'Interrupções',
@@ -92,4 +94,5 @@ return [
     'url' => "Endereço Web",
     'delegation' => 'Delegação',
     'statistics' => 'Estatísticas',
+    'add_field' => 'Adicionar campo',
 ];
