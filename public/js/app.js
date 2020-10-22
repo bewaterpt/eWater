@@ -62439,98 +62439,6 @@ $(function () {
 
 /***/ }),
 
-/***/ "./resources/js/app/settings/forms/forms.js":
-/*!**************************************************!*\
-  !*** ./resources/js/app/settings/forms/forms.js ***!
-  \**************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-$(function () {
-  var fields = {
-    text: $('#fieldText'),
-    select: $('#fieldSelect'),
-    textarea: $('#fieldTextarea'),
-    file: $('#fieldFile'),
-    checkbox: $('#fieldMultiChoice'),
-    radio: $('#fieldUniqueChoice')
-  };
-  console.log($('#remove-field'));
-
-  if ($('#create-custom-form').length > 0) {
-    /**
-     * Block to add a field
-     *
-     * User clicks on the field type he wants to add and this block appends a clone of the template to
-     */
-    $('#add-field a').on('click', function (event) {
-      link = $(event.currentTarget);
-      $('#field-container').append(fields[link.attr('data-type')].clone(true));
-    });
-    /**
-     * Block to remove a field
-     *
-     * User clicks on the cross and field configuration is removed
-     */
-
-    $('[id^="field"] a#remove-field').on('click', function (event) {
-      link = $(event.currentTarget);
-      console.log(link);
-      link.parents('.field').remove();
-    });
-    /**
-     * Block to insert options in select item list
-     *
-     * User writes as many options as he/she wants, block separates them by comma (,) and adds each to the select element.
-     *
-     * @todo Add ability to remove items.
-     */
-
-    $('[id^="field"] a#insert-option').on('click', function (event) {
-      var link = $(event.currentTarget);
-      var options = link.siblings('input').val().split(',');
-      $(options).each(function (i, item) {
-        link.siblings('select').append('<option value="' + link.siblings('select').find('option').length + '">' + item.trim() + '</option>');
-      });
-      $(event.currentTarget).siblings('input').val('').trigger('focus');
-    });
-    /**
-     * Block to capture the form submit and process the data
-     */
-
-    $('#create-form').on('submit', function (event) {
-      event.preventDefault();
-      form = event.currentTarget;
-      jQForm = $(event.currentTarget);
-      $(jQForm).find('.select-field').each(function (i, select) {
-        input = $(select).parents('.field').find('input[name="options[]"]');
-        console.log('Index: ', i);
-        input.val('');
-        $(select).find('option').each(function (i, item) {
-          console.log('Options: ', $(select).find('option'));
-          console.log('Length: ', $(select).find('option').length);
-          console.log(i === $(select).find('option').length - 1);
-
-          if (i == $(select).find('option').length - 1) {
-            input.val(input.val() + $(item).text() + ':' + item.value);
-          } else {
-            input.val(input.val() + $(item).text() + ':' + item.value + ',');
-          }
-        });
-      });
-      var formData = jQForm.serializeObject();
-      $.ajax({
-        method: 'POST',
-        url: '/test',
-        data: JSON.stringify(formData)
-      });
-      console.log(formData);
-    });
-  }
-});
-
-/***/ }),
-
 /***/ "./resources/js/app/settings/permissions/update.js":
 /*!*********************************************************!*\
   !*** ./resources/js/app/settings/permissions/update.js ***!
@@ -63318,9 +63226,9 @@ tinymce.addI18n('pt_PT', {
 /***/ }),
 
 /***/ 0:
-/*!*******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** multi ./resources/js/app.js ./resources/js/app/utility/tinymce.js ./resources/js/app/utility/datatables.js ./resources/js/app/settings/users/datatables_users.js ./resources/js/app/settings/teams/teams.js ./resources/js/app/settings/teams/datatables_teams.js ./resources/js/app/settings/forms/forms.js ./resources/js/app/settings/permissions/update.js ./resources/js/app/components/multiselect_listbox.js ./resources/js/app/components/tooltip.js ./resources/js/app/daily_reports/dailyReports.js ./resources/js/app/daily_reports/datatables_reports.js ./resources/js/app/calls/calls.js ./resources/js/app/calls/datatables_calls.js ./resources/js/app/settings/roles/datatables_roles.js ./resources/js/app/utility/fixes.js ./resources/sass/app.scss ***!
-  \*******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*!************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** multi ./resources/js/app.js ./resources/js/app/utility/tinymce.js ./resources/js/app/utility/datatables.js ./resources/js/app/settings/users/datatables_users.js ./resources/js/app/settings/teams/teams.js ./resources/js/app/settings/teams/datatables_teams.js ./resources/js/app/settings/permissions/update.js ./resources/js/app/components/multiselect_listbox.js ./resources/js/app/components/tooltip.js ./resources/js/app/daily_reports/dailyReports.js ./resources/js/app/daily_reports/datatables_reports.js ./resources/js/app/calls/calls.js ./resources/js/app/calls/datatables_calls.js ./resources/js/app/settings/roles/datatables_roles.js ./resources/js/app/utility/fixes.js ./resources/sass/app.scss ***!
+  \************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -63330,7 +63238,6 @@ __webpack_require__(/*! C:\Users\bruno.martins\source\repos\outono\resources\js\
 __webpack_require__(/*! C:\Users\bruno.martins\source\repos\outono\resources\js\app\settings\users\datatables_users.js */"./resources/js/app/settings/users/datatables_users.js");
 __webpack_require__(/*! C:\Users\bruno.martins\source\repos\outono\resources\js\app\settings\teams\teams.js */"./resources/js/app/settings/teams/teams.js");
 __webpack_require__(/*! C:\Users\bruno.martins\source\repos\outono\resources\js\app\settings\teams\datatables_teams.js */"./resources/js/app/settings/teams/datatables_teams.js");
-__webpack_require__(/*! C:\Users\bruno.martins\source\repos\outono\resources\js\app\settings\forms\forms.js */"./resources/js/app/settings/forms/forms.js");
 __webpack_require__(/*! C:\Users\bruno.martins\source\repos\outono\resources\js\app\settings\permissions\update.js */"./resources/js/app/settings/permissions/update.js");
 __webpack_require__(/*! C:\Users\bruno.martins\source\repos\outono\resources\js\app\components\multiselect_listbox.js */"./resources/js/app/components/multiselect_listbox.js");
 __webpack_require__(/*! C:\Users\bruno.martins\source\repos\outono\resources\js\app\components\tooltip.js */"./resources/js/app/components/tooltip.js");
