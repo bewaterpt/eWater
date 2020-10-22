@@ -43,6 +43,7 @@ return [
         'textarea_field' => 'Campo de Texto longo',
         'required' => 'Obrigatório',
         'allow_multiple' => 'Múltiplos',
+        'description' => 'Descrição',
     ],
     'placeholders' => [
         'name'=> 'Nome Apelido',

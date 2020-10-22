@@ -83,6 +83,7 @@ return [
         'process_status_comment' => 'Nota/Comentário da operação',
         'previous_report' => 'Relatório anterior',
         'next_report' => 'Relatório Seguinte',
+        'dont_belong_to_team' => 'Não pertence à equipa associada ao relatório :reportId',
     ],
     'interruptions' => [
         'interruptions' => 'Interrupções',
