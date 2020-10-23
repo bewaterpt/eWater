@@ -83,12 +83,14 @@ return [
         'process_status_comment' => 'Nota/Comentário da operação',
         'previous_report' => 'Relatório anterior',
         'next_report' => 'Relatório Seguinte',
-        'dont_belong_to_team' => 'Não pertence à equipa associada ao relatório :reportId',
     ],
     'interruptions' => [
+        'list_all' => 'Listar todas',
+        'list_scheduled' => 'Listar programadas',
+        'list_unscheduled' => 'Listar não programadas',
         'interruptions' => 'Interrupções',
-        'scheduled' => 'Interrupções Programadas',
-        'unscheduled' => 'Interrupções não programadas',
+        'scheduled' => 'Interrupção Programada',
+        'unscheduled' => 'Interrupção não programada',
         'affected_area' => 'Área afetada',
         'reinstatement_date' => 'Data de Restabelecimento',
     ],
@@ -97,5 +99,7 @@ return [
     'statistics' => 'Estatísticas',
     'add_field' => 'Adicionar campo',
     'leave_impersonation' => 'Sair da personificação',
-    'impersonated_by' => 'Personificado por: '
+    'impersonated_by' => 'Personificado por: ',
+    'coordinates' => 'Coordenadas',
+    'type' => 'Tipo',
 ];

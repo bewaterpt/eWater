@@ -27,6 +27,8 @@ mix.sass('resources/sass/app.scss', 'public/css')
     // View correspondent scripts
     "resources/js/app/settings/users/datatables_users.js",
     "resources/js/app/settings/teams/teams.js",
+    "resources/js/app/interruptions/interruptions.js",
+    "resources/js/app/interruptions/datatable_interruptions.js",
     "resources/js/app/settings/teams/datatables_teams.js",
     "resources/js/app/settings/permissions/update.js",
     "resources/js/app/components/multiselect_listbox.js",
@@ -49,6 +51,8 @@ mix.sass('resources/sass/app.scss', 'public/css')
     "resources/js/app/settings/users/datatables_users.js",
     "resources/js/app/settings/teams/teams.js",
     "resources/js/app/settings/teams/datatables_teams.js",
+    "resources/js/app/interruptions/interruptions.js",
+    "resources/js/app/interruptions/datatable_interruptions.js",
     "resources/js/app/settings/permissions/update.js",
     "resources/js/app/components/multiselect_listbox.js",
     "resources/js/app/components/tooltip.js",

@@ -44,6 +44,11 @@ return [
         'required' => 'Obrigatório',
         'allow_multiple' => 'Múltiplos',
         'description' => 'Descrição',
+        'start_date' => "Data de Inicio",
+        'reinstatement_date' => "Data de Restabelecimento",
+        'affected_area' => "Área afetada",
+        'delegation' => 'Delegação',
+        'scheduled' => 'Programada? ',
     ],
     'placeholders' => [
         'name'=> 'Nome Apelido',

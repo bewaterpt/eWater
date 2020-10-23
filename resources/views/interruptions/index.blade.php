@@ -3,7 +3,7 @@
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-11">
+        <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
                     @Lang('general.interruptions.interruptions')
@@ -12,36 +12,39 @@
                     </span>
                 </div>
                 <div class="card-body table-responsive">
-                    <table id="reports" class="table table-sm table-striped table-bordered" style="width: 100%">
+                    <table id="datatable-interruptions" class="table table-sm table-striped table-bordered order-column" style="width: 100%">
                         <thead class="thead-light">
                             <tr>
+                                <th class="text-center px-3 sorting-disabled">
+                                    <i class="fas fa-tools p-0 text-black"></i>
+                                </th>
                                 <th>
                                     @Lang('general.work_number')
                                 </th>
                                 <th>
-                                    @Lang('general.interruptions.affected_area')
-                                </th>
-                                <th>
                                     @Lang('general.start_date')
                                 </th>
-                                <th>
+                                <th class="limit-w-45">
+                                    @Lang('general.interruptions.affected_area')
+                                </th>
+                                <th class="limit-w-15">
                                     @Lang('general.interruptions.reinstatement_date')
                                 </th>
-                                <th>
-                                    @Lang('general.created_by')
-                                </th>
-                                <th class="text-center px-0">
-                                    <i class="fas fa-tools text-black sorting_disabled"></i>
+                                {{-- <th>
+                                    @Lang('general.coordinates')
+                                </th> --}}
+                                <th class="text-center ">
+                                    @Lang('general.type')
                                 </th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($interruptions as $interruption)
+                            {{-- @foreach($interruptions as $interruption)
                                 <tr>
                                     <td>
-                                        {{-- <a href="{{Route('daily_reports.view', ['id' => $report->id])}}"> --}}
+                                        {{-- <a href="{{Route('daily_reports.view', ['id' => $report->id])}}">
                                             {{ $interruption->work_id }}
-                                        {{-- </a> --}}
+                                        {{-- </a>
                                     </td>
                                     <td>
                                         {{ $interruption->affected_area }}
@@ -75,10 +78,10 @@
                                             @if($user['id'] !== 1)
                                                 <a href="{{Route('settings.users.delete', ['id' => $user['id']])}}" class="delete" title="@Lang('general.action_delete')"><i class="fas fa-trash-alt"></i></a>
                                             @endif
-                                        @endif --}}
+                                        @endif
                                     </td>
                                 </tr>
-                            @endforeach
+                            @endforeach --}}
                         </tbody>
                     </table>
                 </div>

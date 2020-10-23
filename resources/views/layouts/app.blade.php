@@ -103,13 +103,13 @@
                                         </a>
                                         <div class="dropdown-menu dropdown-menu" aria-labelledby="navbarDropdown">
                                             @if($pmodel->can('interruptions.list'))
-                                                <a class="dropdown-item {{ Route::currentRouteName() == 'interruptions.list' ? 'disabled active bg-primary text-light' : '' }}" href="{{ route('interruptions.list')}}">@lang('general.list_all')</a>
+                                                <a class="dropdown-item {{ Route::currentRouteName() == 'interruptions.list' ? 'disabled active bg-primary text-light' : '' }}" href="{{ route('interruptions.list')}}">@lang('general.interruptions.list_all')</a>
                                             @endif
                                             @if($pmodel->can('interruptions.list_unscheduled'))
-                                                <a class="dropdown-item {{ Route::currentRouteName() == 'interruptions.list_unscheduled' ? 'disabled active bg-primary text-light' : '' }}" href="{{ route('interruptions.list_unscheduled')}}">@lang('general.list_unscheduled')</a>
+                                                <a class="dropdown-item {{ Route::currentRouteName() == 'interruptions.list_unscheduled' ? 'disabled active bg-primary text-light' : '' }}" href="{{ route('interruptions.list_unscheduled')}}">@lang('general.interruptions.list_unscheduled')</a>
                                             @endif
                                             @if($pmodel->can('interruptions.list_scheduled'))
-                                                <a class="dropdown-item {{ Route::currentRouteName() == 'interruptions.list_scheduled' ? 'disabled active bg-primary text-light' : '' }}" href="{{ route('interruptions.list_scheduled')}}">@lang('general.list_scheduled')</a>
+                                                <a class="dropdown-item {{ Route::currentRouteName() == 'interruptions.list_scheduled' ? 'disabled active bg-primary text-light' : '' }}" href="{{ route('interruptions.list_scheduled')}}">@lang('general.interruptions.list_scheduled')</a>
                                             @endif
                                         </div>
                                     </li>
