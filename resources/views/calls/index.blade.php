@@ -128,7 +128,7 @@
         <div id="minMaxExternalMonthlyWaitTime">@Lang('charts.titles.min_max_monthly_wait_time_inbound')</div>
         <div id="averageExternalMonthlyWaitTime">@Lang('charts.titles.average_monthly_wait_time_inbound')</div>
         <div id="totalCallsByTypeAndMonthExcludeLost">@Lang('charts.titles.total_calls_type_month_not_lost')</div>
-        <div id="totalLostCallsByTypeAndMonth">@Lang('charts.titles.total_lost_calls_type_month_not_lost')</div>
+        <div id="totalLostCallsByTypeAndMonth">@Lang('charts.titles.total_lost_calls_type_month')</div>
     </div>
 </div>
 @endsection
