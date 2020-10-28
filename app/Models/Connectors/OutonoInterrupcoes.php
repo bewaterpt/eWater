@@ -10,7 +10,7 @@ class OutonoInterrupcoes extends Model
 
     protected $table = 'tbInterrupcoes';
 
-    protected $primaryKey = 'numObra';
+    protected $primaryKey = 'IdInterrupcoes';
 
     public $timestamps = false;
 }

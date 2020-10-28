@@ -229,7 +229,7 @@ class InterruptionController extends Controller
             // if ($this->permissionModel->can('interruptions.')) {
             //     $actions .= '<a class="text-info edit mr-1" href="' . route('daily_reports.view', ['id' => $row->id]) . '" title="'.trans('general.view').'"><i class="fas fa-eye"></i></a>';
             // }
-            if ($this->permissionModel->can('interruptions.edit') && $row->scheduled && !$row->trashed()) {
+            if ($this->permissionModel->can('interruptions.edit') && !$row->trashed()) {
                 $actions .= '<a class="text-primary edit px-1" href="' . route('interruptions.edit', ['id' => $row->id]) . '" title="'.trans('general.edit').'"><i class="fas fa-edit"></i></a>';
             }
 
@@ -339,5 +339,29 @@ class InterruptionController extends Controller
         $interruption->save();
 
         return redirect()->back()->with('success');
+    }
+
+    public function update(Request $request, $id) {
+        $user = Auth::user();
+
+        $interruption = Interruption::find($id);
+        $interruption->work_id = $request->work_id;
+        $interruption->start_date = $request->start_date;
+        $interruption->reinstatement_date = $request->reinstatement_date;
+        $interruption->delegation()->associate($request->delegation);
+        $interruption->user()->associate($user->id);
+        $interruption->affected_area = $request->affected_area;
+
+        $outonoInterruption = $interruption->scheduled ? OutonoInterrupcoesProg::find($interruption->outono_id) : OutonoInterrupcoes::find($interruption->outono_id);
+        $outonoInterruption->numObra = $request->work_id;
+        $outonoInterruption->dtInicio = Carbon::parse($request->start_date)->format('Y-m-d H:i:s.v');
+        $outonoInterruption->dtRestabelecimento = Carbon::parse($request->reinstatement_date)->format('Y-m-d H:i:s.v');
+        $outonoInterruption->areaAfectada = strip_tags($request->affected_area);
+        $outonoInterruption->save();
+
+        $interruption->synced = true;
+        $interruption->save();
+
+        return redirect(route($this->session->get('previous-rt')))->with('success');
     }
 }

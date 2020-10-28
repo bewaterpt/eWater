@@ -13,21 +13,17 @@
                         @csrf
                         <input type="hidden" name="users" id="users" />
                         <div class="form-row mb-2 justify-content-center">
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-6">
                                 <label for="inputWorkId">@Lang('forms.fields.work_number')</label>
                                 <input type="number" name="work_id" class="form-control" id="inputWorkId" value="{{ $interruption->work_id }}" required>
                             </div>
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-6">
                                 <label for="inputDelegation">@Lang('forms.fields.delegation')</label>
                                 <select name="delegation" id="inputDelegation" class="form-control">
                                     @foreach($delegations as $delegation)
                                         <option value="{{ $delegation->id }}" {{ $delegation->id === $interruption->delegation_id ? 'selected' : '' }}>{{ $delegation->designation }}</option>
                                     @endforeach
                                 </select>
-                            </div>
-                            <div class="form-group col-md-4 pt-4">
-                                <label for="inputScheduled">@Lang('forms.fields.scheduled')</label>
-                                <input type="checkbox" name="scheduled" class="mt-3" id="inputScheduled" {{ $interruption->scheduled ? 'checked' : '' }}>
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="inputStartDate">@Lang('forms.fields.start_date')</label>
