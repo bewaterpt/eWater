@@ -19,6 +19,7 @@
         "guzzlehttp/guzzle": "^7.0.1",
         "hashids/hashids": "^3.0",
         "hmazter/laravel-schedule-list": "^2.2",
+        "html2text/html2text": "^4.3",
         "intervention/image": "^2.5",
         "lab404/laravel-impersonate": "^1.7",
         "laravel/framework": "^8.0",

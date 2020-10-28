@@ -39,7 +39,7 @@ $(() => {
             autoWidth: false,
             processing: true,
             serverSide: true,
-            ajax: '/interruptions',
+            ajax: window.location.pathname,
             // lengthMenu: [[10, 50, 100], [10, 50, 100]],
             // displayLength: 10,
             // pagingType: 'simple',

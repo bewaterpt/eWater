@@ -3,6 +3,8 @@ namespace App\Helpers;
 
 use App\Models\DailyReports\ReportLine;
 use App\Models\DailyReports\Report;
+use Illuminate\Support\Carbon;
+
 class Helper {
 
     public static function weightedAverage($values) {
@@ -278,6 +280,11 @@ class Helper {
         $seconds = $totalSeconds;
 
         return ($calculateDays ? $days . "d, ": "") . ($hours !== 0 ? ($hours < 10 ? "0" : "") . intval($hours) . "h:": "") . ($minutes !== 0 ? ($minutes < 10 ? "0" : "") . intval($minutes) . "m:" : "") . ($calculateSeconds ? ($seconds < 10 ? "0" : "") . intval($seconds) . "s" : "");
+    }
+
+    public function getISODate(Carbon $carbonInstance): string {
+        $date = $carbonInstance->format('Y-m-d') . 'T' . $carbonInstance->format('H:i:s');
+        return $date;
     }
 }
 

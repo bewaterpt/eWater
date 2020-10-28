@@ -23,33 +23,38 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-    protected $user;
+    protected $currentUser;
     protected $userRoles;
     protected $permissionModel;
     protected $statusModel;
     protected $isLoggedIn = false;
     protected $helper;
     protected $impersonationManager;
+    protected $isImpersonating;
+    protected $impersonator;
+    protected $session;
 
     public function __construct() {
         $this->middleware(function($request, $next) {
+            $this->currentUser = Auth::user();
             $this->permissionModel = new Permission;
             $this->statusModel = new Status;
             $this->helper = new Helper;
             $this->impersonationManager = app('impersonate');
-            $isImpersonating = $this->impersonationManager->isImpersonating();
-            $impersonator = false;
+            $this->isImpersonating = $this->impersonationManager->isImpersonating();
+            $this->impersonator = false;
+            $this->session = session();
 
-            if ($isImpersonating) {
-                $impersonator = User::find($this->impersonationManager->getImpersonatorId());
+            if ($this->isImpersonating) {
+                $this->impersonator = User::find($this->impersonationManager->getImpersonatorId());
             }
 
             View::share('pmodel', $this->permissionModel);
             View::share('helpers', $this->helper);
             View::share('currentUser', Auth::user());
             View::share('carbon', new Carbon());
-            View::share('isImpersonating', $isImpersonating);
-            View::share('impersonator', $impersonator);
+            View::share('isImpersonating', $this->isImpersonating);
+            View::share('impersonator', $this->impersonator);
 
             return $next($request);
         });
