@@ -81,11 +81,11 @@
                                         </a>
                                         {{-- {{dd(Route::currentRouteName())}} --}}
                                         <div class="dropdown-menu dropdown-menu" aria-labelledby="navbarDropdown">
-                                            @if($pmodel->can('daily_reports.list'))
-                                                <a class="dropdown-item {{ Route::currentRouteName() == 'daily_reports.list' ? 'disabled active bg-primary text-light' : '' }}" href="{{ route('daily_reports.list')}}">@lang('general.daily_reports.list')</a>
-                                            @endif
                                             @if($pmodel->can('daily_reports.create'))
                                                 <a class="dropdown-item {{ Route::currentRouteName() == 'daily_reports.create' ? 'disabled active bg-primary text-light' : '' }}" href="{{ route('daily_reports.create')}}">@lang('general.daily_reports.create')</a>
+                                            @endif
+                                            @if($pmodel->can('daily_reports.list'))
+                                                <a class="dropdown-item {{ Route::currentRouteName() == 'daily_reports.list' ? 'disabled active bg-primary text-light' : '' }}" href="{{ route('daily_reports.list')}}">@lang('general.daily_reports.list')</a>
                                             @endif
                                             {{-- @if($pmodel->can('daily_reports.pending'))
                                                 <a class="dropdown-item {{Route::currentRouteName() == 'daily_reports.pending' ? 'active disabled' : ''}}" href="{{ route('daily_reports.pending')}}">@lang('general.daily_reports.pending')</a>
@@ -102,6 +102,9 @@
                                             @Lang('general.interruptions.interruptions') <span class="caret"></span>
                                         </a>
                                         <div class="dropdown-menu dropdown-menu" aria-labelledby="navbarDropdown">
+                                            @if($pmodel->can('interruptions.create'))
+                                                <a class="dropdown-item {{ Route::currentRouteName() == 'interruptions.create' ? 'disabled active bg-primary text-light' : '' }}" href="{{ route('interruptions.create')}}">@lang('general.interruptions.create')</a>
+                                            @endif
                                             @if($pmodel->can('interruptions.list'))
                                                 <a class="dropdown-item {{ Route::currentRouteName() == 'interruptions.list' ? 'disabled active bg-primary text-light' : '' }}" href="{{ route('interruptions.list')}}">@lang('general.interruptions.list_all')</a>
                                             @endif
