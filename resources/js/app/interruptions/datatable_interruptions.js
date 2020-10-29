@@ -1,4 +1,10 @@
 $(() => {
+    let loadingHTML = '<div class="loading-cpage">'+
+                          '<svg id="load" x="0px" y="0px" viewBox="0 0 150 150">'+
+                              '<circle id="loading-inner" cx="75" cy="75" r="60"/>'+
+                          '</svg>'+
+                      '</div>';
+
     if ($("#datatable-interruptions").length > 0) {
         window.datatable_calls = $("#datatable-interruptions").DataTable({
             responsive: true,

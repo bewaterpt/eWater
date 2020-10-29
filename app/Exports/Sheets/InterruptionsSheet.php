@@ -2,12 +2,13 @@
 namespace App\Exports\Sheets;
 
 use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\WithTitle;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use App\Models\Interruption;
 
-class InterruptionsSheet implements FromCollection, WithTitle, WithMapping, WithHeadings
+class InterruptionsSheet implements FromArray, WithTitle, WithMapping, WithHeadings
 {
     private $name;
     private $scheduled;
@@ -23,15 +24,24 @@ class InterruptionsSheet implements FromCollection, WithTitle, WithMapping, With
     /**
      * @return Builder
      */
-    public function collection()
-    {
+    public function array(): array {
+        $inter = [
+            'start_date' => '',
+            'affected_area' => '',
+            'reinstatement_date' => '',
+        ];
 
         // dd($this->limit);
+
+        // dd(Interruption::all()
+        // ->where('scheduled', $this->scheduled)
+        // ->sortByDesc('id')
+        // ->take($this->limit)->prepend($inter)->toArray());
 
         return Interruption::all()
             ->where('scheduled', $this->scheduled)
             ->sortByDesc('id')
-            ->take($this->limit);
+            ->take($this->limit)->prepend($inter)->toArray();
     }
 
     /**
@@ -44,9 +54,9 @@ class InterruptionsSheet implements FromCollection, WithTitle, WithMapping, With
 
     public function map($interruption): array {
         return [
-            $interruption->start_date,
-            strip_tags($interruption->affected_area),
-            $interruption->reinstatement_date
+            $interruption['start_date'],
+            strip_tags($interruption['affected_area']),
+            $interruption['reinstatement_date']
         ];
     }
 
