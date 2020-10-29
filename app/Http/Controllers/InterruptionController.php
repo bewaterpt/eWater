@@ -258,6 +258,7 @@ class InterruptionController extends Controller
                 'reinstatement_date' => $row->reinstatement_date,
                 // 'coordinates' => $row->coordinates ? $row->coordinates : 'N/A',
                 'scheduled' => $type,
+                'outono_id' => $row->outono_id
             ];
         }
 
@@ -306,6 +307,9 @@ class InterruptionController extends Controller
 
     public function edit($id) {
         $delegations = Delegation::all();
+        $url = url()->previous();
+        $route = app('router')->getRoutes($url)->match(app('request')->create($url))->getName();
+        $this->session->put('previous-rt', $route);
 
         return view('interruptions.edit', ['delegations' => $delegations, 'interruption' => Interruption::find($id)]);
     }

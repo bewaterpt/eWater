@@ -72,6 +72,7 @@ class SyncInterruptions extends Command
                     $newInterruption->updated_at = Carbon::now();
                     $newInterruption->affected_area = $interruption->areaAfectada;
                     $newInterruption->coordinates = null;
+                    $newInterruption->outono_id = $interruption->IdInterrupcoes;
                     $newInterruption->save();
                     $newInterruptions->push($newInterruption);
                     $bar->advance();

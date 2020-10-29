@@ -62513,6 +62513,11 @@ $(function () {
         name: 'scheduled',
         searchable: false,
         calss: 'sorting-disabled text-center'
+      }, {
+        data: 'outono_id',
+        name: 'outono_id',
+        searchable: false,
+        calss: 'sorting-disabled text-center'
       }],
       drawCallback: function drawCallback(settings) {
         var data = this.api().ajax.json(); // if(data){
