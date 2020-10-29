@@ -142,7 +142,6 @@ class GetCDRRecords extends Command
         $rowCount = 0;
         $cdrs = [];
         $this->comment('Done');
-        // (new CDRRecordImport($pbx->id))->withOutput($this->output)->import($tempFile);
 
         $this->info('Counting Rows');
         foreach ($reader->getSheetIterator() as $sheet) {
@@ -156,13 +155,12 @@ class GetCDRRecords extends Command
         foreach ($reader->getSheetIterator() as $sheet) {
 
             $rows = $sheet->getRowIterator();
-            // dd($rows);
             $bar = $this->output->createProgressBar($rowCount);
             $bar->start();
 
             foreach ($rows as $row) {
                 if ($index !== 0) {
-                    // do stuff with the row
+
                     $cells = $row->getCells();
 
                     if(sizeOf($cdrs) === 500) {

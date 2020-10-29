@@ -28,6 +28,7 @@ class Kernel extends ConsoleKernel
         Commands\SyncArticles::class,
         Commands\SyncPermissions::class,
         Commands\SyncReports::class,
+        Commands\SyncInterruptions::class,
     ];
 
     /**
@@ -44,6 +45,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('permissions:update')->dailyAt('08:00');
         $schedule->command('roles:update')->dailyAt('08:05');
         $schedule->command('file:cleartemp')->dailyAt('04:00');
+        $schedule->command('interruptions:update')->dailyAt('05:00');
         // $schedule->command('reports:sync')->hourly();
     }
 

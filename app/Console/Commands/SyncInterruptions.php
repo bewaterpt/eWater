@@ -22,7 +22,7 @@ class SyncInterruptions extends Command
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Imports interruptions from the Outono 2005 app';
 
     /**
      * Create a new command instance.
@@ -47,11 +47,11 @@ class SyncInterruptions extends Command
         $newInterruptions = collect([]);
 
         if (Interruption::where('scheduled', false)->first()) {
-            $unscheduledInterruptions->where('dtInicio', '>', Interruption::where('scheduled', false)->latest('start_date')->first()->start_date);
+            $unscheduledInterruptions->where('IdInterrupcoes', '>', Interruption::where('scheduled', false)->latest('outono_id')->first()->outono_id);
         }
 
         if (Interruption::where('scheduled', true)->first()) {
-            $scheduledInterruptions->where('dtInicio', '>', Interruption::where('scheduled', true)->latest('start_date')->first()->start_date);
+            $scheduledInterruptions->where('IdInterrupcoesProg', '>', Interruption::where('scheduled', true)->latest('outono_id')->first()->outono_id);
         }
 
         if ($unscheduledInterruptions->count() > 0) {
@@ -112,6 +112,7 @@ class SyncInterruptions extends Command
 
             $bar->finish();
         } else {
+            $this->info('');
             $this->comment('No scheduled interruptions to synchronize');
         }
 

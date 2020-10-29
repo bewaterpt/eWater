@@ -32,7 +32,7 @@ return [
         | Configure e.g. delimiter, enclosure and line ending for CSV exports.
         |
         */
-        'csv'                    => [
+        'csv' => [
             'delimiter'              => ',',
             'enclosure'              => '"',
             'line_ending'            => PHP_EOL,
@@ -164,7 +164,7 @@ return [
         | storing reading or downloading. Here you can customize that path.
         |
         */
-        'local_path'  => storage_path()."/temp",
+        'local_path'  => storage_path('app')."/temp",
 
         /*
         |--------------------------------------------------------------------------
