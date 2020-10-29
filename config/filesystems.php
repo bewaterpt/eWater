@@ -61,6 +61,7 @@ return [
             'port' => env('INTERRUPTION_FTP_PORT', '990'),
             'passive' => env('INTERRUPTION_FTP_PASSIVE', true),
             'ssl' => env('INTERRUPTION_FTP_SSL', true),
+            'timeout' => 30,
         ],
 
         'public' => [
