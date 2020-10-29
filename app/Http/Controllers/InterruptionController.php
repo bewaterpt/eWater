@@ -9,6 +9,7 @@ use App\Models\Connectors\OutonoInterrupcoesProg;
 use App\Models\Connectors\OutonoInterrupcoes;
 use App\Models\Delegation;
 use Auth;
+use Illuminate\Support\Facades\Artisan;
 
 class InterruptionController extends Controller
 {
@@ -298,6 +299,8 @@ class InterruptionController extends Controller
         $interruption->synced = true;
         $interruption->save();
 
+        Artisan::call('interruptions:export');
+
         return redirect(route($this->session->get('previous-rt')))->with('success');
     }
 
@@ -359,8 +362,11 @@ class InterruptionController extends Controller
         $outonoInterruption->areaAfectada = strip_tags($request->affected_area);
         $outonoInterruption->save();
 
+
         $interruption->synced = true;
         $interruption->save();
+
+        Artisan::call('interruptions:export');
 
         return redirect(route($this->session->get('previous-rt')))->with('success');
     }
