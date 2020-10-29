@@ -54,8 +54,13 @@ return [
         ],
 
         'interruptions' => [
-            'driver' => 'local',
-            'root' => '/mnt/interruptions'
+            'driver' => 'ftp',
+            'host' => env('INTERRUPTION_FTP_HOST', 'ftp.bewater.com.pt'),
+            'username' => env('INTERRUPTION_FTP_USERNAME', 'ourem'),
+            'password' => env('INTERRUPTION_FTP_PASSWORD', 'bewater'),
+            'port' => env('INTERRUPTION_FTP_PORT', '990'),
+            'passive' => env('INTERRUPTION_FTP_PASSIVE', true),
+            'ssl' => env('INTERRUPTION_FTP_SSL', true),
         ],
 
         'public' => [
