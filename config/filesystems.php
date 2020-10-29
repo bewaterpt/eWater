@@ -54,13 +54,11 @@ return [
         ],
 
         'interruptions' => [
-            'driver' => 'ftp',
-            'host' => env('INTERRUPTION_FTP_HOST', 'ftp.bewater.com.pt'),
-            'username' => env('INTERRUPTION_FTP_USERNAME', 'ourem'),
-            'password' => env('INTERRUPTION_FTP_PASSWORD', 'bewater'),
-            'port' => env('INTERRUPTION_FTP_PORT', '990'),
-            'passive' => env('INTERRUPTION_FTP_PASSIVE', false),
-            'ssl' => env('INTERRUPTION_FTP_SSL', false),
+            'driver' => 'sftp',
+            'host' => env('INTERRUPTION_SFTP_HOST', 'ftp.bewater.com.pt'),
+            'username' => env('INTERRUPTION_SFTP_USERNAME', 'ourem'),
+            'password' => env('INTERRUPTION_SFTP_PASSWORD', 'bewater'),
+            'port' => env('INTERRUPTION_SFTP_PORT', '990'),
             'timeout' => 30,
         ],
 
