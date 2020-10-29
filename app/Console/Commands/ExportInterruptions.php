@@ -40,6 +40,6 @@ class ExportInterruptions extends Command
      */
     public function handle()
     {
-        Excel::store(new InterruptionsExport(10), 'comunicados.xls', 'interruptions');
+        Excel::store(new InterruptionsExport(10), 'comunicados.xls', 'interruptions', \Maatwebsite\Excel\Excel::XLS);
     }
 }
