@@ -26,6 +26,7 @@ class InterruptionsSheet implements FromArray, WithTitle, WithMapping, WithHeadi
      */
     public function array(): array {
         $inter = [
+            'scheduled' => '',
             'start_date' => '',
             'affected_area' => '',
             'reinstatement_date' => '',
@@ -54,7 +55,7 @@ class InterruptionsSheet implements FromArray, WithTitle, WithMapping, WithHeadi
 
     public function map($interruption): array {
         return [
-            '',
+            $interruption['scheduled'],
             $interruption['start_date'],
             strip_tags($interruption['affected_area']),
             $interruption['reinstatement_date']
@@ -63,7 +64,7 @@ class InterruptionsSheet implements FromArray, WithTitle, WithMapping, WithHeadi
 
     public function headings(): array {
         return [
-            '',
+            'scheduled',
             'DataInicio',
             'AreaAfectada',
             'DataRestabelecimento',
