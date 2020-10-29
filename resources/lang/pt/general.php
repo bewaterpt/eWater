@@ -85,6 +85,7 @@ return [
         'next_report' => 'Relatório Seguinte',
     ],
     'interruptions' => [
+        'create' => 'Criar Interrupção',
         'list_all' => 'Listar todas',
         'list_scheduled' => 'Listar programadas',
         'list_unscheduled' => 'Listar não programadas',
