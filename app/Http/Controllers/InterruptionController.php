@@ -322,6 +322,8 @@ class InterruptionController extends Controller
 
         $interruption->delete();
 
+        Artisan::call('interruptions:export');
+
         return redirect()->back()->with('success');
     }
 
@@ -340,6 +342,8 @@ class InterruptionController extends Controller
         $interruption->restore();
         $interruption->outono_id = $outonoInterruption->{$outonoInterruption->getKeyName()};
         $interruption->save();
+
+        Artisan::call('interruptions:export');
 
         return redirect()->back()->with('success');
     }
