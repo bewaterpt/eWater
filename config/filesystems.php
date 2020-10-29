@@ -54,12 +54,8 @@ return [
         ],
 
         'interruptions' => [
-            'driver' => 'sftp',
-            'host' => env('INTERRUPTION_SFTP_HOST', 'ftp.bewater.com.pt'),
-            'username' => env('INTERRUPTION_SFTP_USERNAME', 'ourem'),
-            'password' => env('INTERRUPTION_SFTP_PASSWORD', 'bewater'),
-            'port' => env('INTERRUPTION_SFTP_PORT', '990'),
-            'timeout' => 30,
+            'driver' => 'local',
+            'root' => '/mnt/interruptions'
         ],
 
         'public' => [
