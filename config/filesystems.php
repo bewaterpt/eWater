@@ -59,8 +59,8 @@ return [
             'username' => env('INTERRUPTION_FTP_USERNAME', 'ourem'),
             'password' => env('INTERRUPTION_FTP_PASSWORD', 'bewater'),
             'port' => env('INTERRUPTION_FTP_PORT', '990'),
-            'passive' => env('INTERRUPTION_FTP_PASSIVE', true),
-            'ssl' => env('INTERRUPTION_FTP_SSL', true),
+            'passive' => env('INTERRUPTION_FTP_PASSIVE', false),
+            'ssl' => env('INTERRUPTION_FTP_SSL', false),
             'timeout' => 30,
         ],
 
