@@ -120,7 +120,7 @@ class User extends Authenticatable implements LdapAuthenticatable
     }
 
     public function delegation() {
-        return $this->hasOne('App\Models\Delegation');
+        return $this->belongsTo('App\Models\Delegation');
     }
 
     public function reports() {
