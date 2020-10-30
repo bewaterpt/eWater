@@ -79,5 +79,6 @@ class ExportInterruptions extends Command
         // dd($inters);
 
         Excel::store(new InterruptionsExport(10), 'comunicados.xls', 'interruptions', \Maatwebsite\Excel\Excel::XLS);
+        shell_exec('python '.base_path('scripts\scpInterruptionsToWebsite.py'));
     }
 }
