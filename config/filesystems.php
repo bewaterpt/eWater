@@ -55,7 +55,7 @@ return [
 
         'interruptions' => [
             'driver' => 'local',
-            'root' => '/mnt/interruptions'
+            'root' => storage_path('app')."/interruptions"
         ],
 
         'public' => [

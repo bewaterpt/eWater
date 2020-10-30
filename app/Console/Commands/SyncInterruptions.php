@@ -73,6 +73,7 @@ class SyncInterruptions extends Command
                     $newInterruption->affected_area = $interruption->areaAfectada;
                     $newInterruption->coordinates = null;
                     $newInterruption->outono_id = $interruption->IdInterrupcoes;
+                    $newInterruption->synced = true;
                     $newInterruption->save();
                     $newInterruptions->push($newInterruption);
                     $bar->advance();
@@ -105,6 +106,7 @@ class SyncInterruptions extends Command
                     $newInterruption->affected_area = $interruption->areaAfectada;
                     $newInterruption->coordinates = null;
                     $newInterruption->outono_id = $interruption->IdInterrupcoesProg;
+                    $newInterruption->synced = true;
                     $newInterruption->save();
                     $newInterruptions->push($newInterruption);
                     $bar->advance();
