@@ -95,10 +95,10 @@ class DailyReportController extends Controller
                     continue;
                 }
 
-                if ($searchCol['name'] === 'id') {
-                    $reports->where($searchCol['name'], 'rlike', $searchCol['value']);
-                    continue;
-                }
+                // if ($searchCol['name'] === 'id') {
+                //     $reports->where($searchCol['name'], 'rlike', $searchCol['value']);
+                //     continue;
+                // }
 
                 if ($searchCol['name'] === 'entry_date') {
                     $reports->join('report_lines as rl', 'rl.report_id', 'reports.id')
@@ -235,7 +235,12 @@ class DailyReportController extends Controller
             $rows = [];
 
             foreach ($works as $workNumber => $workData) {
-
+                // if (!OutonoObras::exists($workNumber)) {
+                //     return json_encode([
+                //         'code' => 404,
+                //         'message' => __()
+                //     ]);
+                // }
                 foreach ($workData as $reportRow) {
                     // if($workNumber != 0) {
                         $rows[] = [
