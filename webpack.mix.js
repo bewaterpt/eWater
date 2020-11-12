@@ -39,6 +39,7 @@ mix.sass('resources/sass/app.scss', 'public/css')
     "resources/js/app/calls/datatables_calls.js",
     "resources/js/app/settings/roles/datatables_roles.js",
     "resources/js/app/utility/fixes.js",
+    "resources/js/app/settings/forms/forms.js",
 ], "public/js/app.js").babel([
     // app.js General Script
     "resources/js/app.js",
@@ -62,11 +63,13 @@ mix.sass('resources/sass/app.scss', 'public/css')
     "resources/js/app/calls/datatables_calls.js",
     "resources/js/app/settings/roles/datatables_roles.js",
     "resources/js/app/utility/fixes.js",
+    "resources/js/app/settings/forms/forms.js",
 ], "public/js/app.es5.js")
 .extract([
     'datatables.net',
     'datatables.net-dt',
     'datatables.net-bs4',
+    'datatables.net-colreorder',
     // 'bootstrap-colorpicker',
     '@fortawesome/fontawesome-free',
     'bootstrap',
