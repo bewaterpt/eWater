@@ -260,7 +260,27 @@ $(() => {
 
                     link.click();
                     document.body.removeChild(link);
-                    $('#modalExport').modal('hide');
+                    $('#modalSpinner').modal('hide');
+                }
+            });
+        });
+
+        $('#reloadCallData').on('click', () => {
+            $.ajax({
+                url: '/calls/reload',
+                success: (response) => {
+
+                    window.datatable_calls.draw();
+                    getmonthlyWaitTimeInfo().catch((msg) => {
+                        alert(msg);
+                    });
+                    getMonthlyCallVolume().catch((msg) => {
+                        alert(msg);
+                    });
+                    $('#modalSpinner').modal('hide');
+                },
+                error: (err) => {
+                    alert(err.message);
                 }
             });
         });

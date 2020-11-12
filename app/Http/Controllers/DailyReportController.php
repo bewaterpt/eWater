@@ -303,15 +303,10 @@ class DailyReportController extends Controller
             return redirect()->back()->withErrors(__('errors.report_not_found', ['reportId' => $reportId]), 'custom');
         }
 
-        if (!$user->teams()->get()->contains($report->team_id)) {
+        if (!$user->teams()->get()->contains($report->team_id) && !$user->isAdmin()) {
             return redirect()->back()->withErrors(__('errors.dont_belong_to_report_team', ['reportId' => $reportId]), 'custom');
         }
 
-        // // if ($report->creator()->first()->id !== $user->id && !$this->statusModel->userCanProgress($report->getCurrentStatus()->first()->id)) {
-        // //     return redirect(route('daily_reports.list'))->withErrors(__('auth.permission_denied', ['route' => $request->path()]), 'custom');
-        // // }
-
-        // // dd($report->lines()->get()->groupBy('work_number'));
         $processStatuses = $report->processStatus()->orderBy('created_at', 'desc')->orderBy('id', 'desc')->get();
 
 

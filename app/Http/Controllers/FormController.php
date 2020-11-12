@@ -17,4 +17,9 @@ class FormController extends Controller
     public function create() {
         return view('settings.forms.create');
     }
+
+    public function store(Request $request) {
+        dd($request->input());
+        return redirect();
+    }
 }

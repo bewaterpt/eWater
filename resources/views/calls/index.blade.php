@@ -30,18 +30,21 @@
             <div class="card">
                 <div class="card-header">
                     @Lang('calls.pbx.list')
-                    <span class="float-right">
-                        <div class="dropdown show">
-                            <a class="text-primary dropdown-toggle" id="exportSelector" href="#" target="_blank" data-backdrop="false" data-keyboard="false" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="button">
+                    <div class="float-right">
+                        <a class="text-primary float-left mr-3" id="reloadCallData" href="#" data-toggle="modal" data-target="#modalSpinner">
+                            <i class="fas fa-sync"></i>
+                        </a>
+                        <div class="dropdown show float-right">
+                            <a class="text-primary dropdown-toggle" id="exportSelector" href="#" data-backdrop="false" data-keyboard="false" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="button">
                                 <i class="fas fa-file-export"></i>
                             </a>
                             <div id="export" class="dropdown-menu min-w-0" aria-labelledby="exportSelector">
-                                <a class="text-primary dropdown-item" href="{{ route('calls.export') }}" data-toggle="modal" data-target="#modalExport"><i class="fas fa-file-csv"></i> CSV</a>
-                                <a class="text-primary dropdown-item" href="{{ route('calls.export', ['filetype' => 'xlsx']) }}" data-toggle="modal" data-target="#modalExport"><i class="fas fa-file-excel"></i> XLSX</a>
+                                <a class="text-primary dropdown-item" href="{{ route('calls.export') }}" data-toggle="modal" data-target="#modalSpinner"><i class="fas fa-file-csv"></i> CSV</a>
+                                <a class="text-primary dropdown-item" href="{{ route('calls.export', ['filetype' => 'xlsx']) }}" data-toggle="modal" data-target="#modalSpinner"><i class="fas fa-file-excel"></i> XLSX</a>
                                 {{-- <a class="text-primary dropdown-item" href="{{ route('calls.export', ['filetype' => 'pdf']) }}" data-toggle="modal" data-target="#modalExport"><i class="fas fa-file-pdf"></i> PDF</a> --}}
                             </div>
                         </div>
-                    </span>
+                    </div>
                 </div>
                 <div class="card-body table-responsive">
                     <table id="datatable-calls" class="object-table table table-sm table-striped" style="width: 100%">
@@ -51,8 +54,8 @@
                                     <i class="fas fa-tools text-black sorting_disabled"></i>
                                 </th> --}}
                                 <th>
-                                    <div class="p-0">
-                                        <input type="date" class="form-control filter-col unstyled" data-col="timestart" data-onload="date">
+                                    <div class="p-0 filter-col">
+                                        {{-- <input type="date" class="form-control filter-col unstyled" data-col="timestart" data-onload="date"> --}}
                                     </div>
                                 </th>
                                 <th>
@@ -66,18 +69,15 @@
                                     </div>
                                 </th>
                                 <th>
-                                    <div class="p-0">
-                                        <input type="text" class="form-control filter-col" data-col="callduration">
+                                    <div class="p-0 filter-col">
                                     </div>
                                 </th>
                                 <th>
-                                    <div class="p-0">
-                                        <input type="text" class="form-control filter-col" data-col="talkduration">
+                                    <div class="p-0 filter-col">
                                     </div>
                                 </th>
                                 <th>
-                                    <div class="p-0">
-                                        <input type="text" class="form-control filter-col" data-col="waitduration">
+                                    <div class="p-0 filter-col">
                                     </div>
                                 </th>
                                 <th>
@@ -176,7 +176,7 @@
             </div>
         </div>
     </div>
-    @include('calls.modals.modal_export')
+    @include('layouts.partials.modal_spinner')
     <div id="labels" class="d-none">
         <div id="averageMonthlyWaitTime">@Lang('charts.labels.average_wait_time_in_sec')</div>
         <div id="weightedAverageMonthlyWaitTime">@Lang('charts.labels.weighted_average_wait_time_in_sec')</div>

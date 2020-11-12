@@ -3,6 +3,7 @@
 namespace App\Models\Connectors;
 
 use Illuminate\Database\Eloquent\Model;
+use phpDocumentor\Reflection\Types\Boolean;
 
 class OutonoObras extends Model
 {
@@ -32,5 +33,26 @@ class OutonoObras extends Model
 
     public function executionStateText() {
         return strtolower($this->belongsTo('App\Models\Connectors\OutonoEstadosExecucao', 'codEstadoExecucao')->first()->descricao);
+    }
+
+    public static function exists(int $workId) {
+        $data = [
+            'reason' => 'Unknown',
+            'value' => true,
+        ];
+
+        $work = OutonoObras::find($workId);
+
+        if(!$work) {
+            $data['value'] = false;
+            $data['reason'] = 'not-found';
+            $data['code'] = 404;
+        } else {
+            $data['value'] = $work->active();
+            $data['reason'] = $work->executionStateText();
+            $data['code'] = 302;
+        }
+
+        return self::find($workId) != null;
     }
 }

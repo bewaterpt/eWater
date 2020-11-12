@@ -15,7 +15,7 @@ class WorkController extends Controller
     public function workExists(Request $request) {
         $data = [
             'reason' => 'Unknown',
-            'value' => true,
+            'value' => false,
         ];
 
         $work = OutonoObras::find($request->json('id'));

@@ -59,7 +59,7 @@ $(() => {
             form = event.currentTarget;
             jQForm = $(event.currentTarget);
 
-            $(jQForm).find('.select-field').each((i, select) => {
+            jQForm.find('.select-field').each((i, select) => {
                 input = $(select).parents('.field').find('input[name="options[]"]')
                 console.log('Index: ', i);
                 input.val('');
@@ -77,10 +77,15 @@ $(() => {
 
             let formData = jQForm.serializeObject();
 
+            console.log('Form Data: ', formData);
+
             $.ajax({
                 method: 'POST',
                 url: '/test',
-                data: JSON.stringify(formData)
+                data: JSON.stringify(formData),
+                beforeSend: function(request) {
+                    request.setRequestHeader("Content-type", 'application/json');
+                },
             });
 
             console.log(formData);

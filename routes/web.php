@@ -166,6 +166,7 @@ Route::group(['middleware' => ['web']], function () {
 
             Route::get('calls', 'Yealink\CallController@index')->name('calls.list');
             Route::get('calls/pbx', 'Yealink\CallController@pbxList')->name('calls.pbx.list');
+            Route::get('calls/refetch', 'Yealink\CallController@refetch')->name('calls.refetch');
             Route::get('calls/pbx/create', 'Yealink\CallController@create')->name('calls.pbx.create');
             Route::post('calls/pbx/store', 'Yealink\CallController@store')->name('calls.pbx.store');
             Route::get('calls/pbx/edit/{id}', 'Yealink\CallController@edit')->name('calls.pbx.edit');

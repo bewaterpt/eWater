@@ -14,17 +14,29 @@ function ISODateString(d){
     // + pad(d.getUTCSeconds())+'Z'
 }
 
-function getToday() {
-    return ISODateString(new Date());
+function ISODateTimeString(d){
+    function pad(n){return n<10 ? '0'+n : n}
+    return d.getUTCFullYear()+'-'
+    + pad(d.getUTCMonth()+1)+'-'
+    + pad(d.getUTCDate())
+    + 'T'+pad(d.getUTCHours())+':'
+    + pad(d.getUTCMinutes()) + ':'
+    + pad(d.getUTCSeconds());
 }
 
-function setMax(el) {
-    $(el).attr('max', getToday());
+function setMaxDate(el) {
+    $(el).attr('max', ISODateString(new Date()));
+}
+
+function setMaxDateTime(el) {
+    $(el).attr('max', ISODateTimeString(new Date()));
 }
 
 function customOnload(el, type) {
     if (type == 'date') {
-        setMax(el);
+        setMaxDate(el);
+    } else if (tyoe == 'datetime') {
+        setMaxDateTime(el);
     }
 }
 
@@ -118,4 +130,8 @@ function decimalSecondsToTimeValue(totalSeconds) {
 	seconds = totalSeconds;
 
     return (hours !== 0 ? (hours < 10 ? "0" : "") + parseInt(hours) + ':' : '') + (minutes < 10 ? "0" : "") + parseInt(minutes) + ':' + (seconds < 10 ? "0" : "") + parseInt(seconds);
+}
+
+function normalizeFormFieldsForPost(serializedFields) {
+
 }

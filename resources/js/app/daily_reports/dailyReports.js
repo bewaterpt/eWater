@@ -289,7 +289,7 @@ $(() => {
                 },
             });
 
-            $(work).find('input.work-number').on('keydown keyup', (evt) => {
+            $(work).find('input.work-number').on('keydown keyup change', (evt) => {
                 checkWorkExists(evt);
             });
             // window.scrollTo(0, document.body.scrollHeight || document.documentElement.scrollHeight);

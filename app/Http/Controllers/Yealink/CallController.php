@@ -32,12 +32,27 @@ class CallController extends Controller
 
     protected $dateFormat = 'Y-m-d H:i:s';
 
-    protected $operators = [
-        'timestart' => 'like',
-        'callfrom' => '=',
+    private $operators = [
+        'timestart' => 'rlike',
+        'callfrom' => 'like',
         'callto' => 'like',
-        'type' => '='
+        'callduration' => 'like',
+        'talkduration' => 'like',
+        'waitduration' => 'like',
+        'status' => 'like',
+        'type' => 'like',
     ];
+
+    // private $logicalOps = [
+    //     'timestart' => 'like',
+    //     'callfrom' => 'like',
+    //     'callto' => 'like',
+    //     'callduration' => 'like',
+    //     'talkduration' => 'like',
+    //     'waitduration' => 'like',
+    //     'status' => 'like',
+    //     'type' => 'like',
+    // ];
 
     public function __construct() {
         parent::__construct();
@@ -84,6 +99,7 @@ class CallController extends Controller
     public function index(Request $request) {
         $helper = new Helper();
         if ($request->ajax()) {
+            // dd($request->input());
             $input = $request->input();
 
             // Get datatable values for sorting, limit and offset
@@ -120,27 +136,30 @@ class CallController extends Controller
                     ->where('cdrTrans.status', 'ANSWERED');
 
             foreach ($searchCols as $searchCol) {
-                $op = $this->operators[$searchCol['name']];
-                $cdrs->where('cdrTrans.'.$searchCol['name'], $op, ($op == 'like' || $op == 'rlike' ? '%' :'') . $searchCol['value'] . ($op == 'like' || $op == 'rlike' ? '%' :''));
+                $op = isset($this->operators[$searchCol['name']]) ? $this->operators[$searchCol['name']] : 'like';
+                $cdrs->where('cdrTrans.'.$searchCol['name'], $op, ($op == 'like' ? '%' :'') . $searchCol['value'] . ($op == 'like' ? '%' :''));
             }
 
-            $cdrs = DB::table('cdr_records as cdrInb')
+            $cdrs2 = DB::table('cdr_records as cdrInb')
                     ->select('cdrInb.*')
                     ->where('cdrInb.type', 'Inbound')
                     ->whereBetween('cdrInb.timestart', [Carbon::now()->subMonths(12)->format($this->dateFormat), Carbon::now()->format($this->dateFormat)])
                     ->whereNotIn('cdrInb.callto', [6501, 6502])
                     ->where('cdrInb.callto', 'rlike', $this->agentsForQuery)
-                    ->where('cdrInb.status', 'ANSWERED')
-                    ->union($cdrs)
+                    ->where('cdrInb.status', 'ANSWERED');
 
-                    ->orderBy($sortCol, $sortDir); // set order
 
 
             foreach ($searchCols as $searchCol) {
-                $op = $this->operators[$searchCol['name']];
-                $cdrs->where($searchCol['name'], $op, ($op == 'like' || $op == 'rlike' ? '%' :'') . $searchCol['value'] . ($op == 'like' || $op == 'rlike' ? '%' :''));
+                $op = isset($this->operators[$searchCol['name']]) ? $this->operators[$searchCol['name']] : 'like';
+                $cdrs2->where($searchCol['name'], $op, ($op == 'like' || $op == 'rlike' ? '%' :'') . $searchCol['value'] . ($op == 'like' || $op == 'rlike' ? '%' :''));
+                // dd($cdrs->toSql());
             }
 
+            $cdrs2->union($cdrs)
+            ->orderBy($sortCol, $sortDir); // set order
+
+            // dd($cdrs2->first());
             // Set filters
             // /* Filter Placeholder */
 
