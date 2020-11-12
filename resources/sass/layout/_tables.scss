@@ -63,4 +63,17 @@ table {
             }
         }
     }
+
+    thead {
+
+        th {
+
+            &.actions,
+            &.info,
+            &.warn,
+            &.error {
+                min-width: 55px;
+            }
+        }
+    }
 }
