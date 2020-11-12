@@ -36,8 +36,10 @@
                                 <th class="text-center ">
                                     @Lang('general.type')
                                 </th>
-                                <th>
+                                <th class="text-center px-3 sorting-disabled">
                                     Id Outono
+                                </th>
+                                <th>
                                 </th>
                             </tr>
                         </thead>

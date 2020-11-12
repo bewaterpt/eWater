@@ -6,11 +6,11 @@ return [
         'max_wait_time_in_sec' => "Máximo em segundos",
         'monthly_total_calls' => 'Total de chamadas',
         'monthly_front_office_calls' => 'Chamadas front office',
-        'monthly_generic_calls' => 'Chamadas genericas',
+        'monthly_generic_calls' => 'Chamadas genéricas',
         'monthly_internal_calls' => 'Chamadas internas',
         'monthly_total_lost_calls' => 'Total de chamadas perdidas',
         'monthly_front_office_lost_calls' => 'Chamadas front office perdidas',
-        'monthly_generic_lost_calls' => 'Chamadas genericas perdidas',
+        'monthly_generic_lost_calls' => 'Chamadas genéricas perdidas',
         'monthly_internal_lost_calls' => 'Chamadas internas perdidas',
     ],
     'titles' => [

@@ -36,6 +36,23 @@ $('button[type="submit"]').on('click', (e) => {
     return true;
 });
 
+$.fn.serializeObject = function() {
+    var o = {};
+    var a = this.serializeArray();
+    $.each(a, function() {
+        name = this.name.replace(/(\[\])$/, '');
+        if (o[name]) {
+            if (!o[name].push) {
+                o[name] = [o[name]];
+            }
+            o[name].push(this.value || '');
+        } else {
+            o[name] = this.value || '';
+        }
+    });
+    return o;
+};
+
 $(() => {
     $('[data-toggle="popover"]').popover({
         html: true,
@@ -48,8 +65,7 @@ $(() => {
         },
     });
 
-    $('[data-onload]').each(function() {
-        console.log(this);
-        customOnload(this, $(this).attr('data-onload'));
+    $('[data-onload]').each(function(i, el) {
+        customOnload(el, $(el).attr('data-onload'));
     });
 });

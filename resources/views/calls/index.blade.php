@@ -51,28 +51,96 @@
                                     <i class="fas fa-tools text-black sorting_disabled"></i>
                                 </th> --}}
                                 <th>
-                                    @Lang('forms.fields.timestart')
+                                    <div class="p-0">
+                                        <input type="date" class="form-control filter-col unstyled" data-col="timestart" data-onload="date">
+                                    </div>
                                 </th>
                                 <th>
-                                    @Lang('forms.fields.call_from')
+                                    <div class="p-0">
+                                        <input type="text" class="form-control filter-col" data-col="callfrom">
+                                    </div>
                                 </th>
                                 <th>
-                                    @Lang('forms.fields.call_to')
+                                    <div class="p-0">
+                                        <input type="text" class="form-control filter-col" data-col="callto">
+                                    </div>
                                 </th>
                                 <th>
-                                    @Lang('forms.fields.call_duration')
+                                    <div class="p-0">
+                                        <input type="text" class="form-control filter-col" data-col="callduration">
+                                    </div>
                                 </th>
                                 <th>
-                                    @Lang('forms.fields.talk_duration')
+                                    <div class="p-0">
+                                        <input type="text" class="form-control filter-col" data-col="talkduration">
+                                    </div>
                                 </th>
                                 <th>
-                                    @Lang('forms.fields.wait_duration')
+                                    <div class="p-0">
+                                        <input type="text" class="form-control filter-col" data-col="waitduration">
+                                    </div>
                                 </th>
                                 <th>
-                                    @Lang('forms.fields.status')
+                                    <div class="p-0">
+                                        <select class="form-control filter-col" data-col="status" style="-webkit-appearance: none;">
+                                            <option value="">---</option>
+                                            <option value="ANSWERED">@Lang('calls.answered')</option>
+                                        </select>
+                                    </div>
                                 </th>
                                 <th>
-                                    @Lang('forms.fields.type')
+                                    <div class="p-0">
+                                        <select class="form-control filter-col" data-col="type" style="-webkit-appearance: none;">
+                                            <option value="">---</option>
+                                            <option value="Inbound">@Lang('calls.inbound')</option>
+                                            <option value="Transfer">@Lang('calls.transfer')</option>
+                                        </select>
+                                    </div>
+                                </th>
+                            </tr>
+                            <tr>
+                                {{-- <th class="actions text-center px-0">
+                                    <i class="fas fa-tools text-black sorting_disabled"></i>
+                                </th> --}}
+                                <th>
+                                    <div>
+                                        @Lang('forms.fields.timestart')
+                                    </div>
+                                </th>
+                                <th>
+                                    <div>
+                                        @Lang('forms.fields.call_from')
+                                    </div>
+                                </th>
+                                <th>
+                                    <div>
+                                        @Lang('forms.fields.call_to')
+                                    </div>
+                                </th>
+                                <th>
+                                    <div>
+                                        @Lang('forms.fields.call_duration')
+                                    </div>
+                                </th>
+                                <th>
+                                    <div>
+                                        @Lang('forms.fields.talk_duration')
+                                    </div>
+                                </th>
+                                <th>
+                                    <div>
+                                        @Lang('forms.fields.wait_duration')
+                                    </div>
+                                </th>
+                                <th>
+                                    <div>
+                                        @Lang('forms.fields.status')
+                                    </div>
+                                </th>
+                                <th>
+                                    <div>
+                                        @Lang('forms.fields.type')
+                                    </div>
                                 </th>
                             </tr>
                         </thead>

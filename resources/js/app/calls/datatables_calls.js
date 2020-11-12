@@ -22,9 +22,10 @@ $(() => {
             responsive: true,
             searching: true,
             order: [[ 0, "desc" ]],
+            bFilter: false,
             columnDefs: [
                 {
-                    targets: 'actions',
+                    targets: 'sorting-disabled',
                     orderable: false,
                 }
             ],
@@ -41,6 +42,7 @@ $(() => {
             autoWidth: false,
             processing: true,
             serverSide: true,
+            // searchPanes: true,
             ajax: '/calls',
             // lengthMenu: [[10, 50, 100], [10, 50, 100]],
             // displayLength: 10,
@@ -56,6 +58,9 @@ $(() => {
                 {data: 'status', name: 'status', searchable: true},
                 {data: 'type', name: 'type', searchable: true}
             ],
+            language: {
+                url: "/config/dataTables/lang/" + window.lang + ".json"
+            },
             drawCallback: function(settings){
 
                 var data = this.api().ajax.json();
@@ -64,10 +69,37 @@ $(() => {
                 //     checkRecordNumber(this, data);
                 // }
             },
+            // serverData: function (sSource, aoData, fnCallback) {
+            //     aoData.push({ "name": "", "value": "my_value" } );
+            //     // etc
+            //     $.getJSON( sSource, aoData, function (json) { fnCallback(json) } );
+            // }
             // initComplete:function( settings, json){
             //     checkRecordNumber(this, json);
             // }
         });
+
+        let t = null;
+
+        $('#datatable-calls').find('thead .filter-col').each((i, el) => {
+            $(el).on('change keyup', (evt) => {
+                console.log(i)
+                window.datatable_calls.column(i+1).search(($(el).is('select') ? $(el).find('option:selected').val() : el.value));
+                clearTimeout(t);
+                t = setTimeout(() => {
+                    window.datatable_calls.draw();
+                }, 500);
+            });
+        });
+
+        // $('#datatable-calls').find('thead th').each((i, el) => {
+        //     $(el).on('click', (evt) => {
+        //         if ($(evt.target).is('.filter-col')) {
+        //             evt.preventDefault();
+        //             evt.stopPropagation();
+        //         }
+        //     });
+        // });
     }
 
     function checkRecordNumber(table = $("table[id^='datatable_']"), json){

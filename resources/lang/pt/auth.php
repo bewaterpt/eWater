@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'failed' => 'Estas credenciais não constam dos nossos registos.',
+    'failed' => 'Os dados introduzidos estão incorretos ou não existem.',
     'throttle' => 'Demasiadas tentativas de inicio de sessão. Por favor tente novamente dentro de :seconds segundos.',
     'no_login' => 'Não existe nenhuma sessão iniciada, por favor inicie nova sessão.',
     'permission_denied' => "Não tem permissões para aceder a /:route.",

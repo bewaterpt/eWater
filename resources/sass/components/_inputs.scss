@@ -1,0 +1,29 @@
+input {
+
+    &.unstyled {
+
+        &[type=date],
+        &[type=datetime],
+        &[type=datetime-local] {
+            &::-webkit-inner-spin-button,
+            &::-webkit-calendar-picker-indicator {
+                margin: 0;
+                margin-right: -10px;
+            }
+        }
+
+
+
+        &[type=number] {
+            -moz-appearance: textfield;
+
+            &::-webkit-outer-spin-button,
+            &::-webkit-inner-spin-button {
+                -webkit-appearance: none;
+                -moz-appearance: none;
+                appearance: none;
+                margin: 0;
+            }
+        }
+    }
+}

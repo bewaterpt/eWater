@@ -286,5 +286,10 @@ class Helper {
         $date = $carbonInstance->format('Y-m-d') . 'T' . $carbonInstance->format('H:i:s');
         return $date;
     }
+
+    public function mb_ucfirst($str) {
+        $str = mb_strtoupper(mb_substr($str, 0, 1)) . mb_substr($str, 1);
+        return $str;
+    }
 }
 

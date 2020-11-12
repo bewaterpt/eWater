@@ -361,6 +361,7 @@ class InterruptionController extends Controller
         $interruption->reinstatement_date = $request->reinstatement_date;
         $interruption->delegation()->associate($request->delegation);
         $interruption->user()->associate($user->id);
+        $interruption->updatedBy()->associate($user->id);
         $interruption->affected_area = $request->affected_area;
 
         $outonoInterruption = $interruption->scheduled ? OutonoInterrupcoesProg::find($interruption->outono_id) : OutonoInterrupcoes::find($interruption->outono_id);

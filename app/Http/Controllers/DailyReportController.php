@@ -48,130 +48,135 @@ class DailyReportController extends Controller
      */
     public function index(Request $request) {
         $user = Auth::user();
-        $reports = [];
-        if ($user->isAdmin()) {
-            $reports = Report::All()->sortByDesc('id');
-        } else if ($user->teams()->exists()) {
-            $reports = Report::whereIn('team_id', $user->teams()->pluck('id'))->get()->sortByDesc('id');
-        }
-
-        return view('daily_reports.index', ['reports' => $reports]);
-
-        // if ($request->ajax()) {
-        //     $input = $request->input();
-
-        //     // Get datatable values for sorting, limit and offset
-        //     $sortCol = $input['columns'][$input['order'][0]['column']]['name'];
-        //     $sortDir = $input['order'][0]['dir'];
-        //     $limit = $input['length'];
-        //     $offset = $input['start'];
-
-        //     // Get searchable columns
-        //     $searchCols = [];
-        //     foreach ($input['columns'] as $value) {
-        //         if ($value['searchable'] === 'true' && $value['search']['value']) {
-        //             $searchCols[] = [
-        //                 'name' => $value['name'],
-        //                 'value' => $value['search']['value']
-        //             ];
-        //         } else if ($value['searchable'] === 'true' && $input['search']['value']) {
-        //             $searchCols[] = [
-        //                 'name' => $value['name'],
-        //                 'value' => $input['search']['value']
-        //             ];
-        //         }
-        //     }
-
-        //     $reports = Report::select('*');
-        //     if (!$user->isAdmin() && $user->teams()->exists()) {
-        //         $reports->whereIn('team_id', $user->teams()->pluck('id'));
-        //     }
-
-        //     foreach ($searchCols as $searchCol) {
-        //         if ($searchCol['name'] === 'team') {
-        //             $reports->whereIn('team_id', Team::select('id')->where('name', 'rlike', $searchCol['value']));
-        //             continue;
-        //         }
-
-        //         if ($searchCol['name'] === 'entry_date') {
-        //             $reports->join('report_lines as rl', 'rl.report_id', '=' , 'reports.id')
-        //                     ->orWhere('rl.' . $searchCol['name'], 'rlike', $searchCol['value']);
-        //             continue;
-        //         }
-
-        //         // if ($searchCol['name'] === 'quantity') {
-        //         //     continue;
-        //         // }
-
-        //         // $reports->orWhere('r.' . $searchCol['name'], 'rlike', '\'' . $searchCol['value'] . '\'');
-        //     }
-
-        //     // Get row count
-        //     $total = $reports->count();
-
-        //     // Set filters
-        //     // /* Filter Placeholder */
-
-        //     // Set limit and offset and get rows
-        //     $reports->orderBy('reports.' . $sortCol, $sortDir);
-        //     $reports->take($limit)->skip($offset);
-        //     $rows = $reports->get();
-
-
-        //     // Add rows to array
-        //     $data = [];
-        //     foreach ($rows as $row) {
-
-        //         $actions = '';
-        //         if ($this->permissionModel->can('settings.daily_reports.view')) {
-        //             $actions .= '<a class="text-info edit mr-1" href="' . route('daily_reports.view', ['id' => $row->id]) . '" title="'.trans('general.view').'"><i class="fas fa-eye"></i></a>';
-        //         }
-        //         if ($this->permissionModel->can('settings.daily_reports.edit')) {
-        //             $actions .= '<a class="text-info edit" href="' . route('daily_reports.edit', ['id' => $row->id]) . '" title="'.trans('general.edit').'"><i class="fas fa-edit"></i></a>';
-        //         }
-
-        //         $info = '';
-        //         if ($row->processStatus()->where('error', true)->count() > 0) {
-        //             $info = '<i class="ri-lg ri-alert-line text-danger" title="' . __('info.report_has_errors') . '"></i>';
-        //         }
-
-        //         if ($row->inferiorKm()) {
-        //             $info .= '<i class="fas fa-bullhorn text-warning ml-1" title="' . __('info.report_km_difference') . '"></i>';
-        //         }
-
-        //         $data[] = [
-        //             'actions' => $actions,
-        //             'id' => $row->id,
-        //             'status' => $row->getCurrentStatus()->first()->name,
-        //             'quantity' => $this->helper->decimalHoursToTimeValue($row->getTotalHours()),
-        //             'driven_km' => $row->driven_km,
-        //             'team' => $row->team()->first()->name,
-        //             'entry_date' => (new DateTime($row->lines()->first()->entry_date))->format('Y-m-d'),
-        //             'info' => $info
-        //         ];
-        //     }
-
-        //     // Create output array
-        //     $output = [
-        //         'draw' => intval($input['draw']),
-        //         'recordsTotal' => $total,
-        //         'recordsFiltered' => $total,
-        //         'data' => $data
-        //     ];
-
-        //     echo json_encode($output);
-        //     die;
+        // $reports = [];
+        // if ($user->isAdmin()) {
+        //     $reports = Report::All()->sortByDesc('id');
+        // } else if ($user->teams()->exists()) {
+        //     $reports = Report::whereIn('team_id', $user->teams()->pluck('id'))->get()->sortByDesc('id');
         // }
 
-        // // $reportList = collect([]);
+        if ($request->ajax()) {
+            $input = $request->input();
 
-        // // foreach($reports as $report) {
-        // //     if ($report->creator()->first()->id === $user->id || $this->statusModel->userCanProgress($report->getCurrentStatus()->first()->id) && !$report->closed()) {
-        // //         $reportList->push($report);
-        // //     }
-        // // }
+            // Get datatable values for sorting, limit and offset
+            $sortCol = $input['columns'][$input['order'][0]['column']]['name'];
+            $sortDir = $input['order'][0]['dir'];
+            $limit = $input['length'];
+            $offset = $input['start'];
 
-        // return view('daily_reports.index');
+            // Get searchable columns
+            $searchCols = [];
+            foreach ($input['columns'] as $value) {
+                if ($value['searchable'] === 'true' && $value['search']['value']) {
+                    $searchCols[] = [
+                        'name' => $value['name'],
+                        'value' => $value['search']['value']
+                    ];
+                } else if ($value['searchable'] === 'true' && $input['search']['value']) {
+                    $searchCols[] = [
+                        'name' => $value['name'],
+                        'value' => $input['search']['value']
+                    ];
+                }
+            }
+
+            $reports = Report::select('reports.*');
+            if (!$user->isAdmin() && $user->teams()->exists()) {
+                $reports->whereIn('team_id', $user->teams()->pluck('id'));
+            }
+
+            foreach ($searchCols as $searchCol) {
+                if ($searchCol['name'] === 'status') {
+                    $reports->join('process_status as ps', 'ps.process_id', '=', 'reports.id')
+                    ->where('ps.id', function ($query) {
+                        $query->select(DB::raw('max(id) FROM process_status where process_id = reports.id'));
+                    })->where('ps.status_id', $searchCol['value']);
+
+                    continue;
+                }
+
+                if ($searchCol['name'] === 'id') {
+                    $reports->where($searchCol['name'], 'rlike', $searchCol['value']);
+                    continue;
+                }
+
+                if ($searchCol['name'] === 'entry_date') {
+                    $reports->join('report_lines as rl', 'rl.report_id', 'reports.id')
+                    ->where('rl.entry_date', $searchCol['value']);
+                    continue;
+                }
+
+                $reports->where($searchCol['name'], $searchCol['value']);
+            }
+
+            // Get row count
+            $total = $reports->count();
+
+            // Set filters
+            // /* Filter Placeholder */
+
+            // Set limit and offset and get rows
+            $reports->orderBy('reports.' . $sortCol, $sortDir);
+            $reports->take($limit)->skip($offset);
+            $rows = $reports->get();
+
+            // Add rows to array
+            $data = [];
+            foreach ($rows as $row) {
+
+                $actions = '';
+                if ($this->permissionModel->can('settings.daily_reports.view')) {
+                    $actions .= '<a class="text-info edit mr-1" href="' . route('daily_reports.view', ['id' => $row->id]) . '" title="'.trans('general.view').'"><i class="fas fa-eye"></i></a>';
+                }
+                if ($this->permissionModel->can('settings.daily_reports.edit')) {
+                    $actions .= '<a class="text-info edit" href="' . route('daily_reports.edit', ['id' => $row->id]) . '" title="'.trans('general.edit').'"><i class="fas fa-edit"></i></a>';
+                }
+
+                $info = '';
+                if ($row->processStatus()->where('error', true)->count() > 0) {
+                    $info = '<i class="ri-lg ri-alert-line text-danger" title="' . __('info.report_has_errors') . '"></i>';
+                }
+
+                if ($row->inferiorKm()) {
+                    $info .= '<i class="fas fa-bullhorn text-warning ml-1" title="' . __('info.report_km_difference') . '"></i>';
+                }
+
+                $data[] = [
+                    'actions' => $actions,
+                    'id' => $row->id,
+                    'status' => $row->getCurrentStatus()->first()->name,
+                    'quantity' => $this->helper->decimalHoursToTimeValue($row->getTotalHours()),
+                    'driven_km' => $row->driven_km,
+                    'team' => $row->team()->first()->name,
+                    'date' => (new DateTime($row->lines()->first()->entry_date))->format('Y-m-d'),
+                    'info' => $info
+                ];
+            }
+
+            // Create output array
+            $output = [
+                'draw' => intval($input['draw']),
+                'recordsTotal' => $total,
+                'recordsFiltered' => $total,
+                'data' => $data
+            ];
+
+            echo json_encode($output);
+            die;
+        }
+
+        $statuses = DB::select(DB::raw('SELECT DISTINCT s.id as "id", s.name as "name" from ewater.reports as r
+        JOIN(ewater.process_status as ps) on(r.id = ps.process_id)
+        JOIN(ewater.statuses as s) on(s.id = ps.status_id)
+        where ps.id = (
+            SELECT max(id) from ewater.process_status where process_id = r.id
+        )'));
+
+        $teams = DB::select(DB::raw('SELECT DISTINCT t.id as "id", t.name as "name" from ewater.reports as r
+        JOIN(ewater.teams as t) on(t.id = r.team_id)
+        where t.id = r.team_id'));
+
+        return view('daily_reports.index', ['statuses' => $statuses, 'teams' => $teams]);
     }
 
     /**
@@ -187,7 +192,7 @@ class DailyReportController extends Controller
      * @return View view()
      */
     public function create(Request $request) {
-        $currentUserTeams = Auth::user()->teams()->pluck('id');
+        $currentUserTeams = Auth::user()->teams()->get();
         $articles = Article::getDailyReportRelevantArticles()->pluck('designation', 'id');
         $teams = Team::all();
 
@@ -203,7 +208,7 @@ class DailyReportController extends Controller
         }
 
 
-        return view('daily_reports.create', ['articles' => $this->helper->sortArray(array_flip($articles->toArray())), 'workers' => $workers, 'teams' => $teams]);
+        return view('daily_reports.create', ['articles' => $this->helper->sortArray(array_flip($articles->toArray())), 'workers' => $workers, 'teams' => $currentUserTeams]);
     }
 
     public function store(Request $request) {

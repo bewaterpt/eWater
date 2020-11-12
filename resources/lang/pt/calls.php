@@ -13,4 +13,7 @@ return [
     'pbx' => [
         'list' => 'Listar Centrais Tel.'
     ],
+    'answered' => 'Atendidas',
+    'inbound' => 'Entrada',
+    'transfer' => 'Transferência',
 ];

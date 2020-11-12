@@ -10,6 +10,53 @@
                     <table id="reports" class="table table-sm table-striped table-bordered" style="width: 100%">
                         <thead class="thead-light">
                             <tr>
+                                {{-- <th class="actions text-center px-0">
+                                    <i class="fas fa-tools text-black sorting_disabled"></i>
+                                </th> --}}
+                                <th>
+                                    <div class="p-0 filter-col"></div>
+                                </th>
+                                <th>
+                                    <div class="p-0">
+                                        <input type="number" class="form-control filter-col unstyled" data-col="id">
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="p-0">
+                                        <select class="form-control filter-col" data-col="type" style="-webkit-appearance: none;">
+                                            <option value="">---</option>
+                                            @foreach($statuses as $status)
+                                                <option value="{{ $status->id }}">{{ $helpers->mb_ucfirst(mb_strtolower($status->name)) }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="p-0 filter-col"></div>
+                                </th>
+                                <th>
+                                    <div class="p-0 filter-col"></div>
+                                </th>
+                                <th>
+                                    <div class="p-0">
+                                        <select class="form-control filter-col" data-col="type" style="-webkit-appearance: none;">
+                                            <option value="">---</option>
+                                            @foreach($teams as $team)
+                                                <option value="{{ $team->id }}">{{ $team->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="p-0">
+                                        <input type="date" class="form-control filter-col unstyled" data-col="timestart" data-onload="date">
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="p-0 filter-col"></div>
+                                </th>
+                            </tr>
+                            <tr>
                                 <th class="text-center px-0 actions sorting-disabled">
                                     <i class="p-0 fas fa-tools text-black "></i>
                                 </th>
@@ -37,7 +84,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($reports as $report)
+                            {{-- @foreach($reports as $report)
                                 <tr>
                                     <td class="actions text-center">
                                         <a href="{{ route('daily_reports.view', ['id' => $report->id]) }}" class="text-info mr-1 view"><i class="fas fa-eye"></i></a>
@@ -55,7 +102,7 @@
                                             @Lang('general.hours')
                                         @else
                                             @Lang('general.hour')
-                                        @endif --}}
+                                        @endif
                                     </td>
                                     <td>
                                         {{ $report->getTotalKm() }} @Lang('general.daily_reports.km')
@@ -76,7 +123,7 @@
                                         @endif
                                     </td>
                                 </tr>
-                            @endforeach
+                            @endforeach --}}
                         </tbody>
                     </table>
                 </div>
