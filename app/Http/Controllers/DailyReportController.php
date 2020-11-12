@@ -469,8 +469,8 @@ class DailyReportController extends Controller
 
         $teams = Team::all();
 
-        $works;
-        $worksTranportData;
+        $works = [];
+        $worksTranportData = [];
 
         foreach ($report->lines()->get() as $line) {
             $works[$line->work_number][] = $line;

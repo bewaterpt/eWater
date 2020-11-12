@@ -185,7 +185,8 @@ return [
         App\Providers\RouteServiceProvider::class,
         App\Providers\TelescopeServiceProvider::class,
         App\Providers\ViewServiceProvider::class,
-        Laravel\Telescope\TelescopeServiceProvider::class
+        Laravel\Telescope\TelescopeServiceProvider::class,
+        Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
 
     ],
 

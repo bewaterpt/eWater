@@ -11,6 +11,7 @@ use App\Helpers\Helper;
 use Log;
 use Auth;
 use DB;
+use Artisan;
 use App\Models\Yealink\CDRRecord;
 use Illuminate\Support\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
@@ -140,24 +141,24 @@ class CallController extends Controller
                 $cdrs->where('cdrTrans.'.$searchCol['name'], $op, ($op == 'like' ? '%' :'') . $searchCol['value'] . ($op == 'like' ? '%' :''));
             }
 
-            $cdrs2 = DB::table('cdr_records as cdrInb')
+            $cdrs = DB::table('cdr_records as cdrInb')
                     ->select('cdrInb.*')
                     ->where('cdrInb.type', 'Inbound')
                     ->whereBetween('cdrInb.timestart', [Carbon::now()->subMonths(12)->format($this->dateFormat), Carbon::now()->format($this->dateFormat)])
                     ->whereNotIn('cdrInb.callto', [6501, 6502])
                     ->where('cdrInb.callto', 'rlike', $this->agentsForQuery)
-                    ->where('cdrInb.status', 'ANSWERED');
+                    ->where('cdrInb.status', 'ANSWERED')
+                    ->union($cdrs)
+                    ->orderBy($sortCol, $sortDir);
+
 
 
 
             foreach ($searchCols as $searchCol) {
                 $op = isset($this->operators[$searchCol['name']]) ? $this->operators[$searchCol['name']] : 'like';
-                $cdrs2->where($searchCol['name'], $op, ($op == 'like' || $op == 'rlike' ? '%' :'') . $searchCol['value'] . ($op == 'like' || $op == 'rlike' ? '%' :''));
+                $cdrs->where($searchCol['name'], $op, ($op == 'like' || $op == 'rlike' ? '%' :'') . $searchCol['value'] . ($op == 'like' || $op == 'rlike' ? '%' :''));
                 // dd($cdrs->toSql());
             }
-
-            $cdrs2->union($cdrs)
-            ->orderBy($sortCol, $sortDir); // set order
 
             // dd($cdrs2->first());
             // Set filters
@@ -388,5 +389,20 @@ class CallController extends Controller
             $renderer = \Maatwebsite\Excel\Excel::MPDF;
         }
         return (new CDRRecordExport())->download(__('calls.call_records') . '.' . $filetype, ($renderer ? $renderer : null), ['X-ewater-filename' => __('calls.call_records') . '.' . $filetype]);
+    }
+
+    public function refetch() {
+        $data = [
+            'status' => 200,
+            'message' => 'OK'
+        ];
+
+        try {
+            Artisan::call('calls:get');
+        } catch(\Exception $e)  {
+            $data['code'] = 500;
+            $data['message'] = $e->getMessage();
+            return json_encode($data);
+        }
     }
 }

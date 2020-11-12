@@ -267,7 +267,7 @@ $(() => {
 
         $('#reloadCallData').on('click', () => {
             $.ajax({
-                url: '/calls/reload',
+                url: '/calls/refetch',
                 success: (response) => {
 
                     window.datatable_calls.draw();

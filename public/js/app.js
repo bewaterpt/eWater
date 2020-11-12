@@ -61839,7 +61839,7 @@ $(function () {
     });
     $('#reloadCallData').on('click', function () {
       $.ajax({
-        url: '/calls/reload',
+        url: '/calls/refetch',
         success: function success(response) {
           window.datatable_calls.draw();
           getmonthlyWaitTimeInfo()["catch"](function (msg) {

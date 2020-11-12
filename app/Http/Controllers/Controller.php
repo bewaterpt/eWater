@@ -68,13 +68,13 @@ class Controller extends BaseController
      *
      * @link PROJECT_DIR/config/hashids -> connections
      */
-    public function encodeId($id, $alt = false) {
-        return $alt ? \Hashids::connection('alt')->encode($id) : \Hashids::encode($id);
-    }
+    // public function encodeId($id, $alt = false) {
+    //     return $alt ? Hashids::connection('alt')->encode($id) : Hashids::encode($id);
+    // }
 
-    public function decodeId($id, $alt = false) {
-        return $alt ? \Hashids::connection('alt')->decode($id) : \Hashids::decode($id);
-    }
+    // public function decodeId($id, $alt = false) {
+    //     return $alt ? Hashids::connection('alt')->decode($id) : Hashids::decode($id);
+    // }
 
     public function workExists(Request $request) {
         return json_encode(OutonoObras::exists($request->json('id')));
