@@ -20,6 +20,7 @@ use Auth;
 use DB;
 use Route;
 use Log;
+use App\Models\Permission;
 use Illuminate\Console\Command;
 
 class DailyReportController extends Controller
@@ -125,10 +126,10 @@ class DailyReportController extends Controller
             foreach ($rows as $row) {
 
                 $actions = '';
-                if ($this->permissionModel->can('settings.daily_reports.view')) {
+                if ($this->permissionModel->can('daily_reports.view')) {
                     $actions .= '<a class="text-info edit mr-1" href="' . route('daily_reports.view', ['id' => $row->id]) . '" title="'.trans('general.view').'"><i class="fas fa-eye"></i></a>';
                 }
-                if ($this->permissionModel->can('settings.daily_reports.edit')) {
+                if ($this->permissionModel->can('daily_reports.edit')) {
                     $actions .= '<a class="text-info edit" href="' . route('daily_reports.edit', ['id' => $row->id]) . '" title="'.trans('general.edit').'"><i class="fas fa-edit"></i></a>';
                 }
 

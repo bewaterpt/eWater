@@ -26,25 +26,27 @@ class Permission extends Model
             return redirect('/')->withErrors(__('auth.no_login'), 'custom');
         }
 
+        if ($user->isAdmin()) {
+            return true;
+        }
+
         $roles = $user->roles()->get();
 
+
+
         if (sizeof($roles) <= 0) {
-            return false;
+            return redirect('/')->withErrors(__('auth.no_roles'), 'custom');;
         }
 
         $permissions = [];
         foreach($roles as $role) {
-            array_push($permissions, $role->permissions()->pluck('route'));
+            $permissions[] = $role->permissions()->pluck('route');
         }
 
-        if ($user->roles()->pluck('slug')->contains('admin')) {
-            return true;
-        } else {
-            foreach ($permissions as $permissionSet) {
-                foreach ($permissionSet as $permission) {
-                    if (Str::contains($permission, $route)) {
-                        return true;
-                    }
+        foreach ($permissions as $permissionSet) {
+            foreach ($permissionSet as $permission) {
+                if (Str::contains($permission, $route)) {
+                    return true;
                 }
             }
         }
