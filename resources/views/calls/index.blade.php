@@ -47,15 +47,17 @@
                     </div>
                 </div>
                 <div class="card-body table-responsive">
+                    {{-- <div class="alert alert-warning col-md-6" style="margin: auto">Estamos a resolver alguns problemas com a filtragem dos registos de chamadas. Esperamos ser breves.</div> --}}
                     <table id="datatable-calls" class="object-table table table-sm table-striped" style="width: 100%">
                         <thead class="thead-light">
                             <tr>
-                                {{-- <th class="actions text-center px-0">
-                                    <i class="fas fa-tools text-black sorting_disabled"></i>
-                                </th> --}}
+
                                 <th>
-                                    <div class="p-0 filter-col">
-                                        {{-- <input type="date" class="form-control filter-col unstyled" data-col="timestart" data-onload="date"> --}}
+                                    <div class="p-0 position-relative">
+                                        <input type="date" class="form-control filter-col unstyled pr-5" data-col="timestart" data-onload="date">
+                                        <a id="clearDate" href="#" class="position-absolute">
+                                            <i class="fas fa-times text-black"></i>
+                                        </a>
                                     </div>
                                 </th>
                                 <th>
@@ -99,9 +101,6 @@
                                 </th>
                             </tr>
                             <tr>
-                                {{-- <th class="actions text-center px-0">
-                                    <i class="fas fa-tools text-black sorting_disabled"></i>
-                                </th> --}}
                                 <th>
                                     <div>
                                         @Lang('forms.fields.timestart')

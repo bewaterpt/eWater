@@ -27620,6 +27620,13 @@ table tr td.actions a {
   position: relative;
 }
 
+table thead th.actions,
+table thead th.info,
+table thead th.warn,
+table thead th.error {
+  min-width: 55px;
+}
+
 a {
   color: #a3a3a3;
   text-decoration: none !important;
@@ -27735,6 +27742,10 @@ div.card table thead tr th {
   margin: 0 !important;
 }
 
+#datatable-reports_filter {
+  display: none;
+}
+
 #modalTeamUsers .modal-header .ri-xl {
   vertical-align: auto;
   line-height: 1.2em;
@@ -27744,7 +27755,14 @@ div.card table thead tr th {
   margin: 0 !important;
 }
 
-#datatable-calls_filter {
+#calls-dashboard #datatable-calls_filter {
   display: none;
+}
+
+#calls-dashboard #clearDate {
+  right: 5px;
+  top: 20%;
+  width: 20px;
+  height: 20px;
 }
 

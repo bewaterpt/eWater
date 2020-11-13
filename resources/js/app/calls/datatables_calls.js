@@ -84,7 +84,8 @@ $(() => {
         $('#datatable-calls').find('thead .filter-col').each((i, el) => {
             $(el).on('change keyup', (evt) => {
                 console.log(i)
-                window.datatable_calls.column(i+1).search(($(el).is('select') ? $(el).find('option:selected').val() : el.value));
+                console.log(evt.target)
+                window.datatable_calls.column(i).search(($(el).is('select') ? $(el).find('option:selected').val() : el.value));
                 clearTimeout(t);
                 t = setTimeout(() => {
                     window.datatable_calls.draw();

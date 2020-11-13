@@ -1,3 +1,4 @@
+const { triggerSave } = require("tinymce");
 
 function getmonthlyWaitTimeInfo() {
     return new Promise((resolve, reject) => {
@@ -284,5 +285,12 @@ $(() => {
                 }
             });
         });
+
+        $('#clearDate').on('click', (evt) => {
+            console.log(evt.currentTarget);
+            if ($(evt.currentTarget).siblings('input').val() != "") {
+                $(evt.currentTarget).siblings('input').val("").trigger('change');
+            }
+        })
     }
 });

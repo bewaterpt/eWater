@@ -915,10 +915,10 @@ $(function () {
     });
   }
 
-  if ($("#reports").length > 0) {
+  if ($("#datatable-reports").length > 0) {
     var _$$DataTable;
 
-    window.datatable_reports = $("#reports").DataTable((_$$DataTable = {
+    window.datatable_reports = $("#datatable-reports").DataTable((_$$DataTable = {
       responsive: true,
       order: [[1, "desc"]],
       // ordering: false,
@@ -978,7 +978,7 @@ $(function () {
       // }
     }), _defineProperty(_$$DataTable, "lengthChange", true), _$$DataTable));
     var t = null;
-    $('#reports').find('thead .filter-col').each(function (i, el) {
+    $('#datatable-reports').find('thead .filter-col').each(function (i, el) {
       $(el).on('change keyup', function (evt) {
         window.datatable_reports.column(i).search($(el).is('select') ? $(el).find('option:selected').val() : el.value);
         clearTimeout(t);
@@ -989,6 +989,9 @@ $(function () {
     });
   }
 });
+
+var _require = require("tinymce"),
+    triggerSave = _require.triggerSave;
 
 function getmonthlyWaitTimeInfo() {
   return new Promise(function (resolve, reject) {
@@ -1246,6 +1249,13 @@ $(function () {
         }
       });
     });
+    $('#clearDate').on('click', function (evt) {
+      console.log(evt.currentTarget);
+
+      if ($(evt.currentTarget).siblings('input').val() != "") {
+        $(evt.currentTarget).siblings('input').val("").trigger('change');
+      }
+    });
   }
 });
 $(function () {
@@ -1340,7 +1350,8 @@ $(function () {
     $('#datatable-calls').find('thead .filter-col').each(function (i, el) {
       $(el).on('change keyup', function (evt) {
         console.log(i);
-        window.datatable_calls.column(i + 1).search($(el).is('select') ? $(el).find('option:selected').val() : el.value);
+        console.log(evt.target);
+        window.datatable_calls.column(i).search($(el).is('select') ? $(el).find('option:selected').val() : el.value);
         clearTimeout(t);
         t = setTimeout(function () {
           window.datatable_calls.draw();
