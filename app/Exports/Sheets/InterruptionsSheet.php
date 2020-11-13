@@ -7,6 +7,7 @@ use Maatwebsite\Excel\Concerns\WithTitle;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use App\Models\Interruption;
+use Illuminate\Support\Carbon;
 
 class InterruptionsSheet implements FromArray, WithTitle, WithMapping, WithHeadings
 {
@@ -41,8 +42,11 @@ class InterruptionsSheet implements FromArray, WithTitle, WithMapping, WithHeadi
 
         return Interruption::all()
             ->where('scheduled', $this->scheduled)
+            ->whereBetween('created_at', [Carbon::now()->subSeconds(172800), Carbon::now()])
             ->sortByDesc('id')
-            ->take($this->limit)->prepend($inter)->toArray();
+            // ->take($this->limit)
+            ->prepend($inter)->
+            toArray();
     }
 
     /**
