@@ -12,6 +12,7 @@ try {
 
     require('bootstrap/dist/js/bootstrap.bundle.min');
     require('bootstrap-colorpicker/dist/js/bootstrap-colorpicker.min');
+    require('tinymce');
     // require('bootstrap');
     require('datatables.net');
     // require('datatables.net-dt');

@@ -70,12 +70,17 @@ mix.sass('resources/sass/app.scss', 'public/css')
     'datatables.net-dt',
     'datatables.net-bs4',
     'datatables.net-colreorder',
+    'tinymce',
     // 'bootstrap-colorpicker',
     '@fortawesome/fontawesome-free',
     'bootstrap',
     'moment',
     // 'remixicon',
-]);
+])
+.copyDirectory('node_modules/tinymce/themes', 'public/js/themes')
+.copyDirectory('node_modules/tinymce/skins', 'public/js/skins')
+.copyDirectory('node_modules/tinymce/icons', 'public/js/icons')
+.copyDirectory('node_modules/tinymce/plugins', 'public/js/plugins');
 // .polyfill({
 //     enabled: true,
 //     useBuiltIns: "usage",
