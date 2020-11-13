@@ -42,11 +42,11 @@ class InterruptionsSheet implements FromArray, WithTitle, WithMapping, WithHeadi
 
         return Interruption::all()
             ->where('scheduled', $this->scheduled)
-            ->whereBetween('created_at', [Carbon::now()->subSeconds(172800), Carbon::now()])
+            // ->whereBetween('created_at', [Carbon::now()->subSeconds(172800), Carbon::now()])
             ->sortByDesc('id')
-            // ->take($this->limit)
-            ->prepend($inter)->
-            toArray();
+            ->take($this->limit)
+            ->prepend($inter)
+            ->toArray();
     }
 
     /**
