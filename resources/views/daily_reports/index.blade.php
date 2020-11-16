@@ -7,7 +7,7 @@
             <div class="card">
                 <div class="card-header">@Lang('general.daily_reports.list')</div>
                 <div class="card-body table-responsive">
-                    <table id="reports" class="table table-sm table-striped table-bordered" style="width: 100%">
+                    <table id="datatable-reports" class="table table-sm table-striped table-bordered" style="width: 100%">
                         <thead class="thead-light">
                             <tr>
                                 {{-- <th class="actions text-center px-0">
@@ -78,7 +78,7 @@
                                 <th>
                                     @Lang('general.date')
                                 </th>
-                                <th class="text-center px-0 sorting-disabled">
+                                <th class="text-center px-0 sorting-disabled info">
                                     <i class="p-0 ri-lg ri-alert-line text-black"></i>
                                 </th>
                             </tr>
@@ -132,4 +132,3 @@
     </div>
 </div>
 @endsection
-

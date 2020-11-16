@@ -40,7 +40,7 @@ $(() => {
 
         tinyMCE.init(editor_config);
 
-        window.mce = tinyMCE.init(editor_config);;
+        window.mce = tinyMCE.init(editor_config);
 
         // $('#formNextStatus').on('sumbit', () => {
         //     $('#inputComment').val(quill.root.innerHTML);

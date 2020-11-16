@@ -40,8 +40,8 @@
 
                             @if($pmodel->can('daily_reports.cancel') && !$report->closed())
                                 <span class="mx-2 text-secondary">l</span>
-                                <a id="cancel-report" href="{{ route('daily_reports.cancel', ['id' => $report->id]) }}" class="text-danger">
-                                    <i class="fas fa-ban"></i>
+                                <a id="cancel-report" href="{{ route('daily_reports.cancel', ['id' => $report->id]) }}" class="btn btn-link text-white bg-danger font-weight-bold" style="font-size: 11px;">
+                                    @Lang('general.daily_reports.cancel')
                                 </a>
                             @endif
                             @if($report->closed() && in_array($report->latestUpdate()->status()->first()->slug, ['cancel', 'finish']) && $pmodel->can('daily_reports.restore'))

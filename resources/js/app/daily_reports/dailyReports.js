@@ -408,7 +408,7 @@ $(() => {
     $("#cancel-report").on("click", (event) => {
         event.preventDefault();
         if(confirm($("#prompts .cancel-report").text())) {
-            window.location.replace($(event.target).parent('a#cancel-report').attr('href'));
+            window.location.replace($(event.currentTarget).attr('href'));
         }
     });
 });

@@ -12,8 +12,8 @@ $(() => {
         });
     }
 
-    if ($("#reports").length > 0) {
-        window.datatable_reports = $("#reports").DataTable({
+    if ($("#datatable-reports").length > 0) {
+        window.datatable_reports = $("#datatable-reports").DataTable({
             responsive: true,
             order: [[ 1, "desc" ]],
             // ordering: false,
@@ -81,7 +81,7 @@ $(() => {
 
         let t = null;
 
-        $('#reports').find('thead .filter-col').each((i, el) => {
+        $('#datatable-reports').find('thead .filter-col').each((i, el) => {
             $(el).on('change keyup', (evt) => {
                 window.datatable_reports.column(i).search(($(el).is('select') ? $(el).find('option:selected').val() : el.value));
                 clearTimeout(t);

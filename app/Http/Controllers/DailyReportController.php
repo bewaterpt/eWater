@@ -49,12 +49,6 @@ class DailyReportController extends Controller
      */
     public function index(Request $request) {
         $user = Auth::user();
-        // $reports = [];
-        // if ($user->isAdmin()) {
-        //     $reports = Report::All()->sortByDesc('id');
-        // } else if ($user->teams()->exists()) {
-        //     $reports = Report::whereIn('team_id', $user->teams()->pluck('id'))->get()->sortByDesc('id');
-        // }
 
         if ($request->ajax()) {
             $input = $request->input();
@@ -95,11 +89,6 @@ class DailyReportController extends Controller
 
                     continue;
                 }
-
-                // if ($searchCol['name'] === 'id') {
-                //     $reports->where($searchCol['name'], 'rlike', $searchCol['value']);
-                //     continue;
-                // }
 
                 if ($searchCol['name'] === 'entry_date') {
                     $reports->join('report_lines as rl', 'rl.report_id', 'reports.id')
@@ -457,6 +446,10 @@ class DailyReportController extends Controller
         $currentUserTeams = Auth::user()->teams()->pluck('id');
         $articles = Article::getDailyReportRelevantArticles()->pluck('id', 'designation');
         $workers = null;
+
+        if ($report->getCurrentStatus()->first()->userCanProgress()) {
+
+        }
 
         if (Auth::user()->isAdmin()) {
             $workers = User::all();

@@ -83,6 +83,7 @@ return [
         'process_status_comment' => 'Nota/Comentário da operação',
         'previous_report' => 'Relatório anterior',
         'next_report' => 'Relatório Seguinte',
+        'cancel' => "CANCELAR",
     ],
     'interruptions' => [
         'create' => 'Criar Interrupção',
