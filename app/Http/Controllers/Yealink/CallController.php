@@ -136,11 +136,9 @@ class CallController extends Controller
                         ->where('cdrTrans2.type', 'Transfer')
                         ->whereBetween('cdrTrans2.timestart', [Carbon::now()->subMonths(12)->format($this->dateFormat), Carbon::now()->format($this->dateFormat)])
                         ->whereNotIn('cdrTrans2.callto', [6501, 6502])
-                        // ->where('cdrTrans.callto', 'rlike', $this->agentsForQuery)
+                        ->where('cdrTrans2.callto', 'rlike', $this->agentsForQuery)
                         ->where('cdrTrans2.status', 'ANSWERED');
                     });
-
-
 
             $cdrs2 = DB::table((new CDRRecord())->getTable() . ' as cdrInb')
                     ->select('*')
@@ -151,67 +149,32 @@ class CallController extends Controller
                         ->whereBetween('cdrInb2.timestart', [Carbon::now()->subMonths(12)->format($this->dateFormat), Carbon::now()->format($this->dateFormat)])
                         ->whereNotIn('cdrInb2.callto', [6501, 6502])
                         ->whereNotIn('cdrInb2.callid', $cdrs->pluck('callid'))
-                        // ->where('cdrInb.callto', 'rlike', $this->agentsForQuery)
+                        ->where('cdrInb.callto', 'rlike', $this->agentsForQuery)
                         ->where('cdrInb2.status', 'ANSWERED');
                     });
-                    // ->union($cdrs);
 
+            // Set filters
             foreach ($searchCols as $searchCol) {
-                // $op = isset($this->operators[$searchCol['name']]) ? $this->operators[$searchCol['name']] : 'like';
-                // $cdrs->where($searchCol['name'], $op, ($op == 'like' ? '%' :'') . $searchCol['value'] . ($op == 'like' ? '%' :''));
-                // dd($searchCol['name'] . ' => ' . $searchCol['value']);
                 if ($searchCol['name'] === 'timestart') {
-                   $searchCol['value'] = Carbon::parse($searchCol['value'])->format('Y-m-d');
+                //    $searchCol['value'] = Carbon::parse($searchCol['value'])->format('Y-m-d');
                 }
                 $cdrs->where('cdrTrans.'.$searchCol['name'], 'rlike', $searchCol['value']);
                 $cdrs2->where('cdrInb.'.$searchCol['name'], 'rlike', $searchCol['value']);
-                // dd($cdrs->getBindings());
-            }
-            // dd($cdrs->toSql());
-            // dd($cdrCallIds->get());
-
-            // $cdrs = DB::table((new CDRRecord)->getTable())->select('*')->whereIn('callid', $cdrCallIds->pluck('callid'));
-
-            foreach ($searchCols as $searchCol) {
-                // $op = isset($this->operators[$searchCol['name']]) ? $this->operators[$searchCol['name']] : 'like';
-                // $cdrs->where($searchCol['name'], $op, ($op == 'like' ? '%' :'') . $searchCol['value'] . ($op == 'like' ? '%' :''));
-                // dd($searchCol['name'] . ' => ' . $searchCol['value']);
-                $cdrs->where($searchCol['name'], '=', $searchCol['value']);
-                // dd($cdrs->getBindings());
             }
 
+            // Set order
             $cdrs->orderBy($sortCol, $sortDir);
-
-            // Set filters
-            // /* Filter Placeholder */
-
-            // $testArr = $cdrs->get()->map(function ($item) {
-            //     return $item->callid;
-            // })->toArray();
-
-            // $testCount = collect(array_count_values($testArr));
-
-            // $testCount = $testCount->map(function ($item) {
-            //     return $item === 2 ? true : false;
-            // });
-
+            $cdrs2->orderBy($sortCol, $sortDir);
             // Get row count
             $total = $cdrs->count() + $cdrs2->count();
 
             // Set limit and offset and get rows
-            $rows = $cdrs->get()->merge($cdrs2->get())->skip($offset)->take($limit);
+            $rows = $cdrs->get()->merge($cdrs2->get())->sortBy($sortCol, SORT_REGULAR, $sortDir === 'desc' ? true : false)->skip($offset)->take($limit);
+            // $rows = $cdrs->merge($cdrs2)->->skip($offset)->take($limit);
 
             // Add rows to array
             $data = [];
             foreach ($rows as $row) {
-
-                $actions = '';
-                // if ($this->permission_model->checkPermission($this->group_id, 'settings/roles/edit_role')) {
-                //     $actions .= '<a class="btn btn-edit-element confirm-edit-ajax" href="#" data-id="'.$row->getId().'" data-title="'.$row->name.'"  title="'.trans('global.edit').'"><i class="fal fa-pencil"></i></a>';
-                // }
-                // if ($this->permission_model->checkPermission($this->group_id, 'settings/roles/delete_role') && $row->type !== 'agent') {
-                //     $actions .= '<a class="btn btn-danger btn-delete-element confirm-delete-ajax" href="#" data-id="'.$row->getId().'" data-title="'.$row->name.'" title="'.trans('global.delete').'"><span class="hidden title">'.trans('global.delete_group').'</span><span class="hidden msg">'.trans('global.confirm_remove_role', ['item' => $row->name]).'</span><i class="fal fa-trash"></i></a>';
-                // }
 
                 $data[] = [
                     // 'actions' => $actions,
@@ -235,6 +198,9 @@ class CallController extends Controller
                 'data' => $data
             ];
 
+            // dd($data);
+
+            // Send response
             echo json_encode($output);
             die;
         }
