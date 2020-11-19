@@ -18,7 +18,7 @@ return [
     'no_login' => 'Não existe nenhuma sessão iniciada, por favor inicie nova sessão.',
     'permission_denied' => "Não tem permissões para aceder a /:route.",
     'account_disabled' => 'A sua conta encontra-se bloqueada, por favor contacte o <a href="mailto://:helpdesk_email">departamento de informática</a>',
-    'password_expired' => 'A sua password expirou, para a redefinir clique <a href=":url?UserName=:username" target="_blank">aqui</a>',
+    'password_expired' => 'A sua password expirou, para a redefinir clique <a href=":url?UserName=:domain\:username" target="_blank">aqui</a>',
     'account_expired' => 'A sua conta expirou, por favor contacte o <a href="mailto://:helpdesk_email">departamento de informática</a>',
     'login' => 'Iniciar Sessão',
     'password' => 'Palavra Passe',

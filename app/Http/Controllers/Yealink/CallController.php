@@ -140,7 +140,7 @@ class CallController extends Controller
                         ->where('cdrTrans2.status', 'ANSWERED');
                     });
 
-            $cdrs2 = DB::table((new CDRRecord())->getTable() . ' as cdrInb')
+            $cdrs = DB::table((new CDRRecord())->getTable() . ' as cdrInb')
                     ->select('*')
                     ->whereIn('callid' , function ($query) use ($cdrs){
                         $query->from((new CDRRecord())->getTable() . ' as cdrInb2')
@@ -151,26 +151,27 @@ class CallController extends Controller
                         ->whereNotIn('cdrInb2.callid', $cdrs->pluck('callid'))
                         ->where('cdrInb.callto', 'rlike', $this->agentsForQuery)
                         ->where('cdrInb2.status', 'ANSWERED');
-                    });
+                    })->union($cdrs);
 
             // Set filters
             foreach ($searchCols as $searchCol) {
                 if ($searchCol['name'] === 'timestart') {
-                //    $searchCol['value'] = Carbon::parse($searchCol['value'])->format('Y-m-d');
+                   $searchCol['value'] = Carbon::parse($searchCol['value'])->format('Y-m-d');
                 }
-                $cdrs->where('cdrTrans.'.$searchCol['name'], 'rlike', $searchCol['value']);
-                $cdrs2->where('cdrInb.'.$searchCol['name'], 'rlike', $searchCol['value']);
+                $cdrs->where($searchCol['name'], 'rlike', $searchCol['value']);
             }
 
-            // Set order
-            $cdrs->orderBy($sortCol, $sortDir);
-            $cdrs2->orderBy($sortCol, $sortDir);
             // Get row count
-            $total = $cdrs->count() + $cdrs2->count();
+            $total = $cdrs->count();
+
+            // Set order
+            $cdrs->orderBy($sortCol, $sortDir)
 
             // Set limit and offset and get rows
-            $rows = $cdrs->get()->merge($cdrs2->get())->sortBy($sortCol, SORT_REGULAR, $sortDir === 'desc' ? true : false)->skip($offset)->take($limit);
-            // $rows = $cdrs->merge($cdrs2)->->skip($offset)->take($limit);
+            ->limit($limit)
+            ->offset($offset);
+
+            $rows = $cdrs->get();
 
             // Add rows to array
             $data = [];

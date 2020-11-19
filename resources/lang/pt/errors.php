@@ -14,5 +14,12 @@ return [
     'dont_belong_to_report_team' => 'Não pertence à equipa associada ao relatório #:reportId',
     'invalid_date' => "A data inserida é inválida.\nA data deve ser anterior ou igual ao dia de hoje.",
     'inferior_km_warning' => 'Por favor verifique se os quilómetros em falta se encontram devidamente justificados.',
-    'superior_km_error' => 'Por favor verifique os quilómetros inseridos.'
+    'superior_km_error' => 'Por favor verifique os quilómetros inseridos.',
+    'vehicle_plate_invalid' => "A matrícula introduzida nao corresponde ao formato correto, por favor verifique os formatos permitidos abaixo:
+                                <ul>
+                                    <li>AA-00-00</li>
+                                    <li>00-AA-00</li>
+                                    <li>00-00-AA</li>
+                                    <li>AA-00-AA</li>
+                                </ul>"
 ];
