@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use Storage;
+use Illuminate\Filesystem\Filesystem;
 
 class ClearTemp extends Command
 {
@@ -38,8 +38,6 @@ class ClearTemp extends Command
      */
     public function handle()
     {
-        collect(Storage::disk('local')->files('temp'))->map(function ($item) {
-            Storage::disk('local')->delete($item);
-        });
+        (new Filesystem)->cleanDirectory('storage/app/temp');
     }
 }

@@ -3,18 +3,13 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use DB;
-use Log;
 use App\Models\Yealink\CDRRecord;
 use App\Models\Yealink\Pbx;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Carbon;
 use GuzzleHttp\Client;
-use Maatwebsite\Excel\Facades\Excel;
-use App\Imports\CDRRecordImport;
 use Box\Spout\Reader\Common\Creator\ReaderEntityFactory as REF;
+use Storage;
 
 class GetCDRRecords extends Command
 {
@@ -98,7 +93,7 @@ class GetCDRRecords extends Command
         $this->info('Getting random CDR file name');
         $content = [
             'extid' => 'all',
-            'starttime' => $cdrObj->latest('timestart')->first() ? Carbon::parse($cdrObj->latest('timestart')->first()->timestart)->format('Y-m-d H:i:s') : Carbon::now()->subMonths(6)->format('Y-m-d H:i:s'),
+            'starttime' => $cdrObj->latest('timestart')->first() ? Carbon::parse($cdrObj->latest('timestart')->first()->timestart)->subHours(4)->format('Y-m-d H:i:s') : Carbon::now()->subMonths(12)->format('Y-m-d H:i:s'),
             'endtime' => Carbon::now()->format('Y-m-d H:i:s'),
             // 'allowedip' => '172.16.69.240'
         ];
@@ -143,7 +138,7 @@ class GetCDRRecords extends Command
         $cdrs = [];
         $this->comment('Done');
 
-        $this->info('Counting Rows');
+        $this->info('Counting records');
         foreach ($reader->getSheetIterator() as $sheet) {
             foreach ($sheet->getRowIterator() as $row) {
                 $rowCount++;
@@ -151,52 +146,70 @@ class GetCDRRecords extends Command
         }
         $this->comment('Done');
 
-        $this->info('Inserting records in the database');
+        $this->info('Determining records for insertion in the database... (this might take a while)');
+
         foreach ($reader->getSheetIterator() as $sheet) {
 
-            $rows = $sheet->getRowIterator();
-            $bar = $this->output->createProgressBar($rowCount);
-            $bar->start();
-
-            foreach ($rows as $row) {
+            foreach ($sheet->getRowIterator() as $row) {
                 if ($index !== 0) {
-
                     $cells = $row->getCells();
 
-                    if(sizeOf($cdrs) === 500) {
-                        CDRRecord::insert($cdrs);
-                        $cdrs = [];
+                    // if (sizeOf($cdrs) === 10) {
+                    //     CDRRecord::insert($cdrs);
+                    //     unset($cdrs);
+                    //     $cdrs = [];
+                    // }
+
+                    if (!CDRRecord::where('callid', $cells[0]->getValue())->where('timestart', $cells[1]->getValue())->where('type', $cells[9]->getValue())->first()) {
+                        $cdrs[] = [
+                            'callid' => $cells[0]->getValue(),
+                            'timestart' => $cells[1]->getValue(),
+                            'callfrom' => $cells[2]->getValue(),
+                            'callto' => $cells[3]->getValue(),
+                            'callduration' => $cells[4]->getValue(),
+                            'talkduration' => $cells[5]->getValue(),
+                            'waitduration' => $cells[4]->getValue() - $cells[5]->getValue(),
+                            'srctrunkname'=> $cells[6]->getValue(),
+                            'dsttrunkname' => $cells[7]->getValue(),
+                            'status' => $cells[8]->getValue(),
+                            'type' => $cells[9]->getValue(),
+                            'pincode' => $cells[10]->getValue(),
+                            'recording' => $cells[11]->getValue(),
+                            'didnumber' => $cells[12]->getValue(),
+                            'sn' => $cells[13]->getValue(),
+                            'pbx_id' => $pbx->id
+                        ];
                     }
 
-                    $cdrs[] = [
-                        'callid' => $cells[0]->getValue(),
-                        'timestart' => $cells[1]->getValue(),
-                        'callfrom' => $cells[2]->getValue(),
-                        'callto' => $cells[3]->getValue(),
-                        'callduration' => $cells[4]->getValue(),
-                        'talkduration' => $cells[5]->getValue(),
-                        'waitduration' => $cells[4]->getValue() - $cells[5]->getValue(),
-                        'srctrunkname'=> $cells[6]->getValue(),
-                        'dsttrunkname' => $cells[7]->getValue(),
-                        'status' => $cells[8]->getValue(),
-                        'type' => $cells[9]->getValue(),
-                        'pincode' => $cells[10]->getValue(),
-                        'recording' => $cells[11]->getValue(),
-                        'didnumber' => $cells[12]->getValue(),
-                        'sn' => $cells[13]->getValue(),
-                        'pbx_id' => $pbx->id
-                    ];
-
-                    $bar->advance();
                     unset($cells, $row);
                     gc_collect_cycles();
                 } else {
                     $index++;
                 }
             }
+            $this->comment('Done');
+
+            // dd($cdrs);
             $reader->close();
-            CDRRecord::insert($cdrs);
-            $bar->finish();
+
+
+            $cdrs = collect($cdrs);
+
+            if ($cdrs->count() > 0) {
+                $this->info('Inserting records in the database');
+                $bar = $this->output->createProgressBar($cdrs->count());
+                $bar->start();
+
+                foreach ($cdrs->chunk(200) as $items) {
+                    CDRRecord::insert($items->toArray());
+                    $bar->advance($items->count());
+                }
+
+                $bar->finish();
+            } else {
+                $this->info('Nothing to insert in the database');
+            }
+            Storage::delete($tempFile);
         }
         $this->info("");
         $this->comment('Done. Bye Bye');

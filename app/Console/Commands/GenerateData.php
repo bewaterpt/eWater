@@ -121,7 +121,7 @@ class GenerateData extends Command
             $admin_user = User::find($admin_user_id);
 
             if (!$admin_user) {
-                throw new Exception('Failed to create admin user');
+                throw new \Exception('Failed to create admin user');
             }
 
             $this->info("admin user created\n");
