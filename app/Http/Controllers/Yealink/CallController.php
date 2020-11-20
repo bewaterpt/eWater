@@ -188,22 +188,19 @@ class CallController extends Controller
                 if ($searchCol['name'] === 'timestart') {
                     $searchCol['value'] = Carbon::parse($searchCol['value'])->format('Y-m-d');
                 }
-                // dd($searchCol['name']);
 
-                $cdrs .= " AND cdrAll.{$searchCol['name']} rlike \"{$searchCol['value']}\"";
+                $cdrs .= " AND cdrAll.{$searchCol['name']} RLIKE '{$searchCol['value']}'";
             }
 
-            // dd("SELECT count(*) as total FROM ({$cdrs}) AS tt");
-
+            $total = collect(DB::select("SELECT count(*) as total FROM ({$cdrs}) AS tt"))->first()->total;
 
             $cdrs .= " ORDER BY cdrAll.{$sortCol} {$sortDir}
-            LIMIT {$limit}
-            OFFSET {$offset}";
+                        LIMIT {$limit}
+                        OFFSET {$offset}";
 
             // dd($cdrs);
 
-            $rows = collect(DB::select($cdrs));
-            $total = $rows->count();
+            $rows = DB::select($cdrs);
 
             // Get row count
             // $total = $cdrs->count();
