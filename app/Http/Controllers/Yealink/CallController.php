@@ -33,6 +33,8 @@ class CallController extends Controller
 
     protected $dateFormat = 'Y-m-d H:i:s';
 
+    private $carbon;
+
     private $operators = [
         'timestart' => 'rlike',
         'callfrom' => 'like',
@@ -59,6 +61,7 @@ class CallController extends Controller
         parent::__construct();
 
         $this->agentsForQuery = implode('|', array_keys($this->agents));
+        $this->carbon = new Carbon();
     }
 
     public function pbxList(Request $request) {
@@ -103,7 +106,7 @@ class CallController extends Controller
             // dd($request->input());
             $input = $request->input();
 
-            // Get datatable values for sorting, limit and offset
+            // Get datatable values for sorting, limit AND offset
             $sortCol = $input['columns'][$input['order'][0]['column']]['name'];
             $sortDir = $input['order'][0]['dir'];
             $limit = $input['length'];
@@ -125,53 +128,95 @@ class CallController extends Controller
                 }
             }
 
-            $cdrs = DB::table((new CDRRecord())->getTable() . ' as cdrTrans')
-                    ->select('*')
-                    ->whereIn('callid' , function ($query) {
-                        $query->from((new CDRRecord())->getTable() . ' as cdrTrans2')
-                        ->select('cdrTrans2.callid')
-                        ->join('cdr_records as cdrTransComp', function ($join) {
-                            $join->on('cdrTrans2.callid', '=', 'cdrTransComp.callid')->on('cdrTrans2.callduration', '>', 'cdrTransComp.callduration');
-                        })
-                        ->where('cdrTrans2.type', 'Transfer')
-                        ->whereBetween('cdrTrans2.timestart', [Carbon::now()->subMonths(12)->format($this->dateFormat), Carbon::now()->format($this->dateFormat)])
-                        ->whereNotIn('cdrTrans2.callto', [6501, 6502])
-                        ->where('cdrTrans2.callto', 'rlike', $this->agentsForQuery)
-                        ->where('cdrTrans2.status', 'ANSWERED');
-                    });
+            // $cdrs = DB::table((new CDRRecord())->getTable() . ' as cdrTrans')
+            //         ->select('*')
+            //         ->whereIn('callid' , function ($query) {
+            //             $query->from((new CDRRecord())->getTable() . ' as cdrTrans2')
+            //             ->select('cdrTrans2.callid')
+            //             ->join('cdr_records as cdrTransComp', function ($join) {
+            //                 $join->on('cdrTrans2.callid', '=', 'cdrTransComp.callid')->on('cdrTrans2.callduration', '>', 'cdrTransComp.callduration');
+            //             })
+            //             ->where('cdrTrans2.type', 'Transfer')
+            //             ->whereBetween('cdrTrans2.timestart', [Carbon::now()->subMonths(12)->format($this->dateFormat), Carbon::now()->format($this->dateFormat)])
+            //             ->whereNotIn('cdrTrans2.callto', [6501, 6502])
+            //             ->where('cdrTrans2.callto', 'rlike', $this->agentsForQuery)
+            //             ->where('cdrTrans2.status', 'ANSWERED');
+            //         });
 
-            $cdrs = DB::table((new CDRRecord())->getTable() . ' as cdrInb')
-                    ->select('*')
-                    ->whereIn('callid' , function ($query) use ($cdrs){
-                        $query->from((new CDRRecord())->getTable() . ' as cdrInb2')
-                        ->select('cdrInb2.callid')
-                        ->where('cdrInb2.type', 'Inbound')
-                        ->whereBetween('cdrInb2.timestart', [Carbon::now()->subMonths(12)->format($this->dateFormat), Carbon::now()->format($this->dateFormat)])
-                        ->whereNotIn('cdrInb2.callto', [6501, 6502])
-                        ->whereNotIn('cdrInb2.callid', $cdrs->pluck('callid'))
-                        ->where('cdrInb.callto', 'rlike', $this->agentsForQuery)
-                        ->where('cdrInb2.status', 'ANSWERED');
-                    })->union($cdrs);
+            // $cdrs = DB::table((new CDRRecord())->getTable() . ' as cdrInb')
+            //         ->select('*')
+            //         ->whereIn('callid' , function ($query) use ($cdrs){
+            //             $query->from((new CDRRecord())->getTable() . ' as cdrInb2')
+            //             ->select('cdrInb2.callid')
+            //             ->where('cdrInb2.type', 'Inbound')
+            //             ->whereBetween('cdrInb2.timestart', [Carbon::now()->subMonths(12)->format($this->dateFormat), Carbon::now()->format($this->dateFormat)])
+            //             ->whereNotIn('cdrInb2.callto', [6501, 6502])
+            //             ->whereNotIn('cdrInb2.callid', $cdrs->pluck('callid'))
+            //             ->where('cdrInb.callto', 'rlike', $this->agentsForQuery)
+            //             ->where('cdrInb2.status', 'ANSWERED');
+            //         })->union($cdrs);
+
+            $cdrIds = collect(DB::select("SELECT cdrTrans.callid  from `cdr_records` as `cdrTrans`
+                        WHERE `callid` in (
+                            SELECT `cdrTrans2`.`callid`
+                            from `cdr_records` as `cdrTrans2`
+                            inner join `cdr_records` as `cdrTransComp` on `cdrTrans2`.`callid` = `cdrTransComp`.`callid` AND `cdrTrans2`.`callduration` > `cdrTransComp`.`callduration`
+                            WHERE `cdrTrans2`.`type` = 'Transfer'
+                            AND `cdrTrans2`.`timestart` BETWEEN '{$this->carbon::now()->subMonths(12)->format($this->dateFormat)}' AND '{$this->carbon::now()->format($this->dateFormat)}'
+                            AND `cdrTrans2`.`callto` not in (6501, 6502)
+                            AND `cdrTrans2`.`callto` RLIKE '{$this->agentsForQuery}'
+                            AND `cdrTrans2`.`status` = 'ANSWERED'
+                        )
+
+                        UNION DISTINCT
+
+                        SELECT cdrInb.callid from `cdr_records` as `cdrInb`
+                        WHERE `callid` in (
+                            SELECT `cdrInb2`.`callid`
+                            from `cdr_records` as `cdrInb2`
+                            WHERE `cdrInb2`.`type` = 'Inbound'
+                            AND `cdrInb2`.`timestart` BETWEEN '{$this->carbon::now()->subMonths(12)->format($this->dateFormat)}' AND '{$this->carbon::now()->format($this->dateFormat)}'
+                            AND `cdrInb2`.`callto` not in (6501, 6502)
+                            AND `cdrInb2`.`callto` RLIKE '{$this->agentsForQuery}'
+                            AND `cdrInb2`.`status` = 'ANSWERED'
+                        )"))->pluck('callid')->toArray();
+
+            $cdrs = "SELECT * FROM cdr_records as cdrAll WHERE cdrAll.callid IN(\"" . implode('", "', $cdrIds) . "\")";
 
             // Set filters
             foreach ($searchCols as $searchCol) {
                 if ($searchCol['name'] === 'timestart') {
-                   $searchCol['value'] = Carbon::parse($searchCol['value'])->format('Y-m-d');
+                    $searchCol['value'] = Carbon::parse($searchCol['value'])->format('Y-m-d');
                 }
-                $cdrs->where($searchCol['name'], 'rlike', $searchCol['value']);
+                // dd($searchCol['name']);
+
+                $cdrs .= " AND cdrAll.{$searchCol['name']} rlike \"{$searchCol['value']}\"";
             }
 
+            // dd("SELECT count(*) as total FROM ({$cdrs}) AS tt");
+
+
+            $cdrs .= " ORDER BY cdrAll.{$sortCol} {$sortDir}
+            LIMIT {$limit}
+            OFFSET {$offset}";
+
+            // dd($cdrs);
+
+            $rows = collect(DB::select($cdrs));
+            $total = $rows->count();
+
             // Get row count
-            $total = $cdrs->count();
+            // $total = $cdrs->count();
+
 
             // Set order
-            $cdrs->orderBy($sortCol, $sortDir)
 
-            // Set limit and offset and get rows
-            ->limit($limit)
-            ->offset($offset);
 
-            $rows = $cdrs->get();
+            // Set limit AND offset AND get rows
+            // ->limit($limit)
+            // ->offset($offset);
+
+            // $rows = $cdrs->get();
 
             // Add rows to array
             $data = [];
