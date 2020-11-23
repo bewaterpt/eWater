@@ -4,7 +4,7 @@ from scp import SCPClient
 ssh = SSHClient()
 ssh.load_system_host_keys()
 ssh.connect(hostname='ftp.bewater.com.pt',
-            port='990',
+            port='999',
             username='ourem',
             password='bewater')
 
