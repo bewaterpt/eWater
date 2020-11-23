@@ -95,6 +95,7 @@ return [
         'unscheduled' => 'Interrupção não programada',
         'affected_area' => 'Área afetada',
         'reinstatement_date' => 'Data de Restabelecimento',
+        'edit' => 'Editar Interrupção',
     ],
     'url' => "Endereço Web",
     'delegation' => 'Delegação',
@@ -104,4 +105,6 @@ return [
     'impersonated_by' => 'Personificado por: ',
     'coordinates' => 'Coordenadas',
     'type' => 'Tipo',
+    'of' => 'de',
+    'records' => 'registos',
 ];
