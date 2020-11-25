@@ -133,5 +133,25 @@ function decimalSecondsToTimeValue(totalSeconds) {
 }
 
 function normalizeFormFieldsForPost(serializedFields) {
+    // placeholder
+}
 
+function processAjaxErrors(errors) {
+    console.log('Errors: ', errors);
+
+    $('#ajax-errors').find('ul').html('');
+
+    if (Object.keys(errors).length !== 0) {
+        Object.values(errors).forEach((e, i) => {
+            $('#ajax-errors').find('ul').append('<li>' + e + '</li>').removeClass('d-none');
+        });
+    } else {
+        $('#ajax-errors').find('ul').removeClass('d-none');
+    }
+}
+
+function logAjaxError(error) {
+    $.ajax([
+
+    ])
 }

@@ -266,31 +266,88 @@ $(() => {
             });
         });
 
-        $('#reloadCallData').on('click', () => {
-            $.ajax({
-                url: '/calls/refetch',
-                success: (response) => {
-
-                    window.datatable_calls.draw();
-                    getmonthlyWaitTimeInfo().catch((msg) => {
-                        alert(msg);
-                    });
-                    getMonthlyCallVolume().catch((msg) => {
-                        alert(msg);
-                    });
-                    $('#modalSpinner').modal('hide');
-                },
-                error: (err) => {
-                    alert(err.message);
-                }
-            });
+        $('#refetchCallData').on('click', (evt) => {
+            if (!$(evt.currentTarget).attr('data-disabled')) {
+                $.ajax({
+                    url: '/calls/refetch',
+                    success: (response) => {
+                        if (response.status === 200) {
+                            window.datatable_calls.draw();
+                            getmonthlyWaitTimeInfo().catch((msg) => {
+                                alert(msg);
+                            });
+                            getMonthlyCallVolume().catch((msg) => {
+                                alert(msg);
+                            });
+                        } else {
+                            alert(response.message);
+                        }
+                        $('#modalSpinner').modal('hide');
+                    },
+                    error: (err) => {
+                        console.log(err);
+                        alert(err.message);
+                    }
+                });
+            }
         });
 
         $('#clearDate').on('click', (evt) => {
             console.log(evt.currentTarget);
             if ($(evt.currentTarget).siblings('input').val() != "") {
+                $(evt.currentTarget).tooltip({
+                    html: true,
+                });
                 $(evt.currentTarget).siblings('input').val("").trigger('change');
             }
-        })
+        });
+
+
+        let updating = false;
+
+        const cdri = setInterval(() => {
+            console.log(updating);
+            $.ajax({
+                url: 'check-call-record-update-state',
+                method: 'GET',
+                dataType: 'json',
+                headers: {
+                    'Access-Control-Allow-Origin': 'localhost'
+                },
+                success: (response) => {
+                    console.log(response);
+                    if (response.updating) {
+                        $('#refetchCallData').addClass('spining').attr('data-disabled', true)
+                        if (parseInt(response.current) !== 0) {
+                            $('#cdrUpdateState').removeClass('d-none').addClass('d-inline');
+                            $('#cdrUpdateState .current').text(response.current);
+                            $('#cdrUpdateState .total').text(response.total);
+                        }
+
+                        updating = true;
+                    } else {
+                        $('#cdrUpdateState').addClass('d-none').removeClass('d-inline');
+                        $('#refetchCallData').removeClass('disabled spining').removeAttr('data-disabled').tooltip('dispose');
+
+                        if (updating) {
+                            window.datatable_calls.draw();
+                            getmonthlyWaitTimeInfo().catch((msg) => {
+                                alert(msg);
+                            });
+                            getMonthlyCallVolume().catch((msg) => {
+                                alert(msg);
+                            });
+                            updating = false;
+                            clearInterval(cdri)
+                        }
+                    }
+                },
+                error: (error) => {
+                    console.log('Error: ', error);
+                    clearInterval(cdri)
+                }
+            });
+        }, 2000);
+
     }
 });

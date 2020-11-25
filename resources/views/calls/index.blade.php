@@ -29,13 +29,16 @@
             </div>
             <div class="card">
                 <div class="card-header">
-                    @Lang('calls.pbx.list')
+                    @Lang('calls.list')
                     <div class="float-right">
-                        <a class="text-primary float-left mr-3" id="reloadCallData" href="#" data-toggle="modal" data-target="#modalSpinner">
+                        <div id="cdrUpdateState" class="d-none">
+                            <span class="current">0</span> @Lang('general.of') <span class="total">0</span> @Lang('general.records').
+                        </div>
+                        <a class="btn btn-link info-tooltip text-primary" id="refetchCallData" data-toggle="tooltip" data-placement="bottom" data-trigger="hover">
                             <i class="fas fa-sync"></i>
                         </a>
                         <div class="dropdown show float-right">
-                            <a class="text-primary dropdown-toggle" id="exportSelector" href="#" data-backdrop="false" data-keyboard="false" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="button">
+                            <a class="btn btn-link text-primary dropdown-toggle" id="exportSelector" href="#" data-backdrop="false" data-keyboard="false" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="button">
                                 <i class="fas fa-file-export"></i>
                             </a>
                             <div id="export" class="dropdown-menu min-w-0" aria-labelledby="exportSelector">
