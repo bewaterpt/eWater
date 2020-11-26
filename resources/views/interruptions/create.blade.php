@@ -32,11 +32,11 @@
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="inputStartDate">@Lang('forms.fields.start_date')</label>
-                                <input type="datetime" name="start_date" class="form-control @error('start_date') is-invalid @enderror" id="inputStartDate" value="" required>
+                                <input type="datetime-local" name="start_date" class="form-control @error('start_date') is-invalid @enderror" id="inputStartDate" value="" required>
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="inputReinstatementDate">@Lang('forms.fields.reinstatement_date')</label>
-                                <input type="datetime" name="reinstatement_date" class="form-control @error('reinstatement_date') is-invalid @enderror" id="inputReinstatementDate" value="" required>
+                                <input type="datetime-local" name="reinstatement_date" class="form-control @error('reinstatement_date') is-invalid @enderror" id="inputReinstatementDate" value="" required>
                             </div>
                             <div class="form-group col-md-12">
                                 <label for="inputAffectedArea">@Lang('forms.fields.affected_area')</label>
