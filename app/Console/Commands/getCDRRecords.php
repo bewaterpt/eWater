@@ -10,8 +10,8 @@ use Illuminate\Support\Carbon;
 use GuzzleHttp\Client;
 use Box\Spout\Reader\Common\Creator\ReaderEntityFactory as REF;
 use Exception;
-use Illuminate\Redis\RedisManager as RedisRedisManager;
 use Storage;
+use Cache;
 use Illuminate\Support\Facades\Redis;
 
 class GetCDRRecords extends Command
@@ -82,6 +82,7 @@ class GetCDRRecords extends Command
     public function handle()
     {
         try {
+            Cache::forget('datatable_calls_records');
             $this->setCallRecordUpdateState(0, true. 0);
             $this->info('Applying settings');
             $guzzleClient = new Client([
