@@ -339,7 +339,7 @@ $(() => {
                                 alert(msg);
                             });
                             updating = false;
-                            clearInterval(cdri)
+                            // clearInterval(cdri)
                         }
                     }
                 },
