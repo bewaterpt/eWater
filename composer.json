@@ -13,7 +13,7 @@
         "alimranahmed/laraocr": "^1.0",
         "box/spout": "^3.1",
         "directorytree/ldaprecord": "1.10.1",
-        "directorytree/ldaprecord-laravel": "^1.2",
+        "directorytree/ldaprecord-laravel": "^1.7",
         "doctrine/dbal": "^2.10",
         "fideloper/proxy": "^4.2",
         "fruitcake/laravel-cors": "^1.0",

@@ -242,7 +242,7 @@ $(() => {
             $.ajax({
                 method: 'GET',
                 url: $(this).attr('href'),
-                contentType: 'json',
+                dataType: 'json',
                 success: function(result, status, xhr) {
 
                     var disposition = xhr.getResponseHeader('content-disposition');
@@ -271,6 +271,7 @@ $(() => {
                 $.ajax({
                     url: '/calls/refetch',
                     success: (response) => {
+                        response = JSON.parse(response);
                         if (response.status === 200) {
                             window.datatable_calls.draw();
                             getmonthlyWaitTimeInfo().catch((msg) => {
@@ -286,7 +287,7 @@ $(() => {
                     },
                     error: (err) => {
                         console.log(err);
-                        alert(err.message);
+                        alert(err.responseText);
                     }
                 });
             }

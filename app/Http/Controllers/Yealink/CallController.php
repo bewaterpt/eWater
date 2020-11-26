@@ -359,14 +359,15 @@ class CallController extends Controller
         ];
 
         try {
-            if ($_SERVER['synchronizingCallRecords']) {
+            if (Redis::hget('calls', 'updating')) {
                 $data['status'] = 202;
                 $data['message'] = __('errors.call_sync_in_progress');
             } else {
-                $_SERVER['synchronizingCallRecords'] = true;
+                Redis::hset('calls', 'updating', true);
                 Artisan::call('calls:get');
-                $_SERVER['synchronizingCallRecords'] = false;
             }
+
+            return json_encode($data);
         } catch(\Exception $e)  {
             $data['status'] = 500;
             $data['message'] = $e->getMessage();
