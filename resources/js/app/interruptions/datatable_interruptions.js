@@ -57,13 +57,13 @@ $(() => {
                 {data: 'reinstatement_date', name: 'reinstatement_date', searchable: true},
                 // {data: 'coordinates', name: 'coordinates', searchable: true},
                 {data: 'scheduled', name: 'scheduled', searchable: false, calss: 'sorting-disabled text-center'},
-                {data: 'outono_id', name: 'outono_id', searchable: false, calss: 'sorting-disabled text-center'},
+                // {data: 'outono_id', name: 'outono_id', searchable: false, calss: 'sorting-disabled text-center'},
             ],
             drawCallback: function(settings){
 
                 var data = this.api().ajax.json();
 
-                // if(data){
+                // if(data) {
                 //     checkRecordNumber(this, data);
                 // }
             },

@@ -26,9 +26,10 @@
                                 </select>
                             </div>
                             <div class="form-group col-md-4 pt-4">
-                                {{-- @if ($currentUser->hasRole('')) --}}
-                                <label for="inputScheduled">@Lang('forms.fields.scheduled')</label>
-                                <input type="checkbox" name="scheduled" class="mt-3" id="inputScheduled">
+                                @if ($currentUser->hasRole('ewater_interrupcoes_programadas'))
+                                    <label for="inputScheduled">@Lang('forms.fields.scheduled')</label>
+                                    <input type="checkbox" name="scheduled" class="mt-3" id="inputScheduled">
+                                @endif
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="inputStartDate">@Lang('forms.fields.start_date')</label>

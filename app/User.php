@@ -138,4 +138,8 @@ class User extends Authenticatable implements LdapAuthenticatable
     public function canImpersonate() {
         return $this->isAdmin();
     }
+
+    public function hasRole($role) {
+        return $this->roles()->where('slug', $role)->first();
+    }
 }
