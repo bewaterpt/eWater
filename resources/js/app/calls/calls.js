@@ -317,7 +317,7 @@ $(() => {
                 },
                 success: (response) => {
                     console.log(response);
-                    if (response.updating) {
+                    if (parseInt(response.updating) === 1) {
                         $('#refetchCallData').addClass('spining').attr('data-disabled', true)
                         if (parseInt(response.current) !== 0) {
                             $('#cdrUpdateState').removeClass('d-none').addClass('d-inline');
