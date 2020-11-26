@@ -1,5 +1,6 @@
 @import 'errors';
 @import 'floating_labels';
+@import 'animations';
 
 // .dropdown {
 
@@ -139,4 +140,25 @@
     &.min-w-0 {
         min-width: 0 !important;
     }
+}
+
+.spining {
+    -webkit-animation-name: spin;
+    -webkit-animation-duration: 2.5s;
+    -webkit-animation-iteration-count: infinite;
+    -webkit-animation-timing-function: linear;
+    -moz-animation-name: spin;
+    -moz-animation-duration: 2.5s;
+    -moz-animation-iteration-count: infinite;
+    -moz-animation-timing-function: linear;
+    -ms-animation-name: spin;
+    -ms-animation-duration: 2.5s;
+    -ms-animation-iteration-count: infinite;
+    -ms-animation-timing-function: linear;
+    animation-name: spin;
+    animation-duration: 2.5s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+    -o-transition: rotate(360deg);
+    transition: rotate(360deg)
 }
