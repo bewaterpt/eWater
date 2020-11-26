@@ -12,3 +12,16 @@ Homestead.yaml
 npm-debug.log
 yarn-error.log
 .env
+_ide_helper.php
+/public/css
+/public/js/icons
+/public/js/plugins
+/public/js/skins
+/public/js/themes
+/public/js/app.es5.js
+/public/js/app.js
+/public/js/app.js.LICENSE.txt
+/public/js/vendor.js
+/public/js/vendor.js.LICENSE.txt
+/public/js/manifest.js
+
