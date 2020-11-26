@@ -371,6 +371,8 @@ class CallController extends Controller
         } catch(\Exception $e)  {
             $data['status'] = 500;
             $data['message'] = $e->getMessage();
+            Redis::hdel('calls', 'updating');
+
             return json_encode($data);
         }
     }
