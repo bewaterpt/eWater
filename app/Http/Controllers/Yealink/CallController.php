@@ -359,7 +359,7 @@ class CallController extends Controller
         ];
 
         try {
-            if (Redis::hget('calls', 'updating')) {
+            if (intval(Redis::hget('calls', 'updating')) === 1) {
                 $data['status'] = 202;
                 $data['message'] = __('errors.call_sync_in_progress');
             } else {
