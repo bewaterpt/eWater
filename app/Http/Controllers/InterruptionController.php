@@ -380,12 +380,17 @@ class InterruptionController extends Controller
         $interruption->updatedBy()->associate($user->id);
         $interruption->affected_area = $request->affected_area;
 
-        $outonoInterruption = $interruption->scheduled ? OutonoInterrupcoesProg::find($interruption->outono_id) : OutonoInterrupcoes::find($interruption->outono_id);
-        $outonoInterruption->numObra = $request->work_id;
-        $outonoInterruption->dtInicio = Carbon::parse($request->start_date)->format('Y-m-d H:i:s.v');
-        $outonoInterruption->dtRestabelecimento = Carbon::parse($request->reinstatement_date)->format('Y-m-d H:i:s.v');
-        $outonoInterruption->areaAfectada = strip_tags($request->affected_area);
-        $outonoInterruption->save();
+        if ($interruption->outono_id) {
+            $outonoInterruption = $interruption->scheduled ? OutonoInterrupcoesProg::find($interruption->outono_id) : OutonoInterrupcoes::find($interruption->outono_id);
+
+            if ($outonoInterruption) {
+                $outonoInterruption->numObra = $request->work_id;
+                $outonoInterruption->dtInicio = Carbon::parse($request->start_date)->format('Y-m-d H:i:s.v');
+                $outonoInterruption->dtRestabelecimento = Carbon::parse($request->reinstatement_date)->format('Y-m-d H:i:s.v');
+                $outonoInterruption->areaAfectada = strip_tags($request->affected_area);
+                $outonoInterruption->save();
+            }
+        }
 
 
         $interruption->synced = true;

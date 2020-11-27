@@ -89,13 +89,15 @@ $(() => {
             console.log(tr[0]);
             $(event.target).parents('.card.work').find('table#report-lines tbody').append(tr);
             // window.scrollTo(0, document.body.scrollHeight || document.documentElement.scrollHeight);
-            $('a[href="#"]').click(function(event) {
+            $('a[href="#"]').on('click', (event) => {
                 event.preventDefault();
             });
         }
 
         function formatAndSendReportData(editing = false) {
-            if ((window.verifyingWork && window.verifyingWork.readyState === 4) || editing) {
+            clearAjaxErrors();
+
+            if (/*(window.verifyingWork && window.verifyingWork.readyState === 4) ||*/true || editing) {
                 let data = {
                     plate: $('input[name="plate"]').val(),
                     km_departure: $('input[name="km-departure"]').val(),
@@ -164,8 +166,8 @@ $(() => {
 
                 data.rows = rows;
 
-                if(!window.createReportRequest) {
-                    window.createReportRequest = $.ajax({
+                if(!window.createOrEditReportRequest || window.createOrEditReportRequest.readyState === 4) {
+                    window.createOrEditReportRequest = $.ajax({
                         method: 'POST',
                         url: $('#report').attr('action'),
                         data: JSON.stringify(data),
@@ -176,9 +178,19 @@ $(() => {
                             window.location.replace(response);
                         },
                         error: (jqXHR, status, error) => {
+                            console.log(error);
+                            if (jqXHR.responseJSON.exception) {
+                                logAjaxError(error)
+                                throw new Error(error.message);
+                            } else {
+                                console.log(jqXHR.responseJSON);
+                                processAjaxErrors(jqXHR.responseJSON.errors);
+                            }
+                            console.log(status);
+                            // console.log("Error: ", error);
+
                             $('button[type="submit"]').find('#spinner, #spinner-text').addClass('d-none');
                             $('#report button[type="submit"]').find('.btn-text').removeClass('d-none');
-                            throw new Error(error.message);
                         },
                         complete: () => {
                             $('button[type="submit"]').find('#spinner, #spinner-text').addClass('d-none');
@@ -192,50 +204,50 @@ $(() => {
         }
 
         function checkWorkExists(evt) {
-            error = false;
-            let data = {
-                id: $(evt.target).val()
-            }
+            // error = false;
+            // let data = {
+            //     id: $(evt.target).val()
+            // }
 
-            if (data.id !== "") {
-                if(window.verifyingWork && window.verifyingWork.readyState !== 4) {
-                    window.verifyingWork.abort();
-                }
+            // if (data.id !== "") {
+            //     if(window.verifyingWork && window.verifyingWork.readyState !== 4) {
+            //         window.verifyingWork.abort();
+            //     }
 
-                window.verifyingWork = $.ajax({
-                    method: 'POST',
-                    url: '/works/work-exists',
-                    data: JSON.stringify(data),
-                    contentType: 'json',
-                    success: (response) => {
-                        response = JSON.parse(response);
-                        console.log("Response: ", response);
-                        if (response.value === false) {
-                            $(evt.target).parent().popover({
-                                html: true,
-                                title: function() {
-                                    return $(document).find('#' + this.id + ' .popover').find('#title').html()
-                                },
-                                content: function() {
-                                    return $(document).find('#' + this.id + ' .popover').find('#content').html()
-                                },
-                            });
-                            $(evt.target).parent().find('.popover #content').html($('#errors .' + response.reason).html());
-                            $(evt.target).addClass('border-danger').addClass('bg-flamingo').attr('data-error', true).focus();
-                            $('.popover:not(.popover-data)').addClass('popover-danger');
-                        } else {
-                            $(evt.target).removeClass('border-danger').removeClass('bg-flamingo').removeAttr('data-error');
-                            $(evt.target).parent().popover('dispose');
-                        }
-                    },
-                    error: (jqXHR, status, error) => {
+            //     window.verifyingWork = $.ajax({
+            //         method: 'POST',
+            //         url: '/works/work-exists',
+            //         data: JSON.stringify(data),
+            //         contentType: 'json',
+            //         success: (response) => {
+            //             response = JSON.parse(response);
+            //             console.log("Response: ", response);
+            //             if (response.value === false) {
+            //                 $(evt.target).parent().popover({
+            //                     html: true,
+            //                     title: function() {
+            //                         return $(document).find('#' + this.id + ' .popover').find('#title').html()
+            //                     },
+            //                     content: function() {
+            //                         return $(document).find('#' + this.id + ' .popover').find('#content').html()
+            //                     },
+            //                 });
+            //                 $(evt.target).parent().find('.popover #content').html($('#errors .' + response.reason).html());
+            //                 $(evt.target).addClass('border-danger').addClass('bg-flamingo').attr('data-error', true).focus();
+            //                 $('.popover:not(.popover-data)').addClass('popover-danger');
+            //             } else {
+            //                 $(evt.target).removeClass('border-danger').removeClass('bg-flamingo').removeAttr('data-error');
+            //                 $(evt.target).parent().popover('dispose');
+            //             }
+            //         },
+            //         error: (jqXHR, status, error) => {
 
-                    },
-                });
-            } else {
-                $(evt.target).removeClass('border-danger').removeClass('bg-flamingo').removeAttr('data-error');
-                $(evt.target).parent().popover('dispose');
-            }
+            //         },
+            //     });
+            // } else {
+            //     $(evt.target).removeClass('border-danger').removeClass('bg-flamingo').removeAttr('data-error');
+            //     $(evt.target).parent().popover('dispose');
+            // }
         }
 
         $('#addRow').on('click', (event) => {
