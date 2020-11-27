@@ -238,7 +238,7 @@ class InterruptionController extends Controller
             // }
             // dd($row);
             if ($this->permissionModel->can('interruptions.edit') && !$row->trashed()) {
-                if ($row->scheduled && !$this->currentUser->hasRoles(['ewater_interrupcoes_programadas_edicao'])) {
+                if ($row->scheduled && !$this->currentUser->hasRoles(['ewater_interrupcoes_programadas_edicao', 'admin'])) {
                 } else {
                     $actions .= '<a class="text-primary edit px-1" href="' . route('interruptions.edit', ['id' => $row->id]) . '" title="'.trans('general.edit').'"><i class="fas fa-edit"></i></a>';
                 }
