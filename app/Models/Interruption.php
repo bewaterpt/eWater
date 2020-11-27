@@ -17,4 +17,8 @@ class Interruption extends Model
     public function delegation() {
         return $this->belongsTo('App\Models\Delegation');
     }
+
+    public function updatedBy() {
+        return $this->belongsTo('App\User');
+    }
 }
