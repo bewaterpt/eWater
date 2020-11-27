@@ -140,6 +140,10 @@ class User extends Authenticatable implements LdapAuthenticatable
     }
 
     public function hasRoles(array $roles) {
-        return $this->roles()->whereIn('slug', $roles)->first();
+        return $this->roles()->whereIn('slug', $roles)->count() > 0;
+    }
+
+    public function countRoles(array $roles) {
+        return $this->roles()->whereIn('slug', $roles)->count();
     }
 }

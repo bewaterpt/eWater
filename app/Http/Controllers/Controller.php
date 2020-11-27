@@ -10,18 +10,16 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use App\Models\Permission;
 use App\Helpers\Helper;
-use App;
-use DB;
 use Auth;
 use View;
-use Route;
 use App\Models\DailyReports\Status;
 use App\Models\Connectors\OutonoObras;
 use App\User;
+use App\Traits\ValidatesJsonRequests;
 
 class Controller extends BaseController
 {
-    use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
+    use AuthorizesRequests, DispatchesJobs, ValidatesRequests, ValidatesJsonRequests;
 
     protected $currentUser;
     protected $userRoles;

@@ -38,7 +38,8 @@ class OutonoObras extends Model
     public static function exists(int $workId) {
         $data = [
             'reason' => 'Unknown',
-            'value' => true,
+            'code' => 500,
+            'value' => false,
         ];
 
         $work = OutonoObras::find($workId);
@@ -53,6 +54,7 @@ class OutonoObras extends Model
             $data['code'] = 302;
         }
 
-        return self::find($workId) != null;
+        // return self::find($workId) != null;
+        return $data;
     }
 }

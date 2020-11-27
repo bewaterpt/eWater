@@ -8,20 +8,17 @@ use App\Models\DailyReports\Report;
 use App\Models\DailyReports\ReportLine;
 use App\Models\DailyReports\ProcessStatus;
 use App\Models\DailyReports\Status;
-use App\Models\Connectors\OutonoObrasCC;
 use App\Models\Connectors\OutonoObras;
 use App\Models\Team;
 use Illuminate\Support\Carbon;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Artisan;
 use App\User;
 use DateTime;
 use Auth;
 use DB;
-use Route;
 use Log;
-use App\Models\Permission;
-use Illuminate\Console\Command;
+use App\Rules\ReportWorkExists;
+use App\Rules\VehiclePlate;
 
 class DailyReportController extends Controller
 {
@@ -205,6 +202,14 @@ class DailyReportController extends Controller
         $user = Auth::user();
         $input = $request->json()->all();
 
+        $this->validateJson($request, [
+            'plate' => ['required', new VehiclePlate],
+            'km_arrival' => ['required'],
+            'km_departure' => ['required'],
+            'team' => ['required'],
+            'rows' => ['required', new ReportWorkExists],
+        ]);
+
         Log::info(sprintf('User %s(%s) is creating a report with the following input data %s', $user->name, $user->username, json_encode($input)));
 
         try {
@@ -225,32 +230,21 @@ class DailyReportController extends Controller
             $rows = [];
 
             foreach ($works as $workNumber => $workData) {
-                // if (!OutonoObras::exists($workNumber)) {
-                //     return json_encode([
-                //         'code' => 404,
-                //         'message' => __()
-                //     ]);
-                // }
                 foreach ($workData as $reportRow) {
-                    // if($workNumber != 0) {
-                        $rows[] = [
-                            'entry_number' => 0,
-                            'article_id' => $reportRow['article_id'],
-                            'work_number' => $workNumber,
-                            'quantity' => $reportRow['quantity'],
-                            'entry_date' => (new DateTime($input['datetime']))->format('Y-m-d H:i:s'),
-                            'report_id' => $report->id,
-                            'created_by' => $user->id,
-                            'user_id' => $reportRow['worker'],
-                            'worker' => $reportRow['worker'],
-                            'driven_km' => $reportRow['driven_km'],
-                            'created_at' => Carbon::now(),
-                            'updated_at' => Carbon::now(),
-                        ];
-
-                    // } else {
-                    //     return route('daily_reports.create');
-                    // }
+                    $rows[] = [
+                        'entry_number' => 0,
+                        'article_id' => $reportRow['article_id'],
+                        'work_number' => $workNumber,
+                        'quantity' => $reportRow['quantity'],
+                        'entry_date' => (new DateTime($input['datetime']))->format('Y-m-d H:i:s'),
+                        'report_id' => $report->id,
+                        'created_by' => $user->id,
+                        'user_id' => $reportRow['worker'],
+                        'worker' => $reportRow['worker'],
+                        'driven_km' => $reportRow['driven_km'],
+                        'created_at' => Carbon::now(),
+                        'updated_at' => Carbon::now(),
+                    ];
                 }
             }
 
@@ -492,6 +486,14 @@ class DailyReportController extends Controller
     public function update(Request $request) {
         $user = Auth::user();
         $input = $request->json()->all();
+
+        $this->validateJson($request, [
+            'plate' => ['required', new VehiclePlate],
+            'km_arrival' => ['required'],
+            'km_departure' => ['required'],
+            'team' => ['required'],
+            'rows' => ['required', new ReportWorkExists],
+        ]);
 
         try {
             DB::beginTransaction();

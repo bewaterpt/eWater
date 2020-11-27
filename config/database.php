@@ -90,6 +90,7 @@ return [
             'prefix' => '',
             'prefix_indexes' => true,
         ],
+
         'outono' => [
             'driver' => env('OUTONO_CONNECTION', 'sqlsrv'),
             'host' => env('OUTONO_HOST', '192.168.21.9\SQLEXPRESS_AM_T'),
@@ -98,6 +99,7 @@ return [
             'username' => env('OUTONO_USERNAME', 'sa'),
             'password' => env('OUTONO_PASSWORD', 'Kaala2014.'),
         ],
+
         'telescope' => [
             'driver' => env('TELESCOPE_CONNECTION', 'mysql'),
             'host' => env('TELESCOPE_HOST', '127.0.0.1'),
@@ -174,8 +176,7 @@ return [
             'port' => env('REDIS_PORT', '6379'),
             'database' => env('REDIS_SESSION_DB', '2'),
             'prefix' => 'ewater_session_',
-        ]
-
+        ],
     ],
 
 ];

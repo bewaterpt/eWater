@@ -107,4 +107,6 @@ return [
     'type' => 'Tipo',
     'of' => 'de',
     'records' => 'registos',
+    'yes' => 'Sim',
+    'no' => 'Não',
 ];

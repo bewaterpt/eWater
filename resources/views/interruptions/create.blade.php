@@ -25,11 +25,12 @@
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="form-group col-md-4 pt-4">
-                                @if ($currentUser->hasRoles(['ewater_interrupcoes_programadas']))
-                                    <label for="inputScheduled">@Lang('forms.fields.scheduled')</label>
-                                    <input type="checkbox" name="scheduled" class="mt-3" id="inputScheduled">
-                                @endif
+                            <div class="form-group col-md-4 pt-4 {{ $currentUser->countRoles(['ewater_interrupcoes_programadas_criacao', 'ewater_interrupcoes_nao_programadas']) == 2 || $currentUser->hasRoles(['admin']) ? '' : 'invisible' }}">
+                                <div for="">@Lang('forms.fields.scheduled')</div>
+                                <label for="inputScheduled1">@Lang('general.yes')</label>
+                                <input type="radio" name="scheduled" class="" id="inputScheduled1" value="true" {{ $currentUser->countRoles(['ewater_interrupcoes_programadas_criacao', 'ewater_interrupcoes_nao_programadas']) > 0 ? 'checked' : '' }}>
+                                <label for="inputScheduled2">@Lang('general.no')</label>
+                                <input type="radio" name="scheduled" class="" id="inputScheduled2" value="false" {{ $currentUser->countRoles(['ewater_interrupcoes_programadas_criacao', 'ewater_interrupcoes_nao_programadas']) == 0 ? 'checked' : '' }}>
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="inputStartDate">@Lang('forms.fields.start_date')</label>

@@ -157,7 +157,7 @@ class InterruptionController extends Controller
 
     public function scheduled(Request $request) {
 
-        if (!$this->currentUser->hasRoles(['ewater_interrupcoes_programadas_edicao', 'admin'])) {
+        if (!$this->currentUser->hasRoles(['ewater_interrupcoes_programadas_criacao', 'admin', 'ewater_interrupcoes_programadas_edicao'])) {
             return redirect()->back()->withErrors(__('auth.permission_denied', ['route' => $request->path()]), 'custom');
         }
 
@@ -238,7 +238,7 @@ class InterruptionController extends Controller
             // }
             // dd($row);
             if ($this->permissionModel->can('interruptions.edit') && !$row->trashed()) {
-                if ($row->scheduled && !$this->currentUser->hasRoles(['ewater_interrupcoes_programadas_edicao', 'admin'])) {
+                if ($row->scheduled && !$this->currentUser->hasRoles(['ewater_interrupcoes_programadas_criacao', 'admin', 'ewater_interrupcoes_programadas_edicao'])) {
                 } else {
                     $actions .= '<a class="text-primary edit px-1" href="' . route('interruptions.edit', ['id' => $row->id]) . '" title="'.trans('general.edit').'"><i class="fas fa-edit"></i></a>';
                 }
@@ -288,7 +288,7 @@ class InterruptionController extends Controller
     public function store(Request $request) {
         $user = Auth::user();
 
-        $scheduled = $request->scheduled == 'on' ? true : false;
+        $scheduled = $request->scheduled == 'true' ? true : false;
 
         $interruption = new Interruption();
         $interruption->work_id = $request->work_id;

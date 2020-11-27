@@ -81,7 +81,7 @@ class LoginController extends Controller
 
         switch ($code) {
             case '532':
-                return redirect('/')->withErrors(__('auth.password_expired', ['url' => config('app.reset_password_url'), 'username' => $this->userName]), 'custom');
+                return redirect('/')->withErrors(__('auth.password_expired', ['url' => config('app.reset_password_url'), 'domain' => 'bewater', 'username' => $this->userName]), 'custom');
             break;
 
             case '533':

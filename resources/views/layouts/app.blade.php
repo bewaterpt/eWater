@@ -38,11 +38,6 @@
                         @else
                          <!-- MENU -->
                             <ul class="navbar-nav mr-auto">
-                                {{-- {{dd(collect(Route::getRoutes())->map(function ($route) {
-                                    return in_array('allowed', $route->gatherMiddleware()) ? $route->getName() : null;
-                                })->filter(function ($value) {
-                                    return !is_null($value);
-                                }))}} --}}
                                 @if($pmodel->can('settings.'))
                                     <li class="nav-item dropdown">
                                         <a id="navbarDropdown" class="nav-link dropdown-toggle {{ preg_match('/settings\./i', Route::currentRouteName()) ? 'text-primary' : '' }}" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
@@ -79,7 +74,6 @@
                                         <a id="navbarDropdown" class="nav-link dropdown-toggle {{ preg_match('/daily_reports\./i', Route::currentRouteName()) ? 'text-primary' : '' }}" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                             @Lang('general.daily_reports.daily_reports') <span class="caret"></span>
                                         </a>
-                                        {{-- {{dd(Route::currentRouteName())}} --}}
                                         <div class="dropdown-menu dropdown-menu" aria-labelledby="navbarDropdown">
                                             @if($pmodel->can('daily_reports.create'))
                                                 <a class="dropdown-item {{ Route::currentRouteName() == 'daily_reports.create' ? 'disabled active bg-primary text-light' : '' }}" href="{{ route('daily_reports.create')}}">@lang('general.daily_reports.create')</a>
@@ -87,12 +81,6 @@
                                             @if($pmodel->can('daily_reports.list'))
                                                 <a class="dropdown-item {{ Route::currentRouteName() == 'daily_reports.list' ? 'disabled active bg-primary text-light' : '' }}" href="{{ route('daily_reports.list')}}">@lang('general.daily_reports.list')</a>
                                             @endif
-                                            {{-- @if($pmodel->can('daily_reports.pending'))
-                                                <a class="dropdown-item {{Route::currentRouteName() == 'daily_reports.pending' ? 'active disabled' : ''}}" href="{{ route('daily_reports.pending')}}">@lang('general.daily_reports.pending')</a>
-                                            @endif
-                                            @if($pmodel->can('daily_reports.approved'))
-                                                <a class="dropdown-item {{Route::currentRouteName() == 'daily_reports.approved' ? 'active disabled' : ''}}" href="{{ route('daily_reports.approved')}}">@lang('general.daily_reports.approved')</a>
-                                            @endif --}}
                                         </div>
                                     </li>
                                 @endif
@@ -105,7 +93,7 @@
                                             @if($pmodel->can('interruptions.create'))
                                                 <a class="dropdown-item {{ Route::currentRouteName() == 'interruptions.create' ? 'disabled active bg-primary text-light' : '' }}" href="{{ route('interruptions.create')}}">@lang('general.interruptions.create')</a>
                                             @endif
-                                            @if($pmodel->can('interruptions.list'))
+                                            @if($pmodel->can('interruptions.list') && $pmodel->can('interruptions.list_unscheduled') && $pmodel->can('interruptions.list_scheduled'))
                                                 <a class="dropdown-item {{ Route::currentRouteName() == 'interruptions.list' ? 'disabled active bg-primary text-light' : '' }}" href="{{ route('interruptions.list')}}">@lang('general.interruptions.list_all')</a>
                                             @endif
                                             @if($pmodel->can('interruptions.list_unscheduled'))
@@ -202,6 +190,14 @@
             </nav>
 
             <main class="py-4">
+                <div id="ajax-errors" class="container d-none">
+                    <div class="row justify-content-center">
+                        <div class="col-md-8 alert alert-danger">
+                            <ul class="mb-0">
+                            </ul>
+                        </div>
+                    </div>
+                </div>
                 @if($errors)
                     @if($errors->custom->any())
                         <div class="container">

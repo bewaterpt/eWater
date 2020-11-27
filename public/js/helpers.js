@@ -143,11 +143,15 @@ function processAjaxErrors(errors) {
 
     if (Object.keys(errors).length !== 0) {
         Object.values(errors).forEach((e, i) => {
-            $('#ajax-errors').find('ul').append('<li>' + e + '</li>').removeClass('d-none');
+            $('#ajax-errors').removeClass('d-none').find('ul').append('<li>' + e + '</li>');
         });
     } else {
-        $('#ajax-errors').find('ul').removeClass('d-none');
+        $('#ajax-errors').addClass('d-none').find('ul').remove('li');
     }
+}
+
+function clearAjaxErrors() {
+    $('#ajax-errors').addClass('d-none').find('ul').remove('li');
 }
 
 function logAjaxError(error) {
