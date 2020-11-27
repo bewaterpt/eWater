@@ -26,7 +26,7 @@
                                 </select>
                             </div>
                             <div class="form-group col-md-4 pt-4">
-                                @if ($currentUser->hasRole('ewater_interrupcoes_programadas'))
+                                @if ($currentUser->hasRoles(['ewater_interrupcoes_programadas']))
                                     <label for="inputScheduled">@Lang('forms.fields.scheduled')</label>
                                     <input type="checkbox" name="scheduled" class="mt-3" id="inputScheduled">
                                 @endif

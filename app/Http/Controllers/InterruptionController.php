@@ -44,7 +44,7 @@ class InterruptionController extends Controller
                 }
             }
 
-            $interruptions = Interruption::select('*');
+            $interruptions = Interruption::select();
             if (!$this->currentUser->isAdmin() && $this->currentUser->delegation()->exists()) {
                 $interruptions->where('delegation_id', $this->currentUser->delegation()->first()->id);
             }
@@ -157,6 +157,10 @@ class InterruptionController extends Controller
 
     public function scheduled(Request $request) {
 
+        if (!$this->currentUser->hasRoles(['ewater_interrupcoes_programadas_edicao', 'admin'])) {
+            return redirect()->back()->withErrors(__('auth.permission_denied', ['route' => $request->path()]), 'custom');
+        }
+
         if ($request->ajax()) {
             $input = $request->input();
 
@@ -225,13 +229,19 @@ class InterruptionController extends Controller
 
     protected function buildData($rows) {
         $data = [];
+
+        // dd($rows);
         foreach ($rows as $row) {
             $actions = '';
             // if ($this->permissionModel->can('interruptions.')) {
             //     $actions .= '<a class="text-info edit mr-1" href="' . route('daily_reports.view', ['id' => $row->id]) . '" title="'.trans('general.view').'"><i class="fas fa-eye"></i></a>';
             // }
+            // dd($row);
             if ($this->permissionModel->can('interruptions.edit') && !$row->trashed()) {
-                $actions .= '<a class="text-primary edit px-1" href="' . route('interruptions.edit', ['id' => $row->id]) . '" title="'.trans('general.edit').'"><i class="fas fa-edit"></i></a>';
+                if ($row->scheduled && !$this->currentUser->hasRoles(['ewater_interrupcoes_programadas_edicao'])) {
+                } else {
+                    $actions .= '<a class="text-primary edit px-1" href="' . route('interruptions.edit', ['id' => $row->id]) . '" title="'.trans('general.edit').'"><i class="fas fa-edit"></i></a>';
+                }
             }
 
             if ((($this->permissionModel->can('interruptions.delete') && !$row->synced && $row->outono_id != null) || ($this->currentUser->isAdmin())) && !$row->trashed()) {
@@ -305,13 +315,19 @@ class InterruptionController extends Controller
         return redirect(route($this->session->get('previous-rt')))->with('success');
     }
 
-    public function edit($id) {
+    public function edit(Request $request, $id) {
+        $int = Interruption::find($id);
+
+        if ($int->scheduled && !$this->currentUser->hasRoles(['ewater_interrupcoes_programadas_edicao', 'admin'])) {
+            return redirect()->back()->withErrors(__('auth.permission_denied', ['route' => $request->path()]), 'custom');
+        }
+
         $delegations = Delegation::all();
         $url = url()->previous();
         $route = app('router')->getRoutes($url)->match(app('request')->create($url))->getName();
         $this->session->put('previous-rt', $route);
 
-        return view('interruptions.edit', ['delegations' => $delegations, 'interruption' => Interruption::find($id)]);
+        return view('interruptions.edit', ['delegations' => $delegations, 'interruption' => $int]);
     }
 
     public function delete($id) {

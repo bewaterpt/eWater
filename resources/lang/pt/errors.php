@@ -21,5 +21,6 @@ return [
                                     <li>00-AA-00</li>
                                     <li>00-00-AA</li>
                                     <li>AA-00-AA</li>
-                                </ul>"
+                                </ul>",
+    'call_sync_in_progress' => "A Sincronização já está em progresso."
 ];

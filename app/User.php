@@ -139,7 +139,7 @@ class User extends Authenticatable implements LdapAuthenticatable
         return $this->isAdmin();
     }
 
-    public function hasRole($role) {
-        return $this->roles()->where('slug', $role)->first();
+    public function hasRoles(array $roles) {
+        return $this->roles()->whereIn('slug', $roles)->first();
     }
 }

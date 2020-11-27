@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use Illuminate\Http\Request;
 use Closure;
 use Route;
 use Auth;
@@ -17,7 +18,7 @@ class Allowed
      * @param  \Closure  $next
      * @return mixed
      */
-    public function handle($request, Closure $next)
+    public function handle(Request $request, Closure $next)
     {
         $user = Auth::user();
 
@@ -36,7 +37,7 @@ class Allowed
         // dd($permissionModel->can($currentRoute));
 
         if (!$permissionModel->can($currentRoute)) {
-            return redirect('/')->withErrors(__('auth.permission_denied', ['route' => $currentRoute]), 'custom');
+            return redirect('/')->withErrors(__('auth.permission_denied', ['route' => $request->path()]), 'custom');
         }
 
         return $next($request);
