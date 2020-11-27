@@ -96,6 +96,8 @@ return [
         'affected_area' => 'Área afetada',
         'reinstatement_date' => 'Data de Restabelecimento',
         'edit' => 'Editar Interrupção',
+        'is_scheduled' => 'Programada',
+        'is_unscheduled' => 'Não Programada'
     ],
     'url' => "Endereço Web",
     'delegation' => 'Delegação',

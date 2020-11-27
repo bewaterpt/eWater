@@ -6,13 +6,20 @@
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header">
-                    @Lang('general.interruptions.create')
+                    @Lang('general.interruptions.create') {{ $type }}
                 </div>
                 <div class="card-body">
                     <form method="POST" action={{Route('interruptions.store')}}>
                         @csrf
                         <input type="hidden" name="users" id="users" />
                         <div class="form-row mb-2 justify-content-center">
+                            <div class="form-group col-md-4 pt-4 {{ $currentUser->countRoles(['ewater_interrupcoes_programadas_criacao', 'ewater_interrupcoes_nao_programadas']) == 2 || $currentUser->hasRoles(['admin']) ? '' : 'invisible' }}">
+                                <input type="radio" name="scheduled" class="" id="inputScheduled1" value="true" {{ $scheduled ? 'checked' : '' }}>
+                                <label for="inputScheduled1">@Lang('general.interruptions.is_scheduled')</label>
+                                <br>
+                                <input type="radio" name="scheduled" class="" id="inputScheduled2" value="false" {{ !$scheduled ? 'checked' : '' }}>
+                                <label for="inputScheduled2">@Lang('general.interruptions.is_unscheduled')</label>
+                            </div>
                             <div class="form-group col-md-4">
                                 <label for="inputWorkId">@Lang('forms.fields.work_number')</label>
                                 <input type="number" name="work_id" class="form-control" id="inputWorkId" value="" required>
@@ -24,13 +31,6 @@
                                         <option value="{{ $delegation->id }}">{{ $delegation->designation }}</option>
                                     @endforeach
                                 </select>
-                            </div>
-                            <div class="form-group col-md-4 pt-4 {{ $currentUser->countRoles(['ewater_interrupcoes_programadas_criacao', 'ewater_interrupcoes_nao_programadas']) == 2 || $currentUser->hasRoles(['admin']) ? '' : 'invisible' }}">
-                                <div for="">@Lang('forms.fields.scheduled')</div>
-                                <label for="inputScheduled1">@Lang('general.yes')</label>
-                                <input type="radio" name="scheduled" class="" id="inputScheduled1" value="true" {{ $currentUser->countRoles(['ewater_interrupcoes_programadas_criacao', 'ewater_interrupcoes_nao_programadas']) > 0 ? 'checked' : '' }}>
-                                <label for="inputScheduled2">@Lang('general.no')</label>
-                                <input type="radio" name="scheduled" class="" id="inputScheduled2" value="false" {{ $currentUser->countRoles(['ewater_interrupcoes_programadas_criacao', 'ewater_interrupcoes_nao_programadas']) == 0 ? 'checked' : '' }}>
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="inputStartDate">@Lang('forms.fields.start_date')</label>

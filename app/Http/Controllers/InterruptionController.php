@@ -278,11 +278,27 @@ class InterruptionController extends Controller
     public function create() {
         $delegations = Delegation::all();
 
+        $type = '';
+        $scheduled = false;
+
+        if (
+            $this->currentUser->countRoles(['ewater_interrupcoes_programadas_criacao', 'ewater_interrupcoes_programadas_edicao']) > 0 &&
+            $this->currentUser->hasRoles(['ewater_interrupcoes_nao_programadas']) === false
+        ) {
+            $type = mb_strtolower(__('general.interruptions.is_scheduled'));
+            $scheduled = true;
+        } else if (
+            $this->currentUser->hasRoles(['ewater_interrupcoes_nao_programadas']) &&
+            $this->currentUser->countRoles(['ewater_interrupcoes_programadas_criacao', 'ewater_interrupcoes_programadas_edicao']) == 0
+        ) {
+            $type = mb_strtolower(__('general.interruptions.is_unscheduled'));
+        }
+
         $url = url()->previous();
         $route = app('router')->getRoutes($url)->match(app('request')->create($url))->getName();
         $this->session->put('previous-rt', $route);
 
-        return view('interruptions.create', ['delegations' => $delegations]);
+        return view('interruptions.create', ['delegations' => $delegations, 'type' => $type, 'scheduled' => $scheduled]);
     }
 
     public function store(Request $request) {
