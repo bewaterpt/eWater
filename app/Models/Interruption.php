@@ -19,6 +19,6 @@ class Interruption extends Model
     }
 
     public function updatedBy() {
-        return $this->belongsTo('App\User');
+        return $this->belongsTo('App\User', 'updated_by');
     }
 }
