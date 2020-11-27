@@ -409,6 +409,18 @@ class CallController extends Controller
                     AND `cdrInb2`.`callto` not in (6501, 6502)
                     AND `cdrInb2`.`callto` RLIKE '{$this->agentsForQuery}'
                     AND `cdrInb2`.`status` = 'ANSWERED'
+                )
+
+                UNION DISTINCT
+
+                SELECT cdrPrev.callid from `cdr_records` as `cdrPrev`
+                WHERE `callid` in (
+                    SELECT `cdrPrev2`.`callid`
+                    from `cdr_records` as `cdrPrev2`
+                    WHERE `cdrPrev2`.`type` = 'Outbound'
+                    AND `cdrPrev2`.`timestart` BETWEEN '{$this->carbon::now()->subMonths(12)->format($this->dateFormat)}' AND '{$this->carbon::now()->format($this->dateFormat)}'
+                    AND `cdrPrev2`.`callto` = '" . config('app.prevention_number') .  "'
+                    AND `cdrPrev2`.`status` = 'ANSWERED'
                 )"))
                 ->pluck('callid')
                 ->toArray();
