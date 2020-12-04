@@ -35,6 +35,7 @@ Route::group(['middleware' => ['web']], function () {
     Route::post('login', 'Auth\LoginController@login');
     Route::post('logout', 'Auth\LoginController@logout')->name('logout');
     Route::get('locale/change/{locale}', 'Settings\SettingsController@change_locale')->name('settings.locale.change');
+    Route::get('check-call-record-update-state', 'Yealink\CallController@checkCallUpdateState')->name('calls.check_update_state');
 
     /**
      * Routes within this group only allow usage for authenticated users
@@ -48,7 +49,6 @@ Route::group(['middleware' => ['web']], function () {
         Route::post('daily-reports/process-status/get-comment', 'DailyReportController@getProcessStatusComment')->name('daily_reports.process_status.get_comment');
         Route::post('daily-reports/article/get-info', 'DailyReportController@getArticlePrice')->name('daily_reports.article.get_price');
         Route::post('teams/get-users', 'Settings\TeamController@getTeamUsers')->name('settings.teams.get_users');
-        Route::get('check-call-record-update-state', 'Yealink\CallController@checkCallUpdateState')->name('calls.check_update_state');
 
         Route::impersonate();
 

@@ -7,11 +7,18 @@
         "laravel"
     ],
     "license": "MIT",
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/brunomartins-bw/fast-excel"
+        }
+    ],
     "require": {
         "php": "^7.2.5",
         "adldap/adldap": "dev-master",
         "alimranahmed/laraocr": "^1.0",
-        "box/spout": "^3.1",
+        "rap2hpoutre/fast-excel": "master",
+        "box/spout": "3.1",
         "directorytree/ldaprecord": "1.10.1",
         "directorytree/ldaprecord-laravel": "^1.7",
         "doctrine/dbal": "^2.10",

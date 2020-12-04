@@ -83,7 +83,6 @@ class GetCDRRecords extends Command
     {
         try {
             Cache::forget('datatable_calls_records');
-            Redis::hset('calls', 'updating', true);
             $this->setCallRecordUpdateState(0, true. 0);
             $this->info('Applying settings');
             $guzzleClient = new Client([

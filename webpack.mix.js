@@ -23,6 +23,8 @@ mix.sass('resources/sass/app.scss', 'public/css')
     // Utility Scripts
     "resources/js/app/utility/tinymce.js",
     "resources/js/app/utility/datatables.js",
+    "resources/js/app/utility/fixes.js",
+    "resources/js/app/utility/ajax.js",
 
     // View correspondent scripts
     "resources/js/app/settings/users/datatables_users.js",
@@ -38,15 +40,17 @@ mix.sass('resources/sass/app.scss', 'public/css')
     "resources/js/app/calls/calls.js",
     "resources/js/app/calls/datatables_calls.js",
     "resources/js/app/settings/roles/datatables_roles.js",
-    "resources/js/app/utility/fixes.js",
     "resources/js/app/settings/forms/forms.js",
-], "public/js/app.js").babel([
+], "public/js/app.js")
+.babel([
     // app.js General Script
     "resources/js/app.js",
 
     // Utility Scripts
     "resources/js/app/utility/tinymce.js",
     "resources/js/app/utility/datatables.js",
+    "resources/js/app/utility/ajax.js",
+    "resources/js/app/utility/fixes.js",
 
     // View correspondent scripts
     "resources/js/app/settings/users/datatables_users.js",
@@ -62,7 +66,6 @@ mix.sass('resources/sass/app.scss', 'public/css')
     "resources/js/app/calls/calls.js",
     "resources/js/app/calls/datatables_calls.js",
     "resources/js/app/settings/roles/datatables_roles.js",
-    "resources/js/app/utility/fixes.js",
     "resources/js/app/settings/forms/forms.js",
 ], "public/js/app.es5.js")
 .extract([

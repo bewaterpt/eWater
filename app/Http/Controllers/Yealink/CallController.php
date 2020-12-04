@@ -8,7 +8,6 @@ use App\Models\Yealink\Pbx;
 use App\Models\Delegation;
 use Illuminate\Support\Facades\Crypt;
 use App\Helpers\Helper;
-use Log;
 use Auth;
 use DB;
 use Cache;
@@ -16,6 +15,7 @@ use Artisan;
 use Illuminate\Support\Facades\Redis;
 use App\Models\Yealink\CDRRecord;
 use Illuminate\Support\Carbon;
+use Symfony\Component\Process\Process;
 use App\Exports\CDRRecordExport;
 use Excel;
 use Rap2hpoutre\FastExcel\FastExcel;
@@ -373,6 +373,8 @@ class CallController extends Controller
             'status' => 200,
             'message' => 'OK'
         ];
+
+        $p = new Process(['C:\Utilities\php\php.exe', 'artisan', 'calls:get']);
         Redis::hget('calls', 'updating');
 
         try {
@@ -381,6 +383,16 @@ class CallController extends Controller
                 $data['message'] = __('errors.call_sync_in_progress');
             } else {
                 Artisan::call('calls:get');
+                // $p->start();
+                // while($p->isRunning()) {
+                //     sleep(1);
+                // }
+
+                // dd($p->isSuccessful());
+
+                // if (!$p->isSuccessful()) {
+                //     throw new \Exception($p->getErrorOutput());
+                // }
             }
             Redis::hdel('calls', 'updating');
 

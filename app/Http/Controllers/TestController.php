@@ -10,6 +10,7 @@ use Illuminate\Support\Carbon;
 use App\Models\Forms\Form;
 use Log;
 use DB;
+use Cache;
 use Storage;
 use App\Models\Article;
 class TestController extends Controller
