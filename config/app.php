@@ -243,6 +243,7 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         'Adldap' => Adldap\Laravel\Facades\Adldap::class,
         'Option' => App\Custom\Classes\Option::class,
+        'FastExcel' => Rap2hpoutre\FastExcel\FastExcel::class
     ],
 
     'yealink_error_codes' => [

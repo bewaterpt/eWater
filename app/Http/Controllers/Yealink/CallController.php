@@ -17,8 +17,8 @@ use App\Models\Yealink\CDRRecord;
 use Illuminate\Support\Carbon;
 use Symfony\Component\Process\Process;
 use App\Exports\CDRRecordExport;
+use FastExcel;
 use Excel;
-use Rap2hpoutre\FastExcel\FastExcel;
 
 class CallController extends Controller
 {
@@ -356,8 +356,9 @@ class CallController extends Controller
 
         $cdrs = "SELECT * FROM cdr_records as cdrAll WHERE cdrAll.callid IN(\"" . implode('", "', $cdrIds) . "\")";
 
+        $cdrs = collect(DB::select($cdrs));
 
-        (new FastExcel($cdrs))->download(__('calls.call_records') . '.' . $filetype);
+        return (new FastExcel($cdrs))->download(__('calls.call_records') . '.' . $filetype);
         // Excel::create(__('calls.call_records') . '.' . $filetype, function ($excel) {
         //     $excel->sheet('sheet1', function ($sheet) {
         //         CDRRecord::chunk(100, function ($cdr) use ($sheet) {

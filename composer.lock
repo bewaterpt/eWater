@@ -4255,12 +4255,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/brunomartins-bw/fast-excel.git",
-                "reference": "2b320dbbea1023d1a2be09fd59f1abf48f00fd20"
+                "reference": "018876e8d72bd630185b8b179b552da776f323f5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/brunomartins-bw/fast-excel/zipball/2b320dbbea1023d1a2be09fd59f1abf48f00fd20",
-                "reference": "2b320dbbea1023d1a2be09fd59f1abf48f00fd20",
+                "url": "https://api.github.com/repos/brunomartins-bw/fast-excel/zipball/018876e8d72bd630185b8b179b552da776f323f5",
+                "reference": "018876e8d72bd630185b8b179b552da776f323f5",
                 "shasum": ""
             },
             "require": {
@@ -4313,7 +4313,7 @@
             "support": {
                 "source": "https://github.com/brunomartins-bw/fast-excel/tree/master"
             },
-            "time": "2020-12-04T13:14:40+00:00"
+            "time": "2020-12-04T19:31:03+00:00"
         },
         {
             "name": "setasign/fpdi",
