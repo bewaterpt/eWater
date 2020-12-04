@@ -3,14 +3,13 @@
 namespace App\Providers;
 
 use Illuminate\Auth\Events\Registered;
+use Lab404\Impersonate\Events\TakeImpersonation;
+use Lab404\Impersonate\Events\LeaveImpersonation;
+use App\Listeners\LogTakeImpersonation;
+use App\Listeners\LogLeaveImpersonation;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Event;
-
-use Lab404\Impersonate\Events\LeaveImpersonation;
-use Lab404\Impersonate\Events\TakeImpersonation;
-use App\Listeners\LogLeaveImpersonation;
-use App\Listeners\LogTakeImpersonation;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -39,7 +38,5 @@ class EventServiceProvider extends ServiceProvider
     public function boot()
     {
         parent::boot();
-
-        //
     }
 }

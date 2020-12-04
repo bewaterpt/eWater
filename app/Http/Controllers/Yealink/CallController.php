@@ -355,7 +355,9 @@ class CallController extends Controller
         $cdrIds = $this->getInboundAndTransferCalls();
 
         $cdrs = "SELECT * FROM cdr_records as cdrAll WHERE cdrAll.callid IN(\"" . implode('", "', $cdrIds) . "\")";
-        dd($cdrs);
+
+
+        (new FastExcel($cdrs))->download(__('calls.call_records') . '.' . $filetype);
         // Excel::create(__('calls.call_records') . '.' . $filetype, function ($excel) {
         //     $excel->sheet('sheet1', function ($sheet) {
         //         CDRRecord::chunk(100, function ($cdr) use ($sheet) {

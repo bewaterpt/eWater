@@ -15,8 +15,8 @@ $(() => {
     if ($("#datatable-reports").length > 0) {
         window.datatable_reports = $("#datatable-reports").DataTable({
             responsive: true,
+            searching: true,
             order: [[ 1, "desc" ]],
-            // ordering: false,
             columnDefs: [
                 {
                     targets: 'sorting-disabled',
@@ -50,15 +50,14 @@ $(() => {
             // displayLength: 10,
             // pagingType: 'simple',
             columns: [
-                // {data: 'actions',name: 'actions', class: 'actions text-center px-0 sorting_disabled', searchable: false, sortable: false},
-                {data: 'actions', name: 'actions', searchable: true},
+                {data: 'actions',name: 'actions', class: 'actions text-center px-0 sorting_disabled', searchable: false, sortable: false},
                 {data: 'id', name: 'id', searchable: true},
-                {data: 'status', name: 'status', searchable: true},
-                {data: 'quantity', name: 'quantity', searchable: true},
+                {data: 'status', name: 'status', searchable: false},
+                {data: 'quantity', name: 'quantity', searchable: false},
                 {data: 'driven_km', name: 'driven_km', searchable: true},
-                {data: 'team', name: 'team_id', searchable: true},
-                {data: 'date', name: 'entry_date', searchable: true},
-                {data: 'info', name: 'info', searchable: true}
+                {data: 'team', name: 'team', searchable: true},
+                {data: 'entry_date', name: 'entry_date', searchable: true},
+                {data: 'info', name: 'info', searchable: false},
             ],
             drawCallback: function(settings){
 

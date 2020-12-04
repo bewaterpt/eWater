@@ -5,6 +5,7 @@ namespace App\Models\DailyReports;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\DailyReports\ProgressStatus;
+use Auth;
 
 class Report extends Model
 {
@@ -69,7 +70,8 @@ class Report extends Model
     }
 
     public function getTotalKm() {
-        return $this->km_arrival - $this->km_departure;
+        // return $this->km_arrival - $this->km_departure;
+        return $this->driven_km;
     }
 
     public function getLinesTotalKm() {
@@ -93,11 +95,23 @@ class Report extends Model
     }
 
     public function getPreviousId() {
-        return $this->all()->where('id', '<', $this->id)->max('id');
+        $user = Auth::user();
+
+        if ($user->isAdmin()) {
+            return $this->all()->where('id', '<', $this->id)->max('id');
+        } else {
+            return $this->whereIn('team_id', $user->teams()->pluck('id'))->where('id', '<', $this->id)->max('id');
+        }
     }
 
     public function getNextId() {
-        return $this->all()->where('id', '>', $this->id)->min('id');
+        $user = Auth::user();
+
+        if ($user->isAdmin()) {
+            return $this->all()->where('id', '>', $this->id)->min('id');
+        } else {
+            return $this->where('id', '>', $this->id)->whereIn('team_id', $user->teams()->pluck('id'))->min('id');
+        }
     }
 
 

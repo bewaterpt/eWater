@@ -125,6 +125,34 @@
                                 </tr>
                             @endforeach --}}
                         </tbody>
+                        <tfoot>
+                            <td></td>
+                            <td class='dt-search w-50'>
+                                <input type="number" name='id'>
+                            </td>
+                            <td>
+                                {{-- <input type="number" name="status"> --}}
+                            </td>
+                            <td>
+                                {{-- <input type="number" name=""> --}}
+                            </td>
+                            <td class='dt-search'>
+                                <input type="number" name='driven_km'>
+                            </td>
+                            <td class='dt-search'>
+                                <input type="text" name='team'>
+                            </td>
+                            <td class='dt-search'>
+                                <input type="date" name='entry_date' data-onload="date">
+                            </td>
+                            <td>
+                                {{-- <select name="type" id="">
+                                    <option value="null">@lang('general.select_one')</option>
+                                    <option value="Inbound">@lang('calls.inbound')</option>
+                                    <option value="Transfer">@lang('calls.transfer')</option>
+                                </select> --}}
+                            </td>
+                        </tfoot>
                     </table>
                 </div>
             </div>
