@@ -17,6 +17,8 @@ use Illuminate\Support\Facades\Redis;
 use App\Models\Yealink\CDRRecord;
 use Illuminate\Support\Carbon;
 use App\Exports\CDRRecordExport;
+use Excel;
+use Rap2hpoutre\FastExcel\FastExcel;
 
 class CallController extends Controller
 {
@@ -343,13 +345,27 @@ class CallController extends Controller
         return json_encode($data);
     }
 
-    public function export($filetype = 'csv') {
+    public function export(Request $request, $filetype = 'csv') {
         $renderer = false;
 
         if ($filetype == 'pdf') {
             $renderer = \Maatwebsite\Excel\Excel::MPDF;
         }
-        return (new CDRRecordExport())->download(__('calls.call_records') . '.' . $filetype, ($renderer ? $renderer : null), ['X-ewater-filename' => __('calls.call_records') . '.' . $filetype]);
+
+        $cdrIds = $this->getInboundAndTransferCalls();
+
+        $cdrs = "SELECT * FROM cdr_records as cdrAll WHERE cdrAll.callid IN(\"" . implode('", "', $cdrIds) . "\")";
+        dd($cdrs);
+        // Excel::create(__('calls.call_records') . '.' . $filetype, function ($excel) {
+        //     $excel->sheet('sheet1', function ($sheet) {
+        //         CDRRecord::chunk(100, function ($cdr) use ($sheet) {
+        //             $cdrArray = $cdr->toArray();
+        //             $sheet->appendRow($cdrArray);
+        //         });
+        //     });
+        // })->download($filetype);
+
+        // return (new CDRRecordExport())->download(__('calls.call_records') . '.' . $filetype, ($renderer ? $renderer : null), ['X-ewater-filename' => __('calls.call_records') . '.' . $filetype]);
     }
 
     public function refetch() {
@@ -357,6 +373,7 @@ class CallController extends Controller
             'status' => 200,
             'message' => 'OK'
         ];
+        Redis::hget('calls', 'updating');
 
         try {
             if (intval(Redis::hget('calls', 'updating')) === 1) {

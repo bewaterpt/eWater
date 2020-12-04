@@ -339,12 +339,10 @@ $(() => {
                                 alert(msg);
                             });
                             updating = false;
-                            // clearInterval(cdri)
                         }
                     }
                 },
                 error: (error) => {
-                    console.log('Error: ', error);
                     clearInterval(cdri)
                 }
             });

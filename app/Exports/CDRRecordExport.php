@@ -18,6 +18,12 @@ class CDRRecordExport implements FromQuery, WithMapping, WithHeadings, ShouldAut
 {
     use Exportable;
 
+    private $searchCols;
+
+    public function __construct($searchCols) {
+        
+    }
+
     /**
     * @return \Illuminate\Support\Collection
     */
