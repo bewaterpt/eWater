@@ -363,14 +363,15 @@ class CallController extends Controller
                 $data['status'] = 202;
                 $data['message'] = __('errors.call_sync_in_progress');
             } else {
-                Redis::hset('calls', 'updating', true);
                 Artisan::call('calls:get');
             }
+            Redis::hdel('calls', 'updating');
 
             return json_encode($data);
         } catch(\Exception $e)  {
             $data['status'] = 500;
             $data['message'] = $e->getMessage();
+
             Redis::hdel('calls', 'updating');
 
             return json_encode($data);
