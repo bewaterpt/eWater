@@ -250,15 +250,18 @@ class GetCDRRecords extends Command
                 } else {
                     $this->info('Nothing to insert in the database');
                 }
-                Storage::delete($tempFile);
             }
 
             // Scrapped
             $this->forgetCallRecordUpdateState();
 
+            Storage::delete($tempFile);
+
             $this->info("");
             $this->comment('Done. Bye Bye');
         } catch(\Exception $e) {
+            Storage::delete($tempFile);
+
             throw new Exception($e->getMessage());
         }
     }
