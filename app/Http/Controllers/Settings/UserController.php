@@ -42,7 +42,6 @@ class UserController extends Controller
 
     public function view($userId) {
         $user = User::find($userId)->first();
-        $user->id = $this->encodeId($user->id);
 
         return view('settings.users.view')->with([
             'user' => $user
