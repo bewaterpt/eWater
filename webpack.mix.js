@@ -41,7 +41,6 @@ mix.sass('resources/sass/app.scss', 'public/css')
     "resources/js/app/calls/calls.js",
     "resources/js/app/calls/datatables_calls.js",
     "resources/js/app/settings/roles/datatables_roles.js",
-    "resources/js/app/settings/forms/forms.js",
 ], "public/js/app.js")
 .babel([
     // app.js General Script
@@ -68,7 +67,6 @@ mix.sass('resources/sass/app.scss', 'public/css')
     "resources/js/app/calls/calls.js",
     "resources/js/app/calls/datatables_calls.js",
     "resources/js/app/settings/roles/datatables_roles.js",
-    "resources/js/app/settings/forms/forms.js",
 ], "public/js/app.es5.js")
 .extract([
     'datatables.net',
