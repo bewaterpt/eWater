@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\InterruptionCreated;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use App\Models\Interruption;
@@ -10,6 +11,7 @@ use App\Models\Connectors\OutonoInterrupcoes;
 use App\Models\Delegation;
 use Auth;
 use Illuminate\Support\Facades\Artisan;
+use Mail;
 
 class InterruptionController extends Controller
 {
@@ -294,10 +296,6 @@ class InterruptionController extends Controller
             $type = mb_strtolower(__('general.interruptions.is_unscheduled'));
         }
 
-        $url = url()->previous();
-        $route = app('router')->getRoutes($url)->match(app('request')->create($url))->getName();
-        $this->session->put('previous-rt', $route);
-
         return view('interruptions.create', ['delegations' => $delegations, 'type' => $type, 'scheduled' => $scheduled]);
     }
 
@@ -315,20 +313,24 @@ class InterruptionController extends Controller
         $interruption->scheduled = $scheduled;
         $interruption->affected_area = $request->affected_area;
 
-        $outonoInterruption = $scheduled ? new OutonoInterrupcoesProg() : new OutonoInterrupcoes();
-        $outonoInterruption->numObra = $request->work_id;
-        $outonoInterruption->dtInicio = Carbon::parse($request->start_date)->format('Y-m-d H:i:s.v');
-        $outonoInterruption->dtRestabelecimento = Carbon::parse($request->reinstatement_date)->format('Y-m-d H:i:s.v');
-        $outonoInterruption->areaAfectada = strip_tags($request->affected_area);
-        $outonoInterruption->save();
+        // $outonoInterruption = $scheduled ? new OutonoInterrupcoesProg() : new OutonoInterrupcoes();
+        // $outonoInterruption->numObra = $request->work_id;
+        // $outonoInterruption->dtInicio = Carbon::parse($request->start_date)->format('Y-m-d H:i:s.v');
+        // $outonoInterruption->dtRestabelecimento = Carbon::parse($request->reinstatement_date)->format('Y-m-d H:i:s.v');
+        // $outonoInterruption->areaAfectada = strip_tags($request->affected_area);
+        // $outonoInterruption->save();
 
-        $interruption->outono_id = $outonoInterruption->{$outonoInterruption->getKeyName()};
+        // $interruption->outono_id = $outonoInterruption->{$outonoInterruption->getKeyName()};
         $interruption->synced = true;
         $interruption->save();
 
+        if ($interruption->scheduled) {
+            Mail::to('bruno.martins@bewgpt.com.pt')->cc(['eduarda.ferreira@bewater.com.pt', 'ana.rebelo@bewater.com.pt', 'jorge.costa@bewgpt.com.pt'])->send(new InterruptionCreated($interruption));
+        }
+
         Artisan::call('interruptions:export');
 
-        return redirect(route($this->session->get('previous-rt')))->with('success');
+        return redirect(route('interruptions.list'))->with('success');
     }
 
     public function edit(Request $request, $id) {
@@ -358,6 +360,10 @@ class InterruptionController extends Controller
 
         $interruption->delete();
 
+        if ($interruption->scheduled) {
+            Mail::to('bruno.martins@bewgpt.com.pt')->cc(['eduarda.ferreira@bewater.com.pt', 'ana.rebelo@bewater.com.pt', 'jorge.costa@bewgpt.com.pt'])->send(new InterruptionDeleted($interruption));
+        }
+
         Artisan::call('interruptions:export');
 
         return redirect()->back()->with('success');
@@ -378,6 +384,10 @@ class InterruptionController extends Controller
         $interruption->restore();
         $interruption->outono_id = $outonoInterruption->{$outonoInterruption->getKeyName()};
         $interruption->save();
+
+        if ($interruption->scheduled) {
+            Mail::to('bruno.martins@bewgpt.com.pt')->cc(['eduarda.ferreira@bewater.com.pt', 'ana.rebelo@bewater.com.pt', 'jorge.costa@bewgpt.com.pt'])->send(new InterruptionRestored($interruption));
+        }
 
         Artisan::call('interruptions:export');
 
@@ -411,6 +421,10 @@ class InterruptionController extends Controller
 
         $interruption->synced = true;
         $interruption->save();
+
+        if ($interruption->scheduled) {
+            Mail::to('bruno.martins@bewgpt.com.pt')->cc(['eduarda.ferreira@bewater.com.pt', 'ana.rebelo@bewater.com.pt', 'jorge.costa@bewgpt.com.pt'])->send(new InterruptionUpdated($interruption));
+        }
 
         Artisan::call('interruptions:export');
 

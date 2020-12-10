@@ -25,7 +25,6 @@ return [
     'updated_time_ago' => 'Atualizado :time',
     'created_by_user' => 'Criado por :name',
     'created_by_user_at_time' => 'Criado por :name :time',
-    'work_number' => 'Número da Obra',
     'article' => 'Artigo',
     'quantity' => 'Quantidade',
     'unit_price' => 'Preço Unitário',
@@ -94,10 +93,13 @@ return [
         'scheduled' => 'Interrupção Programada',
         'unscheduled' => 'Interrupção não programada',
         'affected_area' => 'Área afetada',
+        'start_date' => 'Data de Início',
         'reinstatement_date' => 'Data de Restabelecimento',
         'edit' => 'Editar Interrupção',
         'is_scheduled' => 'Programada',
-        'is_unscheduled' => 'Não Programada'
+        'is_unscheduled' => 'Não Programada',
+        'work_number' => 'Número da Obra',
+        'type' => 'Tipo de Interrupção'
     ],
     'url' => "Endereço Web",
     'delegation' => 'Delegação',
