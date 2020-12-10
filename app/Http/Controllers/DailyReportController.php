@@ -135,7 +135,7 @@ class DailyReportController extends Controller
                     'quantity' => $this->helper->decimalHoursToTimeValue($row->getTotalHours()),
                     'driven_km' => $row->driven_km,
                     'team' => $row->team()->first()->name,
-                    'date' => (new DateTime($row->lines()->first()->entry_date))->format('Y-m-d'),
+                    'entry_date' => (new DateTime($row->lines()->first()->entry_date))->format('Y-m-d'),
                     'info' => $info
                 ];
             }
