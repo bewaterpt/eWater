@@ -99,7 +99,9 @@ return [
         'is_scheduled' => 'Programada',
         'is_unscheduled' => 'Não Programada',
         'work_number' => 'Número da Obra',
-        'type' => 'Tipo de Interrupção'
+        'type' => 'Tipo de Interrupção',
+        'ref' => 'Ref.ª Interna',
+        'view' => 'Ver Interrupção',
     ],
     'url' => "Endereço Web",
     'delegation' => 'Delegação',

@@ -32,6 +32,6 @@ class InterruptionCanceled extends Mailable
      */
     public function build()
     {
-        return $this->subject('Teste ' . __('mail.interruptions.canceled'))->view('mail.interruption-canceled', ['interruption' => $this->interruption, 'carbon' => new Carbon, 'delegation' => $this->interruption->delegation()]);
+        return $this->subject('Teste ' . __('mail.interruptions.canceled'))->view('mail.interruptions.canceled', ['interruption' => $this->interruption, 'carbon' => new Carbon, 'delegation' => $this->interruption->delegation()->first()]);
     }
 }

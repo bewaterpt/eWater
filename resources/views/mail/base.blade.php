@@ -12,7 +12,7 @@
         <table role="presentation" style="background-color:rgb(0 0 0 / 2%);max-width: 600px;text-align: center;border-collapse: collapse;border: 1px solid rgb(206 206 206 / 80%);font-family: Nunito, sans-serif;box-shadow: 0px 0px 20px -10px #000000d1;" cellpadding="0" cellspacing="0" width="100%">
             <tr>
                 <td style="padding: 10px;box-shadow: 0px 1px 6px 0px rgb(50 50 50 / 21%);">
-                    <img src="{{asset('/images/mail-logo.png') }}" alt="eWater Logo" style="height: 70px;margin-right: 10px;">
+                    <img src="{{ 'data:image/png;base64, '.base64_encode(file_get_contents(public_path('/images/mail-logo.png'))) }}" alt="eWater Logo" style="height: 70px;margin-right: 10px;">
                 </td>
             </tr>
             @yield('mail-content')

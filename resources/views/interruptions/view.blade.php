@@ -7,39 +7,44 @@
             <div class="card">
                 <div class="card-header">
                     @Lang('general.interruptions.view')
+                    <span class="float-right text-right">
+                        <a class="text-primary edit px-1" href="{{ route('interruptions.edit', ['id' => $interruption->id]) }}" title="{{ __('general.edit') }}">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                    </span>
                 </div>
                 <div class="card-body">
                     <div class="form-row mb-5">
-                        <div class="form-group col-md-6">
-                            <p>@Lang('general.interruptions.ref')</p>
+                        <div class="form-group col-md-3">
+                            <input id="scheduled" type="radio" name="scheduled" disabled {{ $interruption->scheduled ? 'checked' : '' }}>
+                            <label for="scheduled">@Lang('general.interruptions.is_scheduled')</label>
+                            <br>
+                            <input id="unscheduled" type="radio" name="scheduled" disabled {{ $interruption->scheduled ? '' : 'checked' }}>
+                            <label for="unscheduled">@Lang('general.interruptions.is_unscheduled')</label>
+                        </div>
+                        <div class="form-group col-md-2">
+                            <div><b>@Lang('general.interruptions.ref')</b></div>
                             <div>{{ $interruption->work_id }} </div>
                         </div>
-                        <div class="form-group col-md-6">
-                            <label for="inputEmail">@Lang('forms.fields.email')</label>
-                            <input type="email" name="email" class="form-control-plaintext" readonly value="{{$user->email ? $user->email : __('settings.no_value')}}" id="inputEmail" placeholder="{{__('forms.placeholders.email')}}">
+                        <div class="form-group col-md-3">
+                            <div><b>@Lang('general.interruptions.start_date')</b></div>
+                            <div>{{ $interruption->start_date }} </div>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <div><b>@Lang('general.interruptions.reinstatement_date')</b></div>
+                            <div>{{ $interruption->reinstatement_date }} </div>
                         </div>
                     </div>
-                    <input type="submit" class="btn btn-primary float-right" value="{{__('general.save')}}"/>
-                    <div class="mb-3">Reset Password</div>
-                    <fieldset class="border-top mb-3">
-                        <div class="form-row">
-                            <div class="form-group pt-2 col-md-6">
-                                <label for="inputCurrentPassword">@Lang('forms.fields.current_password')</label>
-                                <input type="password" name="currentPass" readonly class="form-control" id="inputCurrentPassword">
+                    <div class="form-row w-100">
+                        <div class="form-group col-md-12">
+                            <div>
+                                <b>@Lang('general.interruptions.affected_area')</b>
+                            </div>
+                            <div>
+                                {!! $interruption->affected_area !!}
                             </div>
                         </div>
-                        <div class="form-row">
-                            <div class="form-group col-md-6">
-                                <label for="inputNewPassword">@Lang('forms.fields.new_password')</label>
-                                <input type="password" name="newPass" readonly class="form-control" id="inputNewPassword">
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label for="inputNewPasswordRepeat">@Lang('forms.fields.new_password_repeat')</label>
-                                <input type="password" name="newPassRepeat" class="form-control" id="inputNewPasswordRepeat">
-                            </div>
-                        </div>
-                    </fieldset>
-                    <input type="submit" class="btn btn-primary float-right" value="{{__('general.reset_password')}}"/>
+                    </div>
                 </div>
             </div>
         </div>

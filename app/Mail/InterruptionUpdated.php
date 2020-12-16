@@ -35,6 +35,6 @@ class InterruptionUpdated extends Mailable
      */
     public function build()
     {
-        return $this->subject('Teste ' . __('mail.interruptions.updated'))->view('mail.new-interruption', ['prevInt' => $this->prevInt, 'newInt' => $this->newInt, 'carbon' => new Carbon, 'helpers' => new Helper, 'delegation' => $this->newInt->delegation()]);
+        return $this->subject('Teste ' . __('mail.interruptions.updated'))->view('mail.interruptions.updated', ['prevInt' => $this->prevInt, 'newInt' => $this->newInt, 'carbon' => new Carbon, 'helpers' => new Helper, 'delegation' => $this->newInt->delegation()->first()]);
     }
 }

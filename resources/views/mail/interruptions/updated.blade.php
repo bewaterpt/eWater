@@ -68,7 +68,9 @@
                 </tr>
                 <tr>
                     <td style="text-align: center;padding: 20px 0;">
-                        <a class="button-container" href="{{ route('interruptions.view', ['id' => $prevInt->id]) }}"><button class="button" style="">@Lang('mail.go_to_model')</button></a>
+                        <a class="button-container" href="{{ route('interruptions.view', ['id' => $prevInt->id]) }}">
+                            <button class="button" style="">@Lang('mail.go_to_model')</button>
+                        </a>
                     </td>
                 </tr>
             </table>

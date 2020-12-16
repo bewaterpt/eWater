@@ -353,6 +353,16 @@ class InterruptionController extends Controller
         return redirect(route('interruptions.list'))->with('success');
     }
 
+    public function view(Request $request, $id) {
+        $interruption = Interruption::where('id', $id);
+
+        if ($this->currentUser->isAdmin() || $this->permissionModel->can('interruptions.delete')) {
+            $interruption->withTrashed();
+        }
+
+        return view('interruptions.view', ['interruption' => $interruption->first()]);
+    }
+
     public function edit(Request $request, $id) {
         $int = Interruption::find($id);
 
@@ -454,6 +464,6 @@ class InterruptionController extends Controller
 
         Artisan::call('interruptions:export');
 
-        return redirect(route($this->session->get('previous-rt')))->with('success');
+        return redirect(route('interruptions.list'))->with('success');
     }
 }

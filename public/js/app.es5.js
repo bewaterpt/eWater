@@ -1083,11 +1083,9 @@ $(function () {
       data: 'info',
       name: 'info',
       searchable: false
-    }]), _defineProperty(_$$DataTable, "drawCallback", function drawCallback(settings) {
-      var data = _this.api().ajax.json();
-
-      console.log('Settings: ', settings);
-      console.log('Api: ', _this.api());
+    }]), _defineProperty(_$$DataTable, "drawCallback", function drawCallback(settings) {// var data = this.api().ajax.json();
+      // console.log('Settings: ', settings);
+      // console.log('Api: ', this.api());
     }), _$$DataTable));
     var t = null;
     $('#datatable-reports').find('thead .filter-col').each(function (i, el) {
