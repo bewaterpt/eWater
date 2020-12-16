@@ -67,6 +67,12 @@ $(() => {
                 //     checkRecordNumber(this, data);
                 // }
             },
+            fnRowCallback: ( nRow, aData, iDisplayIndex, iDisplayIndexFull ) => {
+                console.log('Last Index: ', aData.trashed);
+                if (aData.trashed) {
+                    $('td', nRow).css('opacity', '0.6').css('background-color', '#ff717136');
+                }
+            },
             // initComplete:function( settings, json){
             //     checkRecordNumber(this, json);
             // }
@@ -110,12 +116,7 @@ $(() => {
                 {data: 'coordinates', name: 'coordinates', searchable: true},
             ],
             drawCallback: function(settings){
-
                 var data = this.api().ajax.json();
-
-                // if(data){
-                //     checkRecordNumber(this, data);
-                // }
             },
             // initComplete:function( settings, json){
             //     checkRecordNumber(this, json);
@@ -163,13 +164,7 @@ $(() => {
 
                 var data = this.api().ajax.json();
 
-                // if(data){
-                //     checkRecordNumber(this, data);
-                // }
             },
-            // initComplete:function( settings, json){
-            //     checkRecordNumber(this, json);
-            // }
         });
     }
 });

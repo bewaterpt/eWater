@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Helpers\Helper;
 use Illuminate\Bus\Queueable;
 // use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -13,16 +14,18 @@ class InterruptionUpdated extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public Interruption $interruption;
+    public Interruption $prevInt;
+    public Interruption $newInt;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct(Interruption $interruption)
+    public function __construct(Interruption $prevInt, Interruption $newInt)
     {
-        $this->interruption = $interruption;
+        $this->prevInt = $prevInt;
+        $this->newInt = $newInt;
     }
 
     /**
@@ -32,6 +35,6 @@ class InterruptionUpdated extends Mailable
      */
     public function build()
     {
-        return $this->subject('Teste ' . __('mail.interruptions.updated'))->view('mail.new-interruption', ['interruption' => $this->interruption, 'carbon' => new Carbon]);
+        return $this->subject('Teste ' . __('mail.interruptions.updated'))->view('mail.new-interruption', ['prevInt' => $this->prevInt, 'newInt' => $this->newInt, 'carbon' => new Carbon, 'helpers' => new Helper, 'delegation' => $this->newInt->delegation()]);
     }
 }

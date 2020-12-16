@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Mail\InterruptionCreated;
+use App\Mail\InterruptionCanceled;
+use App\Mail\InterruptionUpdated;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use App\Models\Interruption;
@@ -46,14 +48,7 @@ class InterruptionController extends Controller
                 }
             }
 
-            $interruptions = Interruption::select();
-            if (!$this->currentUser->isAdmin() && $this->currentUser->delegation()->exists()) {
-                $interruptions->where('delegation_id', $this->currentUser->delegation()->first()->id);
-            }
-
-            if ($this->currentUser->isAdmin()) {
-                $interruptions->withTrashed();
-            }
+            $interruptions = $this->getBaseQuery();
 
             foreach ($searchCols as $searchCol) {
                 $interruptions->orWhere($searchCol['name'], 'rlike', $searchCol['value']);
@@ -116,7 +111,7 @@ class InterruptionController extends Controller
                 }
             }
 
-            $interruptions = Interruption::select('*')->where('scheduled', false);
+            $interruptions = $this->getBaseQuery(false);
             if (!$this->currentUser->isAdmin() && $this->currentUser->delegation()->exists()) {
                 $interruptions->where('delegation_id', $this->currentUser->delegation()->first()->id);
             } else {
@@ -188,7 +183,7 @@ class InterruptionController extends Controller
                 }
             }
 
-            $interruptions = Interruption::select('*')->where('scheduled', true);
+            $interruptions = $this->getBaseQuery(true);
             if (!$this->currentUser->isAdmin() && $this->currentUser->delegation()->exists()) {
                 $interruptions->where('delegation_id', $this->currentUser->delegation()->first()->id);
             } else {
@@ -229,7 +224,28 @@ class InterruptionController extends Controller
         return view('interruptions.index');
     }
 
-    protected function buildData($rows) {
+    private function getBaseQuery($scheduled = null) {
+
+        $int = Interruption::select('*');
+
+        if ($scheduled === false) {
+            $int->where('scheduled', false);
+        } else if ($scheduled === true) {
+            $int->where('scheduled', true);
+        }
+
+        if (!$this->currentUser->isAdmin() && $this->currentUser->delegation()->exists()) {
+            $int->where('delegation_id', $this->currentUser->delegation()->first()->id);
+        }
+
+        if ($this->currentUser->isAdmin() || $this->permissionModel->can('interruptions.delete')) {
+            $int->withTrashed();
+        }
+
+        return $int;
+    }
+
+    private function buildData($rows) {
         $data = [];
 
         // dd($rows);
@@ -246,13 +262,13 @@ class InterruptionController extends Controller
                 }
             }
 
-            if ((($this->permissionModel->can('interruptions.delete') && !$row->synced && $row->outono_id != null) || ($this->currentUser->isAdmin())) && !$row->trashed()) {
+            if (($this->permissionModel->can('interruptions.delete') || ($this->currentUser->isAdmin())) && !$row->trashed()) {
                 $actions .= '<a class="text-danger delete px-1" href="' . route('interruptions.delete', ['id' => $row->id]) . '" title="'.trans('general.delete').'"><i class="fas fa-trash-alt"></i></a>';
             }
 
-            if ($this->permissionModel->can('interruptions.restore') && $row->trashed()) {
-                $actions .= '<a class="text-danger restore px-1" href="' . route('interruptions.restore', ['id' => $row->id]) . '" title="'.trans('general.restore').'"><i class="fas fa-trash-restore-alt"></i></a>';
-            }
+            // if ($this->permissionModel->can('interruptions.restore') && $row->trashed()) {
+            //     $actions .= '<a class="text-danger restore px-1" href="' . route('interruptions.restore', ['id' => $row->id]) . '" title="'.trans('general.restore').'"><i class="fas fa-trash-restore-alt"></i></a>';
+            // }
 
             $type = '';
 
@@ -270,7 +286,8 @@ class InterruptionController extends Controller
                 'reinstatement_date' => $row->reinstatement_date,
                 // 'coordinates' => $row->coordinates ? $row->coordinates : 'N/A',
                 'scheduled' => $type,
-                'outono_id' => $row->outono_id
+                'outono_id' => $row->outono_id,
+                'trashed' => $row->trashed(),
             ];
         }
 
@@ -313,19 +330,22 @@ class InterruptionController extends Controller
         $interruption->scheduled = $scheduled;
         $interruption->affected_area = $request->affected_area;
 
-        // $outonoInterruption = $scheduled ? new OutonoInterrupcoesProg() : new OutonoInterrupcoes();
-        // $outonoInterruption->numObra = $request->work_id;
-        // $outonoInterruption->dtInicio = Carbon::parse($request->start_date)->format('Y-m-d H:i:s.v');
-        // $outonoInterruption->dtRestabelecimento = Carbon::parse($request->reinstatement_date)->format('Y-m-d H:i:s.v');
-        // $outonoInterruption->areaAfectada = strip_tags($request->affected_area);
-        // $outonoInterruption->save();
+        if (config('app.env') === 'prod') {
+            $outonoInterruption = $scheduled ? new OutonoInterrupcoesProg() : new OutonoInterrupcoes();
+            $outonoInterruption->numObra = $request->work_id;
+            $outonoInterruption->dtInicio = Carbon::parse($request->start_date)->format('Y-m-d H:i:s.v');
+            $outonoInterruption->dtRestabelecimento = Carbon::parse($request->reinstatement_date)->format('Y-m-d H:i:s.v');
+            $outonoInterruption->areaAfectada = strip_tags($request->affected_area);
+            $outonoInterruption->save();
+            $interruption->outono_id = $outonoInterruption->{$outonoInterruption->getKeyName()};
+        }
 
-        // $interruption->outono_id = $outonoInterruption->{$outonoInterruption->getKeyName()};
+
         $interruption->synced = true;
         $interruption->save();
 
         if ($interruption->scheduled) {
-            Mail::to('bruno.martins@bewgpt.com.pt')->cc(['eduarda.ferreira@bewater.com.pt', 'ana.rebelo@bewater.com.pt', 'jorge.costa@bewgpt.com.pt'])->send(new InterruptionCreated($interruption));
+            Mail::to(config('app.emails.interruptions_ao'))->send(new InterruptionCreated($interruption));
         }
 
         Artisan::call('interruptions:export');
@@ -361,7 +381,7 @@ class InterruptionController extends Controller
         $interruption->delete();
 
         if ($interruption->scheduled) {
-            Mail::to('bruno.martins@bewgpt.com.pt')->cc(['eduarda.ferreira@bewater.com.pt', 'ana.rebelo@bewater.com.pt', 'jorge.costa@bewgpt.com.pt'])->send(new InterruptionDeleted($interruption));
+            Mail::to(config('app.emails.interruptions_ao'))->send(new InterruptionCanceled($interruption));
         }
 
         Artisan::call('interruptions:export');
@@ -369,6 +389,13 @@ class InterruptionController extends Controller
         return redirect()->back()->with('success');
     }
 
+    /**
+     * @method restore
+     *
+     * Restores an interruption
+     *
+     * @deprecated
+     */
     public function restore($id) {
         $interruption = Interruption::withTrashed()->find($id);
         $outonoInterruption = $interruption->scheduled ? new OutonoInterrupcoesProg() : new OutonoInterrupcoes();
@@ -385,10 +412,6 @@ class InterruptionController extends Controller
         $interruption->outono_id = $outonoInterruption->{$outonoInterruption->getKeyName()};
         $interruption->save();
 
-        if ($interruption->scheduled) {
-            Mail::to('bruno.martins@bewgpt.com.pt')->cc(['eduarda.ferreira@bewater.com.pt', 'ana.rebelo@bewater.com.pt', 'jorge.costa@bewgpt.com.pt'])->send(new InterruptionRestored($interruption));
-        }
-
         Artisan::call('interruptions:export');
 
         return redirect()->back()->with('success');
@@ -398,6 +421,7 @@ class InterruptionController extends Controller
         $user = Auth::user();
 
         $interruption = Interruption::find($id);
+        $prevInt = clone($interruption);
         $interruption->work_id = $request->work_id;
         $interruption->start_date = $request->start_date;
         $interruption->reinstatement_date = $request->reinstatement_date;
@@ -406,7 +430,7 @@ class InterruptionController extends Controller
         $interruption->updatedBy()->associate($user->id);
         $interruption->affected_area = $request->affected_area;
 
-        if ($interruption->outono_id) {
+        if ($interruption->outono_id && config('app.env') === 'prod') {
             $outonoInterruption = $interruption->scheduled ? OutonoInterrupcoesProg::find($interruption->outono_id) : OutonoInterrupcoes::find($interruption->outono_id);
 
             if ($outonoInterruption) {
@@ -422,8 +446,10 @@ class InterruptionController extends Controller
         $interruption->synced = true;
         $interruption->save();
 
+        $newInt = clone($interruption);
+
         if ($interruption->scheduled) {
-            Mail::to('bruno.martins@bewgpt.com.pt')->cc(['eduarda.ferreira@bewater.com.pt', 'ana.rebelo@bewater.com.pt', 'jorge.costa@bewgpt.com.pt'])->send(new InterruptionUpdated($interruption));
+            Mail::to(config('app.emails.interruptions_ao'))->send(new InterruptionUpdated($prevInt, $newInt));
         }
 
         Artisan::call('interruptions:export');

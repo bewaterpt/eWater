@@ -17,7 +17,6 @@
         "php": "^7.2.5",
         "adldap/adldap": "dev-master",
         "alimranahmed/laraocr": "^1.0",
-        "rap2hpoutre/fast-excel": "master",
         "box/spout": "3.1",
         "directorytree/ldaprecord": "1.10.1",
         "directorytree/ldaprecord-laravel": "^1.7",
@@ -43,6 +42,7 @@
         "mpdf/mpdf": "^8.0",
         "phpoffice/phpspreadsheet": "^1.12",
         "predis/predis": "^1.1",
+        "rap2hpoutre/fast-excel": "master",
         "spatie/laravel-permission": "^3.11",
         "spatie/laravel-robots-middleware": "^1.2"
     },

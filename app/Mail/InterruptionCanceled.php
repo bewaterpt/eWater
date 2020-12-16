@@ -9,7 +9,7 @@ use Illuminate\Queue\SerializesModels;
 use App\Models\Interruption;
 use Illuminate\Support\Carbon;
 
-class InterruptionCreated extends Mailable
+class InterruptionCanceled extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -32,6 +32,6 @@ class InterruptionCreated extends Mailable
      */
     public function build()
     {
-        return $this->subject('Teste ' . __('mail.interruptions.created'))->view('mail.interruptions.created', ['interruption' => $this->interruption, 'carbon' => new Carbon, 'delegation' => $this->interruption->delegation()]);
+        return $this->subject('Teste ' . __('mail.interruptions.canceled'))->view('mail.interruption-canceled', ['interruption' => $this->interruption, 'carbon' => new Carbon, 'delegation' => $this->interruption->delegation()]);
     }
 }

@@ -59,13 +59,12 @@ $(() => {
                 {data: 'entry_date', name: 'entry_date', searchable: true},
                 {data: 'info', name: 'info', searchable: false},
             ],
-            drawCallback: function(settings){
+            drawCallback: (settings) => {
 
-                var data = this.api().ajax.json();
+                // var data = this.api().ajax.json();
 
-                // if(data){
-                //     checkRecordNumber(this, data);
-                // }
+                // console.log('Settings: ', settings);
+                // console.log('Api: ', this.api());
             },
             // serverData: function (sSource, aoData, fnCallback) {
             //     aoData.push({ "name": "", "value": "my_value" } );
@@ -75,7 +74,6 @@ $(() => {
             // initComplete:function( settings, json){
             //     checkRecordNumber(this, json);
             // }
-            lengthChange: true,
         });
 
         let t = null;

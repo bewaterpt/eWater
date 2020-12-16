@@ -133,6 +133,26 @@ $(function () {
     dataTable.column(index).search(searchVal).draw();
   }
 });
+
+$.fn.serializeObject = function () {
+  var o = {};
+  var a = this.serializeArray();
+  $.each(a, function () {
+    var name = this.name.replace(/(?=\S)(\[\]$)/, '').replace(/(?=\S)(-)(?<=\S)/, '_');
+
+    if (o[name]) {
+      if (!o[name].push) {
+        o[name] = [o[name]];
+      }
+
+      o[name].push(this.value || '');
+    } else {
+      o[name] = [this.value || ''];
+    }
+  });
+  return o;
+};
+
 $(function () {
   var t = setInterval(function () {
     if ($('#datatable-users').length > 0) {
@@ -285,6 +305,13 @@ $(function () {
         var data = this.api().ajax.json(); // if(data) {
         //     checkRecordNumber(this, data);
         // }
+      },
+      fnRowCallback: function fnRowCallback(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+        console.log('Last Index: ', aData.trashed);
+
+        if (aData.trashed) {
+          $('td', nRow).css('opacity', '0.6').css('background-color', '#ff717136');
+        }
       } // initComplete:function( settings, json){
       //     checkRecordNumber(this, json);
       // }
@@ -346,9 +373,7 @@ $(function () {
         searchable: true
       }],
       drawCallback: function drawCallback(settings) {
-        var data = this.api().ajax.json(); // if(data){
-        //     checkRecordNumber(this, data);
-        // }
+        var data = this.api().ajax.json();
       } // initComplete:function( settings, json){
       //     checkRecordNumber(this, json);
       // }
@@ -410,13 +435,94 @@ $(function () {
         searchable: true
       }],
       drawCallback: function drawCallback(settings) {
-        var data = this.api().ajax.json(); // if(data){
-        //     checkRecordNumber(this, data);
-        // }
-      } // initComplete:function( settings, json){
-      //     checkRecordNumber(this, json);
-      // }
+        var data = this.api().ajax.json();
+      }
+    });
+  }
+});
+$(function () {
+  var fields = {
+    text: $('#fieldText'),
+    select: $('#fieldSelect'),
+    textarea: $('#fieldTextarea'),
+    file: $('#fieldFile'),
+    checkbox: $('#fieldMultiChoice'),
+    radio: $('#fieldUniqueChoice')
+  };
+  console.log($('#remove-field'));
 
+  if ($('#create-custom-form').length > 0) {
+    /**
+     * Block to add a field
+     *
+     * User clicks on the field type he wants to add and this block appends a clone of the template to
+     */
+    $('#add-field a').on('click', function (event) {
+      link = $(event.currentTarget);
+      $('#field-container').append(fields[link.attr('data-type')].clone(true));
+    });
+    /**
+     * Block to remove a field
+     *
+     * User clicks on the cross and field configuration is removed
+     */
+
+    $('[id^="field"] a#remove-field').on('click', function (event) {
+      link = $(event.currentTarget);
+      console.log(link);
+      link.parents('.field').remove();
+    });
+    /**
+     * Block to insert options in select item list
+     *
+     * User writes as many options as he/she wants, block separates them by comma (,) and adds each to the select element.
+     *
+     * @todo Add ability to remove items.
+     */
+
+    $('[id^="field"] a#insert-option').on('click', function (event) {
+      var link = $(event.currentTarget);
+      var options = link.siblings('input').val().split(',');
+      $(options).each(function (i, item) {
+        link.siblings('select').append('<option value="' + link.siblings('select').find('option').length + '">' + item.trim() + '</option>');
+      });
+      $(event.currentTarget).siblings('input').val('').trigger('focus');
+    });
+    /**
+     * Block to capture the form submit and process the data
+     */
+
+    $('#create-form').on('submit', function (event) {
+      event.preventDefault();
+      form = event.currentTarget;
+      jQForm = $(event.currentTarget);
+      jQForm.find('.select-field').each(function (i, select) {
+        input = $(select).parents('.field').find('input[name="options[]"]');
+        console.log('Index: ', i);
+        input.val('');
+        $(select).find('option').each(function (i, item) {
+          console.log('Options: ', $(select).find('option'));
+          console.log('Length: ', $(select).find('option').length);
+          console.log(i === $(select).find('option').length - 1);
+
+          if (i == $(select).find('option').length - 1) {
+            input.val(input.val() + $(item).text() + ':' + item.value);
+          } else {
+            input.val(input.val() + $(item).text() + ':' + item.value + ',');
+          }
+        });
+      });
+      var formData = jQForm.serializeObject();
+      console.log('Form Data: ', formData);
+      $.ajax({
+        method: 'POST',
+        url: '/test',
+        data: JSON.stringify(formData),
+        beforeSend: function beforeSend(request) {
+          request.setRequestHeader("Content-type", 'application/json');
+        }
+      });
+      console.log(formData);
     });
   }
 });
@@ -926,15 +1032,13 @@ $(function () {
 
     window.datatable_reports = $("#datatable-reports").DataTable((_$$DataTable = {
       responsive: true,
+      searching: true,
       order: [[1, "desc"]],
-      // ordering: false,
       columnDefs: [{
         targets: 'sorting-disabled',
         orderable: false
-      }],
-      searching: true,
-      bFilter: false
-    }, _defineProperty(_$$DataTable, "columnDefs", [{
+      }]
+    }, _defineProperty(_$$DataTable, "searching", true), _defineProperty(_$$DataTable, "bFilter", false), _defineProperty(_$$DataTable, "columnDefs", [{
       targets: 'sorting-disabled',
       orderable: false
     }]), _defineProperty(_$$DataTable, "lengthChange", true), _defineProperty(_$$DataTable, "language", {
@@ -945,11 +1049,12 @@ $(function () {
       sProcessing: loadingHTML,
       sEmptyTable: "No Records",
       url: "/config/dataTables/lang/" + window.lang + ".json"
-    }), _defineProperty(_$$DataTable, "autoWidth", false), _defineProperty(_$$DataTable, "processing", true), _defineProperty(_$$DataTable, "serverSide", true), _defineProperty(_$$DataTable, "ajax", '/daily-reports'), _defineProperty(_$$DataTable, "columns", [// {data: 'actions',name: 'actions', class: 'actions text-center px-0 sorting_disabled', searchable: false, sortable: false},
-    {
+    }), _defineProperty(_$$DataTable, "autoWidth", false), _defineProperty(_$$DataTable, "processing", true), _defineProperty(_$$DataTable, "serverSide", true), _defineProperty(_$$DataTable, "ajax", '/daily-reports'), _defineProperty(_$$DataTable, "columns", [{
       data: 'actions',
       name: 'actions',
-      searchable: true
+      "class": 'actions text-center px-0 sorting_disabled',
+      searchable: false,
+      sortable: false
     }, {
       data: 'id',
       name: 'id',
@@ -957,32 +1062,33 @@ $(function () {
     }, {
       data: 'status',
       name: 'status',
-      searchable: true
+      searchable: false
     }, {
       data: 'quantity',
       name: 'quantity',
-      searchable: true
+      searchable: false
     }, {
       data: 'driven_km',
       name: 'driven_km',
       searchable: true
     }, {
       data: 'team',
-      name: 'team_id',
+      name: 'team',
       searchable: true
     }, {
-      data: 'date',
+      data: 'entry_date',
       name: 'entry_date',
       searchable: true
     }, {
       data: 'info',
       name: 'info',
-      searchable: true
+      searchable: false
     }]), _defineProperty(_$$DataTable, "drawCallback", function drawCallback(settings) {
-      var data = this.api().ajax.json(); // if(data){
-      //     checkRecordNumber(this, data);
-      // }
-    }), _defineProperty(_$$DataTable, "lengthChange", true), _$$DataTable));
+      var data = _this.api().ajax.json();
+
+      console.log('Settings: ', settings);
+      console.log('Api: ', _this.api());
+    }), _$$DataTable));
     var t = null;
     $('#datatable-reports').find('thead .filter-col').each(function (i, el) {
       $(el).on('change keyup', function (evt) {
@@ -1483,90 +1589,4 @@ $(function () {
       clearInterval(t);
     }
   }, 1000);
-});
-$(function () {
-  var fields = {
-    text: $('#fieldText'),
-    select: $('#fieldSelect'),
-    textarea: $('#fieldTextarea'),
-    file: $('#fieldFile'),
-    checkbox: $('#fieldMultiChoice'),
-    radio: $('#fieldUniqueChoice')
-  };
-  console.log($('#remove-field'));
-
-  if ($('#create-custom-form').length > 0) {
-    /**
-     * Block to add a field
-     *
-     * User clicks on the field type he wants to add and this block appends a clone of the template to
-     */
-    $('#add-field a').on('click', function (event) {
-      link = $(event.currentTarget);
-      $('#field-container').append(fields[link.attr('data-type')].clone(true));
-    });
-    /**
-     * Block to remove a field
-     *
-     * User clicks on the cross and field configuration is removed
-     */
-
-    $('[id^="field"] a#remove-field').on('click', function (event) {
-      link = $(event.currentTarget);
-      console.log(link);
-      link.parents('.field').remove();
-    });
-    /**
-     * Block to insert options in select item list
-     *
-     * User writes as many options as he/she wants, block separates them by comma (,) and adds each to the select element.
-     *
-     * @todo Add ability to remove items.
-     */
-
-    $('[id^="field"] a#insert-option').on('click', function (event) {
-      var link = $(event.currentTarget);
-      var options = link.siblings('input').val().split(',');
-      $(options).each(function (i, item) {
-        link.siblings('select').append('<option value="' + link.siblings('select').find('option').length + '">' + item.trim() + '</option>');
-      });
-      $(event.currentTarget).siblings('input').val('').trigger('focus');
-    });
-    /**
-     * Block to capture the form submit and process the data
-     */
-
-    $('#create-form').on('submit', function (event) {
-      event.preventDefault();
-      form = event.currentTarget;
-      jQForm = $(event.currentTarget);
-      jQForm.find('.select-field').each(function (i, select) {
-        input = $(select).parents('.field').find('input[name="options[]"]');
-        console.log('Index: ', i);
-        input.val('');
-        $(select).find('option').each(function (i, item) {
-          console.log('Options: ', $(select).find('option'));
-          console.log('Length: ', $(select).find('option').length);
-          console.log(i === $(select).find('option').length - 1);
-
-          if (i == $(select).find('option').length - 1) {
-            input.val(input.val() + $(item).text() + ':' + item.value);
-          } else {
-            input.val(input.val() + $(item).text() + ':' + item.value + ',');
-          }
-        });
-      });
-      var formData = jQForm.serializeObject();
-      console.log('Form Data: ', formData);
-      $.ajax({
-        method: 'POST',
-        url: '/test',
-        data: JSON.stringify(formData),
-        beforeSend: function beforeSend(request) {
-          request.setRequestHeader("Content-type", 'application/json');
-        }
-      });
-      console.log(formData);
-    });
-  }
 });

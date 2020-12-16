@@ -143,11 +143,12 @@ Route::group(['middleware' => ['web']], function () {
             Route::get('interruptions/scheduled', 'InterruptionController@scheduled')->name('interruptions.list_scheduled');
             Route::get('interruptions/unscheduled', 'InterruptionController@unscheduled')->name('interruptions.list_unscheduled');
             Route::get('interruptions/create', 'InterruptionController@create')->name('interruptions.create');
+            Route::get('interruptions/view/{id}', 'InterruptionController@view')->name('interruptions.view');
             Route::post('interruptions/store', 'InterruptionController@store')->name('interruptions.store');
             Route::get('interruptions/edit/{id}', 'InterruptionController@edit')->name('interruptions.edit');
             Route::post('interruptions/update/{id}', 'InterruptionController@update')->name('interruptions.update');
             Route::get('interruptions/delete/{id}', 'InterruptionController@delete')->name('interruptions.delete');
-            Route::get('interruptions/restore/{id}', 'InterruptionController@restore')->name('interruptions.restore');
+            // Route::get('interruptions/restore/{id}', 'InterruptionController@restore')->name('interruptions.restore');
 
             // Teams
             Route::get('teams', 'Settings\TeamController@index')->name('settings.teams.list');

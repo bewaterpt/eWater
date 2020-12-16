@@ -62564,6 +62564,8 @@ $(function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
+var _this = this;
+
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 $(function () {
@@ -62584,15 +62586,13 @@ $(function () {
 
     window.datatable_reports = $("#datatable-reports").DataTable((_$$DataTable = {
       responsive: true,
+      searching: true,
       order: [[1, "desc"]],
-      // ordering: false,
       columnDefs: [{
         targets: 'sorting-disabled',
         orderable: false
-      }],
-      searching: true,
-      bFilter: false
-    }, _defineProperty(_$$DataTable, "columnDefs", [{
+      }]
+    }, _defineProperty(_$$DataTable, "searching", true), _defineProperty(_$$DataTable, "bFilter", false), _defineProperty(_$$DataTable, "columnDefs", [{
       targets: 'sorting-disabled',
       orderable: false
     }]), _defineProperty(_$$DataTable, "lengthChange", true), _defineProperty(_$$DataTable, "language", {
@@ -62603,11 +62603,12 @@ $(function () {
       sProcessing: loadingHTML,
       sEmptyTable: "No Records",
       url: "/config/dataTables/lang/" + window.lang + ".json"
-    }), _defineProperty(_$$DataTable, "autoWidth", false), _defineProperty(_$$DataTable, "processing", true), _defineProperty(_$$DataTable, "serverSide", true), _defineProperty(_$$DataTable, "ajax", '/daily-reports'), _defineProperty(_$$DataTable, "columns", [// {data: 'actions',name: 'actions', class: 'actions text-center px-0 sorting_disabled', searchable: false, sortable: false},
-    {
+    }), _defineProperty(_$$DataTable, "autoWidth", false), _defineProperty(_$$DataTable, "processing", true), _defineProperty(_$$DataTable, "serverSide", true), _defineProperty(_$$DataTable, "ajax", '/daily-reports'), _defineProperty(_$$DataTable, "columns", [{
       data: 'actions',
       name: 'actions',
-      searchable: true
+      "class": 'actions text-center px-0 sorting_disabled',
+      searchable: false,
+      sortable: false
     }, {
       data: 'id',
       name: 'id',
@@ -62615,32 +62616,33 @@ $(function () {
     }, {
       data: 'status',
       name: 'status',
-      searchable: true
+      searchable: false
     }, {
       data: 'quantity',
       name: 'quantity',
-      searchable: true
+      searchable: false
     }, {
       data: 'driven_km',
       name: 'driven_km',
       searchable: true
     }, {
       data: 'team',
-      name: 'team_id',
+      name: 'team',
       searchable: true
     }, {
-      data: 'date',
+      data: 'entry_date',
       name: 'entry_date',
       searchable: true
     }, {
       data: 'info',
       name: 'info',
-      searchable: true
+      searchable: false
     }]), _defineProperty(_$$DataTable, "drawCallback", function drawCallback(settings) {
-      var data = this.api().ajax.json(); // if(data){
-      //     checkRecordNumber(this, data);
-      // }
-    }), _defineProperty(_$$DataTable, "lengthChange", true), _$$DataTable));
+      var data = _this.api().ajax.json();
+
+      console.log('Settings: ', settings);
+      console.log('Api: ', _this.api());
+    }), _$$DataTable));
     var t = null;
     $('#datatable-reports').find('thead .filter-col').each(function (i, el) {
       $(el).on('change keyup', function (evt) {
@@ -62738,6 +62740,13 @@ $(function () {
         var data = this.api().ajax.json(); // if(data) {
         //     checkRecordNumber(this, data);
         // }
+      },
+      fnRowCallback: function fnRowCallback(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+        console.log('Last Index: ', aData.trashed);
+
+        if (aData.trashed) {
+          $('td', nRow).css('opacity', '0.6').css('background-color', '#ff717136');
+        }
       } // initComplete:function( settings, json){
       //     checkRecordNumber(this, json);
       // }
@@ -62799,9 +62808,7 @@ $(function () {
         searchable: true
       }],
       drawCallback: function drawCallback(settings) {
-        var data = this.api().ajax.json(); // if(data){
-        //     checkRecordNumber(this, data);
-        // }
+        var data = this.api().ajax.json();
       } // initComplete:function( settings, json){
       //     checkRecordNumber(this, json);
       // }
@@ -62863,13 +62870,8 @@ $(function () {
         searchable: true
       }],
       drawCallback: function drawCallback(settings) {
-        var data = this.api().ajax.json(); // if(data){
-        //     checkRecordNumber(this, data);
-        // }
-      } // initComplete:function( settings, json){
-      //     checkRecordNumber(this, json);
-      // }
-
+        var data = this.api().ajax.json();
+      }
     });
   }
 });
@@ -63221,7 +63223,24 @@ $(function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
+$.fn.serializeObject = function () {
+  var o = {};
+  var a = this.serializeArray();
+  $.each(a, function () {
+    var name = this.name.replace(/(?=\S)(\[\]$)/, '').replace(/(?=\S)(-)(?<=\S)/, '_');
 
+    if (o[name]) {
+      if (!o[name].push) {
+        o[name] = [o[name]];
+      }
+
+      o[name].push(this.value || '');
+    } else {
+      o[name] = [this.value || ''];
+    }
+  });
+  return o;
+};
 
 /***/ }),
 
@@ -63783,7 +63802,7 @@ tinymce.addI18n('pt_PT', {
 
 /***/ 0:
 /*!********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** multi ./resources/js/app.js ./resources/js/app/utility/tinymce.js ./resources/js/app/utility/datatables.js ./resources/js/app/utility/fixes.js ./resources/js/app/utility/ajax.js ./resources/js/app/settings/users/datatables_users.js ./resources/js/app/settings/teams/teams.js ./resources/js/app/interruptions/interruptions.js ./resources/js/app/interruptions/datatable_interruptions.js ./resources/js/app/settings/teams/datatables_teams.js ./resources/js/app/settings/permissions/update.js ./resources/js/app/components/multiselect_listbox.js ./resources/js/app/components/tooltip.js ./resources/js/app/daily_reports/dailyReports.js ./resources/js/app/daily_reports/datatables_reports.js ./resources/js/app/calls/calls.js ./resources/js/app/calls/datatables_calls.js ./resources/js/app/settings/roles/datatables_roles.js ./resources/js/app/settings/forms/forms.js ./resources/sass/app.scss ***!
+  !*** multi ./resources/js/app.js ./resources/js/app/utility/tinymce.js ./resources/js/app/utility/datatables.js ./resources/js/app/utility/fixes.js ./resources/js/app/utility/ajax.js ./resources/js/app/settings/users/datatables_users.js ./resources/js/app/settings/teams/teams.js ./resources/js/app/interruptions/interruptions.js ./resources/js/app/interruptions/datatable_interruptions.js ./resources/js/app/settings/teams/datatables_teams.js ./resources/js/app/settings/forms/forms.js ./resources/js/app/settings/permissions/update.js ./resources/js/app/components/multiselect_listbox.js ./resources/js/app/components/tooltip.js ./resources/js/app/daily_reports/dailyReports.js ./resources/js/app/daily_reports/datatables_reports.js ./resources/js/app/calls/calls.js ./resources/js/app/calls/datatables_calls.js ./resources/js/app/settings/roles/datatables_roles.js ./resources/sass/app.scss ***!
   \********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
@@ -63798,6 +63817,7 @@ __webpack_require__(/*! C:\Users\bruno\source\repos\ewater\resources\js\app\sett
 __webpack_require__(/*! C:\Users\bruno\source\repos\ewater\resources\js\app\interruptions\interruptions.js */"./resources/js/app/interruptions/interruptions.js");
 __webpack_require__(/*! C:\Users\bruno\source\repos\ewater\resources\js\app\interruptions\datatable_interruptions.js */"./resources/js/app/interruptions/datatable_interruptions.js");
 __webpack_require__(/*! C:\Users\bruno\source\repos\ewater\resources\js\app\settings\teams\datatables_teams.js */"./resources/js/app/settings/teams/datatables_teams.js");
+__webpack_require__(/*! C:\Users\bruno\source\repos\ewater\resources\js\app\settings\forms\forms.js */"./resources/js/app/settings/forms/forms.js");
 __webpack_require__(/*! C:\Users\bruno\source\repos\ewater\resources\js\app\settings\permissions\update.js */"./resources/js/app/settings/permissions/update.js");
 __webpack_require__(/*! C:\Users\bruno\source\repos\ewater\resources\js\app\components\multiselect_listbox.js */"./resources/js/app/components/multiselect_listbox.js");
 __webpack_require__(/*! C:\Users\bruno\source\repos\ewater\resources\js\app\components\tooltip.js */"./resources/js/app/components/tooltip.js");
@@ -63806,7 +63826,6 @@ __webpack_require__(/*! C:\Users\bruno\source\repos\ewater\resources\js\app\dail
 __webpack_require__(/*! C:\Users\bruno\source\repos\ewater\resources\js\app\calls\calls.js */"./resources/js/app/calls/calls.js");
 __webpack_require__(/*! C:\Users\bruno\source\repos\ewater\resources\js\app\calls\datatables_calls.js */"./resources/js/app/calls/datatables_calls.js");
 __webpack_require__(/*! C:\Users\bruno\source\repos\ewater\resources\js\app\settings\roles\datatables_roles.js */"./resources/js/app/settings/roles/datatables_roles.js");
-__webpack_require__(/*! C:\Users\bruno\source\repos\ewater\resources\js\app\settings\forms\forms.js */"./resources/js/app/settings/forms/forms.js");
 module.exports = __webpack_require__(/*! C:\Users\bruno\source\repos\ewater\resources\sass\app.scss */"./resources/sass/app.scss");
 
 

@@ -14,6 +14,8 @@ use Cache;
 use Storage;
 use App\Models\Article;
 use App\Custom\Classes\FieldSet;
+use App\Models\Interruption;
+
 class TestController extends Controller
 {
 
@@ -22,16 +24,18 @@ class TestController extends Controller
     }
 
     public function index(Request $request) {
-        $input = collect($request->except('_token'));
+        // $input = collect($request->except('_token'));
 
-        $form = new Form($input->shift('form-name'), $input->shift('form-description'));
-        $fieldSet = [];
+        // $form = new Form($input->shift('form-name'), $input->shift('form-description'));
+        // $fieldSet = [];
 
-        foreach ($input as $field => $values) {
-            foreach ($values as $i => $value) {
-            }
-        }
+        // foreach ($input as $field => $values) {
+        //     foreach ($values as $i => $value) {
+        //     }
+        // }
 
-        dd($fieldSet);
+        // dd($fieldSet);
+
+        return view('mail.interruptions.canceled', ['interruption' => Interruption::first(), 'delegation' => Interruption::first()->delegation()->first()]);
     }
 }

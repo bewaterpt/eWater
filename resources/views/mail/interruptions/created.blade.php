@@ -35,13 +35,13 @@
 @section('mail-content')
     <tr>
         <td style="padding: 30px 20px;text-align: left;">
-            @Lang('mail.interruptions.new')
+            @Lang('mail.interruptions.created')
             <br>
             <br>
             <table style="text-align: left;border-collapse: collapse;" cellpadding="0" cellspacing="0" width="100%">
                 <tr>
                     <td>
-                        <b>@Lang('general.interruptions.work_number'):</b> {{ $interruption->work_id }}
+                        <b>@Lang('mail.interruptions.ref'):</b> {{ $interruption->work_id }}
                     </td>
                 </tr>
                 <tr>
@@ -69,7 +69,6 @@
                 <tr>
                     <td style="text-align: center;padding: 20px 0;">
                         <a class="button-container" href="{{ route('interruptions.view', ['id' => $interruption->id]) }}"><button class="button" style="">@Lang('mail.go_to_model')</button></a>
-                        {{-- <div style="margin-top: 30px">@Lang('mail.fallback_link', ['url' => route('interruptions.view', ['id' => $interruption->id])])</div> --}}
                     </td>
                 </tr>
             </table>

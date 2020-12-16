@@ -28,7 +28,7 @@ return [
     |
     */
 
-    'env' => env('APP_ENV', 'production'),
+    'env' => env('APP_ENV', 'prod'),
 
     /*
     |--------------------------------------------------------------------------
@@ -311,6 +311,10 @@ return [
         ],
     ],
 
-    'prevention_number' => '919736677'
+    'prevention_number' => '919736677',
+
+    'emails' => [
+        'interruptions_ao' => "interrupcoes.ao@bewater.com.pt"
+    ],
 
 ];
