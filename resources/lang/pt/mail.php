@@ -10,7 +10,7 @@
             'canceled_subject' => "Interrupção Programada Cancelada - Be Water Ourém",
             'canceled' => "Foi cancelada uma interrupção programada com os seguintes dados:",
             'ref' => 'Ref.ª Interna',
-            'disclaimer' => "Esta mensagem é de carácter interno e confidencial, apenas dados relativos ao procedimento são apresentados para os respectivos responsáveis do mesmo de forma meramente informativa e independente do fluxo do processo em causa. No caso de existir alguma informação errada queiram, por favor, informar os serviços de atendimento da :company através do número de apoio :phone ou pelo e-mail <a href='mailto://:email'>:email</a>. Poderão consultar as interrupções atualmente publicadas através da seguinte <a href=':website/interrupcoes'>ligação</a>"
+            'disclaimer' => "Os conteúdos desta mensagem são de carácter interno e confidencial, apenas dados relativos ao procedimento são apresentados para os respectivos responsáveis do mesmo, de forma meramente informativa e independente do fluxo do processo em causa. No caso de existir alguma informação errada queiram, por favor, informar os serviços de atendimento da <b>:company</b> através do número de apoio <b>:phone</b> ou pelo e-mail <b><a href='mailto://:email'>:email</a></b>. Poderão consultar as interrupções atualmente publicadas através da seguinte <a href=':website/interrupcoes'>ligação</a><br><br><u>Esta mensagem foi gerada automaticamente, não deve responder à mesma pois não será processada.</u>"
         ],
     ];
 ?>

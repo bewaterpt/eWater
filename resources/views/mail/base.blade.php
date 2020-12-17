@@ -18,7 +18,7 @@
             @yield('mail-content')
             <tr class="footer">
                 <td style="font-size: 11px; padding: 10px 20px 30px; text-align: justify">
-                    {!! __('mail.interruptions.disclaimer', ['company' => $delegation->company, 'email' => $delegation->email, 'phone' => $delegation->phone, 'website' => $delegation->website]) !!}
+                    {!! __('mail.interruptions.disclaimer', ['company' => $delegation->company_name, 'email' => $delegation->email, 'phone' => $delegation->phone, 'website' => $delegation->website]) !!}
                 </td>
             </tr>
             <tr>
