@@ -139,6 +139,7 @@ Route::group(['middleware' => ['web']], function () {
             Route::get('daily-reports/cancel/{id}', 'DailyReportController@cancel')->name('daily_reports.cancel');
             Route::get('daily-reports/restore/{id}', 'DailyReportController@restore')->name('daily_reports.restore');
 
+            // Interruptions
             Route::get('interruptions', 'InterruptionController@index')->name('interruptions.list');
             Route::get('interruptions/scheduled', 'InterruptionController@scheduled')->name('interruptions.list_scheduled');
             Route::get('interruptions/unscheduled', 'InterruptionController@unscheduled')->name('interruptions.list_unscheduled');
@@ -158,6 +159,7 @@ Route::group(['middleware' => ['web']], function () {
             Route::post('teams/update/{id}', 'Settings\TeamController@update')->name('settings.teams.update');
             Route::get('teams/delete/{id}', 'Settings\TeamController@delete')->name('settings.teams.delete');
 
+            // Works
             Route::get('works', 'WorkController@index')->name('works.list');
             Route::get('works/create', 'WorkController@create')->name('works.create');
             Route::post('works/store', 'WorkController@store')->name('works.store');
@@ -166,22 +168,33 @@ Route::group(['middleware' => ['web']], function () {
             Route::post('works/work-exists', 'WorkController@workExists')->name('works.exists');
             // Route::get('works/delete/{id}', 'WorkController@delete')->name('settings.teams.delete');
 
+            // CDR and Recordings
             Route::get('calls', 'Yealink\CallController@index')->name('calls.list');
             Route::get('calls/pbx', 'Yealink\CallController@pbxList')->name('calls.pbx.list');
             Route::get('calls/refetch', 'Yealink\CallController@refetch')->name('calls.refetch');
-            Route::get('calls/pbx/create', 'Yealink\CallController@create')->name('calls.pbx.create');
-            Route::post('calls/pbx/store', 'Yealink\CallController@store')->name('calls.pbx.store');
-            Route::get('calls/pbx/edit/{id}', 'Yealink\CallController@edit')->name('calls.pbx.edit');
+            Route::get('calls/pbx/create', 'Yealink\CallController@pbxCreate')->name('calls.pbx.create');
+            Route::post('calls/pbx/store', 'Yealink\CallController@pbxStore')->name('calls.pbx.store');
+            Route::get('calls/pbx/edit/{id}', 'Yealink\CallController@pbxEdit')->name('calls.pbx.edit');
+            Route::post('calls/pbx/update/{id}', 'Yealink\CallController@pbxUpdate')->name('calls.pbx.update');
             Route::get('calls/export/{filetype?}', 'Yealink\CallController@export')->name('calls.export');
             Route::match(['get', 'post'], 'calls/get_monthly_wait_time_info', 'Yealink\CallController@getMonthlyWaitTimeInfo')->name('calls.charts.get_monthly_wait_time_info');
             Route::match(['get', 'post'], 'calls/get_monthly_call_number_info', 'Yealink\CallController@getMonthlyCallNumberInfo')->name('calls.charts.get_monthly_call_number_info');
 
+            // Forms
             Route::get('forms', 'FormController@index')->name('settings.forms.list');
             Route::get('forms/create', 'FormController@create')->name('settings.forms.create');
             Route::post('forms/store', 'FormController@store')->name('settings.forms.store');
             Route::get('forms/edit', 'FormController@edit')->name('settings.forms.edit');
             Route::post('forms/update', 'FormController@update')->name('settings.forms.update');
             Route::match(['post'], 'forms/view', 'FormController@view')->name('settings.forms.view');
+
+            // Delegations
+            Route::get('delegations', 'Settings\DelegationController@index')->name('settings.delegations.list');
+            Route::get('delegations/create', 'Settings\DelegationController@create')->name('settings.delegations.create');
+            Route::post('delegations/store', 'Settings\DelegationController@store')->name('settings.delegations.store');
+            Route::get('delegations/edit/{id}', 'Settings\DelegationController@edit')->name('settings.delegations.edit');
+            Route::post('delegations/update/{id}', 'Settings\DelegationController@update')->name('settings.delegations.update');
+            Route::get('delegations/delete/{id}', 'Settings\DelegationController@delete')->name('settings.delegations.delete');
 
             Route::match(['get', 'post'], 'test', 'TestController@index')->name('tests.test');
         });
