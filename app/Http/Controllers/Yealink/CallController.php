@@ -17,8 +17,6 @@ use App\Models\Yealink\CDRRecord;
 use Illuminate\Support\Carbon;
 use Symfony\Component\Process\Process;
 use App\Exports\CDRRecordExport;
-use FastExcel;
-use Excel;
 
 class CallController extends Controller
 {
@@ -75,12 +73,38 @@ class CallController extends Controller
         return view('calls.pbx.index', ['pbxList' => $pbxList]);
     }
 
-    public function create() {
+    public function pbxEdit(Request $request, $id) {
+        $pbx = Pbx::find($id);
+        $delegations = Delegation::all();
+        $pbx->password = Crypt::decryptString($pbx->password);
+
+        return view('calls.pbx.edit', ['pbx' => $pbx, 'delegations' => $delegations]);
+    }
+
+    public function pbxUpdate(Request $request, $id) {
+        $pbx = Pbx::find($id);
+
+        $input = (object) $request->input();
+
+        $pbx->designation = $input->designation;
+        $pbx->protocol = $input->protocol;
+        $pbx->url = $input->url;
+        $pbx->port = $input->port;
+        $pbx->api_base_uri = $input->api_base;
+        $pbx->username = $input->api_username;
+        $pbx->password = Crypt::encryptString($input->api_password);
+        $pbx->delegation()->associate($input->delegation);
+        $pbx->save();
+
+        return redirect(route('calls.pbx.list'));
+    }
+
+    public function pbxCreate() {
         $delegations = Delegation::all();
         return view('calls.pbx.create', ['delegations' => $delegations]);
     }
 
-    public function store(Request $request) {
+    public function pbxStore(Request $request) {
         $user = Auth::user();
 
         $input = (object) $request->input();
@@ -352,13 +376,16 @@ class CallController extends Controller
             $renderer = \Maatwebsite\Excel\Excel::MPDF;
         }
 
-        $cdrIds = $this->getInboundAndTransferCalls();
+        /**
+         * @TODO switch to memory friendly excel export
+         */
+        // $cdrIds = $this->getInboundAndTransferCalls();
 
-        $cdrs = "SELECT * FROM cdr_records as cdrAll WHERE cdrAll.callid IN(\"" . implode('", "', $cdrIds) . "\")";
+        // $cdrs = "SELECT * FROM cdr_records as cdrAll WHERE cdrAll.callid IN(\"" . implode('", "', $cdrIds) . "\")";
 
-        $cdrs = collect(DB::select($cdrs));
+        // $cdrs = collect(DB::select($cdrs));
 
-        return (new FastExcel($cdrs))->download(__('calls.call_records') . '.' . $filetype);
+        // return (new FastExcel($cdrs))->download(__('calls.call_records') . '.' . $filetype);
         // Excel::create(__('calls.call_records') . '.' . $filetype, function ($excel) {
         //     $excel->sheet('sheet1', function ($sheet) {
         //         CDRRecord::chunk(100, function ($cdr) use ($sheet) {
@@ -368,7 +395,7 @@ class CallController extends Controller
         //     });
         // })->download($filetype);
 
-        // return (new CDRRecordExport())->download(__('calls.call_records') . '.' . $filetype, ($renderer ? $renderer : null), ['X-ewater-filename' => __('calls.call_records') . '.' . $filetype]);
+        return (new CDRRecordExport())->download(__('calls.call_records') . '.' . $filetype, ($renderer ? $renderer : null), ['X-ewater-filename' => __('calls.call_records') . '.' . $filetype]);
     }
 
     public function refetch() {
@@ -376,9 +403,6 @@ class CallController extends Controller
             'status' => 200,
             'message' => 'OK'
         ];
-
-        $p = new Process(['C:\Utilities\php\php.exe', 'artisan', 'calls:get']);
-        Redis::hget('calls', 'updating');
 
         try {
             if (intval(Redis::hget('calls', 'updating')) === 1) {
@@ -402,7 +426,7 @@ class CallController extends Controller
             return json_encode($data);
         } catch(\Exception $e)  {
             $data['status'] = 500;
-            $data['message'] = $e->getMessage();
+            $data['message'] = $e->getMessage() . ' at line ' . $e->getLine();
 
             Redis::hdel('calls', 'updating');
 

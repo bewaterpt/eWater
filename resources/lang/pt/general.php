@@ -102,6 +102,7 @@ return [
         'type' => 'Tipo de Interrupção',
         'ref' => 'Ref.ª Interna',
         'view' => 'Ver Interrupção',
+        'canceled' => 'Anulada',
     ],
     'url' => "Endereço Web",
     'delegation' => 'Delegação',

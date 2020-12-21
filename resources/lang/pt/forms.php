@@ -24,6 +24,7 @@ return [
         'url' => 'Endereço Web',
         'port' => 'Porta',
         'api_base_url' => 'Endereço base da API',
+        'username' => "Nome de Utilizador",
         'call_to' => 'Para',
         'call_from' => 'De',
         'call_duration' => 'Duração da chamada',
