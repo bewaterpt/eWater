@@ -34,6 +34,10 @@
  * Date: 2020-05-04T22:49Z
  */
 
+/*! ColReorder 1.5.2
+ * ©2010-2019 SpryMedia Ltd - datatables.net/license
+ */
+
 /*! DataTables 1.10.21
  * ©2008-2020 SpryMedia Ltd - datatables.net/license
  */
