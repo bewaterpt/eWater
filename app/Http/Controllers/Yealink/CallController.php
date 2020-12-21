@@ -395,7 +395,7 @@ class CallController extends Controller
         //     });
         // })->download($filetype);
 
-        return (new CDRRecordExport())->download(__('calls.call_records') . '.' . $filetype, ($renderer ? $renderer : null), ['X-ewater-filename' => __('calls.call_records') . '.' . $filetype]);
+        return (new CDRRecordExport(null))->download(__('calls.call_records') . '.' . $filetype, ($renderer ? $renderer : null), ['X-ewater-filename' => __('calls.call_records') . '.' . $filetype]);
     }
 
     public function refetch() {
