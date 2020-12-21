@@ -70,7 +70,7 @@ $(() => {
             fnRowCallback: ( nRow, aData, iDisplayIndex, iDisplayIndexFull ) => {
                 console.log('Last Index: ', aData.trashed);
                 if (aData.trashed) {
-                    $('td', nRow).css('opacity', '0.6').css('background-color', '#ff717136');
+                    $('td', nRow).css('opacity', '0.8').css('background-color', '#ff717136');
                 }
             },
             // initComplete:function( settings, json){

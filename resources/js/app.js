@@ -20,8 +20,8 @@ $.ajaxSetup({
 
 // Prevent unwanted scrolling of the page when clicking JavaScript handled links
 function stopSpontaneousSrcolling() {
-    $('a[href="#"]').click(function(event) {
-        event.preventDefault();
+    $('a[href="#"]').on("click", (e) => {
+        e.preventDefault();
     });
 }
 

@@ -41,6 +41,9 @@ mix.sass('resources/sass/app.scss', 'public/css')
     "resources/js/app/calls/calls.js",
     "resources/js/app/calls/datatables_calls.js",
     "resources/js/app/settings/roles/datatables_roles.js",
+
+    // Tests
+    "resources/js/app/test/test.js"
 ], "public/js/app.js")
 .babel([
     // app.js General Script
@@ -67,6 +70,9 @@ mix.sass('resources/sass/app.scss', 'public/css')
     "resources/js/app/calls/calls.js",
     "resources/js/app/calls/datatables_calls.js",
     "resources/js/app/settings/roles/datatables_roles.js",
+
+    // Tests
+    "resources/js/app/test/test.js"
 ], "public/js/app.es5.js")
 .extract([
     'datatables.net',
@@ -74,11 +80,10 @@ mix.sass('resources/sass/app.scss', 'public/css')
     'datatables.net-bs4',
     'datatables.net-colreorder',
     'tinymce',
-    // 'bootstrap-colorpicker',
     '@fortawesome/fontawesome-free',
     'bootstrap',
     'moment',
-    // 'remixicon',
+    'leaflet',
 ])
 .copyDirectory('node_modules/tinymce/themes', 'public/js/themes')
 .copyDirectory('node_modules/tinymce/skins', 'public/js/skins')

@@ -36,6 +36,6 @@ class TestController extends Controller
 
         // dd($fieldSet);
 
-        return view('mail.interruptions.created', ['interruption' => Interruption::first(), 'delegation' => Interruption::first()->delegation()->first()]);
+        return view('tests.test');
     }
 }

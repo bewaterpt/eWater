@@ -266,6 +266,10 @@ class InterruptionController extends Controller
                 $actions .= '<a class="text-danger delete px-1" href="' . route('interruptions.delete', ['id' => $row->id]) . '" title="'.trans('general.delete').'"><i class="fas fa-trash-alt"></i></a>';
             }
 
+            if ($row->trashed()) {
+                $actions = "<span>" . __('general.interruptions.canceled') . "</span>";
+            }
+
             // if ($this->permissionModel->can('interruptions.restore') && $row->trashed()) {
             //     $actions .= '<a class="text-danger restore px-1" href="' . route('interruptions.restore', ['id' => $row->id]) . '" title="'.trans('general.restore').'"><i class="fas fa-trash-restore-alt"></i></a>';
             // }

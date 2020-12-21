@@ -19,6 +19,7 @@ try {
     require('datatables.net-bs4');
     require('moment');
     require('chart.js');
+    require('leaflet');
 } catch (e) {}
 
 /**
