@@ -61541,8 +61541,8 @@ $.ajaxSetup({
 }); // Prevent unwanted scrolling of the page when clicking JavaScript handled links
 
 function stopSpontaneousSrcolling() {
-  $('a[href="#"]').click(function (event) {
-    event.preventDefault();
+  $('a[href="#"]').on("click", function (e) {
+    e.preventDefault();
   });
 }
 
@@ -62741,7 +62741,7 @@ $(function () {
         console.log('Last Index: ', aData.trashed);
 
         if (aData.trashed) {
-          $('td', nRow).css('opacity', '0.6').css('background-color', '#ff717136');
+          $('td', nRow).css('opacity', '0.8').css('background-color', '#ff717136');
         }
       } // initComplete:function( settings, json){
       //     checkRecordNumber(this, json);
@@ -63178,7 +63178,62 @@ $(function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-throw new Error("Module build failed (from ./node_modules/babel-loader/lib/index.js):\nError: ENOENT: no such file or directory, open 'C:\\Users\\bruno\\source\\repos\\ewater\\resources\\js\\app\\test\\test.js'");
+$(function () {
+  if ($('#map')) {
+    var onMapClick = function onMapClick(e) {
+      popup.setLatLng(e.latlng).setContent("You clicked the map at " + e.latlng.toString()).openOn(map);
+    };
+
+    var littleton = L.marker([39.61, -105.02]).bindPopup('This is Littleton, CO.'),
+        denver = L.marker([39.74, -104.99]).bindPopup('This is Denver, CO.'),
+        aurora = L.marker([39.73, -104.8]).bindPopup('This is Aurora, CO.'),
+        golden = L.marker([39.77, -105.23]).bindPopup('This is Golden, CO.');
+    var cities = L.layerGroup([littleton, denver, aurora, golden]);
+    var streets = L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}", {
+      attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+      maxZoom: 22,
+      id: 'mapbox/streets-v11',
+      tileSize: 512,
+      zoomOffset: -1,
+      accessToken: 'pk.eyJ1IjoiYmV3YXRlci1kZXYiLCJhIjoiY2tpeWU4dGIwNDJleDJ5cWptcjJqamt1aSJ9.jo7MJzmi_-zqWUX3KJACYg'
+    });
+    var grayscale = L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}", {
+      attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+      maxZoom: 22,
+      id: 'mapbox/light-v10',
+      tileSize: 512,
+      zoomOffset: -1,
+      accessToken: 'pk.eyJ1IjoiYmV3YXRlci1kZXYiLCJhIjoiY2tpeWU4dGIwNDJleDJ5cWptcjJqamt1aSJ9.jo7MJzmi_-zqWUX3KJACYg'
+    });
+    var map = L.map('map', {
+      center: [39.73, -104.99],
+      zoom: 10,
+      layers: [grayscale, cities]
+    });
+    var baseMaps = {
+      "Grayscale": grayscale,
+      "Streets": streets
+    };
+    var overlayMaps = {
+      "Cities": cities
+    };
+    L.control.layers(baseMaps, overlayMaps).addTo(map);
+    var marker = L.marker([51.5, -0.10]).addTo(map);
+    marker.bindPopup("<b>Hello world!</b><br>I am a popup.");
+    var geojsonFeature = {
+      "type": "Feature",
+      "properties": {},
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[-0.105743408203125, 51.51515248101072], [-0.08909225463867188, 51.50489601254001], [-0.06505966186523438, 51.51322956905176], [-0.07055282592773438, 51.524765823244685], [-0.105743408203125, 51.51515248101072]]]
+      }
+    };
+    var geoJsonLayer = L.geoJSON().addTo(map);
+    geoJsonLayer.addData(geojsonFeature);
+    var popup = L.popup();
+    map.on('click', onMapClick);
+  }
+});
 
 /***/ }),
 
@@ -63332,6 +63387,8 @@ try {
   __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
 
   __webpack_require__(/*! chart.js */ "./node_modules/chart.js/dist/Chart.js");
+
+  __webpack_require__(/*! leaflet */ "./node_modules/leaflet/dist/leaflet-src.js");
 } catch (e) {}
 /**
  * We'll load the axios HTTP library which allows us to easily issue requests

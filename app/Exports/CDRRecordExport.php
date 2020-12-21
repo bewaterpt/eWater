@@ -20,8 +20,8 @@ class CDRRecordExport implements FromQuery, WithMapping, WithHeadings, ShouldAut
 
     private $searchCols;
 
-    public function __construct($searchCols) {
-        
+    public function __construct($searchCols = null) {
+
     }
 
     /**

@@ -54,11 +54,11 @@
                         <b>@Lang('general.interruptions.reinstatement_date'):</b> {!! $prevInt->reinstatement_date !== $newInt->reinstatement_date ? "<span style='color: gray'><s>" . $carbon->parse($prevInt->reinstatement_date)->format('Y-m-d H:i:s') . "</s></span> <span style='color: darkblue'>" . $carbon->parse($newInt->reinstatement_date)->format('Y-m-d H:i:s') . "</span>" : $carbon->parse($prevInt->reinstatement_date)->format('Y-m-d H:i:s') !!}
                     </td>
                 </tr>
-                <tr>
+                {{-- <tr>
                     <td>
                         <b>@Lang('general.interruptions.type'):</b> {!! $prevInt->scheduled !== $newInt->scheduled ? "<span style='color: gray'><s>" . ($prevInt->scheduled ? __('general.interruptions.is_scheduled') : __('general.interruptions.is_unscheduled')) . "</s></span> <span style='color: darkblue'>" . ($newInt->scheduled ? __('general.interruptions.is_scheduled') : __('general.interruptions.is_unscheduled')) . "</span>" : ($prevInt->scheduled ? __('general.interruptions.is_scheduled') : __('general.interruptions.is_unscheduled')) !!}
                     </td>
-                </tr>
+                </tr> --}}
                 <tr>
                     <td>
                         <br>
@@ -66,13 +66,13 @@
                         {!! $helpers->transliterate($prevInt->affected_area) !== $helpers->transliterate($newInt->affected_area) ? "<span style='color: gray'><s>" . $prevInt->affected_area . "</s></span> <span style='color: darkblue'>" . $newInt->affected_area . "</span>" : $prevInt->affected_area !!}
                     </td>
                 </tr>
-                <tr>
+                {{-- <tr>
                     <td style="text-align: center;padding: 20px 0;">
                         <a class="button-container" href="{{ route('interruptions.view', ['id' => $prevInt->id]) }}">
                             <button class="button" style="">@Lang('mail.go_to_model')</button>
                         </a>
                     </td>
-                </tr>
+                </tr> --}}
             </table>
         </td>
     </tr>
