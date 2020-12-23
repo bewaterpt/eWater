@@ -9,4 +9,6 @@ use App\Models\Model;
 class Revision extends Model
 {
     use HasFactory;
+    
+    private $hasUserTracking = true;
 }

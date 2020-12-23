@@ -10,6 +10,8 @@ class Interruption extends Model
 
     use SoftDeletes;
 
+    private $hasRevisioning = true;
+
     public function user() {
         return $this->belongsTo('App\User');
     }
