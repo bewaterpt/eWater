@@ -13,7 +13,7 @@ class InterruptionCanceled extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public Interruption $interruption;
+    public $interruption;
 
     /**
      * Create a new message instance.
