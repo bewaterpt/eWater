@@ -14,8 +14,8 @@ class InterruptionUpdated extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public Interruption $prevInt;
-    public Interruption $newInt;
+    public $prevInt;
+    public $newInt;
 
     /**
      * Create a new message instance.
