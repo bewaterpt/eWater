@@ -3,7 +3,7 @@
 namespace App\Models\Forms;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\Model;
 use App\Custom\Classes\Option;
 
 class FormField extends Model

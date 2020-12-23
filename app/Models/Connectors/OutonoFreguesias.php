@@ -2,7 +2,7 @@
 
 namespace App\Models\Connectors;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Models\Model;
 
 class OutonoFreguesias extends Model
 {

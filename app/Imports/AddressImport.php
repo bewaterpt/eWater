@@ -2,7 +2,7 @@
 
 namespace App\Imports;
 
-use App\Street;
+use App\Models\Street;
 use Maatwebsite\Excel\Concerns\ToModel;
 
 class AddressImport implements ToModel
@@ -14,8 +14,8 @@ class AddressImport implements ToModel
     */
     public function model(array $row)
     {
-        return new Street([
+        // return new Street([
             //
-        ]);
+        // ]);
     }
 }

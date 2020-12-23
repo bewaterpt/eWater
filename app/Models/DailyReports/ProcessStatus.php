@@ -2,7 +2,7 @@
 
 namespace App\Models\DailyReports;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Models\Model;
 use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\DailyReports\Status;
