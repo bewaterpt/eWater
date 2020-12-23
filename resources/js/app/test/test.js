@@ -1,5 +1,5 @@
 $(() => {
-    if ($('#map')) {
+    if ($('#map').length > 0) {
         let littleton = L.marker([39.61, -105.02]).bindPopup('This is Littleton, CO.'),
             denver    = L.marker([39.74, -104.99]).bindPopup('This is Denver, CO.'),
             aurora    = L.marker([39.73, -104.8]).bindPopup('This is Aurora, CO.'),

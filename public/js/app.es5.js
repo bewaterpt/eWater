@@ -1589,7 +1589,7 @@ $(function () {
   }, 1000);
 });
 $(function () {
-  if ($('#map')) {
+  if ($('#map').length > 0) {
     var onMapClick = function onMapClick(e) {
       popup.setLatLng(e.latlng).setContent("You clicked the map at " + e.latlng.toString()).openOn(map);
     };
