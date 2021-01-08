@@ -61869,8 +61869,7 @@ $(function () {
       }
     });
     $('#clearDate').on('click', function (evt) {
-      console.log(evt.currentTarget);
-
+      // console.log(evt.currentTarget);
       if ($(evt.currentTarget).siblings('input').val() != "") {
         $(evt.currentTarget).tooltip({
           html: true
@@ -61880,7 +61879,7 @@ $(function () {
     });
     var updating = false;
     var cdri = setInterval(function () {
-      console.log(updating);
+      // console.log(updating);
       $.ajax({
         url: 'check-call-record-update-state',
         method: 'GET',
@@ -61889,8 +61888,7 @@ $(function () {
           'Access-Control-Allow-Origin': 'localhost'
         },
         success: function success(response) {
-          console.log(response);
-
+          // console.log(response);
           if (parseInt(response.updating) === 1) {
             $('#refetchCallData').addClass('spining').attr('data-disabled', true);
 
@@ -62614,18 +62612,20 @@ $(function () {
     }, {
       data: 'status',
       name: 'status',
-      searchable: false
+      searchable: false,
+      sortable: false
     }, {
       data: 'quantity',
       name: 'quantity',
-      searchable: false
+      searchable: false,
+      sortable: false
     }, {
       data: 'driven_km',
       name: 'driven_km',
       searchable: true
     }, {
       data: 'team',
-      name: 'team',
+      name: 'team_id',
       searchable: true
     }, {
       data: 'entry_date',

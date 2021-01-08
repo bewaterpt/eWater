@@ -72,10 +72,14 @@ class DailyReportController extends Controller
                 }
             }
 
+            // dd($searchCols);
+
             $reports = Report::select('reports.*');
             if (!$user->isAdmin() && $user->teams()->exists()) {
                 $reports->whereIn('team_id', $user->teams()->pluck('id'));
             }
+
+
 
             foreach ($searchCols as $searchCol) {
                 if ($searchCol['name'] === 'status') {

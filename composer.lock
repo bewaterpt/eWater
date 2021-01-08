@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "78ee68a3c414af88f19658bbe828c389",
+    "content-hash": "a8fc6dd860cade04a42e3d169d0663bd",
     "packages": [
         {
             "name": "adldap/adldap",
@@ -342,12 +342,6 @@
                 "orm",
                 "windows"
             ],
-            "support": {
-                "docs": "https://ldaprecord.com",
-                "email": "steven_bauman@outlook.com",
-                "issues": "https://github.com/DirectoryTree/LdapRecord/issues",
-                "source": "https://github.com/DirectoryTree/LdapRecord"
-            },
             "funding": [
                 {
                     "url": "https://github.com/stevebauman",
@@ -9978,5 +9972,5 @@
         "php": "^7.2.5"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.0.0"
+    "plugin-api-version": "1.1.0"
 }

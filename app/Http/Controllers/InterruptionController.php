@@ -348,9 +348,9 @@ class InterruptionController extends Controller
         $interruption->synced = true;
         $interruption->save();
 
-        if ($interruption->scheduled) {
-            Mail::to(config('app.emails.interruptions_ao'))->send(new InterruptionCreated($interruption));
-        }
+        // if ($interruption->scheduled) {
+        Mail::to(config('app.emails.interruptions_ao'))->send(new InterruptionCreated($interruption));
+        // }
 
         Artisan::call('interruptions:export');
 
@@ -361,7 +361,7 @@ class InterruptionController extends Controller
         $interruption = Interruption::where('id', $id);
 
         if ($this->currentUser->isAdmin() || $this->permissionModel->can('interruptions.delete')) {
-            $interruption->withTrashed();        
+            $interruption->withTrashed();
         }
 
         return view('interruptions.view', ['interruption' => $interruption->first()]);
@@ -394,9 +394,9 @@ class InterruptionController extends Controller
 
         $interruption->delete();
 
-        if ($interruption->scheduled) {
-            Mail::to(config('app.emails.interruptions_ao'))->send(new InterruptionCanceled($interruption));
-        }
+        // if ($interruption->scheduled) {
+        Mail::to(config('app.emails.interruptions_ao'))->send(new InterruptionCanceled($interruption));
+        // }
 
         Artisan::call('interruptions:export');
 
@@ -462,9 +462,9 @@ class InterruptionController extends Controller
 
         $newInt = clone($interruption);
 
-        if ($interruption->scheduled) {
-            Mail::to(config('app.emails.interruptions_ao'))->send(new InterruptionUpdated($prevInt, $newInt));
-        }
+        // if ($interruption->scheduled) {
+        Mail::to(config('app.emails.interruptions_ao'))->send(new InterruptionUpdated($prevInt, $newInt));
+        // }
 
         Artisan::call('interruptions:export');
 
