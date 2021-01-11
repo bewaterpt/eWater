@@ -349,7 +349,7 @@ class InterruptionController extends Controller
         $interruption->save();
 
         // if ($interruption->scheduled) {
-        Mail::to(config('app.emails.interruptions_ao'))->send(new InterruptionCreated($interruption));
+        // Mail::to(config('app.emails.interruptions_ao'))->send(new InterruptionCreated($interruption));
         // }
 
         Artisan::call('interruptions:export');
@@ -395,7 +395,7 @@ class InterruptionController extends Controller
         $interruption->delete();
 
         // if ($interruption->scheduled) {
-        Mail::to(config('app.emails.interruptions_ao'))->send(new InterruptionCanceled($interruption));
+        // Mail::to(config('app.emails.interruptions_ao'))->send(new InterruptionCanceled($interruption));
         // }
 
         Artisan::call('interruptions:export');
@@ -463,7 +463,7 @@ class InterruptionController extends Controller
         $newInt = clone($interruption);
 
         // if ($interruption->scheduled) {
-        Mail::to(config('app.emails.interruptions_ao'))->send(new InterruptionUpdated($prevInt, $newInt));
+        // Mail::to(config('app.emails.interruptions_ao'))->send(new InterruptionUpdated($prevInt, $newInt));
         // }
 
         Artisan::call('interruptions:export');
