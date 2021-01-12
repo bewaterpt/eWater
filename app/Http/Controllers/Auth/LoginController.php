@@ -120,7 +120,7 @@ class LoginController extends Controller
         })->toArray();
         $roles = Role::whereIn('slug', $ldapRoles)->pluck('id')->toArray();
 
-        if (in_array($user->username, ['admbm', 'admjc'])) {
+        if (in_array($user->username, config('app.admins'))) {
             $roles[] = 1;
         } else {
             $roles[] = 3;
