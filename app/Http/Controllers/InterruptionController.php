@@ -468,12 +468,12 @@ class InterruptionController extends Controller
 
         $newInt = clone($interruption);
 
-        // if ($interruption->scheduled) {
         try {
-            Mail::to(config('app.emails.interruptions_ao'))->send(new InterruptionUpdated($prevInt, $newInt));
+            // if ($interruption->scheduled) {
+                Mail::to(config('app.emails.interruptions_ao'))->send(new InterruptionUpdated($prevInt, $newInt));
+            // }
         } catch (\Exception $e) {
         }
-        // }
 
         Artisan::call('interruptions:export');
 
