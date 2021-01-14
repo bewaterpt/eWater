@@ -2,7 +2,7 @@
 
 namespace App\Models\DailyReports;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Models\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ReportLine extends Model

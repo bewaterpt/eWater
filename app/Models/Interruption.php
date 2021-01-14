@@ -2,13 +2,15 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Models\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Interruption extends Model
 {
 
     use SoftDeletes;
+
+    private $hasRevisioning = true;
 
     public function user() {
         return $this->belongsTo('App\User');
