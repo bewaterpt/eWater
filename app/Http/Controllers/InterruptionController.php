@@ -466,11 +466,9 @@ class InterruptionController extends Controller
         $interruption->synced = true;
         $interruption->save();
 
-        $newInt = clone($interruption);
-
         try {
             // if ($interruption->scheduled) {
-                Mail::to(config('app.emails.interruptions_ao'))->send(new InterruptionUpdated($prevInt, $newInt));
+                Mail::to(config('app.emails.interruptions_ao'))->send(new InterruptionUpdated($prevInt, $interruption));
             // }
         } catch (\Exception $e) {
         }

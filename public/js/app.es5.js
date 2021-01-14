@@ -1061,7 +1061,7 @@ $(function () {
       searchable: true
     }, {
       data: 'status',
-      name: 'status',
+      name: 'current_status',
       searchable: false,
       sortable: false
     }, {
@@ -1078,8 +1078,8 @@ $(function () {
       name: 'team_id',
       searchable: true
     }, {
-      data: 'entry_date',
-      name: 'entry_date',
+      data: 'date',
+      name: 'date',
       searchable: true
     }, {
       data: 'info',

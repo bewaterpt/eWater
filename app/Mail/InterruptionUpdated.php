@@ -37,6 +37,6 @@ class InterruptionUpdated extends Mailable
     {
         $scheduled = $this->newInt->scheduled ? 'scheduled' : 'unscheduled';
 
-        return $this->subject(__('mail.interruptions.' . $scheduled . 'updated'))->view('mail.interruptions.updated', ['prevInt' => $this->prevInt, 'newInt' => $this->newInt, 'carbon' => new Carbon, 'helpers' => new Helper, 'delegation' => $this->newInt->delegation()->first(), 'scheduled' => $scheduled]);
+        return $this->subject(__('mail.interruptions.' . $scheduled . 'updated_subject'))->view('mail.interruptions.updated', ['prevInt' => $this->prevInt, 'newInt' => $this->newInt, 'carbon' => new Carbon, 'helpers' => new Helper, 'delegation' => $this->newInt->delegation()->first(), 'scheduled' => $scheduled]);
     }
 }
