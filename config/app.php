@@ -316,5 +316,5 @@ return [
     'emails' => [
         'interruptions_ao' => "interrupcoes.ao@bewater.com.pt"
     ],
-
+    
 ];

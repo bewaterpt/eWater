@@ -25,8 +25,6 @@ class ChangeEntryDateFieldOnReportLinesTable extends Migration
      */
     public function down()
     {
-        Schema::table('report_lines', function (Blueprint $table) {
-            $table->timestamp('entry_date')->change();
-        });
+        
     }
 }
