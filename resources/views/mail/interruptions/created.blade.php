@@ -35,7 +35,7 @@
 @section('mail-content')
     <tr>
         <td style="padding: 30px 20px;text-align: left;">
-            @Lang('mail.interruptions.created')
+            @Lang('mail.interruptions.' . $scheduled . '.created')
             <br>
             <br>
             <table style="text-align: left;border-collapse: collapse;" cellpadding="0" cellspacing="0" width="100%">
@@ -54,11 +54,6 @@
                         <b>@Lang('general.interruptions.reinstatement_date'):</b> {{ $carbon->parse($interruption->reinstatement_date)->format('Y-m-d H:i:s') }}
                     </td>
                 </tr>
-                {{-- <tr>
-                    <td>
-                        <b>@Lang('general.interruptions.type'):</b> {{ $interruption->scheduled ? __('general.interruptions.is_scheduled') : __('general.interruptions.is_unscheduled') }}
-                    </td>
-                </tr> --}}
                 <tr>
                     <td>
                         <br>
@@ -66,11 +61,6 @@
                         {!! $interruption->affected_area !!}
                     </td>
                 </tr>
-                {{-- <tr>
-                    <td style="text-align: center;padding: 20px 0;">
-                        <a class="button-container" href="{{ route('interruptions.view', ['id' => $interruption->id]) }}"><button class="button" style="">@Lang('mail.go_to_model')</button></a>
-                    </td>
-                </tr> --}}
             </table>
         </td>
     </tr>
