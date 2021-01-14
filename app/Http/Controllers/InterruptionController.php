@@ -348,9 +348,12 @@ class InterruptionController extends Controller
         $interruption->synced = true;
         $interruption->save();
 
-        if ($interruption->scheduled) {
+        // if ($interruption->scheduled) {
+        try {
             Mail::to(config('app.emails.interruptions_ao'))->send(new InterruptionCreated($interruption));
+        } catch (\Exception $e) {
         }
+        // }
 
         Artisan::call('interruptions:export');
 
@@ -361,7 +364,7 @@ class InterruptionController extends Controller
         $interruption = Interruption::where('id', $id);
 
         if ($this->currentUser->isAdmin() || $this->permissionModel->can('interruptions.delete')) {
-            $interruption->withTrashed();        
+            $interruption->withTrashed();
         }
 
         return view('interruptions.view', ['interruption' => $interruption->first()]);
@@ -394,9 +397,12 @@ class InterruptionController extends Controller
 
         $interruption->delete();
 
-        if ($interruption->scheduled) {
-            Mail::to(config('app.emails.interruptions_ao'))->send(new InterruptionCanceled($interruption));
-        }
+        // if ($interruption->scheduled) {
+            try {
+                Mail::to(config('app.emails.interruptions_ao'))->send(new InterruptionCanceled($interruption));
+            } catch (\Exception $e) {
+            }
+        // }
 
         Artisan::call('interruptions:export');
 
@@ -460,10 +466,11 @@ class InterruptionController extends Controller
         $interruption->synced = true;
         $interruption->save();
 
-        $newInt = clone($interruption);
-
-        if ($interruption->scheduled) {
-            Mail::to(config('app.emails.interruptions_ao'))->send(new InterruptionUpdated($prevInt, $newInt));
+        try {
+            // if ($interruption->scheduled) {
+                Mail::to(config('app.emails.interruptions_ao'))->send(new InterruptionUpdated($prevInt, $interruption));
+            // }
+        } catch (\Exception $e) {
         }
 
         Artisan::call('interruptions:export');

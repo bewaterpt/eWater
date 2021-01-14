@@ -75,13 +75,6 @@ Route::group(['middleware' => ['web']], function () {
             Route::get('work_types/toggle/{id}', 'Settings\UserController@toggle_state')->name('settings.work_types.toggle_state');
             Route::get('work_types/delete/{id}', 'Settings\UserController@delete')->name('settings.work_types.delete');
 
-            // Delegations
-            Route::get('delegations', 'Settings\UserController@index')->name('settings.delegations.list');
-            Route::get('delegations/{id}', 'Settings\UserController@view')->name('settings.delegations.view');
-            Route::match(['get', 'post'], 'delegations/edit/{id}', 'Settings\UserController@edit')->name('settings.delegations.edit');
-            Route::get('work_types/toggle/{id}', 'Settings\UserController@toggle_state')->name('settings.delegations.toggle_state');
-            Route::get('work_types/delete/{id}', 'Settings\UserController@delete')->name('settings.delegations.delete');
-
             // Agents
             Route::get('agents', 'Settings\AgentController@index')->name('settings.agents.list');
             Route::get('agents/{id}', 'Settings\AgentController@view')->name('settings.agents.view');

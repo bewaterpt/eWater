@@ -72,10 +72,14 @@ class DailyReportController extends Controller
                 }
             }
 
+            // dd($searchCols);
+
             $reports = Report::select('reports.*');
             if (!$user->isAdmin() && $user->teams()->exists()) {
                 $reports->whereIn('team_id', $user->teams()->pluck('id'));
             }
+
+
 
             foreach ($searchCols as $searchCol) {
                 if ($searchCol['name'] === 'status') {
@@ -503,6 +507,7 @@ class DailyReportController extends Controller
             $report->km_arrival = $input['km_arrival'];
             $report->driven_km = $input['km_arrival'] - $input['km_departure'];
             $report->comment = $input['comment'];
+            $report->date = (new DateTime($input['datetime']))->format('Y-m-d H:i:s');
             $report->team()->associate($input['team']);
             $report->save();
 

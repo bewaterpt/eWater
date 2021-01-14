@@ -35,7 +35,7 @@
 @section('mail-content')
     <tr>
         <td style="padding: 30px 20px;text-align: left;">
-            @Lang('mail.interruptions.updated')
+            @Lang('mail.interruptions.' . $scheduled . '.updated')
             <br>
             <br>
             <table style="text-align: left;border-collapse: collapse;" cellpadding="0" cellspacing="0" width="100%">

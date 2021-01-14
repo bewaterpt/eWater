@@ -1061,23 +1061,25 @@ $(function () {
       searchable: true
     }, {
       data: 'status',
-      name: 'status',
-      searchable: false
+      name: 'current_status',
+      searchable: false,
+      sortable: false
     }, {
       data: 'quantity',
       name: 'quantity',
-      searchable: false
+      searchable: false,
+      sortable: false
     }, {
       data: 'driven_km',
       name: 'driven_km',
       searchable: true
     }, {
       data: 'team',
-      name: 'team',
+      name: 'team_id',
       searchable: true
     }, {
-      data: 'entry_date',
-      name: 'entry_date',
+      data: 'date',
+      name: 'date',
       searchable: true
     }, {
       data: 'info',
@@ -1370,8 +1372,7 @@ $(function () {
       }
     });
     $('#clearDate').on('click', function (evt) {
-      console.log(evt.currentTarget);
-
+      // console.log(evt.currentTarget);
       if ($(evt.currentTarget).siblings('input').val() != "") {
         $(evt.currentTarget).tooltip({
           html: true
@@ -1381,7 +1382,7 @@ $(function () {
     });
     var updating = false;
     var cdri = setInterval(function () {
-      console.log(updating);
+      // console.log(updating);
       $.ajax({
         url: 'check-call-record-update-state',
         method: 'GET',
@@ -1390,8 +1391,7 @@ $(function () {
           'Access-Control-Allow-Origin': 'localhost'
         },
         success: function success(response) {
-          console.log(response);
-
+          // console.log(response);
           if (parseInt(response.updating) === 1) {
             $('#refetchCallData').addClass('spining').attr('data-disabled', true);
 
@@ -1589,7 +1589,7 @@ $(function () {
   }, 1000);
 });
 $(function () {
-  if ($('#map')) {
+  if ($('#map').length > 0) {
     var onMapClick = function onMapClick(e) {
       popup.setLatLng(e.latlng).setContent("You clicked the map at " + e.latlng.toString()).openOn(map);
     };

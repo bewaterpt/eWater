@@ -38,6 +38,10 @@ class Report extends Model
         return collect($processedLines);
     }
 
+    public function getEntryDate() {
+        return $this->lines()->first()->entry_date;
+    }
+
     public function getCurrentStatus() {
         return $this->latestUpdate()->status();
     }
