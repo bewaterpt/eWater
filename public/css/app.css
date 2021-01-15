@@ -28411,6 +28411,30 @@ div.card table thead tr th {
   display: none;
 }
 
+#datatable-reports #date-filter {
+  position: relative;
+}
+
+#datatable-reports #date-filter #date-field::-webkit-inner-spin-button,
+#datatable-reports #date-filter #date-field::-webkit-calendar-picker-indicator {
+  margin-right: 10px;
+}
+
+#datatable-reports #date-filter #clear-date-field {
+  position: absolute;
+  padding: 0;
+  right: 18px;
+  top: 10px;
+  width: 12px;
+  height: 12px;
+  font-size: 18px;
+}
+
+#datatable-reports #date-filter #clear-date-field i {
+  padding: 0;
+  cursor: pointer;
+}
+
 #modalTeamUsers .modal-header .ri-xl {
   vertical-align: auto;
   line-height: 1.2em;

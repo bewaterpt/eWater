@@ -293,6 +293,10 @@ class Helper {
      * @param String $str
      */
     public function mb_ucfirst($str) {
+        // Normalize String
+        $str = mb_strtolower($str);
+
+        // Capitalize String
         $str = mb_strtoupper(mb_substr($str, 0, 1)) . mb_substr($str, 1);
         return $str;
     }

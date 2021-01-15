@@ -62149,6 +62149,9 @@ $(function () {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
+var _require = __webpack_require__(/*! leaflet */ "./node_modules/leaflet/dist/leaflet-src.js"),
+    Evented = _require.Evented;
+
 $(function () {
   var error = false;
   var kmError = false;
@@ -62336,47 +62339,50 @@ $(function () {
       } else {}
     };
 
-    var checkWorkExists = function checkWorkExists(evt) {// error = false;
-      // let data = {
-      //     id: $(evt.target).val()
-      // }
-      // if (data.id !== "") {
-      //     if(window.verifyingWork && window.verifyingWork.readyState !== 4) {
-      //         window.verifyingWork.abort();
-      //     }
-      //     window.verifyingWork = $.ajax({
-      //         method: 'POST',
-      //         url: '/works/work-exists',
-      //         data: JSON.stringify(data),
-      //         contentType: 'json',
-      //         success: (response) => {
-      //             response = JSON.parse(response);
-      //             console.log("Response: ", response);
-      //             if (response.value === false) {
-      //                 $(evt.target).parent().popover({
-      //                     html: true,
-      //                     title: function() {
-      //                         return $(document).find('#' + this.id + ' .popover').find('#title').html()
-      //                     },
-      //                     content: function() {
-      //                         return $(document).find('#' + this.id + ' .popover').find('#content').html()
-      //                     },
-      //                 });
-      //                 $(evt.target).parent().find('.popover #content').html($('#errors .' + response.reason).html());
-      //                 $(evt.target).addClass('border-danger').addClass('bg-flamingo').attr('data-error', true).focus();
-      //                 $('.popover:not(.popover-data)').addClass('popover-danger');
-      //             } else {
-      //                 $(evt.target).removeClass('border-danger').removeClass('bg-flamingo').removeAttr('data-error');
-      //                 $(evt.target).parent().popover('dispose');
-      //             }
-      //         },
-      //         error: (jqXHR, status, error) => {
-      //         },
-      //     });
-      // } else {
-      //     $(evt.target).removeClass('border-danger').removeClass('bg-flamingo').removeAttr('data-error');
-      //     $(evt.target).parent().popover('dispose');
-      // }
+    var checkWorkExists = function checkWorkExists(evt) {
+      error = false;
+      var data = {
+        id: $(evt.target).val()
+      };
+
+      if (data.id !== "") {
+        if (window.verifyingWork && window.verifyingWork.readyState !== 4) {
+          window.verifyingWork.abort();
+        }
+
+        window.verifyingWork = $.ajax({
+          method: 'POST',
+          url: '/works/work-exists',
+          data: JSON.stringify(data),
+          contentType: 'json',
+          success: function success(response) {
+            response = JSON.parse(response);
+            console.log("Response: ", response);
+
+            if (response.value === false) {
+              $(evt.target).parent().popover({
+                html: true,
+                title: function title() {
+                  return $(document).find('#' + this.id + ' .popover').find('#title').html();
+                },
+                content: function content() {
+                  return $(document).find('#' + this.id + ' .popover').find('#content').html();
+                }
+              });
+              $(evt.target).parent().find('.popover #content').html($('#errors .' + response.reason).html());
+              $(evt.target).addClass('border-danger').addClass('bg-flamingo').attr('data-error', true).focus();
+              $('.popover:not(.popover-data)').addClass('popover-danger');
+            } else {
+              $(evt.target).removeClass('border-danger').removeClass('bg-flamingo').removeAttr('data-error');
+              $(evt.target).parent().popover('dispose');
+            }
+          },
+          error: function error(jqXHR, status, _error2) {}
+        });
+      } else {
+        $(evt.target).removeClass('border-danger').removeClass('bg-flamingo').removeAttr('data-error');
+        $(evt.target).parent().popover('dispose');
+      }
     };
 
     setInterval(function () {
@@ -62533,9 +62539,9 @@ $(function () {
           $(event.target).find('#content .body').html(response.content);
           $(event.target).find('#modal-spinner').addClass('d-none');
         },
-        error: function error(jqXHR, status, _error2) {
+        error: function error(jqXHR, status, _error3) {
           $(event.target).find('#modal-spinner').addClass('d-none');
-          alert(_error2);
+          alert(_error3);
         },
         complete: function complete() {
           $(event.target).find('#modal-spinner').addClass('d-none');
@@ -62551,6 +62557,14 @@ $(function () {
       window.location.replace($(event.currentTarget).attr('href'));
     }
   });
+
+  if ($('#clear-date-field').length > 0) {
+    $('#clear-date-field').on('click', function (event) {
+      event.preventDefault();
+      event.stopPropagation();
+      $(event.currentTarget).siblings('input').val('');
+    });
+  }
 });
 
 /***/ }),
@@ -62612,7 +62626,6 @@ $(function () {
     }, {
       data: 'status',
       name: 'current_status',
-      searchable: false,
       sortable: false
     }, {
       data: 'quantity',
@@ -62643,6 +62656,7 @@ $(function () {
     $('#datatable-reports').find('thead .filter-col').each(function (i, el) {
       $(el).on('change keyup', function (evt) {
         window.datatable_reports.column(i).search($(el).is('select') ? $(el).find('option:selected').val() : el.value);
+        console.log($(el).is('select') ? $(el).find('option:selected').val() : el.value);
         clearTimeout(t);
         t = setTimeout(function () {
           window.datatable_reports.draw();
