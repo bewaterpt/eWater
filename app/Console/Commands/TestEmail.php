@@ -14,7 +14,7 @@ class TestEmail extends Command
      *
      * @var string
      */
-    protected $signature = 'mail:test';
+    protected $signature = 'mail:test {mail?}';
 
     /**
      * The console command description.
@@ -42,7 +42,7 @@ class TestEmail extends Command
     {
 
         $interruption = Interruption::find(100);
-        Mail::to(config('app.emails.interruptions_ao'))->send(new InterruptionCreated($interruption));
+        Mail::to($this->argument('mail') ? $this->argument('mail') : config('app.emails.interruptions_ao'))->send(new InterruptionCreated($interruption));
 
         return 0;
     }

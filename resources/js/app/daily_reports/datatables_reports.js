@@ -52,7 +52,7 @@ $(() => {
             columns: [
                 {data: 'actions',name: 'actions', class: 'actions text-center px-0 sorting_disabled', searchable: false, sortable: false},
                 {data: 'id', name: 'id', searchable: true},
-                {data: 'status', name: 'current_status', searchable: false, sortable: false},
+                {data: 'status', name: 'current_status', sortable: false},
                 {data: 'quantity', name: 'quantity', searchable: false, sortable: false},
                 {data: 'driven_km', name: 'driven_km', searchable: true},
                 {data: 'team', name: 'team_id', searchable: true},
@@ -81,6 +81,7 @@ $(() => {
         $('#datatable-reports').find('thead .filter-col').each((i, el) => {
             $(el).on('change keyup', (evt) => {
                 window.datatable_reports.column(i).search(($(el).is('select') ? $(el).find('option:selected').val() : el.value));
+                console.log(($(el).is('select') ? $(el).find('option:selected').val() : el.value));
                 clearTimeout(t);
                 t = setTimeout(() => {
                     window.datatable_reports.draw();

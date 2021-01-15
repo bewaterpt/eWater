@@ -118,3 +118,33 @@ div {
 #datatable-reports_filter {
     display: none;
 }
+
+#datatable-reports {
+
+    #date-filter {
+        position: relative;
+
+        #date-field {
+
+            &::-webkit-inner-spin-button,
+            &::-webkit-calendar-picker-indicator {
+                margin-right: 10px
+            }
+        }
+
+        #clear-date-field {
+            position: absolute;
+            padding: 0;
+            right: 18px;
+            top: 10px;
+            width: 12px;
+            height: 12px;
+            font-size: 18px;
+
+            i {
+                padding: 0;
+                cursor: pointer;
+            }
+        }
+    }
+}

@@ -5,7 +5,7 @@
     <div class="row justify-content-center">
         <div class="col-md-11">
             <div class="card">
-                <div class="card-header">@Lang('general.daily_reports.list')</div>
+                <div class="card-header">@Lang('general.daily_reports.list') <a class="text-success float-right" href={{ route('daily_reports.create') }}><i class="fas fa-plus"></i></a></div>
                 <div class="card-body table-responsive">
                     <table id="datatable-reports" class="table table-sm table-striped table-bordered" style="width: 100%">
                         <thead class="thead-light">
@@ -22,11 +22,12 @@
                                     </div>
                                 </th>
                                 <th>
+                                    {{-- {{dd($statuses)}} --}}
                                     <div class="p-0">
                                         <select class="form-control filter-col" data-col="type" style="-webkit-appearance: none;">
                                             <option value="">---</option>
                                             @foreach($statuses as $status)
-                                                <option value="{{ $status->id }}">{{ $helpers->mb_ucfirst(mb_strtolower($status->name)) }}</option>
+                                                <option value="{{ $status->name }}">{{ $status->name }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -47,9 +48,10 @@
                                         </select>
                                     </div>
                                 </th>
-                                <th>
+                                <th id="date-filter">
                                     <div class="p-0">
-                                        <input type="date" class="form-control filter-col unstyled" data-col="timestart" data-onload="date">
+                                        <input id="date-field" type="date" class="form-control filter-col unstyled d-inline-block" data-col="timestart" data-onload="date">
+                                        <a id="clear-date-field" class="" href="#"><i class="fas fa-times"></i></a>
                                     </div>
                                 </th>
                                 <th>

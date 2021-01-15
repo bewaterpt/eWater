@@ -1,3 +1,5 @@
+const { Evented } = require("leaflet");
+
 $(() => {
 
     let error = false;
@@ -204,50 +206,50 @@ $(() => {
         }
 
         function checkWorkExists(evt) {
-            // error = false;
-            // let data = {
-            //     id: $(evt.target).val()
-            // }
+            error = false;
+            let data = {
+                id: $(evt.target).val()
+            }
 
-            // if (data.id !== "") {
-            //     if(window.verifyingWork && window.verifyingWork.readyState !== 4) {
-            //         window.verifyingWork.abort();
-            //     }
+            if (data.id !== "") {
+                if(window.verifyingWork && window.verifyingWork.readyState !== 4) {
+                    window.verifyingWork.abort();
+                }
 
-            //     window.verifyingWork = $.ajax({
-            //         method: 'POST',
-            //         url: '/works/work-exists',
-            //         data: JSON.stringify(data),
-            //         contentType: 'json',
-            //         success: (response) => {
-            //             response = JSON.parse(response);
-            //             console.log("Response: ", response);
-            //             if (response.value === false) {
-            //                 $(evt.target).parent().popover({
-            //                     html: true,
-            //                     title: function() {
-            //                         return $(document).find('#' + this.id + ' .popover').find('#title').html()
-            //                     },
-            //                     content: function() {
-            //                         return $(document).find('#' + this.id + ' .popover').find('#content').html()
-            //                     },
-            //                 });
-            //                 $(evt.target).parent().find('.popover #content').html($('#errors .' + response.reason).html());
-            //                 $(evt.target).addClass('border-danger').addClass('bg-flamingo').attr('data-error', true).focus();
-            //                 $('.popover:not(.popover-data)').addClass('popover-danger');
-            //             } else {
-            //                 $(evt.target).removeClass('border-danger').removeClass('bg-flamingo').removeAttr('data-error');
-            //                 $(evt.target).parent().popover('dispose');
-            //             }
-            //         },
-            //         error: (jqXHR, status, error) => {
+                window.verifyingWork = $.ajax({
+                    method: 'POST',
+                    url: '/works/work-exists',
+                    data: JSON.stringify(data),
+                    contentType: 'json',
+                    success: (response) => {
+                        response = JSON.parse(response);
+                        console.log("Response: ", response);
+                        if (response.value === false) {
+                            $(evt.target).parent().popover({
+                                html: true,
+                                title: function() {
+                                    return $(document).find('#' + this.id + ' .popover').find('#title').html()
+                                },
+                                content: function() {
+                                    return $(document).find('#' + this.id + ' .popover').find('#content').html()
+                                },
+                            });
+                            $(evt.target).parent().find('.popover #content').html($('#errors .' + response.reason).html());
+                            $(evt.target).addClass('border-danger').addClass('bg-flamingo').attr('data-error', true).focus();
+                            $('.popover:not(.popover-data)').addClass('popover-danger');
+                        } else {
+                            $(evt.target).removeClass('border-danger').removeClass('bg-flamingo').removeAttr('data-error');
+                            $(evt.target).parent().popover('dispose');
+                        }
+                    },
+                    error: (jqXHR, status, error) => {
 
-            //         },
-            //     });
-            // } else {
-            //     $(evt.target).removeClass('border-danger').removeClass('bg-flamingo').removeAttr('data-error');
-            //     $(evt.target).parent().popover('dispose');
-            // }
+                    },
+                });
+            } else {
+                $(evt.target).removeClass('border-danger').removeClass('bg-flamingo').removeAttr('data-error');
+                $(evt.target).parent().popover('dispose');
+            }
         }
 
         $('#addRow').on('click', (event) => {
@@ -419,8 +421,17 @@ $(() => {
 
     $("#cancel-report").on("click", (event) => {
         event.preventDefault();
-        if(confirm($("#prompts .cancel-report").text())) {
+        if (confirm($("#prompts .cancel-report").text())) {
             window.location.replace($(event.currentTarget).attr('href'));
         }
     });
+
+    if ($('#clear-date-field').length > 0) {
+        $('#clear-date-field').on('click', (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+
+            $(event.currentTarget).siblings('input').val('');
+        })
+    }
 });
