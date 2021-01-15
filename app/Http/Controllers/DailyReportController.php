@@ -97,7 +97,7 @@ class DailyReportController extends Controller
                 //     ->where('rl.entry_date', $searchCol['value']);
                 //     continue;
                 // }
-                $reports->where($searchCol['name'], $searchCol['value']);
+                $reports->where($searchCol['name'], 'rlike', $searchCol['value']);
             }
 
             // Get row count
