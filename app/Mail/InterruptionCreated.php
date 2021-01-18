@@ -32,8 +32,9 @@ class InterruptionCreated extends Mailable
      */
     public function build()
     {
+        $translationString = $this->interruption->scheduled ? __('mail.interruptions.scheduled.created') : __('mail.interruptions.unscheduled.created');
         $scheduled = $this->interruption->scheduled ? 'scheduled' : 'unscheduled';
 
-        return $this->subject(__('mail.interruptions.' . $scheduled . '.created_subject'))->view('mail.interruptions.created', ['interruption' => $this->interruption, 'carbon' => new Carbon, 'delegation' => $this->interruption->delegation()->first(), 'scheduled' => $scheduled]);
+        return $this->subject(__('mail.interruptions.' . $scheduled . '.created_subject', ['id' => $this->interruption->work_id]))->view('mail.interruptions.created', ['interruption' => $this->interruption, 'carbon' => new Carbon, 'delegation' => $this->interruption->delegation()->first(), 'translationString' => $translationString]);
     }
 }

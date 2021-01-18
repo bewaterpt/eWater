@@ -27,7 +27,7 @@ class OutonoObras extends Model
         return $this->belongsTo('App\Models\Connectors\OutonoRuas', 'codRua');
     }
 
-    public function getType() {
+    public function getWorkType() {
         return $this->belongsTo('App\Models\Connectors\OutonoObrasTipo', 'codObra');
     }
 

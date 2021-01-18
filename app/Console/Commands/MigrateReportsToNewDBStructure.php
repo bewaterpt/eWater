@@ -3,18 +3,17 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use App\Mail\InterruptionCreated;
-use App\Models\Interruption;
-use Mail;
+use App\Models\DailyReports\Report;
+use Carbon\Carbon;
 
-class TestEmail extends Command
+class MigrateReportsToNewDBStructure extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'mail:test {mail?}';
+    protected $signature = 'reports:migrate';
 
     /**
      * The console command description.
@@ -40,10 +39,20 @@ class TestEmail extends Command
      */
     public function handle()
     {
+        $reports = Report::all();
 
-        $interruption = Interruption::find(100);
-        Mail::to($this->argument('mail') ? $this->argument('mail') : config('app.emails.interruptions_ao'))->send(new InterruptionCreated($interruption));
+        $bar = $this->output->createProgressBar($reports->count());
+        $bar->start();
 
+        foreach ($reports as $report) {
+            $report->date = Carbon::parse($report->getEntryDate())->format('Y-m-d H:i:s');
+            $report->current_status = $report->getCurrentStatus()->first()->name;
+            $report->save();
+
+            $bar->advance();
+        }
+
+        $bar->finish();
         return 0;
     }
 }

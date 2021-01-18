@@ -21,6 +21,15 @@ class InterruptionController extends Controller
         parent::__construct();
     }
 
+    /**
+     * @method index(Request $request)
+     *
+     * Serves the view that lists interruptions and loads the interruptions datatable data structures
+     *
+     * @param Illuminate\Http\Request $request Request data
+     *
+     * @return \Illuminate\View\Factory View ID/Name: interruptions.index
+     */
     public function index(Request $request) {
 
         if ($request->ajax()) {
@@ -84,6 +93,15 @@ class InterruptionController extends Controller
         return view('interruptions.index');
     }
 
+    /**
+     * @method unscheduled(Request $request)
+     *
+     * Serves the view that lists unscheduled interruptions and loads the interruptions datatable data structures
+     *
+     * @param Illuminate\Http\Request $request Request data
+     *
+     * @return \Illuminate\View\Factory View ID/Name: interruptions.index
+     */
     public function unscheduled(Request $request) {
 
         if ($request->ajax()) {
@@ -152,6 +170,15 @@ class InterruptionController extends Controller
         return view('interruptions.index');
     }
 
+    /**
+     * @method scheduled(Request $request)
+     *
+     * Serves the view that lists scheduled interruptions and loads the interruptions datatable data structures
+     *
+     * @param Illuminate\Http\Request $request Request data
+     *
+     * @return \Illuminate\View\Factory View ID/Name: interruptions.index
+     */
     public function scheduled(Request $request) {
 
         if (!$this->currentUser->hasRoles(['ewater_interrupcoes_programadas_criacao', 'admin', 'ewater_interrupcoes_programadas_edicao'])) {
@@ -183,6 +210,7 @@ class InterruptionController extends Controller
                 }
             }
 
+            // Set filters
             $interruptions = $this->getBaseQuery(true);
             if (!$this->currentUser->isAdmin() && $this->currentUser->delegation()->exists()) {
                 $interruptions->where('delegation_id', $this->currentUser->delegation()->first()->id);
@@ -197,14 +225,10 @@ class InterruptionController extends Controller
             // Get row count
             $total = $interruptions->count();
 
-            // Set filters
-            // /* Filter Placeholder */
-
             // Set limit and offset and get rows
             $interruptions->orderBy($sortCol, $sortDir);
             $interruptions->take($limit)->skip($offset);
             $rows = $interruptions->get();
-
 
             // Add rows to array
             $data = $this->buildData($rows);
@@ -217,13 +241,21 @@ class InterruptionController extends Controller
                 'data' => $data
             ];
 
-            echo json_encode($output);
-            die;
+            return json_encode($output);
         }
 
         return view('interruptions.index');
     }
 
+    /**
+     * Returns a prefiltered Eloquent ORM Query Builder instance for further filtering data
+     *
+     * @param boolean|mixed $scheduled
+     *
+     * @return Illuminate\Database\Eloquent\Builder Filtered instance of the Eloquent ORM Query Builder
+     *
+     * @link dawda
+     */
     private function getBaseQuery($scheduled = null) {
 
         $int = Interruption::select('*');
