@@ -32,8 +32,9 @@ class InterruptionCanceled extends Mailable
      */
     public function build()
     {
+        $translationString = $this->interruption->scheduled ? __('mail.interruptions.scheduled.canceled') : __('mail.interruptions.unscheduled.canceled');
         $scheduled = $this->interruption->scheduled ? 'scheduled' : 'unscheduled';
 
-        return $this->subject(__('mail.interruptions.' . $scheduled . '.canceled'))->view('mail.interruptions.canceled', ['interruption' => $this->interruption, 'carbon' => new Carbon, 'delegation' => $this->interruption->delegation()->first(), 'scheduled' => $scheduled]);
+        return $this->subject(__('mail.interruptions.' . $scheduled . '.canceled_subject', ['id' => $this->interruption->work_id]))->view('mail.interruptions.canceled', ['interruption' => $this->interruption, 'carbon' => new Carbon, 'delegation' => $this->interruption->delegation()->first(), 'translationString' => $translationString]);
     }
 }
