@@ -25,6 +25,6 @@ class ChangeEntryDateFieldOnReportLinesTable extends Migration
      */
     public function down()
     {
-        
+
     }
 }
