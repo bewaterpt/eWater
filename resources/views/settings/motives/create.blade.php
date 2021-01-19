@@ -9,7 +9,7 @@
                     @Lang('settings.motives.create')
                 </div>
                 <div class="card-body">
-                    <form id="create-motive" method="POST" action={{Route('settings.motives.store')}}>
+                    <form id="create-motive" method="POST" >
                         @csrf
                         <input type="hidden" name="roles" id="roles"/>
                         <input type="hidden" name="teams" id="teams"/>

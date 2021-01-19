@@ -15,8 +15,8 @@ class AddMotiveFieldToInterruptionsTable extends Migration
     {
         Schema::table('interruptions', function (Blueprint $table) {
             $table->bigInteger('motive')->unsigned()->nullable();
-
             $table->foreign('motive')->references('id')->on('interruption_motives');
+
         });
     }
 

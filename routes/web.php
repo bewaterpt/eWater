@@ -144,6 +144,8 @@ Route::group(['middleware' => ['web']], function () {
             Route::get('interruptions/delete/{id}', 'InterruptionController@delete')->name('interruptions.delete');
             // Route::get('interruptions/restore/{id}', 'InterruptionController@restore')->name('interruptions.restore');
 
+
+
             // Teams
             Route::get('teams', 'Settings\TeamController@index')->name('settings.teams.list');
             Route::get('teams/create', 'Settings\TeamController@create')->name('settings.teams.create');

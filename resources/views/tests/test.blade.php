@@ -7,12 +7,12 @@
 
     @foreach($permissions as $permission)
 
-    {{-- <div>{{$permission->roles()->limit(1)->get()}}"</div> --}}
-        @foreach ($permission->roles()->get() as $role)
+        <div>{{$permission->roles()->get()}}</div>
+        {{-- @foreach ($permission->roles()->get() as $role)
 
-            <div>{{explode(" ",$permission->route)." = ".explode(" ",$role->name)}}"</div>
+            <div>{{$permission->route." = ".$role->name}}</div>
 
-        @endforeach
+        @endforeach --}}
 
     @endforeach
 

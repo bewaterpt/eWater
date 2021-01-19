@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Settings;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\InterruptionMotive as Motive;
-
+use App\User;
 class MotivesController extends Controller
 {
     public function __construct() {
@@ -33,7 +33,9 @@ class MotivesController extends Controller
      * @return \Illuminate\View\Factory View ID/Name: settings.motives.create
      */
     public function create() {
-        return view('settings.motives.create');
+        $user= User::all();
+
+        return view('settings.motives.create')->with('user',$user);
     }
 
     /**

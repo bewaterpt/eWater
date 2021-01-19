@@ -9,4 +9,5 @@ use Illuminate\Database\Eloquent\Model;
 class InterruptionMotive extends Model
 {
     use HasFactory, SoftDeletes;
+
 }
