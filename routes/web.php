@@ -191,6 +191,14 @@ Route::group(['middleware' => ['web']], function () {
             Route::post('delegations/update/{id}', 'Settings\DelegationController@update')->name('settings.delegations.update');
             Route::get('delegations/delete/{id}', 'Settings\DelegationController@delete')->name('settings.delegations.delete');
 
+            // Interruption Motives
+            Route::get('interruptions/motives', 'Settings\MotivesController@index')->name('settings.motives.list');
+            Route::get('interruptions/motives/create', 'Settings\MotivesController@create')->name('settings.motives.create');
+            Route::post('interruptions/motives/store', 'Settings\MotivesController@store')->name('settings.motives.store');
+            Route::get('interruptions/motives/edit/{id}', 'Settings\MotivesController@edit')->name('settings.motives.edit');
+            Route::post('interruptions/motives/update/{id}', 'Settings\MotivesController@update')->name('settings.motives.update');
+            Route::get('interruptions/motives/delete/{id}', 'Settings\MotivesController@delete')->name('settings.motives.delete');
+
             Route::match(['get', 'post'], 'test', 'TestController@index')->name('tests.test');
         });
     });
