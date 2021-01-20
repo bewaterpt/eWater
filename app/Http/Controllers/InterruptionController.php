@@ -355,6 +355,10 @@ class InterruptionController extends Controller
     public function store(Request $request) {
         $user = Auth::user();
 
+        $this->validate($request, [
+            'affected_area' => ['required']
+        ]);
+
         $scheduled = $request->scheduled == 'true' ? true : false;
 
         $interruption = new Interruption();

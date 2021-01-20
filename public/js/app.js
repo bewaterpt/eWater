@@ -62563,6 +62563,10 @@ $(function () {
       event.preventDefault();
       event.stopPropagation();
       $(event.currentTarget).siblings('input').val('');
+
+      if (window.datatable_reports) {
+        window.datatable_reports.column($(event.target).parents('th').index()).search('').draw();
+      }
     });
   }
 });

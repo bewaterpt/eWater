@@ -15,6 +15,7 @@ use Storage;
 use App\Models\Article;
 use App\Custom\Classes\FieldSet;
 use App\Models\Interruption;
+use App\Helpers\Helper;
 
 class TestController extends Controller
 {
@@ -35,7 +36,7 @@ class TestController extends Controller
         // }
 
         // dd($fieldSet);
-
+        return view('mail.interruptions.canceled', ['interruption' => Interruption::first(), 'scheduled' => 'scheduled', 'carbon' => new Carbon, 'helpers' => new Helper, 'delegation' => Interruption::first()->delegation()->first(), 'translationString' => Interruption::first()->scheduled ? __('mail.interruptions.scheduled.created') : __('mail.interruptions.unscheduled.created')]);
         return view('tests.test');
     }
 }

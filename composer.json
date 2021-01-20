@@ -43,6 +43,7 @@
         "phpoffice/phpspreadsheet": "^1.12",
         "predis/predis": "^1.1",
         "rap2hpoutre/fast-excel": "master",
+        "spatie/browsershot": "^3.42",
         "spatie/laravel-permission": "^3.11",
         "spatie/laravel-robots-middleware": "^1.2"
     },

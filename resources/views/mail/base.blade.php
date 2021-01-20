@@ -9,9 +9,9 @@
         @yield('styling')
     </head>
     <body style="max-width: 600px;">
-        <table role="presentation" style="background-color:rgb(0 0 0 / 2%);max-width: 600px;text-align: center;border-collapse: collapse;border: 1px solid rgb(206 206 206 / 80%);font-family: Nunito, sans-serif;box-shadow: 0px 0px 20px -10px #000000d1;" cellpadding="0" cellspacing="0" width="100%">
+        <table role="presentation" style="background-color:rgb(0 0 0 / 2%);max-width: 600px;border-collapse: collapse;border: 1px solid rgb(206 206 206 / 80%);font-family: Nunito, sans-serif;box-shadow: 0px 0px 20px -10px #000000d1;" cellpadding="0" cellspacing="0" width="100%">
             <tr style="box-shadow: -5px 1px 6px 0px rgb(50 50 50 / 21%);">
-                <td style="padding:20px;width:40%;">
+                <td style="padding:20px;width:40%;text-align: center;">
                     <img src="{{ 'data:image/png;base64, '.base64_encode(file_get_contents(public_path('/images/mail-logo.png'))) }}" alt="eWater Logo" style="height: 70px;margin-right: 10px;">
                 </td>
                 <td style="padding:20px;">
