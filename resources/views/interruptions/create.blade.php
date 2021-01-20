@@ -41,6 +41,14 @@
                                 <input type="datetime-local" name="reinstatement_date" class="form-control @error('reinstatement_date') is-invalid @enderror" id="inputReinstatementDate" value="" required>
                             </div>
                             <div class="form-group col-md-12">
+                                <label for="inputMotive">@Lang('forms.fields.motive')</label>
+                                <select name="motive" id="inputMotive" class="form-control">
+                                    @foreach($motives as $motive)
+                                        <option value="{{ $motive->id }}">{{ $motive->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-group col-md-12">
                                 <label for="inputAffectedArea">@Lang('forms.fields.affected_area')</label>
                                 <textarea name="affected_area" id="inputAffectedArea" class="form-control text-editor"></textarea>
                             </div>
