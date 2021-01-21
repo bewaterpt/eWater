@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class ChangeEntryDateFieldOnReportLinesTable extends Migration
+class ChangeMotiveColumnNameInInterruptionsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class ChangeEntryDateFieldOnReportLinesTable extends Migration
      */
     public function up()
     {
-        Schema::table('report_lines', function (Blueprint $table) {
-            $table->dateTime('entry_date')->change();
+        Schema::table('interruptions', function (Blueprint $table) {
+            $table->renameColumn('motive', 'motive_id');
         });
     }
 
@@ -25,6 +25,8 @@ class ChangeEntryDateFieldOnReportLinesTable extends Migration
      */
     public function down()
     {
-
+        Schema::table('interruptions', function (Blueprint $table) {
+            $table->renameColumn('motive_id', 'motive');
+        });
     }
 }

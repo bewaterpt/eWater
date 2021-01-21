@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Settings;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\InterruptionMotive as Motive;
-
+use App\User;
+use Mail;
+use Auth;
 class MotivesController extends Controller
 {
     public function __construct() {
@@ -33,9 +35,24 @@ class MotivesController extends Controller
      * @return \Illuminate\View\Factory View ID/Name: settings.motives.create
      */
     public function create() {
-        return view('settings.motives.create');
-    }
+        $type = '';
+        $scheduled = false;
 
+        if (
+            $this->currentUser->countRoles(['ewater_interrupcoes_programadas_criacao', 'ewater_interrupcoes_programadas_edicao']) > 0 &&
+            $this->currentUser->hasRoles(['ewater_interrupcoes_nao_programadas']) === false
+        ) {
+            $type = mb_strtolower(__('general.interruptions.is_scheduled'));
+            $scheduled = true;
+        } else if (
+            $this->currentUser->hasRoles(['ewater_interrupcoes_nao_programadas']) &&
+            $this->currentUser->countRoles(['ewater_interrupcoes_programadas_criacao', 'ewater_interrupcoes_programadas_edicao']) == 0
+        ) {
+            $type = mb_strtolower(__('general.interruptions.is_unscheduled'));
+        }
+
+        return view('settings.motives.create', ['type' => $type, 'scheduled' => $scheduled]);
+    }
     /**
      * Stores the motive in the database
      *
@@ -44,6 +61,16 @@ class MotivesController extends Controller
      * @return \Illuminate\Http\Client\Response Redirects user to motive list
      */
     public function store(Request $request) {
+
+        $scheduled = $request->scheduled == 'true' ? true : false;
+        $motive = new Motive();
+        $motive->name = $request->name;
+        $motive->slug = $request->slug;
+        $motive->scheduled = $scheduled;
+        $motive->save();
+
+
+        return redirect(route('settings.motives.list'))->with('success');
     }
 
     /**
