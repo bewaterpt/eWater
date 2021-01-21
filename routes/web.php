@@ -45,7 +45,7 @@ Route::group(['middleware' => ['web']], function () {
     Route::group(['middleware' => ['auth']], function () {
 
         Route::get('/', 'HomeController@index')->name('home');
-        Route::match(['get', 'patch'] ,'profile/edit', 'Settings\UserController@edit_self')->name('settings.users.edit_self');
+        Route::match(['get', 'patch'], 'profile/edit', 'Settings\UserController@edit_self')->name('settings.users.edit_self');
         Route::post('daily-reports/process-status/get-comment', 'DailyReportController@getProcessStatusComment')->name('daily_reports.process_status.get_comment');
         Route::post('daily-reports/article/get-info', 'DailyReportController@getArticlePrice')->name('daily_reports.article.get_price');
         Route::post('teams/get-users', 'Settings\TeamController@getTeamUsers')->name('settings.teams.get_users');
@@ -190,12 +190,12 @@ Route::group(['middleware' => ['web']], function () {
             Route::get('delegations/delete/{id}', 'Settings\DelegationController@delete')->name('settings.delegations.delete');
 
             // Interruption Motives
-            Route::get('interruptions/motives', 'Settings\MotivesController@index')->name('settings.motives.list');
-            Route::get('interruptions/motives/create', 'Settings\MotivesController@create')->name('settings.motives.create');
-            Route::post('interruptions/motives/store', 'Settings\MotivesController@store')->name('settings.motives.store');
-            Route::get('interruptions/motives/edit/{id}', 'Settings\MotivesController@edit')->name('settings.motives.edit');
-            Route::post('interruptions/motives/update/{id}', 'Settings\MotivesController@update')->name('settings.motives.update');
-            Route::get('interruptions/motives/delete/{id}', 'Settings\MotivesController@delete')->name('settings.motives.delete');
+            Route::get('interruptions/motives', 'Settings\MotivesController@index')->name('interruptions.motives.list');
+            Route::get('interruptions/motives/create', 'Settings\MotivesController@create')->name('interruptions.motives.create');
+            Route::post('interruptions/motives/store', 'Settings\MotivesController@store')->name('interruptions.motives.store');
+            Route::get('interruptions/motives/edit/{id}', 'Settings\MotivesController@edit')->name('interruptions.motives.edit');
+            Route::post('interruptions/motives/update/{id}', 'Settings\MotivesController@update')->name('interruptions.motives.update');
+            Route::get('interruptions/motives/delete/{id}', 'Settings\MotivesController@delete')->name('interruptions.motives.delete');
 
             Route::match(['get', 'post'], 'test', 'TestController@index')->name('tests.test');
         });
