@@ -361,7 +361,7 @@ class InterruptionController extends Controller
         $interruption = Interruption::where('id', $id);
 
         if ($this->currentUser->isAdmin() || $this->permissionModel->can('interruptions.delete')) {
-            $interruption->withTrashed();        
+            $interruption->withTrashed();
         }
 
         return view('interruptions.view', ['interruption' => $interruption->first()]);
