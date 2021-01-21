@@ -10,11 +10,13 @@ use App\Helpers\Helper;
 class TestController extends Controller
 {
 
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
     }
 
-    public function index(Request $request) {
+    public function index(Request $request)
+    {
         // $input = collect($request->except('_token'));
 
         // $form = new Form($input->shift('form-name'), $input->shift('form-description'));
@@ -26,7 +28,7 @@ class TestController extends Controller
         // }
 
         // dd($fieldSet);
-        return view('mail.interruptions.canceled', ['interruption' => Interruption::first(), 'scheduled' => 'scheduled', 'carbon' => new Carbon, 'helpers' => new Helper, 'delegation' => Interruption::first()->delegation()->first(), 'translationString' => Interruption::first()->scheduled ? __('mail.interruptions.scheduled.created') : __('mail.interruptions.unscheduled.created')]);
+        return view('mail.interruptions.canceled', ['interruption' => Interruption::find(1000), 'scheduled' => 'scheduled', 'carbon' => new Carbon, 'helpers' => new Helper, 'delegation' => Interruption::first()->delegation()->first(), 'translationString' => Interruption::first()->scheduled ? __('mail.interruptions.scheduled.created') : __('mail.interruptions.unscheduled.created')]);
         return view('tests.test');
     }
 }

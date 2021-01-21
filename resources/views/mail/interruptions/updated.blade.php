@@ -42,19 +42,11 @@
                 <b>@Lang('general.interruptions.type'):</b>
             </td>
             <td>
-                {{ $interruption->scheduled ? __('general.interruptions.is_scheduled') : __('general.interruptions.is_unscheduled')}}
+                {{ $prevInt->scheduled ? __('general.interruptions.is_scheduled') : __('general.interruptions.is_unscheduled')}}
             </td>
         </tr>
         <tr>
             <td>
-                <b>@Lang('mail.interruptions.type'):</b>
-            </td>
-            <td>
-                {!! $prevInt->work_id !== $newInt->work_id ? "<span style='color: gray'><s>" . $prevInt->work_id . "</s></span> <span style='color: darkblue'>" . $newInt->work_id . "</span>" : $prevInt->work_id !!}
-            </td>
-        </tr>
-        <tr>
-            <td style="width: 220px">
                 <b>@Lang('mail.interruptions.ref'):</b>
             </td>
             <td>
@@ -75,6 +67,18 @@
             </td>
             <td>
                 {!! $prevInt->reinstatement_date !== $newInt->reinstatement_date ? "<span style='color: gray'><s>" . $carbon->parse($prevInt->reinstatement_date)->format('Y-m-d H:i') . "</s></span> <span style='color: darkblue'>" . $carbon->parse($newInt->reinstatement_date)->format('Y-m-d H:i') . "</span>" : $carbon->parse($prevInt->reinstatement_date)->format('Y-m-d H:i') !!}
+            </td>
+        </tr>
+        <tr>
+            <td style="vertical-align: top">
+                <b>@Lang('general.interruptions.motive'): </b>
+            </td>
+            <td>
+                @if ($prevInt->motive == null)
+                    {!! "<span style='color: darkblue'>" . $newInt->motive->name . "</span>" !!}
+                @else
+                    {!! $prevInt->motive->id !== $newInt->motive->id ? "<span style='color: gray'><s>" . $prevInt->motive->name . "</s></span> <span style='color: darkblue'>" . $newInt->motive->name . "</span>" : $prevInt->motive->name !!}
+                @endif
             </td>
         </tr>
         <tr>

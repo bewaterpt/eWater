@@ -71,6 +71,14 @@
         </tr>
         <tr>
             <td style="vertical-align: top">
+                <b>@Lang('general.interruptions.motive'): </b>
+            </td>
+            <td>
+                {{ $interruption->motive->name }}
+            </td>
+        </tr>
+        <tr>
+            <td style="vertical-align: top">
                 <b>@Lang('general.interruptions.affected_area'): </b>
             </td>
             <td>
