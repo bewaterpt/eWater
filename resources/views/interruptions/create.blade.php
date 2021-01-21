@@ -22,23 +22,44 @@
                             </div>
                             <div class="form-group col-md-4">
                                 <label for="inputWorkId">@Lang('forms.fields.work_number')</label>
-                                <input type="number" name="work_id" class="form-control" id="inputWorkId" value="" required>
+                                <input type="number" name="work_id" class="form-control @error('work_id') is-invalid @enderror" id="inputWorkId" value="{{ old('work_id') }}" required>
+                                @if(!$errors->custom->any())
+                                    @error('work_id')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                @endif
                             </div>
                             <div class="form-group col-md-4">
                                 <label for="inputDelegation">@Lang('forms.fields.delegation')</label>
                                 <select name="delegation" id="inputDelegation" class="form-control">
                                     @foreach($delegations as $delegation)
-                                        <option value="{{ $delegation->id }}">{{ $delegation->designation }}</option>
+                                        <option value="{{ $delegation->id }}" {{ $delegation->id === old('delegation') ? 'selected' : ''}}>{{ $delegation->designation }}</option>
                                     @endforeach
                                 </select>
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="inputStartDate">@Lang('forms.fields.start_date')</label>
-                                <input type="datetime-local" name="start_date" class="form-control @error('start_date') is-invalid @enderror" id="inputStartDate" value="" required>
+                                <input type="datetime-local" name="start_date" class="form-control @error('start_date') is-invalid @enderror" id="inputStartDate" value="{{ old('start_date') }}" required>
+                                @if(!$errors->custom->any())
+                                    @error('start_date')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                @endif
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="inputReinstatementDate">@Lang('forms.fields.reinstatement_date')</label>
-                                <input type="datetime-local" name="reinstatement_date" class="form-control @error('reinstatement_date') is-invalid @enderror" id="inputReinstatementDate" value="" required>
+                                <input type="datetime-local" name="reinstatement_date" class="form-control @error('reinstatement_date') is-invalid @enderror" id="inputReinstatementDate" value="{{ old('reinstatement_date') }}" required>
+                                @if(!$errors->custom->any())
+                                    @error('reinstatement_date')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                @endif
                             </div>
                             <div class="form-group col-md-12">
                                 <label for="inputMotive">@Lang('forms.fields.motive')</label>
@@ -50,7 +71,14 @@
                             </div>
                             <div class="form-group col-md-12">
                                 <label for="inputAffectedArea">@Lang('forms.fields.affected_area')</label>
-                                <textarea name="affected_area" id="inputAffectedArea" class="form-control text-editor"></textarea>
+                                <textarea name="affected_area" id="inputAffectedArea" class="form-control text-editor @error('affected_area') is-invalid @enderror"></textarea>
+                                @if(!$errors->custom->any())
+                                    @error('affected_area')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                @endif
                             </div>
                         </div>
                         <button type="submit" class="btn btn-primary float-right">@Lang('general.save')</button>
@@ -61,4 +89,3 @@
     </div>
 </div>
 @endsection
-

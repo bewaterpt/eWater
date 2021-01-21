@@ -38,24 +38,50 @@
     <br> --}}
     <table style="text-align: left;border-collapse: collapse;" cellpadding="0" cellspacing="0" width="100%">
         <tr>
+            <td style="width: 220px">
+                <b>@Lang('general.interruptions.type'):</b>
+            </td>
             <td>
-                <b>@Lang('mail.interruptions.ref'):</b> {{ $interruption->work_id }}
+                {{ $interruption->scheduled ? __('general.interruptions.is_scheduled') : __('general.interruptions.is_unscheduled')}}
             </td>
         </tr>
         <tr>
             <td>
-                <b>@Lang('general.interruptions.start_date'):</b> {{ $carbon->parse($interruption->start_date)->format('Y-m-d H:i:s') }}
+                <b>@Lang('mail.interruptions.ref'):</b>
+            </td>
+            <td>
+                {{ $interruption->work_id }}
             </td>
         </tr>
         <tr>
             <td>
-                <b>@Lang('general.interruptions.reinstatement_date'):</b> {{ $carbon->parse($interruption->reinstatement_date)->format('Y-m-d H:i:s') }}
+                <b>@Lang('general.interruptions.start_date'):</b>
+            </td>
+            <td>
+                {{ $carbon->parse($interruption->start_date)->format('Y-m-d H:i') }}
             </td>
         </tr>
         <tr>
+            <td style="white-space: nowrap">
+                <b>@Lang('general.interruptions.reinstatement_date'):</b>
+            </td>
             <td>
-                <br>
+                {{ $carbon->parse($interruption->reinstatement_date)->format('Y-m-d H:i') }}
+            </td>
+        </tr>
+        <tr>
+            <td style="vertical-align: top">
+                <b>@Lang('general.interruptions.motive'): </b>
+            </td>
+            <td>
+                {{ $interruption->motive->name }}
+            </td>
+        </tr>
+        <tr>
+            <td style="vertical-align: top">
                 <b>@Lang('general.interruptions.affected_area'): </b>
+            </td>
+            <td>
                 {!! $interruption->affected_area !!}
             </td>
         </tr>

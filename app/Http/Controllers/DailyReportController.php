@@ -83,20 +83,6 @@ class DailyReportController extends Controller
             // dd($searchCols[0]['name']);
 
             foreach ($searchCols as $searchCol) {
-                // if ($searchCol['name'] === 'status') {
-                //     $reports->join('process_status as ps', 'ps.process_id', '=', 'reports.id')
-                //     ->where('ps.id', function ($query) {
-                //         $query->select(DB::raw('max(id) FROM process_status where process_id = reports.id'));
-                //     })->where('ps.status_id', $searchCol['value']);
-
-                //     continue;
-                // }
-
-                // if ($searchCol['name'] === 'entry_date') {
-                //     $reports->join('report_lines as rl', 'rl.report_id', 'reports.id')
-                //     ->where('rl.entry_date', $searchCol['value']);
-                //     continue;
-                // }
                 $reports->where($searchCol['name'], 'rlike', $searchCol['value']);
             }
 

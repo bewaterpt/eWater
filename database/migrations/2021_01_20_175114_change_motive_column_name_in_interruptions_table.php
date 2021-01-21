@@ -14,7 +14,9 @@ class ChangeMotiveColumnNameInInterruptionsTable extends Migration
     public function up()
     {
         Schema::table('interruptions', function (Blueprint $table) {
+            $table->dropForeign(['motive']);
             $table->renameColumn('motive', 'motive_id');
+            $table->foreign('motive_id')->references('id')->on('interruption_motives');
         });
     }
 
@@ -26,7 +28,9 @@ class ChangeMotiveColumnNameInInterruptionsTable extends Migration
     public function down()
     {
         Schema::table('interruptions', function (Blueprint $table) {
+            $table->dropForeign(['motive_id']);
             $table->renameColumn('motive_id', 'motive');
+            $table->foreign('motive')->references('id')->on('interruption_motives');
         });
     }
 }
