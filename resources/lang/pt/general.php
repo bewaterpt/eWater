@@ -103,6 +103,7 @@ return [
         'ref' => 'Ref.ª Interna',
         'view' => 'Ver Interrupção',
         'canceled' => 'Anulada',
+        'motive' => 'Motivo',
     ],
     'url' => "Endereço Web",
     'delegation' => 'Delegação',

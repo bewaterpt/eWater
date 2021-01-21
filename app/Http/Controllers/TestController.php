@@ -15,7 +15,9 @@ use Storage;
 use App\Models\Article;
 use App\Custom\Classes\FieldSet;
 use App\Models\Interruption;
-
+use App\User;
+use App\Models\Permission;
+use App\Models\Role;
 class TestController extends Controller
 {
 
@@ -35,7 +37,10 @@ class TestController extends Controller
         // }
 
         // dd($fieldSet);
+        //$users = User::all();
 
-        return view('tests.test');
+        $permissions=Permission::all();
+
+        return view('tests.test')->with('permissions',$permissions);
     }
 }

@@ -609,6 +609,10 @@ $(function () {
     html: true
   });
 });
+
+var _require = require("leaflet"),
+    Evented = _require.Evented;
+
 $(function () {
   var error = false;
   var kmError = false;
@@ -798,47 +802,50 @@ $(function () {
       }
     };
 
-    var checkWorkExists = function checkWorkExists(evt) {// error = false;
-      // let data = {
-      //     id: $(evt.target).val()
-      // }
-      // if (data.id !== "") {
-      //     if(window.verifyingWork && window.verifyingWork.readyState !== 4) {
-      //         window.verifyingWork.abort();
-      //     }
-      //     window.verifyingWork = $.ajax({
-      //         method: 'POST',
-      //         url: '/works/work-exists',
-      //         data: JSON.stringify(data),
-      //         contentType: 'json',
-      //         success: (response) => {
-      //             response = JSON.parse(response);
-      //             console.log("Response: ", response);
-      //             if (response.value === false) {
-      //                 $(evt.target).parent().popover({
-      //                     html: true,
-      //                     title: function() {
-      //                         return $(document).find('#' + this.id + ' .popover').find('#title').html()
-      //                     },
-      //                     content: function() {
-      //                         return $(document).find('#' + this.id + ' .popover').find('#content').html()
-      //                     },
-      //                 });
-      //                 $(evt.target).parent().find('.popover #content').html($('#errors .' + response.reason).html());
-      //                 $(evt.target).addClass('border-danger').addClass('bg-flamingo').attr('data-error', true).focus();
-      //                 $('.popover:not(.popover-data)').addClass('popover-danger');
-      //             } else {
-      //                 $(evt.target).removeClass('border-danger').removeClass('bg-flamingo').removeAttr('data-error');
-      //                 $(evt.target).parent().popover('dispose');
-      //             }
-      //         },
-      //         error: (jqXHR, status, error) => {
-      //         },
-      //     });
-      // } else {
-      //     $(evt.target).removeClass('border-danger').removeClass('bg-flamingo').removeAttr('data-error');
-      //     $(evt.target).parent().popover('dispose');
-      // }
+    var checkWorkExists = function checkWorkExists(evt) {
+      error = false;
+      var data = {
+        id: $(evt.target).val()
+      };
+
+      if (data.id !== "") {
+        if (window.verifyingWork && window.verifyingWork.readyState !== 4) {
+          window.verifyingWork.abort();
+        }
+
+        window.verifyingWork = $.ajax({
+          method: 'POST',
+          url: '/works/work-exists',
+          data: JSON.stringify(data),
+          contentType: 'json',
+          success: function success(response) {
+            response = JSON.parse(response);
+            console.log("Response: ", response);
+
+            if (response.value === false) {
+              $(evt.target).parent().popover({
+                html: true,
+                title: function title() {
+                  return $(document).find('#' + this.id + ' .popover').find('#title').html();
+                },
+                content: function content() {
+                  return $(document).find('#' + this.id + ' .popover').find('#content').html();
+                }
+              });
+              $(evt.target).parent().find('.popover #content').html($('#errors .' + response.reason).html());
+              $(evt.target).addClass('border-danger').addClass('bg-flamingo').attr('data-error', true).focus();
+              $('.popover:not(.popover-data)').addClass('popover-danger');
+            } else {
+              $(evt.target).removeClass('border-danger').removeClass('bg-flamingo').removeAttr('data-error');
+              $(evt.target).parent().popover('dispose');
+            }
+          },
+          error: function error(jqXHR, status, _error3) {}
+        });
+      } else {
+        $(evt.target).removeClass('border-danger').removeClass('bg-flamingo').removeAttr('data-error');
+        $(evt.target).parent().popover('dispose');
+      }
     };
 
     setInterval(function () {
@@ -995,9 +1002,9 @@ $(function () {
           $(event.target).find('#content .body').html(response.content);
           $(event.target).find('#modal-spinner').addClass('d-none');
         },
-        error: function error(jqXHR, status, _error3) {
+        error: function error(jqXHR, status, _error4) {
           $(event.target).find('#modal-spinner').addClass('d-none');
-          alert(_error3);
+          alert(_error4);
         },
         complete: function complete() {
           $(event.target).find('#modal-spinner').addClass('d-none');
@@ -1013,6 +1020,18 @@ $(function () {
       window.location.replace($(event.currentTarget).attr('href'));
     }
   });
+
+  if ($('#clear-date-field').length > 0) {
+    $('#clear-date-field').on('click', function (event) {
+      event.preventDefault();
+      event.stopPropagation();
+      $(event.currentTarget).siblings('input').val('');
+
+      if (window.datatable_reports) {
+        window.datatable_reports.column($(event.target).parents('th').index()).search('').draw();
+      }
+    });
+  }
 });
 $(function () {
   if ($("#report-process-status").length > 0) {
@@ -1061,23 +1080,24 @@ $(function () {
       searchable: true
     }, {
       data: 'status',
-      name: 'status',
-      searchable: false
+      name: 'current_status',
+      sortable: false
     }, {
       data: 'quantity',
       name: 'quantity',
-      searchable: false
+      searchable: false,
+      sortable: false
     }, {
       data: 'driven_km',
       name: 'driven_km',
       searchable: true
     }, {
       data: 'team',
-      name: 'team',
+      name: 'team_id',
       searchable: true
     }, {
-      data: 'entry_date',
-      name: 'entry_date',
+      data: 'date',
+      name: 'date',
       searchable: true
     }, {
       data: 'info',
@@ -1091,6 +1111,7 @@ $(function () {
     $('#datatable-reports').find('thead .filter-col').each(function (i, el) {
       $(el).on('change keyup', function (evt) {
         window.datatable_reports.column(i).search($(el).is('select') ? $(el).find('option:selected').val() : el.value);
+        console.log($(el).is('select') ? $(el).find('option:selected').val() : el.value);
         clearTimeout(t);
         t = setTimeout(function () {
           window.datatable_reports.draw();
@@ -1100,8 +1121,8 @@ $(function () {
   }
 });
 
-var _require = require("tinymce"),
-    triggerSave = _require.triggerSave;
+var _require2 = require("tinymce"),
+    triggerSave = _require2.triggerSave;
 
 function getmonthlyWaitTimeInfo() {
   return new Promise(function (resolve, reject) {
@@ -1141,8 +1162,8 @@ function getmonthlyWaitTimeInfo() {
         window.monthlyWaitTimeInfoChart.update();
         resolve(true);
       },
-      error: function error(jqXHR, status, _error4) {
-        reject(_error4.message);
+      error: function error(jqXHR, status, _error5) {
+        reject(_error5.message);
       }
     });
   });
@@ -1229,8 +1250,8 @@ function getMonthlyCallVolume() {
         window.monthlyLostCallNumberInfoChart.update();
         resolve(true);
       },
-      error: function error(jqXHR, status, _error5) {
-        reject(_error5.message);
+      error: function error(jqXHR, status, _error6) {
+        reject(_error6.message);
       }
     });
   });
@@ -1370,8 +1391,7 @@ $(function () {
       }
     });
     $('#clearDate').on('click', function (evt) {
-      console.log(evt.currentTarget);
-
+      // console.log(evt.currentTarget);
       if ($(evt.currentTarget).siblings('input').val() != "") {
         $(evt.currentTarget).tooltip({
           html: true
@@ -1381,7 +1401,7 @@ $(function () {
     });
     var updating = false;
     var cdri = setInterval(function () {
-      console.log(updating);
+      // console.log(updating);
       $.ajax({
         url: 'check-call-record-update-state',
         method: 'GET',
@@ -1390,8 +1410,7 @@ $(function () {
           'Access-Control-Allow-Origin': 'localhost'
         },
         success: function success(response) {
-          console.log(response);
-
+          // console.log(response);
           if (parseInt(response.updating) === 1) {
             $('#refetchCallData').addClass('spining').attr('data-disabled', true);
 
@@ -1418,7 +1437,7 @@ $(function () {
             }
           }
         },
-        error: function error(_error6) {
+        error: function error(_error7) {
           clearInterval(cdri);
         }
       });
@@ -1589,7 +1608,7 @@ $(function () {
   }, 1000);
 });
 $(function () {
-  if ($('#map')) {
+  if ($('#map').length > 0) {
     var onMapClick = function onMapClick(e) {
       popup.setLatLng(e.latlng).setContent("You clicked the map at " + e.latlng.toString()).openOn(map);
     };

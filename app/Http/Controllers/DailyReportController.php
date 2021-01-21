@@ -72,28 +72,32 @@ class DailyReportController extends Controller
                 }
             }
 
+            // dd($searchCols);
+
             $reports = Report::select('reports.*');
             if (!$user->isAdmin() && $user->teams()->exists()) {
                 $reports->whereIn('team_id', $user->teams()->pluck('id'));
             }
 
+
+            // dd($searchCols[0]['name']);
+
             foreach ($searchCols as $searchCol) {
-                if ($searchCol['name'] === 'status') {
-                    $reports->join('process_status as ps', 'ps.process_id', '=', 'reports.id')
-                    ->where('ps.id', function ($query) {
-                        $query->select(DB::raw('max(id) FROM process_status where process_id = reports.id'));
-                    })->where('ps.status_id', $searchCol['value']);
+                // if ($searchCol['name'] === 'status') {
+                //     $reports->join('process_status as ps', 'ps.process_id', '=', 'reports.id')
+                //     ->where('ps.id', function ($query) {
+                //         $query->select(DB::raw('max(id) FROM process_status where process_id = reports.id'));
+                //     })->where('ps.status_id', $searchCol['value']);
 
-                    continue;
-                }
+                //     continue;
+                // }
 
-                if ($searchCol['name'] === 'entry_date') {
-                    $reports->join('report_lines as rl', 'rl.report_id', 'reports.id')
-                    ->where('rl.entry_date', $searchCol['value']);
-                    continue;
-                }
-
-                $reports->where($searchCol['name'], $searchCol['value']);
+                // if ($searchCol['name'] === 'entry_date') {
+                //     $reports->join('report_lines as rl', 'rl.report_id', 'reports.id')
+                //     ->where('rl.entry_date', $searchCol['value']);
+                //     continue;
+                // }
+                $reports->where($searchCol['name'], 'rlike', $searchCol['value']);
             }
 
             // Get row count
@@ -131,11 +135,11 @@ class DailyReportController extends Controller
                 $data[] = [
                     'actions' => $actions,
                     'id' => $row->id,
-                    'status' => $row->getCurrentStatus()->first()->name,
+                    'status' => $row->current_status,
                     'quantity' => $this->helper->decimalHoursToTimeValue($row->getTotalHours()),
                     'driven_km' => $row->driven_km,
                     'team' => $row->team()->first()->name,
-                    'entry_date' => (new DateTime($row->lines()->first()->entry_date))->format('Y-m-d'),
+                    'date' => (new DateTime($row->date))->format('Y-m-d'),
                     'info' => $info
                 ];
             }
@@ -255,7 +259,10 @@ class DailyReportController extends Controller
             $processCreated->concluded_at = Carbon::now();
             $processCreated->save();
 
-            $processCreated->stepForward();
+            $processStatus = $processCreated->stepForward();
+
+            $report->current_status = $processStatus->status()->first()->name;
+            $report->save();
 
             Log::info(sprintf('User %s(%s) created report with id %d having %d lines', $user->name, $user->username, $report->id, sizeof($rows)));
             Log::info(sprintf('User %s(%s) created the following lines %s', $user->name, $user->username, json_encode($rows)));
@@ -263,6 +270,7 @@ class DailyReportController extends Controller
             DB::commit();
         } catch(\PDOException $e) {
             DB::rollBack();
+            return redirect(route('daily_reports.list'))->withErrors(__('errors.unexpected_error'), 'custom');
         }
         return route('daily_reports.list');
     }
@@ -350,6 +358,9 @@ class DailyReportController extends Controller
                 $newProcessStatus->comment = __('general.daily_reports.db_sync_success');
                 $newProcessStatus->save();
                 $newProcessStatus->stepForward();
+                $report = $newProcessStatus->report()->first();
+                $report->current_status = $newProcessStatus->status()->first()->name;
+                $report->save();
             } catch (\Exception $e) {
                 $newProcessStatus->comment = __('errors.db_sync_failed', ['msg' => '<b>' . $e->getMessage() . '</b> at line <b>' . $e->getline() . '</b><br><br>Stack trace: <br>' . $e->getTraceAsString()]);
                 $newProcessStatus->error = true;
@@ -378,7 +389,10 @@ class DailyReportController extends Controller
             $processStatus->comment = $request->input('comment');
             $processStatus->save();
         }
-        $processStatus->stepBack();
+        $newProcessStatus = $processStatus->stepBack();
+        $report = $newProcessStatus->report()->first();
+        $report->current_status = $newProcessStatus->status()->first()->name;
+        $report->save();
 
         return redirect()->back();
     }
@@ -390,6 +404,10 @@ class DailyReportController extends Controller
             $processStatus->save();
         }
         $processStatus->stepExtra();
+        $newProcessStatus = $processStatus->stepBack();
+        $report = $newProcessStatus->report()->first();
+        $report->current_status = $newProcessStatus->status()->first()->name;
+        $report->save();
 
         return redirect()->back();
     }
@@ -408,7 +426,10 @@ class DailyReportController extends Controller
         if($report->closed()) {
             return redirect()->back();
         } else {
-            $report->cancel();
+            $newProcessStatus = $report->cancel();
+            $report = $newProcessStatus->report()->first();
+            $report->current_status = $newProcessStatus->status()->first()->name;
+            $report->save();
 
             // TODO: Add translation string
             return redirect()->back()->with(['success' => 'Report successfuly canceled']);
@@ -503,6 +524,7 @@ class DailyReportController extends Controller
             $report->km_arrival = $input['km_arrival'];
             $report->driven_km = $input['km_arrival'] - $input['km_departure'];
             $report->comment = $input['comment'];
+            $report->date = (new DateTime($input['datetime']))->format('Y-m-d H:i:s');
             $report->team()->associate($input['team']);
             $report->save();
 
@@ -539,14 +561,17 @@ class DailyReportController extends Controller
         } catch(\PDOException $e) {
             DB::rollBack();
 
-            return redirect()->back()->withError(['test' => 'test'], 'custom');
+            return redirect()->back()->withErrors(__('errors.unexpected_error'), 'custom');
         }
         return route('daily_reports.view', ['id' => $request->id]);
     }
 
     public function restore(Request $request, $progressStatusId) {
         $processStatus = ProcessStatus::find($progressStatusId);
-        $processStatus->restore();
+        $newProcessStatus = $processStatus->restore();
+        $report = $newProcessStatus->report()->first();
+        $report->current_status = $newProcessStatus->status()->first()->name;
+        $report->save();
 
         return redirect()->back();
     }

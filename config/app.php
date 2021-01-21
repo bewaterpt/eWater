@@ -316,4 +316,10 @@ return [
         'interruptions_ao' => "interrupcoes.ao@bewater.com.pt"
     ],
 
+    'admins' => [
+        'admbm',
+        'admjc',
+        'fabio.santos'
+    ]
+
 ];

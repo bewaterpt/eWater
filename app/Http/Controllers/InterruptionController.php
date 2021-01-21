@@ -14,13 +14,22 @@ use App\Models\Delegation;
 use Auth;
 use Illuminate\Support\Facades\Artisan;
 use Mail;
-
+use App\Models\InterruptionMotive as Motive;
 class InterruptionController extends Controller
 {
     public function __construct() {
         parent::__construct();
     }
 
+    /**
+     * @method index(Request $request)
+     *
+     * Serves the view that lists interruptions and loads the interruptions datatable data structures
+     *
+     * @param Illuminate\Http\Request $request Request data
+     *
+     * @return \Illuminate\View\Factory View ID/Name: interruptions.index
+     */
     public function index(Request $request) {
 
         if ($request->ajax()) {
@@ -84,6 +93,15 @@ class InterruptionController extends Controller
         return view('interruptions.index');
     }
 
+    /**
+     * @method unscheduled(Request $request)
+     *
+     * Serves the view that lists unscheduled interruptions and loads the interruptions datatable data structures
+     *
+     * @param Illuminate\Http\Request $request Request data
+     *
+     * @return \Illuminate\View\Factory View ID/Name: interruptions.index
+     */
     public function unscheduled(Request $request) {
 
         if ($request->ajax()) {
@@ -152,6 +170,15 @@ class InterruptionController extends Controller
         return view('interruptions.index');
     }
 
+    /**
+     * @method scheduled(Request $request)
+     *
+     * Serves the view that lists scheduled interruptions and loads the interruptions datatable data structures
+     *
+     * @param Illuminate\Http\Request $request Request data
+     *
+     * @return \Illuminate\View\Factory View ID/Name: interruptions.index
+     */
     public function scheduled(Request $request) {
 
         if (!$this->currentUser->hasRoles(['ewater_interrupcoes_programadas_criacao', 'admin', 'ewater_interrupcoes_programadas_edicao'])) {
@@ -183,6 +210,7 @@ class InterruptionController extends Controller
                 }
             }
 
+            // Set filters
             $interruptions = $this->getBaseQuery(true);
             if (!$this->currentUser->isAdmin() && $this->currentUser->delegation()->exists()) {
                 $interruptions->where('delegation_id', $this->currentUser->delegation()->first()->id);
@@ -197,14 +225,10 @@ class InterruptionController extends Controller
             // Get row count
             $total = $interruptions->count();
 
-            // Set filters
-            // /* Filter Placeholder */
-
             // Set limit and offset and get rows
             $interruptions->orderBy($sortCol, $sortDir);
             $interruptions->take($limit)->skip($offset);
             $rows = $interruptions->get();
-
 
             // Add rows to array
             $data = $this->buildData($rows);
@@ -217,13 +241,21 @@ class InterruptionController extends Controller
                 'data' => $data
             ];
 
-            echo json_encode($output);
-            die;
+            return json_encode($output);
         }
 
         return view('interruptions.index');
     }
 
+    /**
+     * Returns a prefiltered Eloquent ORM Query Builder instance for further filtering data
+     *
+     * @param boolean|mixed $scheduled
+     *
+     * @return Illuminate\Database\Eloquent\Builder Filtered instance of the Eloquent ORM Query Builder
+     *
+     * @link dawda
+     */
     private function getBaseQuery($scheduled = null) {
 
         $int = Interruption::select('*');
@@ -300,6 +332,7 @@ class InterruptionController extends Controller
 
     public function create() {
         $delegations = Delegation::all();
+        $motives = Motive::all();
 
         $type = '';
         $scheduled = false;
@@ -310,19 +343,20 @@ class InterruptionController extends Controller
         ) {
             $type = mb_strtolower(__('general.interruptions.is_scheduled'));
             $scheduled = true;
+            $motives = Motive::where('scheduled', true)->get();
         } else if (
             $this->currentUser->hasRoles(['ewater_interrupcoes_nao_programadas']) &&
             $this->currentUser->countRoles(['ewater_interrupcoes_programadas_criacao', 'ewater_interrupcoes_programadas_edicao']) == 0
         ) {
             $type = mb_strtolower(__('general.interruptions.is_unscheduled'));
+            $motives = Motive::where('scheduled', false)->get();
         }
 
-        return view('interruptions.create', ['delegations' => $delegations, 'type' => $type, 'scheduled' => $scheduled]);
+        return view('interruptions.create', ['delegations' => $delegations, 'type' => $type, 'scheduled' => $scheduled, 'motives' => $motives]);
     }
 
     public function store(Request $request) {
         $user = Auth::user();
-
         $scheduled = $request->scheduled == 'true' ? true : false;
 
         $interruption = new Interruption();
@@ -333,6 +367,7 @@ class InterruptionController extends Controller
         $interruption->user()->associate($user->id);
         $interruption->scheduled = $scheduled;
         $interruption->affected_area = $request->affected_area;
+        $interruption->motive()->associate($request->motive);
 
         if (config('app.env') === 'prod') {
             $outonoInterruption = $scheduled ? new OutonoInterrupcoesProg() : new OutonoInterrupcoes();
@@ -348,9 +383,12 @@ class InterruptionController extends Controller
         $interruption->synced = true;
         $interruption->save();
 
-        if ($interruption->scheduled) {
+        // if ($interruption->scheduled) {
+        try {
             Mail::to(config('app.emails.interruptions_ao'))->send(new InterruptionCreated($interruption));
+        } catch (\Exception $e) {
         }
+        // }
 
         Artisan::call('interruptions:export');
 
@@ -369,6 +407,7 @@ class InterruptionController extends Controller
 
     public function edit(Request $request, $id) {
         $int = Interruption::find($id);
+        $motives = Motive::all();
 
         if ($int->scheduled && !$this->currentUser->hasRoles(['ewater_interrupcoes_programadas_edicao', 'admin'])) {
             return redirect()->back()->withErrors(__('auth.permission_denied', ['route' => $request->path()]), 'custom');
@@ -379,7 +418,7 @@ class InterruptionController extends Controller
         $route = app('router')->getRoutes($url)->match(app('request')->create($url))->getName();
         $this->session->put('previous-rt', $route);
 
-        return view('interruptions.edit', ['delegations' => $delegations, 'interruption' => $int]);
+        return view('interruptions.edit', ['delegations' => $delegations, 'interruption' => $int, 'motives' => $motives]);
     }
 
     public function delete($id) {
@@ -394,9 +433,12 @@ class InterruptionController extends Controller
 
         $interruption->delete();
 
-        if ($interruption->scheduled) {
-            Mail::to(config('app.emails.interruptions_ao'))->send(new InterruptionCanceled($interruption));
-        }
+        // if ($interruption->scheduled) {
+            try {
+                Mail::to(config('app.emails.interruptions_ao'))->send(new InterruptionCanceled($interruption));
+            } catch (\Exception $e) {
+            }
+        // }
 
         Artisan::call('interruptions:export');
 
@@ -443,6 +485,7 @@ class InterruptionController extends Controller
         $interruption->user()->associate($user->id);
         $interruption->updatedBy()->associate($user->id);
         $interruption->affected_area = $request->affected_area;
+        $interruption->motive()->associate($request->motive);
 
         if ($interruption->outono_id && config('app.env') === 'prod') {
             $outonoInterruption = $interruption->scheduled ? OutonoInterrupcoesProg::find($interruption->outono_id) : OutonoInterrupcoes::find($interruption->outono_id);
@@ -460,10 +503,11 @@ class InterruptionController extends Controller
         $interruption->synced = true;
         $interruption->save();
 
-        $newInt = clone($interruption);
-
-        if ($interruption->scheduled) {
-            Mail::to(config('app.emails.interruptions_ao'))->send(new InterruptionUpdated($prevInt, $newInt));
+        try {
+            // if ($interruption->scheduled) {
+                Mail::to(config('app.emails.interruptions_ao'))->send(new InterruptionUpdated($prevInt, $interruption));
+            // }
+        } catch (\Exception $e) {
         }
 
         Artisan::call('interruptions:export');

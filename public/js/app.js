@@ -61869,8 +61869,7 @@ $(function () {
       }
     });
     $('#clearDate').on('click', function (evt) {
-      console.log(evt.currentTarget);
-
+      // console.log(evt.currentTarget);
       if ($(evt.currentTarget).siblings('input').val() != "") {
         $(evt.currentTarget).tooltip({
           html: true
@@ -61880,7 +61879,7 @@ $(function () {
     });
     var updating = false;
     var cdri = setInterval(function () {
-      console.log(updating);
+      // console.log(updating);
       $.ajax({
         url: 'check-call-record-update-state',
         method: 'GET',
@@ -61889,8 +61888,7 @@ $(function () {
           'Access-Control-Allow-Origin': 'localhost'
         },
         success: function success(response) {
-          console.log(response);
-
+          // console.log(response);
           if (parseInt(response.updating) === 1) {
             $('#refetchCallData').addClass('spining').attr('data-disabled', true);
 
@@ -62151,6 +62149,9 @@ $(function () {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
+var _require = __webpack_require__(/*! leaflet */ "./node_modules/leaflet/dist/leaflet-src.js"),
+    Evented = _require.Evented;
+
 $(function () {
   var error = false;
   var kmError = false;
@@ -62338,47 +62339,50 @@ $(function () {
       } else {}
     };
 
-    var checkWorkExists = function checkWorkExists(evt) {// error = false;
-      // let data = {
-      //     id: $(evt.target).val()
-      // }
-      // if (data.id !== "") {
-      //     if(window.verifyingWork && window.verifyingWork.readyState !== 4) {
-      //         window.verifyingWork.abort();
-      //     }
-      //     window.verifyingWork = $.ajax({
-      //         method: 'POST',
-      //         url: '/works/work-exists',
-      //         data: JSON.stringify(data),
-      //         contentType: 'json',
-      //         success: (response) => {
-      //             response = JSON.parse(response);
-      //             console.log("Response: ", response);
-      //             if (response.value === false) {
-      //                 $(evt.target).parent().popover({
-      //                     html: true,
-      //                     title: function() {
-      //                         return $(document).find('#' + this.id + ' .popover').find('#title').html()
-      //                     },
-      //                     content: function() {
-      //                         return $(document).find('#' + this.id + ' .popover').find('#content').html()
-      //                     },
-      //                 });
-      //                 $(evt.target).parent().find('.popover #content').html($('#errors .' + response.reason).html());
-      //                 $(evt.target).addClass('border-danger').addClass('bg-flamingo').attr('data-error', true).focus();
-      //                 $('.popover:not(.popover-data)').addClass('popover-danger');
-      //             } else {
-      //                 $(evt.target).removeClass('border-danger').removeClass('bg-flamingo').removeAttr('data-error');
-      //                 $(evt.target).parent().popover('dispose');
-      //             }
-      //         },
-      //         error: (jqXHR, status, error) => {
-      //         },
-      //     });
-      // } else {
-      //     $(evt.target).removeClass('border-danger').removeClass('bg-flamingo').removeAttr('data-error');
-      //     $(evt.target).parent().popover('dispose');
-      // }
+    var checkWorkExists = function checkWorkExists(evt) {
+      error = false;
+      var data = {
+        id: $(evt.target).val()
+      };
+
+      if (data.id !== "") {
+        if (window.verifyingWork && window.verifyingWork.readyState !== 4) {
+          window.verifyingWork.abort();
+        }
+
+        window.verifyingWork = $.ajax({
+          method: 'POST',
+          url: '/works/work-exists',
+          data: JSON.stringify(data),
+          contentType: 'json',
+          success: function success(response) {
+            response = JSON.parse(response);
+            console.log("Response: ", response);
+
+            if (response.value === false) {
+              $(evt.target).parent().popover({
+                html: true,
+                title: function title() {
+                  return $(document).find('#' + this.id + ' .popover').find('#title').html();
+                },
+                content: function content() {
+                  return $(document).find('#' + this.id + ' .popover').find('#content').html();
+                }
+              });
+              $(evt.target).parent().find('.popover #content').html($('#errors .' + response.reason).html());
+              $(evt.target).addClass('border-danger').addClass('bg-flamingo').attr('data-error', true).focus();
+              $('.popover:not(.popover-data)').addClass('popover-danger');
+            } else {
+              $(evt.target).removeClass('border-danger').removeClass('bg-flamingo').removeAttr('data-error');
+              $(evt.target).parent().popover('dispose');
+            }
+          },
+          error: function error(jqXHR, status, _error2) {}
+        });
+      } else {
+        $(evt.target).removeClass('border-danger').removeClass('bg-flamingo').removeAttr('data-error');
+        $(evt.target).parent().popover('dispose');
+      }
     };
 
     setInterval(function () {
@@ -62535,9 +62539,9 @@ $(function () {
           $(event.target).find('#content .body').html(response.content);
           $(event.target).find('#modal-spinner').addClass('d-none');
         },
-        error: function error(jqXHR, status, _error2) {
+        error: function error(jqXHR, status, _error3) {
           $(event.target).find('#modal-spinner').addClass('d-none');
-          alert(_error2);
+          alert(_error3);
         },
         complete: function complete() {
           $(event.target).find('#modal-spinner').addClass('d-none');
@@ -62553,6 +62557,18 @@ $(function () {
       window.location.replace($(event.currentTarget).attr('href'));
     }
   });
+
+  if ($('#clear-date-field').length > 0) {
+    $('#clear-date-field').on('click', function (event) {
+      event.preventDefault();
+      event.stopPropagation();
+      $(event.currentTarget).siblings('input').val('');
+
+      if (window.datatable_reports) {
+        window.datatable_reports.column($(event.target).parents('th').index()).search('').draw();
+      }
+    });
+  }
 });
 
 /***/ }),
@@ -62613,23 +62629,24 @@ $(function () {
       searchable: true
     }, {
       data: 'status',
-      name: 'status',
-      searchable: false
+      name: 'current_status',
+      sortable: false
     }, {
       data: 'quantity',
       name: 'quantity',
-      searchable: false
+      searchable: false,
+      sortable: false
     }, {
       data: 'driven_km',
       name: 'driven_km',
       searchable: true
     }, {
       data: 'team',
-      name: 'team',
+      name: 'team_id',
       searchable: true
     }, {
-      data: 'entry_date',
-      name: 'entry_date',
+      data: 'date',
+      name: 'date',
       searchable: true
     }, {
       data: 'info',
@@ -62643,6 +62660,7 @@ $(function () {
     $('#datatable-reports').find('thead .filter-col').each(function (i, el) {
       $(el).on('change keyup', function (evt) {
         window.datatable_reports.column(i).search($(el).is('select') ? $(el).find('option:selected').val() : el.value);
+        console.log($(el).is('select') ? $(el).find('option:selected').val() : el.value);
         clearTimeout(t);
         t = setTimeout(function () {
           window.datatable_reports.draw();
@@ -63179,7 +63197,7 @@ $(function () {
 /***/ (function(module, exports) {
 
 $(function () {
-  if ($('#map')) {
+  if ($('#map').length > 0) {
     var onMapClick = function onMapClick(e) {
       popup.setLatLng(e.latlng).setContent("You clicked the map at " + e.latlng.toString()).openOn(map);
     };
@@ -63871,27 +63889,27 @@ tinymce.addI18n('pt_PT', {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\Users\bruno\source\repos\ewater\resources\js\app.js */"./resources/js/app.js");
-__webpack_require__(/*! C:\Users\bruno\source\repos\ewater\resources\js\app\utility\tinymce.js */"./resources/js/app/utility/tinymce.js");
-__webpack_require__(/*! C:\Users\bruno\source\repos\ewater\resources\js\app\utility\datatables.js */"./resources/js/app/utility/datatables.js");
-__webpack_require__(/*! C:\Users\bruno\source\repos\ewater\resources\js\app\utility\fixes.js */"./resources/js/app/utility/fixes.js");
-__webpack_require__(/*! C:\Users\bruno\source\repos\ewater\resources\js\app\utility\ajax.js */"./resources/js/app/utility/ajax.js");
-__webpack_require__(/*! C:\Users\bruno\source\repos\ewater\resources\js\app\settings\users\datatables_users.js */"./resources/js/app/settings/users/datatables_users.js");
-__webpack_require__(/*! C:\Users\bruno\source\repos\ewater\resources\js\app\settings\teams\teams.js */"./resources/js/app/settings/teams/teams.js");
-__webpack_require__(/*! C:\Users\bruno\source\repos\ewater\resources\js\app\interruptions\interruptions.js */"./resources/js/app/interruptions/interruptions.js");
-__webpack_require__(/*! C:\Users\bruno\source\repos\ewater\resources\js\app\interruptions\datatable_interruptions.js */"./resources/js/app/interruptions/datatable_interruptions.js");
-__webpack_require__(/*! C:\Users\bruno\source\repos\ewater\resources\js\app\settings\teams\datatables_teams.js */"./resources/js/app/settings/teams/datatables_teams.js");
-__webpack_require__(/*! C:\Users\bruno\source\repos\ewater\resources\js\app\settings\forms\forms.js */"./resources/js/app/settings/forms/forms.js");
-__webpack_require__(/*! C:\Users\bruno\source\repos\ewater\resources\js\app\settings\permissions\update.js */"./resources/js/app/settings/permissions/update.js");
-__webpack_require__(/*! C:\Users\bruno\source\repos\ewater\resources\js\app\components\multiselect_listbox.js */"./resources/js/app/components/multiselect_listbox.js");
-__webpack_require__(/*! C:\Users\bruno\source\repos\ewater\resources\js\app\components\tooltip.js */"./resources/js/app/components/tooltip.js");
-__webpack_require__(/*! C:\Users\bruno\source\repos\ewater\resources\js\app\daily_reports\dailyReports.js */"./resources/js/app/daily_reports/dailyReports.js");
-__webpack_require__(/*! C:\Users\bruno\source\repos\ewater\resources\js\app\daily_reports\datatables_reports.js */"./resources/js/app/daily_reports/datatables_reports.js");
-__webpack_require__(/*! C:\Users\bruno\source\repos\ewater\resources\js\app\calls\calls.js */"./resources/js/app/calls/calls.js");
-__webpack_require__(/*! C:\Users\bruno\source\repos\ewater\resources\js\app\calls\datatables_calls.js */"./resources/js/app/calls/datatables_calls.js");
-__webpack_require__(/*! C:\Users\bruno\source\repos\ewater\resources\js\app\settings\roles\datatables_roles.js */"./resources/js/app/settings/roles/datatables_roles.js");
-__webpack_require__(/*! C:\Users\bruno\source\repos\ewater\resources\js\app\test\test.js */"./resources/js/app/test/test.js");
-module.exports = __webpack_require__(/*! C:\Users\bruno\source\repos\ewater\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\Dev\eWater\resources\js\app.js */"./resources/js/app.js");
+__webpack_require__(/*! C:\Dev\eWater\resources\js\app\utility\tinymce.js */"./resources/js/app/utility/tinymce.js");
+__webpack_require__(/*! C:\Dev\eWater\resources\js\app\utility\datatables.js */"./resources/js/app/utility/datatables.js");
+__webpack_require__(/*! C:\Dev\eWater\resources\js\app\utility\fixes.js */"./resources/js/app/utility/fixes.js");
+__webpack_require__(/*! C:\Dev\eWater\resources\js\app\utility\ajax.js */"./resources/js/app/utility/ajax.js");
+__webpack_require__(/*! C:\Dev\eWater\resources\js\app\settings\users\datatables_users.js */"./resources/js/app/settings/users/datatables_users.js");
+__webpack_require__(/*! C:\Dev\eWater\resources\js\app\settings\teams\teams.js */"./resources/js/app/settings/teams/teams.js");
+__webpack_require__(/*! C:\Dev\eWater\resources\js\app\interruptions\interruptions.js */"./resources/js/app/interruptions/interruptions.js");
+__webpack_require__(/*! C:\Dev\eWater\resources\js\app\interruptions\datatable_interruptions.js */"./resources/js/app/interruptions/datatable_interruptions.js");
+__webpack_require__(/*! C:\Dev\eWater\resources\js\app\settings\teams\datatables_teams.js */"./resources/js/app/settings/teams/datatables_teams.js");
+__webpack_require__(/*! C:\Dev\eWater\resources\js\app\settings\forms\forms.js */"./resources/js/app/settings/forms/forms.js");
+__webpack_require__(/*! C:\Dev\eWater\resources\js\app\settings\permissions\update.js */"./resources/js/app/settings/permissions/update.js");
+__webpack_require__(/*! C:\Dev\eWater\resources\js\app\components\multiselect_listbox.js */"./resources/js/app/components/multiselect_listbox.js");
+__webpack_require__(/*! C:\Dev\eWater\resources\js\app\components\tooltip.js */"./resources/js/app/components/tooltip.js");
+__webpack_require__(/*! C:\Dev\eWater\resources\js\app\daily_reports\dailyReports.js */"./resources/js/app/daily_reports/dailyReports.js");
+__webpack_require__(/*! C:\Dev\eWater\resources\js\app\daily_reports\datatables_reports.js */"./resources/js/app/daily_reports/datatables_reports.js");
+__webpack_require__(/*! C:\Dev\eWater\resources\js\app\calls\calls.js */"./resources/js/app/calls/calls.js");
+__webpack_require__(/*! C:\Dev\eWater\resources\js\app\calls\datatables_calls.js */"./resources/js/app/calls/datatables_calls.js");
+__webpack_require__(/*! C:\Dev\eWater\resources\js\app\settings\roles\datatables_roles.js */"./resources/js/app/settings/roles/datatables_roles.js");
+__webpack_require__(/*! C:\Dev\eWater\resources\js\app\test\test.js */"./resources/js/app/test/test.js");
+module.exports = __webpack_require__(/*! C:\Dev\eWater\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

@@ -1,8 +1,6 @@
 <?php
 namespace App\Helpers;
 
-use App\Models\DailyReports\ReportLine;
-use App\Models\DailyReports\Report;
 use Illuminate\Support\Carbon;
 
 class Helper {
@@ -287,7 +285,18 @@ class Helper {
         return $date;
     }
 
+    /**
+     * @method mb_ucfirst
+     *
+     * Capitalizes words and phrases
+     *
+     * @param String $str
+     */
     public function mb_ucfirst($str) {
+        // Normalize String
+        $str = mb_strtolower($str);
+
+        // Capitalize String
         $str = mb_strtoupper(mb_substr($str, 0, 1)) . mb_substr($str, 1);
         return $str;
     }

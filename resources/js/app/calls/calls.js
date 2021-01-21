@@ -294,7 +294,7 @@ $(() => {
         });
 
         $('#clearDate').on('click', (evt) => {
-            console.log(evt.currentTarget);
+            // console.log(evt.currentTarget);
             if ($(evt.currentTarget).siblings('input').val() != "") {
                 $(evt.currentTarget).tooltip({
                     html: true,
@@ -307,7 +307,7 @@ $(() => {
         let updating = false;
 
         const cdri = setInterval(() => {
-            console.log(updating);
+            // console.log(updating);
             $.ajax({
                 url: 'check-call-record-update-state',
                 method: 'GET',
@@ -316,7 +316,7 @@ $(() => {
                     'Access-Control-Allow-Origin': 'localhost'
                 },
                 success: (response) => {
-                    console.log(response);
+                    // console.log(response);
                     if (parseInt(response.updating) === 1) {
                         $('#refetchCallData').addClass('spining').attr('data-disabled', true)
                         if (parseInt(response.current) !== 0) {

@@ -50,6 +50,7 @@ return [
         'affected_area' => "Área afetada",
         'delegation' => 'Delegação',
         'scheduled' => 'Programada? ',
+        'motive'=> 'Motivo',
     ],
     'placeholders' => [
         'name'=> 'Nome Apelido',
@@ -64,6 +65,8 @@ return [
         'date' => 'Data',
         'worker' => 'Funcionário',
         'hours' => 'Nº de Horas',
+        'scheduled' => 'Programada ',
+        'slug' => 'Nome máquina',
     ],
     'descriptors' => [
         'name' => "O Seu primeiro e último nome",
