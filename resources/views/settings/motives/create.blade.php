@@ -16,7 +16,7 @@
                         <div class="form-row mb-2">
                             <div class="form-group col-md-6">
                                 <label for="inputName">@Lang('general.interruptions.motive')</label>
-                                <input type="text" name="name" class="form-control" id="inputName"  placeholder="{{__('forms.placeholders.name')}}">
+                                <input type="text" name="name" class="form-control" id="inputName"  placeholder="{{__('forms.placeholders.motive')}}">
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="inputEmail">@Lang('general.slug')</label>

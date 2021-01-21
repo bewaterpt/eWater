@@ -41,6 +41,7 @@ mix.sass('resources/sass/app.scss', 'public/css')
     "resources/js/app/calls/calls.js",
     "resources/js/app/calls/datatables_calls.js",
     "resources/js/app/settings/roles/datatables_roles.js",
+    "resources/js/app/settings/motives/datatables_motives.js",
 
     // Tests
     "resources/js/app/test/test.js"
@@ -70,6 +71,7 @@ mix.sass('resources/sass/app.scss', 'public/css')
     "resources/js/app/calls/calls.js",
     "resources/js/app/calls/datatables_calls.js",
     "resources/js/app/settings/roles/datatables_roles.js",
+    "resources/js/app/settings/motives/datatables_motives.js",
 
     // Tests
     "resources/js/app/test/test.js"

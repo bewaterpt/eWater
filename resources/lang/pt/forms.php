@@ -67,6 +67,7 @@ return [
         'hours' => 'Nº de Horas',
         'scheduled' => 'Programada ',
         'slug' => 'Nome máquina',
+        'motive'=> 'Motivo',
     ],
     'descriptors' => [
         'name' => "O Seu primeiro e último nome",

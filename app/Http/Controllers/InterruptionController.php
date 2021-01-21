@@ -343,13 +343,13 @@ class InterruptionController extends Controller
         ) {
             $type = mb_strtolower(__('general.interruptions.is_scheduled'));
             $scheduled = true;
-            $motives = Motive::where('scheduled', true)->get();
+            // $motives = Motive::where('scheduled', true)->get();
         } else if (
             $this->currentUser->hasRoles(['ewater_interrupcoes_nao_programadas']) &&
             $this->currentUser->countRoles(['ewater_interrupcoes_programadas_criacao', 'ewater_interrupcoes_programadas_edicao']) == 0
         ) {
             $type = mb_strtolower(__('general.interruptions.is_unscheduled'));
-            $motives = Motive::where('scheduled', false)->get();
+            // $motives = Motive::where('scheduled', false)->get();
         }
 
         return view('interruptions.create', ['delegations' => $delegations, 'type' => $type, 'scheduled' => $scheduled, 'motives' => $motives]);

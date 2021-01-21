@@ -22,7 +22,81 @@ class MotivesController extends Controller
      * @return \Illuminate\View\Factory View ID/Name: settings.motives.index
      */
     public function index(Request $request) {
+
         if ($request->ajax()) {
+            $input = $request->input();
+
+            // Get datatable values for sorting, limit and offset
+            $sortCol = $input['columns'][$input['order'][0]['column']]['name'];
+            $sortDir = $input['order'][0]['dir'];
+            $limit = $input['length'];
+            $offset = $input['start'];
+
+            // Get searchable columns
+            $searchCols = [];
+            foreach ($input['columns'] as $value) {
+                if ($value['searchable'] === 'true' && $value['search']['value']) {
+                    $searchCols[] = [
+                        'name' => $value['name'],
+                        'value' => $value['search']['value']
+                    ];
+                } else if ($value['searchable'] === 'true' && $input['search']['value']) {
+                    $searchCols[] = [
+                        'name' => $value['name'],
+                        'value' => $input['search']['value']
+                    ];
+                }
+            }
+
+            $motives = Motive::select('*');
+
+            foreach ($searchCols as $searchCol) {
+                $motives->orWhere($searchCol['name'], 'rlike', $searchCol['value']);
+
+            }
+
+            // Get row count
+            $total = $motives->count();
+
+            // Set limit and offset and get rows
+            $motives->orderBy($sortCol, $sortDir);
+            $motives->take($limit)->skip($offset);
+            $rows = $motives->get();
+
+            foreach($rows as $row){
+                $actions = '';
+
+                if ($this->permissionModel->can('settings.motives.edit') && !$row->trashed()) {
+                    if ($row->scheduled && !$this->currentUser->hasRoles(['ewater_interrupcoes_programadas_criacao', 'admin', 'ewater_interrupcoes_programadas_edicao'])) {
+                    } else {
+                        $actions .= '<a class="text-primary edit px-1" href="' . route('settings.motives.edit', ['id' => $row->id]) . '" title="'.trans('general.edit').'"><i class="fas fa-edit"></i></a>';
+                    }
+                }
+
+                if (($this->permissionModel->can('settings.motives.delete') || ($this->currentUser->isAdmin())) && !$row->trashed()) {
+                    $actions .= '<a class="text-danger delete px-1" href="' . route('settings.motives.delete', ['id' => $row->id]) . '" title="'.trans('general.delete').'"><i class="fas fa-trash-alt"></i></a>';
+                }
+
+                if ($row->trashed()) {
+                    $actions = "<span>" . __('general.interruptions.canceled') . "</span>";
+                }
+
+                $data[] = [
+                    'actions' => $actions,
+                    'name' => $row->name,
+                    'scheduled' => $row->sheduled,
+                ];
+            }
+
+            // Create output array
+            $output = [
+                'draw' => intval($input['draw']),
+                'recordsTotal' => $total,
+                'recordsFiltered' => $total,
+                'data' => $data
+            ];
+
+            return json_encode($output);
 
         }
 
@@ -37,6 +111,7 @@ class MotivesController extends Controller
     public function create() {
         $type = '';
         $scheduled = false;
+        $user = User::all();
 
         if (
             $this->currentUser->countRoles(['ewater_interrupcoes_programadas_criacao', 'ewater_interrupcoes_programadas_edicao']) > 0 &&
@@ -61,14 +136,15 @@ class MotivesController extends Controller
      * @return \Illuminate\Http\Client\Response Redirects user to motive list
      */
     public function store(Request $request) {
+        $user = Auth::user();
 
         $scheduled = $request->scheduled == 'true' ? true : false;
         $motive = new Motive();
         $motive->name = $request->name;
         $motive->slug = $request->slug;
         $motive->scheduled = $scheduled;
+        $motive->created_by = $user->id;
         $motive->save();
-
 
         return redirect(route('settings.motives.list'))->with('success');
     }
@@ -78,8 +154,29 @@ class MotivesController extends Controller
      *
      * @return \Illuminate\View\Factory View ID/Name: settings.motives.edit
      */
-    public function edit() {
-        return view('settings.motives.edit');
+    public function edit(Request $request, $id) {
+
+        $motive = Motive::find($id);
+
+        $url = url()->previous();
+        $route = app('router')->getRoutes($url)->match(app('request')->create($url))->getName();
+        $this->session->put('previous-rt', $route);
+
+        return view('settings.motives.edit', ['motive' => $motive]);
+    }
+    /***
+     * Função para apagar row na base de dados
+     */
+    public function delete($id) {
+        if($this->permissionModel->can('interruptions.motives.delete')){
+            return redirect()->back()->withErrors(__('auth.permission_denied', ['route' => route('interruptions.motives.delete')]));
+        }
+
+        $motive = Motive::find($id);
+
+        $motive->delete();
+
+        return redirect()->back()->with('success');
     }
 
     /**
@@ -89,6 +186,17 @@ class MotivesController extends Controller
      *
      * @return \Illuminate\Http\Client\Response Redirects user to motive list
      */
-    public function update(Request $request) {
+    public function update(Request $request, $id) {
+        $user = Auth::user();
+
+        $motive = Motive::find($id);
+        $motive->name = $request->name;
+        $motive->slug = $request->slug;
+        $motive->updatedBy()->associate($user->id);
+        $motive->updated_at = $request->updated_at;
+
+        $motive->save();
+
+        return redirect(route('settings.motives.list'))->with('success');
     }
 }
