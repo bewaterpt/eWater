@@ -102,6 +102,9 @@
                                             @if($pmodel->can('interruptions.list_scheduled'))
                                                 <a class="dropdown-item {{ Route::currentRouteName() == 'interruptions.list_scheduled' ? 'disabled active bg-primary text-light' : '' }}" href="{{ route('interruptions.list_scheduled')}}">@lang('general.interruptions.list_scheduled')</a>
                                             @endif
+                                            @if($pmodel->can('interruptions.motives.list'))
+                                                <a class="dropdown-item {{ Route::currentRouteName() == 'interruptions.motives.list' ? 'disabled active bg-primary text-light' : '' }}" href="{{ route('interruptions.motives.list')}}">@lang('general.interruptions.motives')</a>
+                                            @endif
                                         </div>
                                     </li>
                                 @endif
