@@ -13,5 +13,4 @@ class InterruptionMotive extends Model
 {
     use HasFactory, SoftDeletes;
 
-
 }

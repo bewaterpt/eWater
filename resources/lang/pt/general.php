@@ -104,6 +104,7 @@ return [
         'view' => 'Ver Interrupção',
         'canceled' => 'Anulada',
         'motive' => 'Motivo',
+        'motives' => 'Motivos',
     ],
     'url' => "Endereço Web",
     'delegation' => 'Delegação',

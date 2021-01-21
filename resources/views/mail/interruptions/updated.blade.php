@@ -42,7 +42,7 @@
                 <b>@Lang('general.interruptions.type'):</b>
             </td>
             <td>
-                {{ $interruption->scheduled ? __('general.interruptions.is_scheduled') : __('general.interruptions.is_unscheduled')}}
+                {{ $prevInt->scheduled ? __('general.interruptions.is_scheduled') : __('general.interruptions.is_unscheduled')}}
             </td>
         </tr>
         <tr>

@@ -21,7 +21,7 @@
                 'canceled' => "Cancelamento de interrupção <b>não programada</b>",
             ],
             'ref' => 'Ref.ª Interna',
-            'disclaimer' => "Direitos reservados e da responsabilidade do grupo BEWG (PT).<br>Caso surja algum erro ou dúvida relacionado com esta mensagem contacte através do email <a href=':email'>:email</a>"
+            'disclaimer' => "Caso surja algum erro ou dúvida relacionado com esta mensagem contacte através do email <a href=':email'>:email</a><br>© BEWG (PT)."
             // 'disclaimer' => "Os conteúdos desta mensagem são de carácter interno e confidencial, apenas dados relativos ao procedimento são apresentados para os respectivos responsáveis do mesmo, de forma meramente informativa e independente do fluxo do processo em causa. No caso de existir alguma informação errada queiram, por favor, informar os serviços de atendimento da <b>:company</b> através do número de apoio <b>:phone</b> ou pelo e-mail <b><a href='mailto://:email'>:email</a></b>. Poderão consultar as interrupções atualmente publicadas através da seguinte <a href=':website/interrupcoes'>ligação</a><br><br><u>Esta mensagem foi gerada automaticamente, não deve responder à mesma pois não será processada.</u>"
         ],
     ];
