@@ -75,7 +75,11 @@
             </td>
             <td>
                 @if ($prevInt->motive == null)
-                    {!! "<span style='color: darkblue'>" . $newInt->motive->name . "</span>" !!}
+                    @if ($newInt->motive)
+                        {!! "<span style='color: darkblue'>" . $newInt->motive->name . "</span>" !!}
+                    @else
+                        {!! "<span style='color: red'>" . __('general.not_assigned') . "</span>" !!}
+                    @endif
                 @else
                     {!! $prevInt->motive->id !== $newInt->motive->id ? "<span style='color: gray'><s>" . $prevInt->motive->name . "</s></span> <span style='color: darkblue'>" . $newInt->motive->name . "</span>" : $prevInt->motive->name !!}
                 @endif
