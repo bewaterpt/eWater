@@ -117,4 +117,5 @@ return [
     'records' => 'registos',
     'yes' => 'Sim',
     'no' => 'Não',
+    'not_assigned' => 'Não Atríbuído',
 ];
