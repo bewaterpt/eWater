@@ -6,10 +6,10 @@
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header">
-                    @Lang('settings.motives.create')
+                    @Lang('forms.fields.motive')
                 </div>
                 <div class="card-body">
-                    <form id="create-motive" method="POST" action={{Route('settings.motives.store')}}>
+                    <form id="create-motive" method="POST" action={{Route('interruptions.motives.store')}}>
                         @csrf
                         <input type="hidden" name="roles" id="roles"/>
                         <input type="hidden" name="teams" id="teams"/>
@@ -22,7 +22,6 @@
                                 <label for="inputEmail">@Lang('general.slug')</label>
                                 <input type="text" name="slug" class="form-control"  id="inputSlug" placeholder="{{__('forms.placeholders.slug')}}">
                             </div>
-                            <label for="inputName">@Lang('general.name')</label>
                             <div class="form-group col-md-4 pt-4">
                                 <input type="radio" name="scheduled" class="" id="inputScheduled1" value="true" >
                                 <label for="inputScheduled1">@Lang('general.interruptions.is_scheduled')</label>

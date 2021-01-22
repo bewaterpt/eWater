@@ -6,7 +6,7 @@
         <div class="col-md-8">
             <div class="card">
                 <div class="card-body">
-                    <form id="updateUser" method="POST" action={{Route('settings.motives.update', ['id' => $motive->id])}}>
+                    <form id="updateUser" method="POST" action={{Route('interruptions.motives.update', ['id' => $motive->id])}}>
                         @csrf
                         <input type="hidden" name="users" id="users" />
                         <div class="form-row mb-2 justify-content-center">

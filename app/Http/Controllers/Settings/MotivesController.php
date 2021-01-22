@@ -47,8 +47,14 @@ class MotivesController extends Controller
                     ];
                 }
             }
+            //so os admins podem ver os deleted motives
+            if($this->currentUser->hasRoles(['admin'])){
+                $motives = Motive::select('*')->withTrashed();
+            }
+            else{
+                $motives = Motive::select('*');
+            }
 
-            $motives = Motive::select('*');
 
             foreach ($searchCols as $searchCol) {
                 $motives->orWhere($searchCol['name'], 'rlike', $searchCol['value']);
@@ -66,25 +72,35 @@ class MotivesController extends Controller
             foreach($rows as $row){
                 $actions = '';
 
-                if ($this->permissionModel->can('settings.motives.edit') && !$row->trashed()) {
-                    if ($row->scheduled && !$this->currentUser->hasRoles(['ewater_interrupcoes_programadas_criacao', 'admin', 'ewater_interrupcoes_programadas_edicao'])) {
+                if ($this->permissionModel->can('interruptions.motives.edit') && !$row->trashed()) {
+                    if ($row->scheduled && !$this->currentUser->hasRoles(['admin'])) {
+
                     } else {
-                        $actions .= '<a class="text-primary edit px-1" href="' . route('settings.motives.edit', ['id' => $row->id]) . '" title="'.trans('general.edit').'"><i class="fas fa-edit"></i></a>';
+                        $actions .= '<a class="text-primary edit px-1" href="' . route('interruptions.motives.edit', ['id' => $row->id]) . '" title="'.trans('general.edit').'"><i class="fas fa-edit"></i></a>';
                     }
                 }
 
-                if (($this->permissionModel->can('settings.motives.delete') || ($this->currentUser->isAdmin())) && !$row->trashed()) {
-                    $actions .= '<a class="text-danger delete px-1" href="' . route('settings.motives.delete', ['id' => $row->id]) . '" title="'.trans('general.delete').'"><i class="fas fa-trash-alt"></i></a>';
+                if (($this->permissionModel->can('interruptions.motives.delete') || ($this->currentUser->isAdmin())) && !$row->trashed()) {
+                    $actions .= '<a class="text-danger delete px-1" href="' . route('interruptions.motives.delete', ['id' => $row->id]) . '" title="'.trans('general.delete').'"><i class="fas fa-trash-alt"></i></a>';
                 }
 
                 if ($row->trashed()) {
-                    $actions = "<span>" . __('general.interruptions.canceled') . "</span>";
+                    $actions = '<a class="text-primary edit px-1" href="' . route('interruptions.motives.restore', ['id' => $row->id]) . '" title="'.trans('general.edit').'"><i class="fas fa-redo"></i></a>';
                 }
+
+                $type = '';
+
+                if ($row->scheduled) {
+                    $type = '<h5><i class="far fa-calendar-alt" title="' . __('general.interruptions.scheduled') .'"></i></h5>';
+                } else {
+                    $type = '<h5><i class="far fa-calendar-times" title="' . __('general.interruptions.unscheduled') . '"></i></h5>';
+                }
+
 
                 $data[] = [
                     'actions' => $actions,
                     'name' => $row->name,
-                    'scheduled' => $row->sheduled,
+                    'scheduled' => $type,
                 ];
             }
 
@@ -146,7 +162,7 @@ class MotivesController extends Controller
         $motive->created_by = $user->id;
         $motive->save();
 
-        return redirect(route('settings.motives.list'))->with('success');
+        return redirect(route('interruptions.motives.list'))->with('success');
     }
 
     /**
@@ -168,16 +184,27 @@ class MotivesController extends Controller
      * Função para apagar row na base de dados
      */
     public function delete($id) {
-        if($this->permissionModel->can('interruptions.motives.delete')){
-            return redirect()->back()->withErrors(__('auth.permission_denied', ['route' => route('interruptions.motives.delete')]));
+        if(!$this->permissionModel->can('interruptions.motives.delete')){
+            return redirect()->back()->withErrors(__('auth.permission_denied', ['route' => route('interruptions.motives.delete')]), 'custom');
         }
 
-        $motive = Motive::find($id);
-
-        $motive->delete();
+        Motive::find($id)->delete();
 
         return redirect()->back()->with('success');
     }
+    /**
+     * Restaurar as rows com softDelete
+     */
+    public function restore($id) {
+        if(!$this->permissionModel->can('interruptions.motives.restore')){
+            return redirect()->back()->withErrors(__('auth.permission_denied', ['route' => route('interruptions.motives.restore')]), 'custom');
+        }
+
+        Motive::withTrashed()->find($id)->restore();
+
+        return redirect()->back()->with('success');
+    }
+
 
     /**
      * Updates a motive in the database
@@ -197,6 +224,6 @@ class MotivesController extends Controller
 
         $motive->save();
 
-        return redirect(route('settings.motives.list'))->with('success');
+        return redirect(route('interruptions.motives.list'))->with('success');
     }
 }

@@ -519,4 +519,9 @@ class InterruptionController extends Controller
 
         return redirect(route('interruptions.list'))->with('success');
     }
+
+    public function load() {
+
+    }
+
 }

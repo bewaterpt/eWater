@@ -196,6 +196,7 @@ Route::group(['middleware' => ['web']], function () {
             Route::get('interruptions/motives/edit/{id}', 'Settings\MotivesController@edit')->name('interruptions.motives.edit');
             Route::post('interruptions/motives/update/{id}', 'Settings\MotivesController@update')->name('interruptions.motives.update');
             Route::get('interruptions/motives/delete/{id}', 'Settings\MotivesController@delete')->name('interruptions.motives.delete');
+            Route::get('interruptions/motives/restore/{id}', 'Settings\MotivesController@restore')->name('interruptions.motives.restore');
 
             Route::match(['get', 'post'], 'test', 'TestController@index')->name('tests.test');
         });
