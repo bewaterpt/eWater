@@ -14,7 +14,6 @@ class InterruptionMotive extends Model
 {
     use HasFactory, SoftDeletes;
 
-<<<<<<< HEAD
     public function user() {
         return $this->belongsTo('App\User');
     }
@@ -23,6 +22,4 @@ class InterruptionMotive extends Model
         return $this->belongsTo('App\User', 'updated_by');
     }
 
-=======
->>>>>>> 874378e9d31499c18f3e065ac41e26d2b0bfed33
 }
