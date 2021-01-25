@@ -157,7 +157,7 @@ class MotivesController extends Controller
         $scheduled = $request->scheduled == 'true' ? true : false;
         $motive = new Motive();
         $motive->name = $request->name;
-        $motive->slug = $request->slug;
+        $motive->slug = $this->helper->transliterate($request->name, 1);
         $motive->scheduled = $scheduled;
         $motive->created_by = $user->id;
         $motive->save();
