@@ -6,7 +6,7 @@
         <div class="col-md-11">
             <div class="card">
                 <div class="card-header">
-                    @Lang('general.interruptions.interruptions')
+                    @Lang('forms.fields.motive_list')
                     <span class="float-right">
                         <a class="btn-link text-success" href="{{ route('interruptions.motives.create') }}"><i class="fas fa-plus"></i></a>
                     </span>

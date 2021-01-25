@@ -51,6 +51,7 @@ return [
         'delegation' => 'Delegação',
         'scheduled' => 'Programada? ',
         'motive'=> 'Motivo',
+        'motive_list'=> 'Lista de Motivos de Interrupções',
     ],
     'placeholders' => [
         'name'=> 'Nome Apelido',

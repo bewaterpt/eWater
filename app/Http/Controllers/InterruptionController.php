@@ -343,13 +343,13 @@ class InterruptionController extends Controller
         ) {
             $type = mb_strtolower(__('general.interruptions.is_scheduled'));
             $scheduled = true;
-            // $motives = Motive::where('scheduled', true)->get();
+            $motives = Motive::scheduled();
         } else if (
             $this->currentUser->hasRoles(['ewater_interrupcoes_nao_programadas']) &&
             $this->currentUser->countRoles(['ewater_interrupcoes_programadas_criacao', 'ewater_interrupcoes_programadas_edicao']) == 0
         ) {
             $type = mb_strtolower(__('general.interruptions.is_unscheduled'));
-            // $motives = Motive::where('scheduled', false)->get();
+            $motives = Motive::unscheduled();
         }
 
         return view('interruptions.create', ['delegations' => $delegations, 'type' => $type, 'scheduled' => $scheduled, 'motives' => $motives]);
@@ -412,7 +412,7 @@ class InterruptionController extends Controller
 
     public function edit(Request $request, $id) {
         $int = Interruption::find($id);
-        $motives = Motive::all();
+        $motives = Motive::where('scheduled', $int->scheduled)->get();
 
         if ($int->scheduled && !$this->currentUser->hasRoles(['ewater_interrupcoes_programadas_edicao', 'admin'])) {
             return redirect()->back()->withErrors(__('auth.permission_denied', ['route' => $request->path()]), 'custom');
@@ -520,8 +520,23 @@ class InterruptionController extends Controller
         return redirect(route('interruptions.list'))->with('success');
     }
 
-    public function load() {
+    public function getMotiveList(Request $request) {
+        $data = [
+            'status' => 500,
+            'message' => __('errors.unexpected_error')
+        ];
+        if($request->scheduled === 'true'){
+            $data['message'] = 'OK';
+            $data['motives'] = Motive::scheduled();
+            $data['status'] = 200;
+        }
+        else{
+            $data['message'] = 'OK';
+            $data['motives'] = Motive::unscheduled();
+            $data['status'] = 200;
+        }
 
+        return json_encode($data);
     }
 
 }

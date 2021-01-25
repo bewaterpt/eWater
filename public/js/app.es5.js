@@ -231,6 +231,29 @@ $(function () {
   }, 1000);
 });
 $(function () {
+  if ($('#calls-interruption-create').length > 0) {
+    $('input[name=scheduled]').on('change', function (event) {
+      console.log(event.target.value);
+      $.ajax({
+        url: '/interruptions/get-motive-list',
+        data: {
+          'scheduled': event.target.value
+        },
+        method: 'POST',
+        dataType: 'json',
+        success: function success(response) {
+          if (response.status == 200) {
+            $('#inputMotive').find('option').remove();
+            response.motives.forEach(function (motive) {
+              $('#inputMotive').append("<option value=\"".concat(motive.id, "\">").concat(motive.name, "</option>"));
+            });
+          }
+        }
+      });
+    });
+  }
+});
+$(function () {
   var loadingHTML = '<div class="loading-cpage">' + '<svg id="load" x="0px" y="0px" viewBox="0 0 150 150">' + '<circle id="loading-inner" cx="75" cy="75" r="60"/>' + '</svg>' + '</div>';
 
   if ($("#datatable-interruptions").length > 0) {

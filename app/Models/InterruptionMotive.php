@@ -22,4 +22,11 @@ class InterruptionMotive extends Model
         return $this->belongsTo('App\User', 'updated_by');
     }
 
+    public static function scheduled() {
+        return self::where('scheduled', true)->get();
+    }
+
+    public static function unscheduled() {
+        return self::where('scheduled', false)->get();
+    }
 }
