@@ -22,7 +22,7 @@
                                     @Lang('general.name')
                                 </th>
                                 <th>
-                                    @Lang('general.scheduled')
+                                    @Lang('general.type')
                                 </th>
                             </tr>
                         </thead>

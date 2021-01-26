@@ -85,7 +85,7 @@ class MotivesController extends Controller
                 }
 
                 if ($row->trashed()) {
-                    $actions = '<a class="text-primary edit px-1" href="' . route('interruptions.motives.restore', ['id' => $row->id]) . '" title="'.trans('general.edit').'"><i class="fas fa-redo"></i></a>';
+                    $actions = '<a class="text-primary edit px-1" href="' . route('interruptions.motives.restore', ['id' => $row->id]) . '" title="'.trans('general.restore').'"><i class="fas fa-redo"></i></a>';
                 }
 
                 $type = '';

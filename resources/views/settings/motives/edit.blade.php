@@ -10,13 +10,9 @@
                         @csrf
                         <input type="hidden" name="users" id="users" />
                         <div class="form-row mb-2 justify-content-center">
-                            <div class="form-group col-md-6">
+                            <div class="form-group col-md-12">
                                 <label for="inputName">@Lang('forms.fields.motive')</label>
                                 <input type="text" name="name" class="form-control" id="inputName" value="{{ $motive->name }}" required>
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label for="inputName">@Lang('forms.fields.slug')</label>
-                                <input type="text" name="slug" class="form-control" id="inputSlug" value="{{ $motive->slug }}" required>
                             </div>
                         </div>
 
