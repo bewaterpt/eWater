@@ -46,6 +46,9 @@ return [
     'teams' => 'Equipas',
     'team' => 'Equipa',
     'user_count' => '# de Utilizadores',
+    'edit' => 'Editar',
+    'delete' => 'Apagar',
+    'restore' => 'Restaurar',
     'daily_reports' => [
         'db_sync_success' => "Relatório sincronizado corretamente com o outono.",
         'daily_reports' => 'Relatórios Diários',
