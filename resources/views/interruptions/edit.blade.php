@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div id="calls-pbx-create" class="container">
+<div id="calls-interruption-edit" class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">

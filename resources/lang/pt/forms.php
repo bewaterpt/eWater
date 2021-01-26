@@ -51,6 +51,7 @@ return [
         'delegation' => 'Delegação',
         'scheduled' => 'Programada? ',
         'motive'=> 'Motivo',
+        'motive_list'=> 'Lista de Motivos de Interrupções',
     ],
     'placeholders' => [
         'name'=> 'Nome Apelido',
@@ -67,6 +68,7 @@ return [
         'hours' => 'Nº de Horas',
         'scheduled' => 'Programada ',
         'slug' => 'Nome máquina',
+        'motive'=> 'Motivo',
     ],
     'descriptors' => [
         'name' => "O Seu primeiro e último nome",

@@ -15,9 +15,11 @@ use Auth;
 use Illuminate\Support\Facades\Artisan;
 use Mail;
 use App\Models\InterruptionMotive as Motive;
+
 class InterruptionController extends Controller
 {
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
     }
 
@@ -30,7 +32,8 @@ class InterruptionController extends Controller
      *
      * @return \Illuminate\View\Factory View ID/Name: interruptions.index
      */
-    public function index(Request $request) {
+    public function index(Request $request)
+    {
 
         if ($request->ajax()) {
             $input = $request->input();
@@ -102,7 +105,8 @@ class InterruptionController extends Controller
      *
      * @return \Illuminate\View\Factory View ID/Name: interruptions.index
      */
-    public function unscheduled(Request $request) {
+    public function unscheduled(Request $request)
+    {
 
         if ($request->ajax()) {
             $input = $request->input();
@@ -179,7 +183,8 @@ class InterruptionController extends Controller
      *
      * @return \Illuminate\View\Factory View ID/Name: interruptions.index
      */
-    public function scheduled(Request $request) {
+    public function scheduled(Request $request)
+    {
 
         if (!$this->currentUser->hasRoles(['ewater_interrupcoes_programadas_criacao', 'admin', 'ewater_interrupcoes_programadas_edicao'])) {
             return redirect()->back()->withErrors(__('auth.permission_denied', ['route' => $request->path()]), 'custom');
@@ -256,7 +261,8 @@ class InterruptionController extends Controller
      *
      * @link dawda
      */
-    private function getBaseQuery($scheduled = null) {
+    private function getBaseQuery($scheduled = null)
+    {
 
         $int = Interruption::select('*');
 
@@ -277,7 +283,8 @@ class InterruptionController extends Controller
         return $int;
     }
 
-    private function buildData($rows) {
+    private function buildData($rows)
+    {
         $data = [];
 
         // dd($rows);
@@ -290,12 +297,12 @@ class InterruptionController extends Controller
             if ($this->permissionModel->can('interruptions.edit') && !$row->trashed()) {
                 if ($row->scheduled && !$this->currentUser->hasRoles(['ewater_interrupcoes_programadas_criacao', 'admin', 'ewater_interrupcoes_programadas_edicao'])) {
                 } else {
-                    $actions .= '<a class="text-primary edit px-1" href="' . route('interruptions.edit', ['id' => $row->id]) . '" title="'.trans('general.edit').'"><i class="fas fa-edit"></i></a>';
+                    $actions .= '<a class="text-primary edit px-1" href="' . route('interruptions.edit', ['id' => $row->id]) . '" title="' . trans('general.edit') . '"><i class="fas fa-edit"></i></a>';
                 }
             }
 
             if (($this->permissionModel->can('interruptions.delete') || ($this->currentUser->isAdmin())) && !$row->trashed()) {
-                $actions .= '<a class="text-danger delete px-1" href="' . route('interruptions.delete', ['id' => $row->id]) . '" title="'.trans('general.delete').'"><i class="fas fa-trash-alt"></i></a>';
+                $actions .= '<a class="text-danger delete px-1" href="' . route('interruptions.delete', ['id' => $row->id]) . '" title="' . trans('general.delete') . '"><i class="fas fa-trash-alt"></i></a>';
             }
 
             if ($row->trashed()) {
@@ -309,7 +316,7 @@ class InterruptionController extends Controller
             $type = '';
 
             if ($row->scheduled) {
-                $type = '<h5><i class="far fa-calendar-alt" title="' . __('general.interruptions.scheduled') .'"></i></h5>';
+                $type = '<h5><i class="far fa-calendar-alt" title="' . __('general.interruptions.scheduled') . '"></i></h5>';
             } else {
                 $type = '<h5><i class="far fa-calendar-times" title="' . __('general.interruptions.unscheduled') . '"></i></h5>';
             }
@@ -330,9 +337,10 @@ class InterruptionController extends Controller
         return $data;
     }
 
-    public function create() {
+    public function create()
+    {
         $delegations = Delegation::all();
-        $motives = Motive::all();
+        $motives = Motive::unscheduled();
 
         $type = '';
         $scheduled = false;
@@ -343,19 +351,20 @@ class InterruptionController extends Controller
         ) {
             $type = mb_strtolower(__('general.interruptions.is_scheduled'));
             $scheduled = true;
-            $motives = Motive::where('scheduled', true)->get();
+            $motives = Motive::scheduled();
         } else if (
             $this->currentUser->hasRoles(['ewater_interrupcoes_nao_programadas']) &&
             $this->currentUser->countRoles(['ewater_interrupcoes_programadas_criacao', 'ewater_interrupcoes_programadas_edicao']) == 0
         ) {
             $type = mb_strtolower(__('general.interruptions.is_unscheduled'));
-            $motives = Motive::where('scheduled', false)->get();
+            $motives = Motive::unscheduled();
         }
 
         return view('interruptions.create', ['delegations' => $delegations, 'type' => $type, 'scheduled' => $scheduled, 'motives' => $motives]);
     }
 
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
         $user = Auth::user();
 
         $this->validate($request, [
@@ -400,7 +409,8 @@ class InterruptionController extends Controller
         return redirect(route('interruptions.list'))->with('success');
     }
 
-    public function view(Request $request, $id) {
+    public function view(Request $request, $id)
+    {
         $interruption = Interruption::where('id', $id);
 
         if ($this->currentUser->isAdmin() || $this->permissionModel->can('interruptions.delete')) {
@@ -410,9 +420,10 @@ class InterruptionController extends Controller
         return view('interruptions.view', ['interruption' => $interruption->first()]);
     }
 
-    public function edit(Request $request, $id) {
+    public function edit(Request $request, $id)
+    {
         $int = Interruption::find($id);
-        $motives = Motive::all();
+        $motives = Motive::where('scheduled', $int->scheduled)->get();
 
         if ($int->scheduled && !$this->currentUser->hasRoles(['ewater_interrupcoes_programadas_edicao', 'admin'])) {
             return redirect()->back()->withErrors(__('auth.permission_denied', ['route' => $request->path()]), 'custom');
@@ -426,7 +437,8 @@ class InterruptionController extends Controller
         return view('interruptions.edit', ['delegations' => $delegations, 'interruption' => $int, 'motives' => $motives]);
     }
 
-    public function delete($id) {
+    public function delete($id)
+    {
         $interruption = Interruption::find($id);
 
         if ($interruption->synced && $interruption->outono_id != null) {
@@ -439,10 +451,10 @@ class InterruptionController extends Controller
         $interruption->delete();
 
         // if ($interruption->scheduled) {
-            try {
-                Mail::to(config('app.emails.interruptions_ao'))->send(new InterruptionCanceled($interruption));
-            } catch (\Exception $e) {
-            }
+        try {
+            Mail::to(config('app.emails.interruptions_ao'))->send(new InterruptionCanceled($interruption));
+        } catch (\Exception $e) {
+        }
         // }
 
         Artisan::call('interruptions:export');
@@ -457,7 +469,8 @@ class InterruptionController extends Controller
      *
      * @deprecated
      */
-    public function restore($id) {
+    public function restore($id)
+    {
         $interruption = Interruption::withTrashed()->find($id);
         $outonoInterruption = $interruption->scheduled ? new OutonoInterrupcoesProg() : new OutonoInterrupcoes();
 
@@ -478,11 +491,12 @@ class InterruptionController extends Controller
         return redirect()->back()->with('success');
     }
 
-    public function update(Request $request, $id) {
+    public function update(Request $request, $id)
+    {
         $user = Auth::user();
 
         $interruption = Interruption::find($id);
-        $prevInt = clone($interruption);
+        $prevInt = clone ($interruption);
         $interruption->work_id = $request->work_id;
         $interruption->start_date = $request->start_date;
         $interruption->reinstatement_date = $request->reinstatement_date;
@@ -510,7 +524,7 @@ class InterruptionController extends Controller
 
         try {
             // if ($interruption->scheduled) {
-                Mail::to(config('app.emails.interruptions_ao'))->send(new InterruptionUpdated($prevInt, $interruption));
+            Mail::to(config('app.emails.interruptions_ao'))->send(new InterruptionUpdated($prevInt, $interruption));
             // }
         } catch (\Exception $e) {
         }
@@ -518,5 +532,24 @@ class InterruptionController extends Controller
         Artisan::call('interruptions:export');
 
         return redirect(route('interruptions.list'))->with('success');
+    }
+
+    public function getMotiveList(Request $request)
+    {
+        $data = [
+            'status' => 500,
+            'message' => __('errors.unexpected_error')
+        ];
+        if ($request->scheduled === 'true') {
+            $data['message'] = 'OK';
+            $data['motives'] = Motive::scheduled();
+            $data['status'] = 200;
+        } else {
+            $data['message'] = 'OK';
+            $data['motives'] = Motive::unscheduled();
+            $data['status'] = 200;
+        }
+
+        return json_encode($data);
     }
 }

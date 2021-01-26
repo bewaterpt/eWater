@@ -62899,7 +62899,29 @@ $(function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-
+$(function () {
+  if ($('#calls-interruption-create').length > 0) {
+    $('input[name=scheduled]').on('change', function (event) {
+      console.log(event.target.value);
+      $.ajax({
+        url: '/interruptions/get-motive-list',
+        data: {
+          'scheduled': event.target.value
+        },
+        method: 'POST',
+        dataType: 'json',
+        success: function success(response) {
+          if (response.status == 200) {
+            $('#inputMotive').find('option').remove();
+            response.motives.forEach(function (motive) {
+              $('#inputMotive').append("<option value=\"".concat(motive.id, "\">").concat(motive.name, "</option>"));
+            });
+          }
+        }
+      });
+    });
+  }
+});
 
 /***/ }),
 

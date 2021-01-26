@@ -1,6 +1,6 @@
 $(() => {
     if ($('#datatable-motives').length > 0) {
-        window.datatable_motives = $('#datatable-motives').datatable({
+        window.datatable_motives = $('#datatable-motives').DataTable({
             responsive: true,
             searching: true,
             order: [[ 1, "desc" ]],
@@ -26,7 +26,7 @@ $(() => {
             processing: true,
             serverSide: true,
             // searchPanes: true,
-            ajax: '/daily-reports',
+            ajax: '/interruptions/motives',
             // lengthMenu: [[10, 50, 100], [10, 50, 100]],
             // displayLength: 10,
             // pagingType: 'simple',
