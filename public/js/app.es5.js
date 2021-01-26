@@ -1631,45 +1631,6 @@ $(function () {
   }, 1000);
 });
 $(function () {
-  if ($('#datatable-motives').length > 0) {
-    var _$$DataTable3;
-
-    window.datatable_motives = $('#datatable-motives').DataTable((_$$DataTable3 = {
-      responsive: true,
-      searching: true,
-      order: [[1, "desc"]]
-    }, _defineProperty(_$$DataTable3, "searching", true), _defineProperty(_$$DataTable3, "bFilter", false), _defineProperty(_$$DataTable3, "columnDefs", [{
-      targets: 'sorting-disabled',
-      orderable: false
-    }]), _defineProperty(_$$DataTable3, "lengthChange", true), _defineProperty(_$$DataTable3, "language", {
-      paginate: {
-        previous: '<i class="fa fa-angle-left"></i>',
-        next: '<i class="fa fa-angle-right"></i>'
-      },
-      sProcessing: loadingHTML,
-      sEmptyTable: "No Records",
-      url: "/config/dataTables/lang/" + window.lang + ".json"
-    }), _defineProperty(_$$DataTable3, "autoWidth", false), _defineProperty(_$$DataTable3, "processing", true), _defineProperty(_$$DataTable3, "serverSide", true), _defineProperty(_$$DataTable3, "ajax", '/interruptions/motives'), _defineProperty(_$$DataTable3, "columns", [{
-      data: 'actions',
-      name: 'actions',
-      "class": 'actions text-center px-0 sorting_disabled',
-      searchable: false,
-      sortable: false
-    }, {
-      data: 'name',
-      name: 'name',
-      searchable: true
-    }, {
-      data: 'scheduled',
-      name: 'scheduled',
-      searchable: false
-    }]), _defineProperty(_$$DataTable3, "drawCallback", function drawCallback(settings) {// var data = this.api().ajax.json();
-      // console.log('Settings: ', settings);
-      // console.log('Api: ', this.api());
-    }), _$$DataTable3));
-  }
-});
-$(function () {
   if ($('#map').length > 0) {
     var onMapClick = function onMapClick(e) {
       popup.setLatLng(e.latlng).setContent("You clicked the map at " + e.latlng.toString()).openOn(map);
