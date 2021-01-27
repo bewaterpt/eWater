@@ -19,6 +19,7 @@ use DB;
 use Log;
 use App\Rules\ReportWorkExists;
 use App\Rules\VehiclePlate;
+use App\Events\ReportStatusUpdated;
 
 class DailyReportController extends Controller
 {
@@ -249,11 +250,12 @@ class DailyReportController extends Controller
 
             $report->current_status = $processStatus->status()->first()->name;
             $report->save();
+            ReportLine::insert($rows);
+            DB::commit();
 
             Log::info(sprintf('User %s(%s) created report with id %d having %d lines', $user->name, $user->username, $report->id, sizeof($rows)));
             Log::info(sprintf('User %s(%s) created the following lines %s', $user->name, $user->username, json_encode($rows)));
-            ReportLine::insert($rows);
-            DB::commit();
+            ReportStatusUpdated::dispatch($report);
         } catch(\PDOException $e) {
             DB::rollBack();
             return redirect(route('daily_reports.list'))->withErrors(__('errors.unexpected_error'), 'custom');
@@ -344,9 +346,6 @@ class DailyReportController extends Controller
                 $newProcessStatus->comment = __('general.daily_reports.db_sync_success');
                 $newProcessStatus->save();
                 $newProcessStatus->stepForward();
-                $report = $newProcessStatus->report()->first();
-                $report->current_status = $newProcessStatus->status()->first()->name;
-                $report->save();
             } catch (\Exception $e) {
                 $newProcessStatus->comment = __('errors.db_sync_failed', ['msg' => '<b>' . $e->getMessage() . '</b> at line <b>' . $e->getline() . '</b><br><br>Stack trace: <br>' . $e->getTraceAsString()]);
                 $newProcessStatus->error = true;
@@ -376,9 +375,6 @@ class DailyReportController extends Controller
             $processStatus->save();
         }
         $newProcessStatus = $processStatus->stepBack();
-        $report = $newProcessStatus->report()->first();
-        $report->current_status = $newProcessStatus->status()->first()->name;
-        $report->save();
 
         return redirect()->back();
     }
@@ -390,10 +386,7 @@ class DailyReportController extends Controller
             $processStatus->save();
         }
         $processStatus->stepExtra();
-        $newProcessStatus = $processStatus->stepBack();
-        $report = $newProcessStatus->report()->first();
-        $report->current_status = $newProcessStatus->status()->first()->name;
-        $report->save();
+        $processStatus->stepBack();
 
         return redirect()->back();
     }
@@ -412,10 +405,7 @@ class DailyReportController extends Controller
         if($report->closed()) {
             return redirect()->back();
         } else {
-            $newProcessStatus = $report->cancel();
-            $report = $newProcessStatus->report()->first();
-            $report->current_status = $newProcessStatus->status()->first()->name;
-            $report->save();
+            $report->cancel();
 
             // TODO: Add translation string
             return redirect()->back()->with(['success' => 'Report successfuly canceled']);
@@ -544,6 +534,8 @@ class DailyReportController extends Controller
 
             ReportLine::insert($rows);
             DB::commit();
+
+            ReportStatusUpdated::dispatch($report);
         } catch(\PDOException $e) {
             DB::rollBack();
 
@@ -554,10 +546,7 @@ class DailyReportController extends Controller
 
     public function restore(Request $request, $progressStatusId) {
         $processStatus = ProcessStatus::find($progressStatusId);
-        $newProcessStatus = $processStatus->restore();
-        $report = $newProcessStatus->report()->first();
-        $report->current_status = $newProcessStatus->status()->first()->name;
-        $report->save();
+        $processStatus->restore();
 
         return redirect()->back();
     }
