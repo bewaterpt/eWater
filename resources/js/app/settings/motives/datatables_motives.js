@@ -42,6 +42,12 @@ $(() => {
                 // console.log('Settings: ', settings);
                 // console.log('Api: ', this.api());
             },
+            fnRowCallback: ( nRow, aData, iDisplayIndex, iDisplayIndexFull ) => {
+                console.log('Last Index: ', aData.trashed);
+                if (aData.trashed) {
+                    $('td', nRow).css('opacity', '0.8').css('background-color', '#ff717136');
+                }
+            },
             // serverData: function (sSource, aoData, fnCallback) {
             //     aoData.push({ "name": "", "value": "my_value" } );
             //     // etc
