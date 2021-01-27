@@ -56,7 +56,7 @@ $(() => {
                 {data: 'affected_area', name: 'affected_area', searchable: true},
                 {data: 'reinstatement_date', name: 'reinstatement_date', searchable: true},
                 // {data: 'coordinates', name: 'coordinates', searchable: true},
-                {data: 'scheduled', name: 'scheduled', searchable: false, calss: 'sorting-disabled text-center'},
+                {data: 'scheduled', name: 'scheduled', searchable: false, class: 'sorting-disabled text-center'},
                 // {data: 'outono_id', name: 'outono_id', searchable: false, calss: 'sorting-disabled text-center'},
             ],
             drawCallback: function(settings){
@@ -68,7 +68,6 @@ $(() => {
                 // }
             },
             fnRowCallback: ( nRow, aData, iDisplayIndex, iDisplayIndexFull ) => {
-                console.log('Last Index: ', aData.trashed);
                 if (aData.trashed) {
                     $('td', nRow).css('opacity', '0.8').css('background-color', '#ff717136');
                 }

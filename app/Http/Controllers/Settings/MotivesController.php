@@ -72,6 +72,10 @@ class MotivesController extends Controller
             foreach($rows as $row){
                 $actions = '';
 
+                if($row->trashed()){
+
+                }
+
                 if ($this->permissionModel->can('interruptions.motives.edit') && !$row->trashed()) {
                     if ($row->scheduled && !$this->currentUser->hasRoles(['admin'])) {
 
@@ -101,6 +105,7 @@ class MotivesController extends Controller
                     'actions' => $actions,
                     'name' => $row->name,
                     'scheduled' => $type,
+                    'trashed' => $row->trashed(),
                 ];
             }
 
