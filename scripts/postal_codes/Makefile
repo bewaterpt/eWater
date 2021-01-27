@@ -15,13 +15,13 @@ scrape:
 	# adicionar cabeçalho e normalizar com o csvclean
 	. `pwd`/.env/bin/activate; cat cp_header.txt todos_cp.csv | csvclean -d ";"; deactivate
 	rm -f todos_cp.csv
-	mv -f stdin_out.csv ../data/codigos_postais.csv
+	mv -f stdin_out.csv ../../storage/app/temp/codigos_postais.csv
 	. `pwd`/.env/bin/activate; cat conc_header.txt concelhos.csv | csvclean -d ";"; deactivate
 	rm -f concelhos.csv
-	mv -f stdin_out.csv ../data/concelhos.csv
+	mv -f stdin_out.csv ../../storage/app/temp/concelhos.csv
 	. `pwd`/.env/bin/activate; cat dist_header.txt distritos.csv | csvclean -d ";"; deactivate
 	rm -f distritos.csv
-	mv -f stdin_out.csv ../data/distritos.csv
+	mv -f stdin_out.csv ../../storage/app/temp/distritos.csv
 
 install:
 	virtualenv .env --python=/usr/bin/python3 --prompt=\(codpostais\)

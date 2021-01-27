@@ -39,10 +39,10 @@ class syncAddresses extends Command
      */
     public function handle()
     {
-        $rows = Excel::toCollection([], '/srv/postal_codes/data/codigos_postais.csv');
-        foreach($rows as $key => $row) {
-            if($key = 0) {
-
+        shell_exec('cd ' . base_path('scripts/postal_codes') . '; make scrape');
+        $rows = Excel::toCollection([], storage_path('app') . '/temp/codigos_postais.csv');
+        foreach ($rows as $key => $row) {
+            if ($key = 0) {
             }
 
             dd($row);
