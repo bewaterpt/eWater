@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\ReportStatusUpdated;
+use Cache;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 
@@ -26,6 +27,7 @@ class UpdateReportStatusValues
      */
     public function handle(ReportStatusUpdated $event)
     {
+        Cache::forget('datatable_reports');
         $event->report->current_status = $event->report->getCurrentStatus()->first()->name;
         $event->report->save();
     }

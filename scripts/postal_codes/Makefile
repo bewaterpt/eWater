@@ -41,3 +41,17 @@ deploy:
 	git add ../data/codigos_postais.csv
 	git commit -m "Atualização automática"
 	git push origin master
+
+installwin:
+    virtualenv .env --python=C:\Python39\python.exe --prompt=\(codpostais\)
+	. `pwd`/.env/bin/activate; pip install -r requirements.txt
+	@echo "--------------------------------------------------------------------------------------------"
+	@echo ""
+	@echo "Tudo instalado!"
+	@echo "Agora, copia o credenciais.sample.ini para credenciais.ini:"
+	@echo "    cp credenciais.sample.ini credenciais.ini"
+	@echo ""
+	@echo "E edita o ficheiro com o teu username e password no CTT.pt."
+	@echo "Depois, é só correr:"
+	@echo "    make scrape"
+	@echo ""
