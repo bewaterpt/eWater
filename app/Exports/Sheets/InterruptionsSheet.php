@@ -26,42 +26,19 @@ class InterruptionsSheet implements FromArray, WithTitle, WithMapping, WithHeadi
      * @return Builder
      */
     public function array(): array {
-        $inter = [
-            'scheduled' => '',
-            'start_date' => '',
-            'affected_area' => '',
-            'reinstatement_date' => '',
-        ];
+        // $inter = [
+        //     'scheduled' => '',
+        //     'start_date' => '',
+        //     'affected_area' => '',
+        //     'reinstatement_date' => '',
+        // ];
 
-        // dd(Carbon::now()->subSeconds(172800*2)->format('Y-m-d H:i:s'));
+        $int = Interruption::select('scheduled', 'start_date', 'affected_area', 'reinstatement_date')->where('scheduled', $this->scheduled)->where('start_date', '>', Carbon::now()->subMonth(1)->format('y-m-d H:i:s'));
+        $int = $int->orderBy('updated_at')->orderBy('created_at');
+        // $this->scheduled ? $int->whereBetween('start_date', [Carbon::now()->subHours(48)->format('y-m-d H:i:s'), Carbon::now()->format('y-m-d H:i:s')]) : null ;
 
-        // dd(
-        //     Interruption::select('*')
-        //     ->where('scheduled', $this->scheduled)
-        //     ->whereBetween('start_date', [Carbon::now()->subSeconds(172800*2)->format('Y-m-d H:i:s'), Carbon::now()->format('Y-m-d H:i:s')])
-        //     ->orderByDesc('id')
-        //     // ->take($this->limit)
-        //     // ->get()
-        //     ->toSql()
-        //     // ->prepend($inter)
-        //     // ->toArray()
-        // );
 
-        // dd(Interruption::all()
-        // ->where('scheduled', $this->scheduled)
-        // ->sortByDesc('id')
-        // ->take($this->limit)->prepend($inter)->toArray());
-
-        $int = Interruption::all()
-        ->where('scheduled', $this->scheduled)
-        ->where('start_date', '>', Carbon::now()->subMonth(1)->format('y-m-d H:i:s'));
-
-        $this->scheduled ? $int->whereBetween('start_date', [Carbon::now()->subSeconds(172800)->format('y-m-d H:i:s'), Carbon::now()->format('y-m-d H:i:s')]) : null ;
-
-        $int = $int->sortByDesc('id')
-        ->take($this->limit)
-        ->prepend($inter)
-        ->toArray();
+        $int = $int->take($this->limit)->get()->toArray();
 
         return $int;
     }
