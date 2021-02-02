@@ -78,35 +78,29 @@ class DailyReportController extends Controller
 
             // dd($searchCols);
 
-            $cachedResults = Cache::remember('datatable_reports', 54000, function () use ($user, $searchCols, $sortDir, $sortCol, $limit, $offset) {
-                $reports = Report::select('reports.*');
-                if (!$user->isAdmin() && $user->teams()->exists()) {
-                    $reports->whereIn('team_id', $user->teams()->pluck('id'));
-                }
-
-                return $reports->get();
-            });
+            $reports = Report::select('reports.*');
+            if (!$user->isAdmin() && $user->teams()->exists()) {
+                $reports->whereIn('team_id', $user->teams()->pluck('id'));
+            }
 
             foreach ($searchCols as $searchCol) {
-                $cachedResults = $cachedResults->filter(function ($result) use ($searchCol) {
-                    return preg_match('/' . $searchCol['value'] . '/', $result->{$searchCol['name']});
-                });
+                $reports->where($searchCol['name'], 'rlike', $searchCol['value']);
             }
 
             // Get row count
-            $total = $cachedResults->count();
+            $total = $reports->count();
 
 
             // Set filters
             // /* Filter Placeholder */
 
             // Set limit and offset and get rows
-            $cachedResults = $cachedResults->sortBy($sortCol, SORT_REGULAR, $sortDir === 'desc' ? true : false)->skip($offset)->take($limit);
-            // $rows = $cachedResults->get();
+            $reports->orderBy($sortCol, $sortDir)->skip($offset)->take($limit);
+            $rows = $reports->get();
 
             // Add rows to array
             $data = [];
-            foreach ($cachedResults as $row) {
+            foreach ($rows as $row) {
 
                 $actions = '';
                 if ($this->permissionModel->can('daily_reports.view')) {
@@ -565,4 +559,14 @@ class DailyReportController extends Controller
 
         return redirect()->back();
     }
+
+    // public function next() {
+
+    // }
+
+    // public function prev(Request $request) {
+    //     $report = Report::find($request->id);
+
+    //     return $report ? : redirect()->back()->withErrors(__('errors.unexpected_error'), 'custom');
+    // }
 }
