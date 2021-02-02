@@ -34,7 +34,7 @@ class InterruptionsSheet implements FromArray, WithTitle, WithMapping, WithHeadi
         // ];
 
         $int = Interruption::select('scheduled', 'start_date', 'affected_area', 'reinstatement_date')->where('scheduled', $this->scheduled)->where('start_date', '>', Carbon::now()->subMonth(1)->format('y-m-d H:i:s'));
-        $int = $int->orderBy('updated_at')->orderBy('created_at');
+        $int = $int->orderBy('updated_at', 'desc')->orderBy('created_at', 'desc');
         // $this->scheduled ? $int->whereBetween('start_date', [Carbon::now()->subHours(48)->format('y-m-d H:i:s'), Carbon::now()->format('y-m-d H:i:s')]) : null ;
 
 
