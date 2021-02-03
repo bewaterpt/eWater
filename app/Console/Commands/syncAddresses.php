@@ -6,10 +6,8 @@ use Illuminate\Console\Command;
 use App\Models\District;
 use App\Models\Municipality;
 use App\Models\Street;
-use GuzzleHttp\Client;
-use Maatwebsite\Excel\Concerns\ToModel;
+use DB;
 use Box\Spout\Reader\Common\Creator\ReaderEntityFactory as REF;
-use Excel;
 
 class syncAddresses extends Command
 {
@@ -93,15 +91,16 @@ class syncAddresses extends Command
         $tempFile = storage_path('app').'/temp/concelhos.csv';
         $reader = REF::createReaderFromFile($tempFile);
         $reader->open($tempFile);
+
         foreach ($reader->getSheetIterator() as $sheet) {
             foreach ($sheet->getRowIterator() as $row) {
                 if ($index !== 0) {
                     $cells = $row->getCells();
 
                     $municipalities[] = [
-                        'municipality_code' => $cells[1]->getValue(),
-                        'district_code'=> $cells[0]->getValue(),
                         'designation'=> $cells[2]->getValue(),
+                        'district_code'=> $cells[0]->getValue(),
+                        'municipality_code' => $cells[1]->getValue(),
                     ];
 
                     unset($cells, $row);
@@ -117,8 +116,8 @@ class syncAddresses extends Command
         if ($municipalities->count() > 0) {
             $this->info('Inserting records in the database');
             foreach ($municipalities->chunk(200) as $municipalitiesChunk ) {
-                Municipality::insert($municipalitiesChunk->toArray());
-
+                $builder = DB::table((new Municipality)->getTable());
+                dd($builder->getGrammar()->compileInsert($builder, $municipalitiesChunk->toArray()));
             }
         } else {
             $this->info('Nothing to insert in the database');

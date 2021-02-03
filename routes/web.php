@@ -132,6 +132,8 @@ Route::group(['middleware' => ['web']], function () {
             Route::post('daily-reports/progress-status/{id}', 'DailyReportController@progressStatus')->name('daily_reports.next');
             Route::get('daily-reports/cancel/{id}', 'DailyReportController@cancel')->name('daily_reports.cancel');
             Route::get('daily-reports/restore/{id}', 'DailyReportController@restore')->name('daily_reports.restore');
+            Route::get('daily-reports/previous/{id}', 'DailyReportController@previous')->name('daily_reports.previous_report');
+            Route::get('daily-reports/next/{id}', 'DailyReportController@next')->name('daily_reports.next_report');
 
             // Interruptions
             Route::get('interruptions', 'InterruptionController@index')->name('interruptions.list');

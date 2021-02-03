@@ -63019,63 +63019,6 @@ $(function () {
 
 /***/ }),
 
-/***/ "./resources/js/app/settings/motives/datatables_motives.js":
-/*!*****************************************************************!*\
-  !*** ./resources/js/app/settings/motives/datatables_motives.js ***!
-  \*****************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-$(function () {
-  if ($('#datatable-motives').length > 0) {
-    var _$$DataTable;
-
-    window.datatable_motives = $('#datatable-motives').DataTable((_$$DataTable = {
-      responsive: true,
-      searching: true,
-      order: [[1, "desc"]]
-    }, _defineProperty(_$$DataTable, "searching", true), _defineProperty(_$$DataTable, "bFilter", false), _defineProperty(_$$DataTable, "columnDefs", [{
-      targets: 'sorting-disabled',
-      orderable: false
-    }]), _defineProperty(_$$DataTable, "lengthChange", true), _defineProperty(_$$DataTable, "language", {
-      paginate: {
-        previous: '<i class="fa fa-angle-left"></i>',
-        next: '<i class="fa fa-angle-right"></i>'
-      },
-      sProcessing: loadingHTML,
-      sEmptyTable: "No Records",
-      url: "/config/dataTables/lang/" + window.lang + ".json"
-    }), _defineProperty(_$$DataTable, "autoWidth", false), _defineProperty(_$$DataTable, "processing", true), _defineProperty(_$$DataTable, "serverSide", true), _defineProperty(_$$DataTable, "ajax", '/interruptions/motives'), _defineProperty(_$$DataTable, "columns", [{
-      data: 'actions',
-      name: 'actions',
-      "class": 'actions text-center px-0 sorting_disabled',
-      searchable: false,
-      sortable: false
-    }, {
-      data: 'name',
-      name: 'name',
-      searchable: true
-    }, {
-      data: 'scheduled',
-      name: 'scheduled',
-      searchable: false
-    }]), _defineProperty(_$$DataTable, "drawCallback", function drawCallback(settings) {// var data = this.api().ajax.json();
-      // console.log('Settings: ', settings);
-      // console.log('Api: ', this.api());
-    }), _defineProperty(_$$DataTable, "fnRowCallback", function fnRowCallback(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-      console.log('Last Index: ', aData.trashed);
-
-      if (aData.trashed) {
-        $('td', nRow).css('opacity', '0.8').css('background-color', '#ff717136');
-      }
-    }), _$$DataTable));
-  }
-});
-
-/***/ }),
-
 /***/ "./resources/js/app/settings/permissions/update.js":
 /*!*********************************************************!*\
   !*** ./resources/js/app/settings/permissions/update.js ***!
@@ -63960,34 +63903,33 @@ tinymce.addI18n('pt_PT', {
 /***/ }),
 
 /***/ 0:
-/*!**************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** multi ./resources/js/app.js ./resources/js/app/utility/tinymce.js ./resources/js/app/utility/datatables.js ./resources/js/app/utility/fixes.js ./resources/js/app/utility/ajax.js ./resources/js/app/settings/users/datatables_users.js ./resources/js/app/settings/teams/teams.js ./resources/js/app/interruptions/interruptions.js ./resources/js/app/interruptions/datatable_interruptions.js ./resources/js/app/settings/teams/datatables_teams.js ./resources/js/app/settings/forms/forms.js ./resources/js/app/settings/permissions/update.js ./resources/js/app/components/multiselect_listbox.js ./resources/js/app/components/tooltip.js ./resources/js/app/daily_reports/dailyReports.js ./resources/js/app/daily_reports/datatables_reports.js ./resources/js/app/calls/calls.js ./resources/js/app/calls/datatables_calls.js ./resources/js/app/settings/roles/datatables_roles.js ./resources/js/app/settings/motives/datatables_motives.js ./resources/js/app/test/test.js ./resources/sass/app.scss ***!
-  \**************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*!****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** multi ./resources/js/app.js ./resources/js/app/utility/tinymce.js ./resources/js/app/utility/datatables.js ./resources/js/app/utility/fixes.js ./resources/js/app/utility/ajax.js ./resources/js/app/settings/users/datatables_users.js ./resources/js/app/settings/teams/teams.js ./resources/js/app/interruptions/interruptions.js ./resources/js/app/interruptions/datatable_interruptions.js ./resources/js/app/settings/teams/datatables_teams.js ./resources/js/app/settings/forms/forms.js ./resources/js/app/settings/permissions/update.js ./resources/js/app/components/multiselect_listbox.js ./resources/js/app/components/tooltip.js ./resources/js/app/daily_reports/dailyReports.js ./resources/js/app/daily_reports/datatables_reports.js ./resources/js/app/calls/calls.js ./resources/js/app/calls/datatables_calls.js ./resources/js/app/settings/roles/datatables_roles.js ./resources/js/app/test/test.js ./resources/sass/app.scss ***!
+  \****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\Dev\eWater\resources\js\app.js */"./resources/js/app.js");
-__webpack_require__(/*! C:\Dev\eWater\resources\js\app\utility\tinymce.js */"./resources/js/app/utility/tinymce.js");
-__webpack_require__(/*! C:\Dev\eWater\resources\js\app\utility\datatables.js */"./resources/js/app/utility/datatables.js");
-__webpack_require__(/*! C:\Dev\eWater\resources\js\app\utility\fixes.js */"./resources/js/app/utility/fixes.js");
-__webpack_require__(/*! C:\Dev\eWater\resources\js\app\utility\ajax.js */"./resources/js/app/utility/ajax.js");
-__webpack_require__(/*! C:\Dev\eWater\resources\js\app\settings\users\datatables_users.js */"./resources/js/app/settings/users/datatables_users.js");
-__webpack_require__(/*! C:\Dev\eWater\resources\js\app\settings\teams\teams.js */"./resources/js/app/settings/teams/teams.js");
-__webpack_require__(/*! C:\Dev\eWater\resources\js\app\interruptions\interruptions.js */"./resources/js/app/interruptions/interruptions.js");
-__webpack_require__(/*! C:\Dev\eWater\resources\js\app\interruptions\datatable_interruptions.js */"./resources/js/app/interruptions/datatable_interruptions.js");
-__webpack_require__(/*! C:\Dev\eWater\resources\js\app\settings\teams\datatables_teams.js */"./resources/js/app/settings/teams/datatables_teams.js");
-__webpack_require__(/*! C:\Dev\eWater\resources\js\app\settings\forms\forms.js */"./resources/js/app/settings/forms/forms.js");
-__webpack_require__(/*! C:\Dev\eWater\resources\js\app\settings\permissions\update.js */"./resources/js/app/settings/permissions/update.js");
-__webpack_require__(/*! C:\Dev\eWater\resources\js\app\components\multiselect_listbox.js */"./resources/js/app/components/multiselect_listbox.js");
-__webpack_require__(/*! C:\Dev\eWater\resources\js\app\components\tooltip.js */"./resources/js/app/components/tooltip.js");
-__webpack_require__(/*! C:\Dev\eWater\resources\js\app\daily_reports\dailyReports.js */"./resources/js/app/daily_reports/dailyReports.js");
-__webpack_require__(/*! C:\Dev\eWater\resources\js\app\daily_reports\datatables_reports.js */"./resources/js/app/daily_reports/datatables_reports.js");
-__webpack_require__(/*! C:\Dev\eWater\resources\js\app\calls\calls.js */"./resources/js/app/calls/calls.js");
-__webpack_require__(/*! C:\Dev\eWater\resources\js\app\calls\datatables_calls.js */"./resources/js/app/calls/datatables_calls.js");
-__webpack_require__(/*! C:\Dev\eWater\resources\js\app\settings\roles\datatables_roles.js */"./resources/js/app/settings/roles/datatables_roles.js");
-__webpack_require__(/*! C:\Dev\eWater\resources\js\app\settings\motives\datatables_motives.js */"./resources/js/app/settings/motives/datatables_motives.js");
-__webpack_require__(/*! C:\Dev\eWater\resources\js\app\test\test.js */"./resources/js/app/test/test.js");
-module.exports = __webpack_require__(/*! C:\Dev\eWater\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! /home/bmartins/dev/eWater/resources/js/app.js */"./resources/js/app.js");
+__webpack_require__(/*! /home/bmartins/dev/eWater/resources/js/app/utility/tinymce.js */"./resources/js/app/utility/tinymce.js");
+__webpack_require__(/*! /home/bmartins/dev/eWater/resources/js/app/utility/datatables.js */"./resources/js/app/utility/datatables.js");
+__webpack_require__(/*! /home/bmartins/dev/eWater/resources/js/app/utility/fixes.js */"./resources/js/app/utility/fixes.js");
+__webpack_require__(/*! /home/bmartins/dev/eWater/resources/js/app/utility/ajax.js */"./resources/js/app/utility/ajax.js");
+__webpack_require__(/*! /home/bmartins/dev/eWater/resources/js/app/settings/users/datatables_users.js */"./resources/js/app/settings/users/datatables_users.js");
+__webpack_require__(/*! /home/bmartins/dev/eWater/resources/js/app/settings/teams/teams.js */"./resources/js/app/settings/teams/teams.js");
+__webpack_require__(/*! /home/bmartins/dev/eWater/resources/js/app/interruptions/interruptions.js */"./resources/js/app/interruptions/interruptions.js");
+__webpack_require__(/*! /home/bmartins/dev/eWater/resources/js/app/interruptions/datatable_interruptions.js */"./resources/js/app/interruptions/datatable_interruptions.js");
+__webpack_require__(/*! /home/bmartins/dev/eWater/resources/js/app/settings/teams/datatables_teams.js */"./resources/js/app/settings/teams/datatables_teams.js");
+__webpack_require__(/*! /home/bmartins/dev/eWater/resources/js/app/settings/forms/forms.js */"./resources/js/app/settings/forms/forms.js");
+__webpack_require__(/*! /home/bmartins/dev/eWater/resources/js/app/settings/permissions/update.js */"./resources/js/app/settings/permissions/update.js");
+__webpack_require__(/*! /home/bmartins/dev/eWater/resources/js/app/components/multiselect_listbox.js */"./resources/js/app/components/multiselect_listbox.js");
+__webpack_require__(/*! /home/bmartins/dev/eWater/resources/js/app/components/tooltip.js */"./resources/js/app/components/tooltip.js");
+__webpack_require__(/*! /home/bmartins/dev/eWater/resources/js/app/daily_reports/dailyReports.js */"./resources/js/app/daily_reports/dailyReports.js");
+__webpack_require__(/*! /home/bmartins/dev/eWater/resources/js/app/daily_reports/datatables_reports.js */"./resources/js/app/daily_reports/datatables_reports.js");
+__webpack_require__(/*! /home/bmartins/dev/eWater/resources/js/app/calls/calls.js */"./resources/js/app/calls/calls.js");
+__webpack_require__(/*! /home/bmartins/dev/eWater/resources/js/app/calls/datatables_calls.js */"./resources/js/app/calls/datatables_calls.js");
+__webpack_require__(/*! /home/bmartins/dev/eWater/resources/js/app/settings/roles/datatables_roles.js */"./resources/js/app/settings/roles/datatables_roles.js");
+__webpack_require__(/*! /home/bmartins/dev/eWater/resources/js/app/test/test.js */"./resources/js/app/test/test.js");
+module.exports = __webpack_require__(/*! /home/bmartins/dev/eWater/resources/sass/app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

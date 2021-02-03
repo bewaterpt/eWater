@@ -9,9 +9,13 @@ use App\Models\DailyReports\Status;
 use Auth;
 use Log;
 use App\User;
+use App\Events\ReportStatusUpdated;
 
 class ProcessStatus extends Model
 {
+
+    use SoftDeletes;
+
     protected $STATUS_EXTRA = 3;
     protected $STATUS_DB_SYNC = 6;
     protected $STATUS_FINISHED = 7;
@@ -111,6 +115,7 @@ class ProcessStatus extends Model
             $nextProcessStatus = false;
         }
 
+        ReportStatusUpdated::dispatch($this->report()->first());
         Log::info(sprintf('User %s(%s) progressed report with id %d to state %s(%s).', $user->name, $user->username, $this->report()->first()->id, $nextProcessStatus->status()->first()->name, $nextProcessStatus->status()->first()->slug));
 
         return $nextProcessStatus;
@@ -137,6 +142,7 @@ class ProcessStatus extends Model
         $nextProcessStatus->previous()->associate($this->id);
         $nextProcessStatus->save();
 
+        ReportStatusUpdated::dispatch($this->report()->first());
         Log::info(sprintf('User %s(%s) regressed report with id %d to state %s(%s).', $user->name, $user->username, $this->report()->first()->id, $nextProcessStatus->status()->first()->name, $nextProcessStatus->status()->first()->slug));
 
         return $nextProcessStatus;
@@ -152,6 +158,7 @@ class ProcessStatus extends Model
         $nextProcessStatus->previous()->associate($this->id);
         $nextProcessStatus->save();
 
+        ReportStatusUpdated::dispatch($this->report()->first());
         Log::info(sprintf('User %s(%s) restored report with id %d to state %s(%s).', $user->name, $user->username, $this->report()->first()->id, $nextProcessStatus->status()->first()->name, $nextProcessStatus->status()->first()->slug));
 
         return $nextProcessStatus;
@@ -165,6 +172,8 @@ class ProcessStatus extends Model
         $this->concluded_at = Carbon::now();
         $this->user()->associate($user_id);
         $this->save();
+
+        ReportStatusUpdated::dispatch($this->report()->first());
 
         return true;
     }
