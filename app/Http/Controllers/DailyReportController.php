@@ -560,6 +560,7 @@ class DailyReportController extends Controller
         return redirect()->back();
     }
 
+<<<<<<< HEAD
     public function prev(Request $request) {
         $report = Report::find($request->id);
 
@@ -577,4 +578,15 @@ class DailyReportController extends Controller
         }
     }
 
+=======
+    // public function next() {
+
+    // }
+
+    // public function prev(Request $request) {
+    //     $report = Report::find($request->id);
+
+    //     return $report ? : redirect()->back()->withErrors(__('errors.unexpected_error'), 'custom');
+    // }
+>>>>>>> b5c9ce5a8dc8635e90a96435fc7c2d312b95805f
 }
