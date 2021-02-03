@@ -97,10 +97,10 @@ class syncAddresses extends Command
             foreach ($sheet->getRowIterator() as $row) {
                 if ($index !== 0) {
                     $cells = $row->getCells();
-
+                    //$str = ltrim($str, '0');
                     $municipalities[] = [
-                        'municipality_code' => $cells[1]->getValue(),
-                        'district_code'=> $cells[0]->getValue(),
+                        'municipality_code' => intval($cells[1]->getValue()),
+                        'district_code'=> intval($cells[0]->getValue()),
                         'designation'=> $cells[2]->getValue(),
                     ];
 
@@ -133,8 +133,6 @@ class syncAddresses extends Command
             foreach ($sheet->getRowIterator() as $row) {
                 if ($index !== 0) {
                     $cells = $row->getCells();
-
-                    dd();
 
                     $addresses[] = [
                         'district_code' => $cells[0]->getValue(),
