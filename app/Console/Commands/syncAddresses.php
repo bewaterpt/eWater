@@ -51,40 +51,40 @@ class syncAddresses extends Command
         // }
 
         //Distritos
-        // $index = 0;
-        // $tempFile = storage_path('app').'/temp/distritos.csv';
-        // $reader = REF::createReaderFromFile($tempFile);
-        // $reader->open($tempFile);
-        // foreach ($reader->getSheetIterator() as $sheet) {
-        //     foreach ($sheet->getRowIterator() as $row) {
-        //         if ($index !== 0) {
-        //             $cells = $row->getCells();
+        $index = 0;
+        $tempFile = storage_path('app').'/temp/distritos.csv';
+        $reader = REF::createReaderFromFile($tempFile);
+        $reader->open($tempFile);
+        foreach ($reader->getSheetIterator() as $sheet) {
+            foreach ($sheet->getRowIterator() as $row) {
+                if ($index !== 0) {
+                    $cells = $row->getCells();
 
-        //             $districts[] = [
-        //                 'district_code' => $cells[0]->getValue(),
-        //                 'designation'=> $cells[1]->getValue(),
-        //             ];
+                    $districts[] = [
+                        'district_code' => $cells[0]->getValue(),
+                        'designation'=> $cells[1]->getValue(),
+                    ];
 
-        //             unset($cells, $row);
-        //             gc_collect_cycles();
-        //             $index++;
-        //         }else {
-        //             $index++;
-        //         }
+                    unset($cells, $row);
+                    gc_collect_cycles();
+                    $index++;
+                }else {
+                    $index++;
+                }
 
-        //     }
-        // }
-        // $districts = collect($districts);
-        // if ($districts->count() > 0) {
-        //     $this->info('Inserting records in the database');
+            }
+        }
+        $districts = collect($districts);
+        if ($districts->count() > 0) {
+            $this->info('Inserting records in the database');
 
-        //     foreach ($districts->chunk(200) as $district) {
-        //         District::insert($district->toArray());
+            foreach ($districts->chunk(200) as $district) {
+                District::insert($district->toArray());
 
-        //     }
-        // } else {
-        //     $this->info('Nothing to insert in the database');
-        // }
+            }
+        } else {
+            $this->info('Nothing to insert in the database');
+        }
 
         //Municipios
         $index = 0;
@@ -98,6 +98,7 @@ class syncAddresses extends Command
                     $cells = $row->getCells();
 
                     $municipalities[] = [
+                        'id' => intval(intval($cells[0]->getValue()) . $cells[1]->getValue()),
                         'designation'=> $cells[2]->getValue(),
                         'district_code'=> $cells[0]->getValue(),
                         'municipality_code' => $cells[1]->getValue(),
@@ -116,8 +117,7 @@ class syncAddresses extends Command
         if ($municipalities->count() > 0) {
             $this->info('Inserting records in the database');
             foreach ($municipalities->chunk(200) as $municipalitiesChunk ) {
-                $builder = DB::table((new Municipality)->getTable());
-                dd($builder->getGrammar()->compileInsert($builder, $municipalitiesChunk->toArray()));
+                Municipality::insert($municipalitiesChunk->toArray());
             }
         } else {
             $this->info('Nothing to insert in the database');
