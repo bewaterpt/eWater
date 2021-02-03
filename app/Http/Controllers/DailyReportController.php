@@ -17,8 +17,10 @@ use DateTime;
 use Auth;
 use DB;
 use Log;
+use Cache;
 use App\Rules\ReportWorkExists;
 use App\Rules\VehiclePlate;
+use App\Events\ReportStatusUpdated;
 
 class DailyReportController extends Controller
 {
@@ -30,7 +32,8 @@ class DailyReportController extends Controller
      *
      * Initializes class variables, if needed, and, the parent constructor
      */
-    public function __contruct() {
+    public function __contruct()
+    {
         parent::__construct();
         $this->workObject = new OutonoObras();
     }
@@ -44,7 +47,8 @@ class DailyReportController extends Controller
      *
      * @return View view()
      */
-    public function index(Request $request) {
+    public function index(Request $request)
+    {
         $user = Auth::user();
 
         if ($request->ajax()) {
@@ -79,9 +83,6 @@ class DailyReportController extends Controller
                 $reports->whereIn('team_id', $user->teams()->pluck('id'));
             }
 
-
-            // dd($searchCols[0]['name']);
-
             foreach ($searchCols as $searchCol) {
                 $reports->where($searchCol['name'], 'rlike', $searchCol['value']);
             }
@@ -89,12 +90,12 @@ class DailyReportController extends Controller
             // Get row count
             $total = $reports->count();
 
+
             // Set filters
             // /* Filter Placeholder */
 
             // Set limit and offset and get rows
-            $reports->orderBy('reports.' . $sortCol, $sortDir);
-            $reports->take($limit)->skip($offset);
+            $reports->orderBy($sortCol, $sortDir)->skip($offset)->take($limit);
             $rows = $reports->get();
 
             // Add rows to array
@@ -103,10 +104,10 @@ class DailyReportController extends Controller
 
                 $actions = '';
                 if ($this->permissionModel->can('daily_reports.view')) {
-                    $actions .= '<a class="text-info edit mr-1" href="' . route('daily_reports.view', ['id' => $row->id]) . '" title="'.trans('general.view').'"><i class="fas fa-eye"></i></a>';
+                    $actions .= '<a class="text-info edit mr-1" href="' . route('daily_reports.view', ['id' => $row->id]) . '" title="' . trans('general.view') . '"><i class="fas fa-eye"></i></a>';
                 }
                 if ($this->permissionModel->can('daily_reports.edit')) {
-                    $actions .= '<a class="text-info edit" href="' . route('daily_reports.edit', ['id' => $row->id]) . '" title="'.trans('general.edit').'"><i class="fas fa-edit"></i></a>';
+                    $actions .= '<a class="text-info edit" href="' . route('daily_reports.edit', ['id' => $row->id]) . '" title="' . trans('general.edit') . '"><i class="fas fa-edit"></i></a>';
                 }
 
                 $info = '';
@@ -135,11 +136,10 @@ class DailyReportController extends Controller
                 'draw' => intval($input['draw']),
                 'recordsTotal' => $total,
                 'recordsFiltered' => $total,
-                'data' => $data
+                'data' => $data,
             ];
 
-            echo json_encode($output);
-            die;
+            return json_encode($output);
         }
 
         $statuses = DB::select(DB::raw('SELECT DISTINCT s.id as "id", s.name as "name" from ewater.reports as r
@@ -168,7 +168,8 @@ class DailyReportController extends Controller
      * or
      * @return View view()
      */
-    public function create(Request $request) {
+    public function create(Request $request)
+    {
         $currentUserTeams = Auth::user()->teams()->get();
         $articles = Article::getDailyReportRelevantArticles()->pluck('designation', 'id');
         $teams = Team::all();
@@ -177,7 +178,7 @@ class DailyReportController extends Controller
         if (Auth::user()->isAdmin()) {
             $workers = User::all();
         } else {
-            $workers = User::whereHas('teams', function ($query) use ($currentUserTeams){
+            $workers = User::whereHas('teams', function ($query) use ($currentUserTeams) {
                 $query->whereIn('id', $currentUserTeams);
             })->whereHas('roles', function ($query) {
                 $query->where('slug', "!=", "admin");
@@ -188,7 +189,8 @@ class DailyReportController extends Controller
         return view('daily_reports.create', ['articles' => $this->helper->sortArray(array_flip($articles->toArray())), 'workers' => $workers, 'teams' => $currentUserTeams]);
     }
 
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
         $user = Auth::user();
         $input = $request->json()->all();
 
@@ -249,12 +251,13 @@ class DailyReportController extends Controller
 
             $report->current_status = $processStatus->status()->first()->name;
             $report->save();
+            ReportLine::insert($rows);
+            DB::commit();
 
             Log::info(sprintf('User %s(%s) created report with id %d having %d lines', $user->name, $user->username, $report->id, sizeof($rows)));
             Log::info(sprintf('User %s(%s) created the following lines %s', $user->name, $user->username, json_encode($rows)));
-            ReportLine::insert($rows);
-            DB::commit();
-        } catch(\PDOException $e) {
+            ReportStatusUpdated::dispatch($report);
+        } catch (\PDOException $e) {
             DB::rollBack();
             return redirect(route('daily_reports.list'))->withErrors(__('errors.unexpected_error'), 'custom');
         }
@@ -271,7 +274,8 @@ class DailyReportController extends Controller
      *
      * @return View view()
      */
-    public function view(Request $request, $reportId) {
+    public function view(Request $request, $reportId)
+    {
         $this->workObject = new OutonoObras;
         $report = Report::find($reportId);
         $user = Auth::user();
@@ -288,7 +292,7 @@ class DailyReportController extends Controller
         $processStatuses = $report->processStatus()->orderBy('created_at', 'desc')->orderBy('id', 'desc')->get();
 
 
-        return view('daily_reports.view', [ 'report' => $report, 'processStatuses' => $processStatuses, 'workObject' => $this->workObject, 'statusObj' => $statusObject]);
+        return view('daily_reports.view', ['report' => $report, 'processStatuses' => $processStatuses, 'workObject' => $this->workObject, 'statusObj' => $statusObject]);
     }
 
     /**
@@ -300,7 +304,8 @@ class DailyReportController extends Controller
      *
      * @return Array $data
      */
-    public function getArticlePrice(Request $request) {
+    public function getArticlePrice(Request $request)
+    {
         $data = [
             'status' => 500,
             'msg' => 'Unexpected error',
@@ -328,7 +333,8 @@ class DailyReportController extends Controller
      * @param Request $request
      * @param Int $processStatusId
      */
-    public function progressStatus(Request $request, $progressStatusId) {
+    public function progressStatus(Request $request, $progressStatusId)
+    {
         $processStatus = ProcessStatus::find($progressStatusId);
         if ($request->input('comment') !== "") {
             $processStatus->comment = $request->input('comment');
@@ -337,16 +343,13 @@ class DailyReportController extends Controller
         $newProcessStatus = $processStatus->stepForward();
         // Log::info(sprintf('User %s(%s) progressed report with id %d to state %s(%s) lines.', Auth::user()->name, Auth::user()->username, $processStatus->report()->first()->id, $newProcessStatus->status()->first()->name, $newProcessStatus->status()->first()->slug));
 
-        if($newProcessStatus->status()->first()->id === $processStatus->getStatusDBSync()) {
+        if ($newProcessStatus->status()->first()->id === $processStatus->getStatusDBSync()) {
             try {
                 $output = null;
                 Artisan::call('reports:sync', ['reports' => $processStatus->report()->first()->id], $output);
                 $newProcessStatus->comment = __('general.daily_reports.db_sync_success');
                 $newProcessStatus->save();
                 $newProcessStatus->stepForward();
-                $report = $newProcessStatus->report()->first();
-                $report->current_status = $newProcessStatus->status()->first()->name;
-                $report->save();
             } catch (\Exception $e) {
                 $newProcessStatus->comment = __('errors.db_sync_failed', ['msg' => '<b>' . $e->getMessage() . '</b> at line <b>' . $e->getline() . '</b><br><br>Stack trace: <br>' . $e->getTraceAsString()]);
                 $newProcessStatus->error = true;
@@ -369,31 +372,27 @@ class DailyReportController extends Controller
      * @param Request $request
      * @param Int $processStatusId
      */
-    public function regressStatus(Request $request, $progressStatusId) {
+    public function regressStatus(Request $request, $progressStatusId)
+    {
         $processStatus = ProcessStatus::find($progressStatusId);
         if ($request->input('comment') !== "") {
             $processStatus->comment = $request->input('comment');
             $processStatus->save();
         }
         $newProcessStatus = $processStatus->stepBack();
-        $report = $newProcessStatus->report()->first();
-        $report->current_status = $newProcessStatus->status()->first()->name;
-        $report->save();
 
         return redirect()->back();
     }
 
-    public function progressExtra(Request $request, $progressStatusId) {
+    public function progressExtra(Request $request, $progressStatusId)
+    {
         $processStatus = ProcessStatus::find($progressStatusId);
         if ($request->input('comment') !== "") {
             $processStatus->comment = $request->input('comment');
             $processStatus->save();
         }
         $processStatus->stepExtra();
-        $newProcessStatus = $processStatus->stepBack();
-        $report = $newProcessStatus->report()->first();
-        $report->current_status = $newProcessStatus->status()->first()->name;
-        $report->save();
+        $processStatus->stepBack();
 
         return redirect()->back();
     }
@@ -406,23 +405,22 @@ class DailyReportController extends Controller
      * @param Request $request
      * @param Int $reportId
      */
-    public function cancel(Request $request, $reportId) {
+    public function cancel(Request $request, $reportId)
+    {
         $report = Report::find($reportId);
 
-        if($report->closed()) {
+        if ($report->closed()) {
             return redirect()->back();
         } else {
-            $newProcessStatus = $report->cancel();
-            $report = $newProcessStatus->report()->first();
-            $report->current_status = $newProcessStatus->status()->first()->name;
-            $report->save();
+            $report->cancel();
 
             // TODO: Add translation string
             return redirect()->back()->with(['success' => 'Report successfuly canceled']);
         }
     }
 
-    public function getProcessStatusComment(Request $request) {
+    public function getProcessStatusComment(Request $request)
+    {
         $data = [
             'status' => 500,
             'msg' => 'Unexpected error',
@@ -442,20 +440,20 @@ class DailyReportController extends Controller
         return json_encode($data);
     }
 
-    public function edit(Request $request, $reportId) {
+    public function edit(Request $request, $reportId)
+    {
         $report = Report::find($reportId);
         $currentUserTeams = Auth::user()->teams()->pluck('id');
         $articles = Article::getDailyReportRelevantArticles()->pluck('id', 'designation');
         $workers = null;
 
         if ($report->getCurrentStatus()->first()->userCanProgress()) {
-
         }
 
         if (Auth::user()->isAdmin()) {
             $workers = User::all();
         } else {
-            $workers = User::whereHas('teams', function ($query) use ($currentUserTeams){
+            $workers = User::whereHas('teams', function ($query) use ($currentUserTeams) {
                 $query->whereIn('id', $currentUserTeams);
             })->whereHas('roles', function ($query) {
                 $query->where('slug', "!=", "admin");
@@ -483,14 +481,15 @@ class DailyReportController extends Controller
             }
         }
 
-        foreach($works as $work) {
+        foreach ($works as $work) {
             $works[$work[0]->work_number] = collect($work);
         }
 
         return view('daily_reports.edit', ['report' => $report, 'workers' => $workers, 'articles' => $articles, 'works' => $works, 'transportData' => $worksTranportData, 'teams' => $teams]);
     }
 
-    public function update(Request $request) {
+    public function update(Request $request)
+    {
         $user = Auth::user();
         $input = $request->json()->all();
 
@@ -538,13 +537,14 @@ class DailyReportController extends Controller
                         'worker' => $reportRow['worker'],
                         'driven_km' => $reportRow['driven_km'],
                     ];
-
                 }
             }
 
             ReportLine::insert($rows);
             DB::commit();
-        } catch(\PDOException $e) {
+
+            ReportStatusUpdated::dispatch($report);
+        } catch (\PDOException $e) {
             DB::rollBack();
 
             return redirect()->back()->withErrors(__('errors.unexpected_error'), 'custom');
@@ -552,13 +552,21 @@ class DailyReportController extends Controller
         return route('daily_reports.view', ['id' => $request->id]);
     }
 
-    public function restore(Request $request, $progressStatusId) {
+    public function restore(Request $request, $progressStatusId)
+    {
         $processStatus = ProcessStatus::find($progressStatusId);
-        $newProcessStatus = $processStatus->restore();
-        $report = $newProcessStatus->report()->first();
-        $report->current_status = $newProcessStatus->status()->first()->name;
-        $report->save();
+        $processStatus->restore();
 
         return redirect()->back();
     }
+
+    // public function next() {
+
+    // }
+
+    // public function prev(Request $request) {
+    //     $report = Report::find($request->id);
+
+    //     return $report ? : redirect()->back()->withErrors(__('errors.unexpected_error'), 'custom');
+    // }
 }

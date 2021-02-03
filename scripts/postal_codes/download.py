@@ -51,12 +51,13 @@ def run():
     # Fazer o login
 
     browser.visit('https://www.ctt.pt/fecas/login')
-    if browser.find_by_id('cookie-warning'):
-        browser.find_by_id('cookie-warning').first.find_by_css('.close').first.click()
 
-    browser.find_by_id('username').first.fill(username)
-    browser.find_by_id('password').first.fill(password)
-    browser.find_by_name('submit').first.click()
+    if browser.find_by_css('#cookie-warning') and browser.is_element_visible_by_css('#cookie-warning .close'):
+        browser.find_by_css('#cookie-warning .close').first.click()
+
+    browser.find_by_css('#username').first.fill(username)
+    browser.find_by_css('#password').first.fill(password)
+    browser.find_by_css('button[name=submit]').first.click()
 
     # Ir ao URL do ficheiro
 
