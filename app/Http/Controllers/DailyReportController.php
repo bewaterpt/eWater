@@ -80,7 +80,7 @@ class DailyReportController extends Controller
 
             $reports = Report::select('reports.*');
             if (!$user->isAdmin() && $user->teams()->exists()) {
-                $reports->whereIn('team_id', $user->teams()->pluck('id'));
+                $reports->whereIn('team_id', $user->teams->pluck('id'));
             }
 
             foreach ($searchCols as $searchCol) {
@@ -111,7 +111,7 @@ class DailyReportController extends Controller
                 }
 
                 $info = '';
-                if ($row->processStatus()->where('error', true)->count() > 0) {
+                if ($row->processStatus->where('error', true)->count() > 0) {
                     $info = '<i class="ri-lg ri-alert-line text-danger" title="' . __('info.report_has_errors') . '"></i>';
                 }
 
@@ -125,7 +125,7 @@ class DailyReportController extends Controller
                     'status' => $row->current_status,
                     'quantity' => $this->helper->decimalHoursToTimeValue($row->getTotalHours()),
                     'driven_km' => $row->driven_km,
-                    'team' => $row->team()->first()->name,
+                    'team' => $row->team->name,
                     'date' => (new DateTime($row->date))->format('Y-m-d'),
                     'info' => $info
                 ];
@@ -289,7 +289,7 @@ class DailyReportController extends Controller
             return redirect()->back()->withErrors(__('errors.dont_belong_to_report_team', ['reportId' => $reportId]), 'custom');
         }
 
-        $processStatuses = $report->processStatus()->orderBy('created_at', 'desc')->orderBy('id', 'desc')->get();
+        $processStatuses = $report->processStatus->sortByDesc('created_at')->sortByDesc('id');
 
 
         return view('daily_reports.view', ['report' => $report, 'processStatuses' => $processStatuses, 'workObject' => $this->workObject, 'statusObj' => $statusObject]);
@@ -560,6 +560,25 @@ class DailyReportController extends Controller
         return redirect()->back();
     }
 
+<<<<<<< HEAD
+    public function prev(Request $request) {
+        $report = Report::find($request->id);
+
+        if ($report->isLast()) {
+            return redirect()->back()->withErrors(__('errors.last_report'), 'custom');
+        }
+
+        return $report ? : redirect()->back()->withErrors(__('errors.unexpected_error'), 'custom');
+    }
+    public function next(Request $request) {
+        $report = Report::find($request->id);
+
+        if ($report->isLast()) {
+            return redirect()->back()->withErrors(__('errors.last_report'), 'custom');
+        }
+    }
+
+=======
     // public function next() {
 
     // }
@@ -569,4 +588,5 @@ class DailyReportController extends Controller
 
     //     return $report ? : redirect()->back()->withErrors(__('errors.unexpected_error'), 'custom');
     // }
+>>>>>>> b5c9ce5a8dc8635e90a96435fc7c2d312b95805f
 }

@@ -20,11 +20,11 @@
                     <div class="card-header">
                         @Lang('general.daily_reports.report', ['number' => $report->id]) {{ $report->closed() ? '(' . __('general.daily_reports.closed_by_user_at_time', [ 'name' => $report->latestUpdate()->user()->first()->name, 'time' => $report->latestUpdate()->concluded_at->diffForHumans()]) . ')' : '' }}
                         <span class="float-right">
-                            @if(!$report->closed() && $report->getCurrentStatus()->first()->userCanProgress() && !$report->synced)
+                            @if(!$report->closed() && $report->getCurrentStatus->userCanProgress() && !$report->synced)
                                 <a href="{{ route('daily_reports.edit', ['id' => $report->id]) }}" class="text-info edit">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                @if($report->getCurrentStatus()->first()->slug !== $statusObj->where('enabled', true)->where('id', '!=', $statusObj->first()->id)->orderBy('id')->first()->slug)
+                                @if($report->getCurrentStatus->slug !== $statusObj->where('enabled', true)->where('id', '!=', $statusObj->first()->id)->orderBy('id')->first()->slug)
                                     <a class="btn-link back text-danger" title="{{__('tooltips.daily_reports.prev')}}" data-toggle="modal" data-target="#modalPrevStatus" href="#">
                                         <i class="fas fa-step-backward"></i>
                                     </a>
@@ -194,8 +194,8 @@
                                         <tr class="{{ $processStatus->closed() ? 'bg-soft-danger' : ''}}">
                                             <td class="actions text-center">
                                                 @if(!$report->closed())
-                                                    @if(!$processStatus->concluded_at && $processStatus->status()->first()->userCanProgress())
-                                                        @if($processStatus->status()->first()->slug !== $statusObj->where('enabled', true)->where('id', '!=', $statusObj->first()->id)->orderBy('id')->first()->slug)
+                                                    @if(!$processStatus->concluded_at && $processStatus->status->userCanProgress())
+                                                        @if($processStatus->status->slug !== $statusObj->where('enabled', true)->where('id', '!=', $statusObj->first()->id)->orderBy('id')->first()->slug)
                                                             <a class="btn-link back text-danger" title="{{ __('tooltips.daily_reports.prev') }}" data-toggle="modal" data-target="#modalPrevStatus" href="#">
                                                                 <i class="fas fa-step-backward"></i>
                                                             </a>
@@ -217,11 +217,11 @@
                                                 {{ $loop->index + 1 }}
                                             </td> --}}
                                             <td>
-                                                {{ $processStatus->status()->first()->name }}
+                                                {{ $processStatus->status->name }}
                                             </td>
                                             <td>
-                                                @if($processStatus->user()->first())
-                                                    {{ $processStatus->user()->first()->name }}
+                                                @if($processStatus->user)
+                                                    {{ $processStatus->user->name }}
                                                 @else
                                                     @Lang('general.daily_reports.processing')
                                                 @endif
@@ -234,8 +234,8 @@
                                                 @endif
                                             </td>
                                             <td>
-                                                @if($processStatus->previous()->first())
-                                                    {{ $processStatus->previous()->first()->status()->first()->name }}
+                                                @if($processStatus->previous)
+                                                    {{ $processStatus->previous->status->name }}
                                                 @else
                                                     -
                                                 @endif
@@ -249,16 +249,12 @@
                 </div>
             </div>
             <div class="change-report col-md-12 px-0 py-3">
-                @if(!$report->isFirst())
-                    <a href="{{ route('daily_reports.view', ['id' => $report->getPreviousId()]) }}" class="btn btn-primary">
-                        <i class="fas fa-chevron-left"></i> @Lang('general.daily_reports.previous_report')
-                    </a>
-                @endif
-                @if (!$report->isLast())
-                    <a href="{{ route('daily_reports.view', ['id' => $report->getNextId()]) }}" class="btn btn-primary float-right">
-                        @Lang('general.daily_reports.next_report') <i class="fas fa-chevron-right"></i>
-                    </a>
-                @endif
+                <a href="{{ route('daily_reports.previous', ['id' => $report->id]) }}" class="btn btn-primary">
+                    <i class="fas fa-chevron-left"></i> @Lang('general.daily_reports.previous_report')
+                </a>
+                <a href="{{ route('daily_reports.next', ['id' => $report->id]) }}" class="btn btn-primary float-right">
+                    @Lang('general.daily_reports.next_report') <i class="fas fa-chevron-right"></i>
+                </a>
             </div>
         </div>
     </div>
