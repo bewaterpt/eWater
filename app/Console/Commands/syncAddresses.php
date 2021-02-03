@@ -135,7 +135,6 @@ class syncAddresses extends Command
 
                     $addresses[] = [
                         'district_code' => $cells[0]->getValue(),
-                        'municipality_code'=> $cells[1]->getValue(),
                         'locality_code'=> $cells[2]->getValue(),
                         'locality_name'=> $cells[3]->getValue(),
                         'artery_code'=> (int)$cells[4]->getValue(),
@@ -150,6 +149,7 @@ class syncAddresses extends Command
                         'postal_code'=> $cells[14]->getValue(),
                         'postal_code_extension'=> $cells[15]->getValue(),
                         'postal_designation'=> $cells[16]->getValue(),
+                        'municipality_id'=>intval(intval($cells[0]->getValue()) . $cells[1]->getValue()),
                     ];
 
                     unset($cells, $row);
@@ -165,8 +165,8 @@ class syncAddresses extends Command
         if ($addresses->count() > 0) {
             $this->info('Inserting records in the database');
 
-            foreach ($addresses->chunk(200) as $address) {
-                Street::insert($address->toArray());
+            foreach ($addresses->chunk(200) as $addressesChunk) {
+                Street::insert($addressesChunk->toArray());
 
             }
         } else {
