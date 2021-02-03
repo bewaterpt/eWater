@@ -29,10 +29,13 @@ class Kernel extends ConsoleKernel
         Commands\SyncPermissions::class,
         Commands\SyncReports::class,
         Commands\SyncInterruptions::class,
+        Commands\syncAddresses::class,
+
     ];
 
     /**
      * Define the application's command schedule.
+     *
      *
      * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
      * @return void
@@ -46,7 +49,9 @@ class Kernel extends ConsoleKernel
         $schedule->command('roles:update')->dailyAt('08:05');
         $schedule->command('file:cleartemp')->dailyAt('04:00');
         $schedule->command('interruptions:update')->dailyAt('05:00');
+
         // $schedule->command('reports:sync')->hourly();
+
     }
 
     /**
