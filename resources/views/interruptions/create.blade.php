@@ -70,6 +70,11 @@
                                 </select>
                             </div>
                             <div class="form-group col-md-12">
+                                <label for="inputAddress">@Lang('forms.fields.address')</label>
+                                <input type="text" name="address" class="form-control" id="inputAddress" value="" required>
+                                </select>
+                            </div>
+                            <div class="form-group col-md-12">
                                 <label for="inputAffectedArea">@Lang('forms.fields.affected_area')</label>
                                 <textarea name="affected_area" id="inputAffectedArea" class="form-control text-editor @error('affected_area') is-invalid @enderror"></textarea>
                                 @if(!$errors->custom->any())

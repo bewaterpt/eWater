@@ -51,10 +51,13 @@ class syncAddresses extends Command
         // }
 
         //Distritos
+
         $index = 0;
         $tempFile = storage_path('app').'/temp/distritos.csv';
         $reader = REF::createReaderFromFile($tempFile);
         $reader->open($tempFile);
+
+
         foreach ($reader->getSheetIterator() as $sheet) {
             foreach ($sheet->getRowIterator() as $row) {
                 if ($index !== 0) {
@@ -75,15 +78,18 @@ class syncAddresses extends Command
             }
         }
         $districts = collect($districts);
-        if ($districts->count() > 0) {
+        $dbDistricts = District::whereIn('district_code', [$districts->pluck('district_code')]);
+
+        if ($districts->count() > $dbDistricts->count()) {
             $this->info('Inserting records in the database');
 
-            foreach ($districts->chunk(200) as $district) {
-                District::insert($district->toArray());
+            foreach ($districts->chunk(200) as $districtsChunk) {
+                District::insert($districtsChunk->toArray());
 
             }
         } else {
             $this->info('Nothing to insert in the database');
+
         }
 
         //Municipios
@@ -114,7 +120,8 @@ class syncAddresses extends Command
             }
         }
         $municipalities = collect($municipalities);
-        if ($municipalities->count() > 0) {
+        $dbMunicipalities = Municipality::whereIn('municipality_code', [$municipalities->pluck('municipality_code')]);
+        if ($municipalities->count() > $dbMunicipalities->count()) {
             $this->info('Inserting records in the database');
             foreach ($municipalities->chunk(200) as $municipalitiesChunk ) {
                 Municipality::insert($municipalitiesChunk->toArray());
@@ -149,6 +156,7 @@ class syncAddresses extends Command
                         'postal_code'=> $cells[14]->getValue(),
                         'postal_code_extension'=> $cells[15]->getValue(),
                         'postal_designation'=> $cells[16]->getValue(),
+                        'municipality_code'=>intval($cells[1]->getValue()),
                         'municipality_id'=>intval(intval($cells[0]->getValue()) . $cells[1]->getValue()),
                     ];
 
@@ -162,7 +170,8 @@ class syncAddresses extends Command
             }
         }
         $addresses = collect($addresses);
-        if ($addresses->count() > 0) {
+        $dbAddresses = Municipality::whereIn('municipality_code', [$addresses->pluck('municipality_code')]);
+        if ($dbAddresses->count() > $addresses->count()) {
             $this->info('Inserting records in the database');
 
             foreach ($addresses->chunk(200) as $addressesChunk) {

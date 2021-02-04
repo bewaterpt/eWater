@@ -52,6 +52,7 @@ return [
         'scheduled' => 'Programada? ',
         'motive'=> 'Motivo',
         'motive_list'=> 'Lista de Motivos de Interrupções',
+        'address' => 'Morada',
     ],
     'placeholders' => [
         'name'=> 'Nome Apelido',

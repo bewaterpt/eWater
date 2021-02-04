@@ -31,8 +31,6 @@ class CreateMunicipalitiesIdColumnAndRearangePrimaryKeyOnStreetsTable extends Mi
         Schema::table('streets', function (Blueprint $table) {
             $table->dropForeign(['municipality_id']);
             $table->dropColumn('municipality_id');
-
-            $table->foreign('municipality_code')->references('municipality_code')->on('municipalities');
         });
     }
 }
