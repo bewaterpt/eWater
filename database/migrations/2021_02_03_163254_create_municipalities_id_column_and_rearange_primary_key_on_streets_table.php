@@ -14,9 +14,9 @@ class CreateMunicipalitiesIdColumnAndRearangePrimaryKeyOnStreetsTable extends Mi
     public function up()
     {
         Schema::table('streets', function (Blueprint $table) {
-            $table->bigInteger('municipality_id')->unsigned();
             $table->dropForeign(['municipality_code']);
-            $table->dropColumn('municipality_code');
+            $table->bigInteger('municipality_id')->unsigned();
+
             $table->foreign('municipality_id')->references('id')->on('municipalities');
         });
     }
@@ -29,10 +29,10 @@ class CreateMunicipalitiesIdColumnAndRearangePrimaryKeyOnStreetsTable extends Mi
     public function down()
     {
         Schema::table('streets', function (Blueprint $table) {
-            $table->dropForeign(['municipality_code']);
-            $table->foreign('municipality_code')->references('municipality_code')->on('municipalities');
+            $table->dropForeign(['municipality_id']);
             $table->dropColumn('municipality_id');
-            $table->bigInteger('municipality_code')->unsigned();
+
+            $table->foreign('municipality_code')->references('municipality_code')->on('municipalities');
         });
     }
 }

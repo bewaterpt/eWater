@@ -126,7 +126,7 @@ class DailyReportController extends Controller
                     'quantity' => $this->helper->decimalHoursToTimeValue($row->getTotalHours()),
                     'driven_km' => $row->driven_km,
                     'team' => $row->team->name,
-                    'date' => (new DateTime($row->date))->format('Y-m-d'),
+                    'date' => Carbon::parse($row->date)->format('Y-m-d'),
                     'info' => $info
                 ];
             }
@@ -560,8 +560,7 @@ class DailyReportController extends Controller
         return redirect()->back();
     }
 
-<<<<<<< HEAD
-    public function prev(Request $request) {
+    public function previous(Request $request) {
         $report = Report::find($request->id);
 
         if ($report->isLast()) {
@@ -570,6 +569,7 @@ class DailyReportController extends Controller
 
         return $report ? : redirect()->back()->withErrors(__('errors.unexpected_error'), 'custom');
     }
+
     public function next(Request $request) {
         $report = Report::find($request->id);
 
@@ -578,15 +578,4 @@ class DailyReportController extends Controller
         }
     }
 
-=======
-    // public function next() {
-
-    // }
-
-    // public function prev(Request $request) {
-    //     $report = Report::find($request->id);
-
-    //     return $report ? : redirect()->back()->withErrors(__('errors.unexpected_error'), 'custom');
-    // }
->>>>>>> b5c9ce5a8dc8635e90a96435fc7c2d312b95805f
 }
