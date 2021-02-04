@@ -3,7 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\ReportStatusUpdated;
-use Cache;
+use Illuminate\Support\Carbon;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 
@@ -27,6 +27,7 @@ class UpdateReportStatusValues
      */
     public function handle(ReportStatusUpdated $event)
     {
+        $event->report->date = Carbon::parse($event->report->getEntryDate())->format('Y-m-d H:i:s');
         $event->report->current_status = $event->report->getCurrentStatus()->first()->name;
         $event->report->save();
     }
