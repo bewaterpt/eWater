@@ -28,8 +28,7 @@ class AddForeignKeyToLocationCodeInStreetsTable extends Migration
     public function down()
     {
         Schema::table('streets', function (Blueprint $table) {
-            $table->int('locality_code')->change();
-            $table->dropForeign('locality_code');
+            $table->dropForeign(['locality_code']);
         });
     }
 }

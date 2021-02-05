@@ -54,6 +54,7 @@ class syncAddresses extends Command
 
         //Municipios
         $index = 0;
+        $checker = false;
         $tempFile = storage_path('app').'/temp/concelhos.csv';
         $reader = REF::createReaderFromFile($tempFile);
         $reader->open($tempFile);
@@ -79,11 +80,25 @@ class syncAddresses extends Command
             }
         }
         $municipalities = collect($municipalities);
-        $dbMunicipalities = Municipality::whereIn('municipality_code', [$municipalities->pluck('municipality_code')]);
-        if ($municipalities->count() > $dbMunicipalities->count()) {
+        $dbMunicipalities = Municipality::pluck('id')->toArray();
+
+        if ($municipalities->count() != sizeof($dbMunicipalities)) {
             $this->info('Inserting records in the database');
+
             foreach ($municipalities->chunk(200) as $municipalitiesChunk ) {
-                Municipality::insert($municipalitiesChunk->toArray());
+
+                foreach ($municipalitiesChunk as $municipalityChunk){
+                    $municipalityChunk = collect($municipalityChunk);
+                    //
+
+                    if(!in_array($municipalityChunk['id'],$dbMunicipalities)){
+
+                        Municipality::insert($municipalityChunk->toArray());
+                    }
+                    else{
+                        $checker = true;
+                    }
+                }
             }
         } else {
             $this->info('Nothing to insert in the database');
@@ -92,6 +107,7 @@ class syncAddresses extends Command
 
         //Moradas
         $index = 0;
+        $checker = false;
         $tempFile = storage_path('app').'/temp/codigos_postais.csv';
         $reader = REF::createReaderFromFile($tempFile);
         $reader->open($tempFile);
@@ -144,24 +160,43 @@ class syncAddresses extends Command
             }
         };
 
-        $dbLocalities = Locality::whereIn('locality_code', [$localities->pluck('locality_code')]);
-        if ($localities->count() > $dbLocalities->count()) {
+
+        $dbLocalities = Locality::pluck('locality_code')->toArray();
+
+        if ($localities->count() != sizeOf($dbLocalities)) {
             $this->info('Inserting records in the database');
 
             foreach ($localities->chunk(200) as $localitiesChunk) {
-                Locality::insert($localitiesChunk->toArray());
 
+                foreach ($localitiesChunk as $localityChunk){
+                    $localityChunk = collect($localityChunk);
+                    //
+
+                    if(!in_array($localityChunk['id'],$dbLocalities)){
+
+                        Locality::insert($localityChunk->toArray());
+                    }
+                }
             }
         } else {
             $this->info('Nothing to insert in the database');
         }
 
-        $dbAddresses = Street::whereIn('id', [$addresses->pluck('id')]);
-        if ($addresses->count() > $dbAddresses->count()) {
+        $dbAddresses = Street::pluck('id')->toArray();
+        if ($addresses->count() != sizeOf($dbAddresses)) {
             $this->info('Inserting records in the database');
 
             foreach ($addresses->chunk(200) as $addressesChunk) {
-                Street::insert($addressesChunk->toArray());
+
+                foreach ($localitiesChunk as $localityChunk){
+                    $addressesChunk = collect($addressesChunk);
+                    //
+
+                    if(!in_array($addressesChunk['id'],$dbAddresses)){
+
+                        Street::insert($addressesChunk->toArray());
+                    }
+                }
 
             }
         } else {

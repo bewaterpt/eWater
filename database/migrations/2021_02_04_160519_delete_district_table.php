@@ -40,7 +40,7 @@ class DeleteDistrictTable extends Migration
         });
 
         Schema::table('streets',function(Blueprint $table){
-            $table->bigInteger('district_code');
+            $table->bigInteger('district_code')->unsigned();
             $table->foreign('district_code')->references('district_code')->on('districts');
         });
 
