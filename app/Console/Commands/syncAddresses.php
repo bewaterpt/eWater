@@ -9,6 +9,7 @@ use App\Models\Municipality;
 use App\Models\Street;
 use DB;
 use Box\Spout\Reader\Common\Creator\ReaderEntityFactory as REF;
+use League\Flysystem\Adapter\Local;
 
 class syncAddresses extends Command
 {
@@ -131,6 +132,7 @@ class syncAddresses extends Command
         $localities = collect($localities);
         $addresses = collect($addresses);
 
+
         foreach($addresses as $address){
             if (!isset($localities[$address['locality_code']])) {
                 $localities[$address['locality_code']] = [
@@ -142,7 +144,8 @@ class syncAddresses extends Command
             }
         };
 
-        if ($localities->count() > 0) {
+        $dbLocalities = Locality::whereIn('locality_code', [$localities->pluck('locality_code')]);
+        if ($localities->count() > $dbLocalities->count()) {
             $this->info('Inserting records in the database');
 
             foreach ($localities->chunk(200) as $localitiesChunk) {
@@ -153,8 +156,8 @@ class syncAddresses extends Command
             $this->info('Nothing to insert in the database');
         }
 
-
-        if ($addresses->count() > 0) {
+        $dbAddresses = Street::whereIn('id', [$addresses->pluck('id')]);
+        if ($addresses->count() > $dbAddresses->count()) {
             $this->info('Inserting records in the database');
 
             foreach ($addresses->chunk(200) as $addressesChunk) {
