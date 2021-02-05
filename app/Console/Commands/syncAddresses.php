@@ -50,48 +50,6 @@ class syncAddresses extends Command
         //     dd($row);
         // }
 
-        //Distritos
-
-        $index = 0;
-        $tempFile = storage_path('app').'/temp/distritos.csv';
-        $reader = REF::createReaderFromFile($tempFile);
-        $reader->open($tempFile);
-
-
-        foreach ($reader->getSheetIterator() as $sheet) {
-            foreach ($sheet->getRowIterator() as $row) {
-                if ($index !== 0) {
-                    $cells = $row->getCells();
-
-                    $districts[] = [
-                        'district_code' => $cells[0]->getValue(),
-                        'designation'=> $cells[1]->getValue(),
-                    ];
-
-                    unset($cells, $row);
-                    gc_collect_cycles();
-                    $index++;
-                }else {
-                    $index++;
-                }
-
-            }
-        }
-        $districts = collect($districts);
-        $dbDistricts = District::whereIn('district_code', [$districts->pluck('district_code')]);
-
-        if ($districts->count() > $dbDistricts->count()) {
-            $this->info('Inserting records in the database');
-
-            foreach ($districts->chunk(200) as $districtsChunk) {
-                District::insert($districtsChunk->toArray());
-
-            }
-        } else {
-            $this->info('Nothing to insert in the database');
-
-        }
-
         //Municipios
         $index = 0;
         $tempFile = storage_path('app').'/temp/concelhos.csv';
