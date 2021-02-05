@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use App\Models\District;
+use App\Models\Locality;
 use App\Models\Municipality;
 use App\Models\Street;
 use DB;
@@ -50,48 +51,6 @@ class syncAddresses extends Command
         //     dd($row);
         // }
 
-        //Distritos
-
-        $index = 0;
-        $tempFile = storage_path('app').'/temp/distritos.csv';
-        $reader = REF::createReaderFromFile($tempFile);
-        $reader->open($tempFile);
-
-
-        foreach ($reader->getSheetIterator() as $sheet) {
-            foreach ($sheet->getRowIterator() as $row) {
-                if ($index !== 0) {
-                    $cells = $row->getCells();
-
-                    $districts[] = [
-                        'district_code' => $cells[0]->getValue(),
-                        'designation'=> $cells[1]->getValue(),
-                    ];
-
-                    unset($cells, $row);
-                    gc_collect_cycles();
-                    $index++;
-                }else {
-                    $index++;
-                }
-
-            }
-        }
-        $districts = collect($districts);
-        $dbDistricts = District::whereIn('district_code', [$districts->pluck('district_code')]);
-
-        if ($districts->count() > $dbDistricts->count()) {
-            $this->info('Inserting records in the database');
-
-            foreach ($districts->chunk(200) as $districtsChunk) {
-                District::insert($districtsChunk->toArray());
-
-            }
-        } else {
-            $this->info('Nothing to insert in the database');
-
-        }
-
         //Municipios
         $index = 0;
         $tempFile = storage_path('app').'/temp/concelhos.csv';
@@ -104,10 +63,9 @@ class syncAddresses extends Command
                     $cells = $row->getCells();
                     //$str = ltrim($str, '0');
                     $municipalities[] = [
-                        'id' => intval(intval($cells[0]->getValue()) . $cells[1]->getValue()),
                         'designation'=> $cells[2]->getValue(),
-                        'district_code'=> $cells[0]->getValue(),
                         'municipality_code' => $cells[1]->getValue(),
+                        'id'=>intval(intval($cells[0]->getValue()) . $cells[1]->getValue()),
                     ];
 
                     unset($cells, $row);
@@ -130,6 +88,7 @@ class syncAddresses extends Command
             $this->info('Nothing to insert in the database');
         }
 
+
         //Moradas
         $index = 0;
         $tempFile = storage_path('app').'/temp/codigos_postais.csv';
@@ -141,7 +100,6 @@ class syncAddresses extends Command
                     $cells = $row->getCells();
 
                     $addresses[] = [
-                        'district_code' => $cells[0]->getValue(),
                         'locality_code'=> $cells[2]->getValue(),
                         'locality_name'=> $cells[3]->getValue(),
                         'artery_code'=> (int)$cells[4]->getValue(),
@@ -169,9 +127,34 @@ class syncAddresses extends Command
 
             }
         }
+        $localities = [];
+        $localities = collect($localities);
         $addresses = collect($addresses);
-        $dbAddresses = Municipality::whereIn('municipality_code', [$addresses->pluck('municipality_code')]);
-        if ($dbAddresses->count() > $addresses->count()) {
+
+        foreach($addresses as $address){
+            if (!isset($localities[$address['locality_code']])) {
+                $localities[$address['locality_code']] = [
+                    'municipality_id'=>$address['municipality_id'],
+                    'municipality_code' => $address['municipality_code'],
+                    'locality_name' => $address['locality_name'],
+                    'locality_code' => $address['locality_code'],
+                ];
+            }
+        };
+
+        if ($localities->count() > 0) {
+            $this->info('Inserting records in the database');
+
+            foreach ($localities->chunk(200) as $localitiesChunk) {
+                Locality::insert($localitiesChunk->toArray());
+
+            }
+        } else {
+            $this->info('Nothing to insert in the database');
+        }
+
+
+        if ($addresses->count() > 0) {
             $this->info('Inserting records in the database');
 
             foreach ($addresses->chunk(200) as $addressesChunk) {
