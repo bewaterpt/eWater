@@ -256,7 +256,7 @@ class DailyReportController extends Controller
 
             Log::info(sprintf('User %s(%s) created report with id %d having %d lines', $user->name, $user->username, $report->id, sizeof($rows)));
             Log::info(sprintf('User %s(%s) created the following lines %s', $user->name, $user->username, json_encode($rows)));
-            ReportStatusUpdated::dispatch($report);
+            ReportStatusUpdated::dispatch($report, true);
         } catch (\PDOException $e) {
             DB::rollBack();
             return redirect(route('daily_reports.list'))->withErrors(__('errors.unexpected_error'), 'custom');
@@ -543,7 +543,7 @@ class DailyReportController extends Controller
             ReportLine::insert($rows);
             DB::commit();
 
-            ReportStatusUpdated::dispatch($report);
+            ReportStatusUpdated::dispatch($report, false);
         } catch (\PDOException $e) {
             DB::rollBack();
 

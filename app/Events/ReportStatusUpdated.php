@@ -16,6 +16,7 @@ class ReportStatusUpdated
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public $report;
+    public $create;
 
     /**
      * Create a new event instance.
