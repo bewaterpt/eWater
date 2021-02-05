@@ -13,8 +13,8 @@ class Street extends Model
         return $this->belongsTo('App\Models\Municipality');
     }
 
-    public function district() {
-        return $this->belongsTo('App\Models\District');
+    public function locality() {
+        return $this->belongsTo('App\Models\Locality');
     }
 
 }
