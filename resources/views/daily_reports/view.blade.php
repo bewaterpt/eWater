@@ -4,16 +4,12 @@
     <div id="daily-reports-view" class="container">
         <div class="row justify-content-center">
             <div class="change-report col-md-12 px-0 py-3">
-                @if(!$report->isFirst())
-                    <a href="{{ route('daily_reports.view', ['id' => $report->getPreviousId()]) }}" class="btn btn-primary">
-                        <i class="fas fa-chevron-left"></i> @Lang('general.daily_reports.previous_report')
-                    </a>
-                @endif
-                @if (!$report->isLast())
-                    <a href="{{ route('daily_reports.view', ['id' => $report->getNextId()]) }}" class="btn btn-primary float-right">
-                        @Lang('general.daily_reports.next_report') <i class="fas fa-chevron-right"></i>
-                    </a>
-                @endif
+                <a href="{{ route('daily_reports.previous_report', ['id' => $report->id]) }}" class="btn btn-primary">
+                    <i class="fas fa-chevron-left"></i> @Lang('general.daily_reports.previous_report')
+                </a>
+                <a href="{{ route('daily_reports.next_report', ['id' => $report->id]) }}" class="btn btn-primary float-right">
+                    @Lang('general.daily_reports.next_report') <i class="fas fa-chevron-right"></i>
+                </a>
             </div>
             <div class="col-md-12">
                 <div class="card">
@@ -249,10 +245,10 @@
                 </div>
             </div>
             <div class="change-report col-md-12 px-0 py-3">
-                <a href="{{ route('daily_reports.previous', ['id' => $report->id]) }}" class="btn btn-primary">
+                <a href="{{ route('daily_reports.previous_report', ['id' => $report->id]) }}" class="btn btn-primary">
                     <i class="fas fa-chevron-left"></i> @Lang('general.daily_reports.previous_report')
                 </a>
-                <a href="{{ route('daily_reports.next', ['id' => $report->id]) }}" class="btn btn-primary float-right">
+                <a href="{{ route('daily_reports.next_report', ['id' => $report->id]) }}" class="btn btn-primary float-right">
                     @Lang('general.daily_reports.next_report') <i class="fas fa-chevron-right"></i>
                 </a>
             </div>

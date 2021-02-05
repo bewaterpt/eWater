@@ -22,5 +22,9 @@ return [
                                     <li>00-00-AA</li>
                                     <li>AA-00-AA</li>
                                 </ul>",
-    'call_sync_in_progress' => "A Sincronização já está em progresso."
+    'call_sync_in_progress' => "A Sincronização já está em progresso.",
+    'first_report' => 'O Relatório #:id é o primeiro relatório disponível',
+    'last_report' => 'O Relatório #:id é o último relatório disponível',
+    'could_not_calculate_previous_report_id' => 'Não foi possível calcular o identificador do relatório anterior. Por favor contacte o helpdesk',
+    'could_not_calculate_next_report_id' => 'Não foi possível calcular o identificador do relatório seguinte. Por favor contacte o helpdesk',
 ];
