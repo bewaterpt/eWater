@@ -1,5 +1,5 @@
 $(() => {
-    if($('#calls-interruption-create').length > 0){
+    if($('#interruption-create').length > 0){
 
         $('input[name=scheduled]').on('change', (event) => {
             console.log(event.target.value);
@@ -15,24 +15,28 @@ $(() => {
                             $('#inputMotive').append(`<option value="${motive.id}">${motive.name}</option>`);
                         })
                     }
+
                 }
             });
         });
-        $('#inputAddress').on("keyup",function(){
+
+        $('#inputAddress').on("keyup", function() {
             var query = $(this).val();
-            if(query != '') {
+            if (query != '') {
                 $.ajax({
-                    url:"/interruptions/fetch",
-                    method:"POST",
+                    url: "/interruptions/fetch",
+                    method: "POST",
                     data: {query:query},
-                    success: function(data){
+                    dataType: 'json',
+                    success: function(data) {
+                        console.log(data);
+
                         $('#addressList').fadeIn();
-                        $('#addressList').html(data);
+                        // $('#addressList').html(data);
                     }
                 })
             }
         })
     }
-
-
+    }
 });
