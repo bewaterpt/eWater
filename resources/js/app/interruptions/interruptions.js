@@ -19,22 +19,5 @@ $(() => {
                 }
             });
         });
-        $('#inputAddress').on("keyup", function() {
-            var query = $(this).val();
-            if (query != '') {
-                $.ajax({
-                    url: "/interruptions/fetch",
-                    method: "POST",
-                    data: {query:query},
-                    dataType: 'json',
-                    success: function(data) {
-                        console.log(data);
-
-                        $('#addressList').fadeIn();
-                        // $('#addressList').html(data);
-                    }
-                })
-            }
-        })
     }
 });
