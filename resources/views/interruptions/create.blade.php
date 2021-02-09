@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div id="calls-interruption-create" class="container">
+<div id="interruption-create" class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
@@ -68,6 +68,14 @@
                                         <option value="{{ $motive->id }}">{{ $motive->name }}</option>
                                     @endforeach
                                 </select>
+                            </div>
+                            <div class="form-group col-md-12"  >
+                                <label for="inputAddress">@Lang('forms.fields.address')</label>
+                                <input type="text" name="address" id="inputAddress" class="form-control" />
+                                <div id="addressList">
+                                    <ul class="items">
+                                    </ul>
+                                </div>
                             </div>
                             <div class="form-group col-md-12">
                                 <label for="inputAffectedArea">@Lang('forms.fields.affected_area')</label>

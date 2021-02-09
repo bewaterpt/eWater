@@ -1,5 +1,6 @@
 $(() => {
-    if($('#calls-interruption-create').length > 0){
+    if($('#interruption-create').length > 0){
+
         $('input[name=scheduled]').on('change', (event) => {
             console.log(event.target.value);
             $.ajax({
@@ -18,5 +19,22 @@ $(() => {
                 }
             });
         });
+        $('#inputAddress').on("keyup", function() {
+            var query = $(this).val();
+            if (query != '') {
+                $.ajax({
+                    url: "/interruptions/fetch",
+                    method: "POST",
+                    data: {query:query},
+                    dataType: 'json',
+                    success: function(data) {
+                        console.log(data);
+
+                        $('#addressList').fadeIn();
+                        // $('#addressList').html(data);
+                    }
+                })
+            }
+        })
     }
 });

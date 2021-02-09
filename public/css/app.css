@@ -28455,3 +28455,31 @@ div.card table thead tr th {
   height: 20px;
 }
 
+#interruption-create form .form-group #addressList {
+  box-shadow: 0px 0px 4px 2px #00000061;
+  display: none;
+}
+
+#interruption-create form .form-group #addressList .show {
+  display: block;
+}
+
+#interruption-create form .form-group #addressList .items {
+  margin: 0;
+  padding: 0;
+}
+
+#interruption-create form .form-group #addressList .items .item {
+  padding: 5px 20px 5px;
+  list-style: none;
+  cursor: pointer;
+}
+
+#interruption-create form .form-group #addressList .items .item:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+#interruption-create form .form-group #addressList .items .item:active {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
