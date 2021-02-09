@@ -62918,6 +62918,23 @@ $(function () {
         }
       });
     });
+    $('#inputAddress').on("keyup", function () {
+      var query = $(this).val();
+
+      if (query != '') {
+        $.ajax({
+          url: "/interruptions/fetch",
+          method: "POST",
+          data: {
+            query: query
+          },
+          success: function success(data) {
+            $('#addressList').fadeIn();
+            $('#addressList').html(data);
+          }
+        });
+      }
+    });
   }
 });
 

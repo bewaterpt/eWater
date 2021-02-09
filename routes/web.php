@@ -145,6 +145,7 @@ Route::group(['middleware' => ['web']], function () {
             Route::get('interruptions/edit/{id}', 'InterruptionController@edit')->name('interruptions.edit');
             Route::post('interruptions/update/{id}', 'InterruptionController@update')->name('interruptions.update');
             Route::get('interruptions/delete/{id}', 'InterruptionController@delete')->name('interruptions.delete');
+            Route::post('interruptions/fetch', 'InterruptionController@fetch')->name('interruptions.fetch');
             // Route::get('interruptions/restore/{id}', 'InterruptionController@restore')->name('interruptions.restore');
 
             // Teams

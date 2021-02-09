@@ -197,7 +197,6 @@ class syncAddresses extends Command
                         Street::insert($addressesChunk->toArray());
                     }
                 }
-
             }
         } else {
             $this->info('Nothing to insert in the database');

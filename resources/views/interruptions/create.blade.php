@@ -69,6 +69,11 @@
                                     @endforeach
                                 </select>
                             </div>
+                            <div class="form-group col-md-12"  >
+                                <label for="inputMotive">@Lang('forms.fields.address')</label>
+                                <input type="text" name="address" id="inputAddress" class="form-control" />
+                                <div id="addressList"></div>
+                            </div>
                             <div class="form-group col-md-12">
                                 <label for="inputAffectedArea">@Lang('forms.fields.affected_area')</label>
                                 <textarea name="affected_area" id="inputAffectedArea" class="form-control text-editor @error('affected_area') is-invalid @enderror"></textarea>
