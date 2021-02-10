@@ -13,30 +13,28 @@ $(() => {
                         $('#inputMotive').find('option').remove();
                         response.motives.forEach((motive)=>{
                             $('#inputMotive').append(`<option value="${motive.id}">${motive.name}</option>`);
-                        })
+                        });
                     }
-
                 }
             });
         });
 
         $('#inputAddress').on("keyup", function() {
             var query = $(this).val();
+            console.log()
+
             if (query != '') {
                 $.ajax({
-                    url: "/interruptions/fetch",
+                    url: "/addresses/autocomplete",
                     method: "POST",
                     data: {query:query},
                     dataType: 'json',
                     success: function(data) {
                         console.log(data);
-
-                        $('#addressList').fadeIn();
-                        // $('#addressList').html(data);
                     }
-                })
+                });
             }
-        })
+        });
     }
-    }
+
 });

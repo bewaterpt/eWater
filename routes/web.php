@@ -50,6 +50,7 @@ Route::group(['middleware' => ['web']], function () {
         Route::post('daily-reports/article/get-info', 'DailyReportController@getArticlePrice')->name('daily_reports.article.get_price');
         Route::post('teams/get-users', 'Settings\TeamController@getTeamUsers')->name('settings.teams.get_users');
         Route::post('interruptions/get-motive-list', 'InterruptionController@getMotiveList')->name('interruptions.get_motive_list');
+        Route::post('addresses/autocomplete', 'AddressController@autocomplete')->name('addresses.autocomplete');
 
         Route::impersonate();
 

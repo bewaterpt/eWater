@@ -20,6 +20,7 @@ use App\Models\Locality;
 use App\Models\Street;
 
 
+
 class InterruptionController extends Controller
 {
     public function __construct()
@@ -372,34 +373,6 @@ class InterruptionController extends Controller
             'scheduled' => $scheduled,
             'motives' => $motives,
         ]);
-    }
-
-    public function fetch(Request $request){
-
-        if($request->get('query')){
-            $query = $request->get('query');
-            //dd($query);
-            $streets = Street::where('municipality_code', 21)->where('artery_title', 'like', "%{$query}%")->orWhere('municipality_code', 21)->where('artery_designation', 'like', "%{$query}%")->distinct()->join("localities","locality_code","=","streets.locality_code")->where('location_name', 'like', "%{$query}%")->get();
-            //dd($streets);
-            //$municipalities = Municipality::where('designation', 'LIKE', `%{ $query }%`)->get();
-            //$localities = Locality::where('locality_name', 'LIKE', `%{ $query }%`)->get();
-
-            $output = '<ul class="dropdown-menu"
-                style="display: block;
-                position: relative;">';
-            foreach($streets as $street) {
-
-                $output .= '<li><a href="#">'.$street->artery_type." ".$street->primary_preposition
-                ." ".$street->artery_title." ".
-                $street->secondary_preposition." ".
-                 $street->artery_designation." ".
-                 $street->section." "
-                .$street->locality_name.
-                '</a></li>';
-            }
-            $output .= '</ ul>';
-            echo $output;
-        }
     }
 
     public function store(Request $request)
