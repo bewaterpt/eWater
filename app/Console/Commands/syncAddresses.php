@@ -45,17 +45,12 @@ class syncAddresses extends Command
     public function handle()
     {
         //script Python para ler o ficheiro com Moradas
-        // shell_exec('cd ' . base_path('scripts/postal_codes') . '; make scrape');
-        // $rows = Excel::toCollection([], storage_path('app') . '/temp/codigos_postais.csv');
-        // foreach ($rows as $row) {
-        //     Street::insert($row->toArray());
-        //     dd($row);
-        // }
+        shell_exec('cd ' . base_path('scripts/postal_codes') . '; make scrape');
 
         //Municipios
         $index = 0;
         $checker = false;
-        $tempFile = storage_path('app').'/temp/concelhos.csv';
+        $tempFile = storage_path('app') . '/temp/concelhos.csv';
         $reader = REF::createReaderFromFile($tempFile);
         $reader->open($tempFile);
 
@@ -65,18 +60,17 @@ class syncAddresses extends Command
                     $cells = $row->getCells();
                     //$str = ltrim($str, '0');
                     $municipalities[] = [
-                        'designation'=> $cells[2]->getValue(),
+                        'designation' => $cells[2]->getValue(),
                         'municipality_code' => $cells[1]->getValue(),
-                        'id'=>intval(intval($cells[0]->getValue()) . $cells[1]->getValue()),
+                        'id' => intval(intval($cells[0]->getValue()) . $cells[1]->getValue()),
                     ];
 
                     unset($cells, $row);
                     gc_collect_cycles();
                     $index++;
-                }else {
+                } else {
                     $index++;
                 }
-
             }
         }
         $municipalities = collect($municipalities);
@@ -85,17 +79,16 @@ class syncAddresses extends Command
         if ($municipalities->count() != sizeof($dbMunicipalities)) {
             $this->info('Inserting records in the database');
 
-            foreach ($municipalities->chunk(200) as $municipalitiesChunk ) {
+            foreach ($municipalities->chunk(200) as $municipalitiesChunk) {
 
-                foreach ($municipalitiesChunk as $municipalityChunk){
+                foreach ($municipalitiesChunk as $municipalityChunk) {
                     $municipalityChunk = collect($municipalityChunk);
                     //
 
-                    if(!in_array($municipalityChunk['id'],$dbMunicipalities)){
+                    if (!in_array($municipalityChunk['id'], $dbMunicipalities)) {
 
                         Municipality::insert($municipalityChunk->toArray());
-                    }
-                    else{
+                    } else {
                         $checker = true;
                     }
                 }
@@ -108,7 +101,7 @@ class syncAddresses extends Command
         //Moradas
         $index = 0;
         $checker = false;
-        $tempFile = storage_path('app').'/temp/codigos_postais.csv';
+        $tempFile = storage_path('app') . '/temp/codigos_postais.csv';
         $reader = REF::createReaderFromFile($tempFile);
         $reader->open($tempFile);
         foreach ($reader->getSheetIterator() as $sheet) {
@@ -117,31 +110,30 @@ class syncAddresses extends Command
                     $cells = $row->getCells();
 
                     $addresses[] = [
-                        'locality_code'=> $cells[2]->getValue(),
-                        'locality_name'=> $cells[3]->getValue(),
-                        'artery_code'=> (int)$cells[4]->getValue(),
-                        'artery_type'=> $cells[5]->getValue(),
-                        'primary_preposition'=> $cells[6]->getValue(),
-                        'artery_title'=> $cells[7]->getValue(),
-                        'secondary_preposition'=> $cells[8]->getValue(),
-                        'artery_designation'=> $cells[9]->getValue(),
-                        'section'=> $cells[11]->getValue(),
-                        'door_number'=> $cells[12]->getValue(),
-                        'client_name'=> $cells[13]->getValue(),
-                        'postal_code'=> $cells[14]->getValue(),
-                        'postal_code_extension'=> $cells[15]->getValue(),
-                        'postal_designation'=> $cells[16]->getValue(),
-                        'municipality_code'=>intval($cells[1]->getValue()),
-                        'municipality_id'=>intval(intval($cells[0]->getValue()) . $cells[1]->getValue()),
+                        'locality_code' => $cells[2]->getValue(),
+                        'locality_name' => $cells[3]->getValue(),
+                        'artery_code' => (int)$cells[4]->getValue(),
+                        'artery_type' => $cells[5]->getValue(),
+                        'primary_preposition' => $cells[6]->getValue(),
+                        'artery_title' => $cells[7]->getValue(),
+                        'secondary_preposition' => $cells[8]->getValue(),
+                        'artery_designation' => $cells[9]->getValue(),
+                        'section' => $cells[11]->getValue(),
+                        'door_number' => $cells[12]->getValue(),
+                        'client_name' => $cells[13]->getValue(),
+                        'postal_code' => $cells[14]->getValue(),
+                        'postal_code_extension' => $cells[15]->getValue(),
+                        'postal_designation' => $cells[16]->getValue(),
+                        'municipality_code' => intval($cells[1]->getValue()),
+                        'municipality_id' => intval(intval($cells[0]->getValue()) . $cells[1]->getValue()),
                     ];
 
                     unset($cells, $row);
                     gc_collect_cycles();
                     $index++;
-                }else {
+                } else {
                     $index++;
                 }
-
             }
         }
         $localities = [];
@@ -149,16 +141,22 @@ class syncAddresses extends Command
         $addresses = collect($addresses);
 
 
-        foreach($addresses as $address){
+        foreach ($addresses as $address) {
             if (!isset($localities[$address['locality_code']])) {
                 $localities[$address['locality_code']] = [
-                    'municipality_id'=>$address['municipality_id'],
+                    'municipality_id' => $address['municipality_id'],
                     'municipality_code' => $address['municipality_code'],
                     'locality_name' => $address['locality_name'],
                     'locality_code' => $address['locality_code'],
                 ];
             }
         };
+
+        $localities->map(function ($locality) {
+            shell_exec('cd /home/bruno/documents; echo ' . implode(',', $locality->toArray()) . ' >> localities.txt');
+        });
+
+        die;
 
 
         $dbLocalities = Locality::pluck('locality_code')->toArray();
@@ -168,11 +166,11 @@ class syncAddresses extends Command
 
             foreach ($localities->chunk(200) as $localitiesChunk) {
 
-                foreach ($localitiesChunk as $localityChunk){
+                foreach ($localitiesChunk as $localityChunk) {
                     $localityChunk = collect($localityChunk);
                     //
 
-                    if(!in_array($localityChunk['id'],$dbLocalities)){
+                    if (!in_array($localityChunk['id'], $dbLocalities)) {
 
                         Locality::insert($localityChunk->toArray());
                     }
@@ -188,11 +186,11 @@ class syncAddresses extends Command
 
             foreach ($addresses->chunk(200) as $addressesChunk) {
 
-                foreach ($localitiesChunk as $localityChunk){
+                foreach ($localitiesChunk as $localityChunk) {
                     $addressesChunk = collect($addressesChunk);
                     //
 
-                    if(!in_array($addressesChunk['id'],$dbAddresses)){
+                    if (!in_array($addressesChunk['id'], $dbAddresses)) {
 
                         Street::insert($addressesChunk->toArray());
                     }
@@ -203,5 +201,3 @@ class syncAddresses extends Command
         }
     }
 }
-
-

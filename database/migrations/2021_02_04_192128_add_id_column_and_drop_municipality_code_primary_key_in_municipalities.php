@@ -15,21 +15,18 @@ class AddIdColumnAndDropMunicipalityCodePrimaryKeyInMunicipalities extends Migra
     {
         Schema::table('streets', function (Blueprint $table) {
             $table->dropForeign(['municipality_code']);
-
         });
         Schema::table('localities', function (Blueprint $table) {
             $table->dropForeign(['municipality_code']);
         });
 
         Schema::table('municipalities', function (Blueprint $table) {
-            $table->dropPrimary('municipality_code');
-            $table->bigInteger('id')->unsigned()->primary()->change();
+            $table->dropPrSimary('municipality_code');
         });
 
         Schema::table('streets', function (Blueprint $table) {
             $table->bigInteger('municipality_id')->unsigned();
             $table->foreign('municipality_id')->references('id')->on('municipalities');
-
         });
         Schema::table('localities', function (Blueprint $table) {
             $table->bigInteger('municipality_id')->unsigned();
@@ -46,7 +43,6 @@ class AddIdColumnAndDropMunicipalityCodePrimaryKeyInMunicipalities extends Migra
     {
         Schema::table('streets', function (Blueprint $table) {
             $table->dropForeign(['municipality_code']);
-
         });
         Schema::table('localities', function (Blueprint $table) {
             $table->dropForeign(['municipality_code']);
@@ -60,11 +56,9 @@ class AddIdColumnAndDropMunicipalityCodePrimaryKeyInMunicipalities extends Migra
 
         Schema::table('streets', function (Blueprint $table) {
             $table->foreign('municipality_code')->references('municipality_code')->on('municipalities');
-
         });
         Schema::table('localities', function (Blueprint $table) {
             $table->foreign('municipality_code')->references('municipality_code')->on('municipalities');
-
         });
     }
 }
