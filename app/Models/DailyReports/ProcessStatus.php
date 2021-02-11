@@ -115,7 +115,7 @@ class ProcessStatus extends Model
             $nextProcessStatus = false;
         }
 
-        ReportStatusUpdated::dispatch($this->report()->first());
+        ReportStatusUpdated::dispatch($this->report);
         Log::info(sprintf('User %s(%s) progressed report with id %d to state %s(%s).', $user->name, $user->username, $this->report()->first()->id, $nextProcessStatus->status()->first()->name, $nextProcessStatus->status()->first()->slug));
 
         return $nextProcessStatus;
@@ -142,7 +142,7 @@ class ProcessStatus extends Model
         $nextProcessStatus->previous()->associate($this->id);
         $nextProcessStatus->save();
 
-        ReportStatusUpdated::dispatch($this->report()->first());
+        ReportStatusUpdated::dispatch($this->report);
         Log::info(sprintf('User %s(%s) regressed report with id %d to state %s(%s).', $user->name, $user->username, $this->report()->first()->id, $nextProcessStatus->status()->first()->name, $nextProcessStatus->status()->first()->slug));
 
         return $nextProcessStatus;
@@ -158,7 +158,7 @@ class ProcessStatus extends Model
         $nextProcessStatus->previous()->associate($this->id);
         $nextProcessStatus->save();
 
-        ReportStatusUpdated::dispatch($this->report()->first());
+        ReportStatusUpdated::dispatch($this->report);
         Log::info(sprintf('User %s(%s) restored report with id %d to state %s(%s).', $user->name, $user->username, $this->report()->first()->id, $nextProcessStatus->status()->first()->name, $nextProcessStatus->status()->first()->slug));
 
         return $nextProcessStatus;
@@ -173,7 +173,7 @@ class ProcessStatus extends Model
         $this->user()->associate($user_id);
         $this->save();
 
-        ReportStatusUpdated::dispatch($this->report()->first());
+        ReportStatusUpdated::dispatch($this->report);
 
         return true;
     }

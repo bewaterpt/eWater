@@ -27,7 +27,9 @@ class UpdateReportStatusValues
      */
     public function handle(ReportStatusUpdated $event)
     {
-        $event->report->date = Carbon::parse($event->report->getEntryDate())->format('Y-m-d H:i:s');
+        if ($event->report->lines->count() > 0) {
+            $event->report->date = Carbon::parse($event->report->getEntryDate())->format('Y-m-d H:i:s');
+        }
         $event->report->current_status = $event->report->getCurrentStatus()->first()->name;
         $event->report->save();
     }

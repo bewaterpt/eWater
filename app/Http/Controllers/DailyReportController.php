@@ -256,7 +256,7 @@ class DailyReportController extends Controller
 
             Log::info(sprintf('User %s(%s) created report with id %d having %d lines', $user->name, $user->username, $report->id, sizeof($rows)));
             Log::info(sprintf('User %s(%s) created the following lines %s', $user->name, $user->username, json_encode($rows)));
-            ReportStatusUpdated::dispatch($report);
+            ReportStatusUpdated::dispatch($report, true);
         } catch (\PDOException $e) {
             DB::rollBack();
             return redirect(route('daily_reports.list'))->withErrors(__('errors.unexpected_error'), 'custom');
@@ -543,7 +543,7 @@ class DailyReportController extends Controller
             ReportLine::insert($rows);
             DB::commit();
 
-            ReportStatusUpdated::dispatch($report);
+            ReportStatusUpdated::dispatch($report, false);
         } catch (\PDOException $e) {
             DB::rollBack();
 
@@ -563,19 +563,25 @@ class DailyReportController extends Controller
     public function previous(Request $request) {
         $report = Report::find($request->id);
 
-        if ($report->isLast()) {
-            return redirect()->back()->withErrors(__('errors.last_report'), 'custom');
+        if ($report->isFirst()) {
+            return redirect()->back()->withErrors(__('errors.last_report', ['id' => $report->id]), 'custom');
         }
 
-        return $report ? : redirect()->back()->withErrors(__('errors.unexpected_error'), 'custom');
+        $rid = $report->getPreviousId();
+
+        return $rid ? redirect(route('daily_reports.view', ['id' => $rid])) : redirect()->back()->withErrors(__('errors.could_not_calculate_previous_report_id'), 'custom');
     }
 
     public function next(Request $request) {
         $report = Report::find($request->id);
 
         if ($report->isLast()) {
-            return redirect()->back()->withErrors(__('errors.last_report'), 'custom');
+            return redirect()->back()->withErrors(__('errors.first_report', ['id' => $report->id]), 'custom');
         }
+
+        $rid = $report->getNextId();
+
+        return $rid ? redirect(route('daily_reports.view', ['id' => $rid])) : redirect()->back()->withErrors(__('errors.could_not_calculate_next_report_id'), 'custom');
     }
 
 }
