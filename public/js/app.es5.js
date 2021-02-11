@@ -460,6 +460,10 @@ $(function () {
       }
     });
   }
+
+  $("#submit_button").on("click", function () {
+    this.disabled = true;
+  });
 });
 $(function () {
   var fields = {

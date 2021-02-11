@@ -81,7 +81,7 @@
                                 @endif
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-primary float-right">@Lang('general.save')</button>
+                        <button type="submit" id="submit_button" class="btn btn-primary float-right">@Lang('general.save')</button>
                     </form>
                 </div>
             </div>
