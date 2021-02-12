@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddShiftPrimaryKeyInLocalitiesTable extends Migration
+class AddMunicipalityIdForeignKeyConstraintToLocalitiesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,8 +14,9 @@ class AddShiftPrimaryKeyInLocalitiesTable extends Migration
     public function up()
     {
         Schema::table('localities', function (Blueprint $table) {
-            $table->dropPrimary(['locality_code']);
-            $table->id();
+            $table->unsignedBigInteger('municipality_id');
+
+            $table->foreign('municipality_id')->references('id')->on('municipalities');
         });
     }
 
@@ -27,9 +28,8 @@ class AddShiftPrimaryKeyInLocalitiesTable extends Migration
     public function down()
     {
         Schema::table('localities', function (Blueprint $table) {
-            $table->dropPrimary(['id']);
-            $table->dropColumn('id');
-            $table->bigInteger('lcality_code')->unsigned()->primary()->change();
+            $table->dropForeign(['municipality_id']);
+            $table->dropColumn('municipality_id');
         });
     }
 }

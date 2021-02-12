@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class RemoveMunicipalityCodeForeignKeyFromLocalitiesTable extends Migration
+class RemoveMunicipalityCodeColumnFromStreetsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,7 @@ class RemoveMunicipalityCodeForeignKeyFromLocalitiesTable extends Migration
      */
     public function up()
     {
-        Schema::table('localities', function (Blueprint $table) {
-            $table->dropForeign(['municipality_code']);
+        Schema::table('streets', function (Blueprint $table) {
             $table->dropColumn('municipality_code');
         });
     }
@@ -26,9 +25,8 @@ class RemoveMunicipalityCodeForeignKeyFromLocalitiesTable extends Migration
      */
     public function down()
     {
-        Schema::table('localities', function (Blueprint $table) {
+        Schema::table('streets', function (Blueprint $table) {
             $table->unsignedBigInteger('municipality_code');
-            $table->foreign('municipality_code')->references('municipality_code')->on('municipalities');
         });
     }
 }

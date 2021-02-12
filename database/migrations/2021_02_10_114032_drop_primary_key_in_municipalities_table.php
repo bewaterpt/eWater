@@ -26,7 +26,7 @@ class DropPrimaryKeyInMunicipalitiesTable extends Migration
     public function down()
     {
         Schema::table('municipalities', function (Blueprint $table) {
-            $table->bigInteger('municipality_code')->unsigned()->primary()->change();
+            $table->unsignedBigInteger('municipality_code')->primary()->change();
         });
     }
 }

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class RemoveMunicipalityCodeColumnFromStreetsTable extends Migration
+class ShiftPrimaryKeyInLocalitiesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class RemoveMunicipalityCodeColumnFromStreetsTable extends Migration
      */
     public function up()
     {
-        Schema::table('streets', function (Blueprint $table) {
-            $table->dropColumn('municipality_code');
+        Schema::table('localities', function (Blueprint $table) {
+            $table->id();
         });
     }
 
@@ -25,8 +25,9 @@ class RemoveMunicipalityCodeColumnFromStreetsTable extends Migration
      */
     public function down()
     {
-        Schema::table('streets', function (Blueprint $table) {
-            $table->bigInteger('municipality_code')->unsigned();
+        Schema::table('localities', function (Blueprint $table) {
+            $table->dropPrimary(['id']);
+            $table->dropColumn('id');
         });
     }
 }

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddForeignKeyToLocationCodeInStreetsTable extends Migration
+class AddLocalityIdForeignKeyToStreetsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,10 @@ class AddForeignKeyToLocationCodeInStreetsTable extends Migration
      */
     public function up()
     {
-
         Schema::table('streets', function (Blueprint $table) {
-            $table->bigInteger('locality_code')->unsigned()->change();
-            $table->foreign('locality_code')->references('locality_code')->on('localities');
+            $table->unsignedBigInteger('locality_id');
+
+            $table->foreign('locality_id')->references('id')->on('localities');
         });
     }
 
@@ -28,7 +28,8 @@ class AddForeignKeyToLocationCodeInStreetsTable extends Migration
     public function down()
     {
         Schema::table('streets', function (Blueprint $table) {
-            $table->dropForeign(['locality_code']);
+            $table->dropForeign(['locality_id']);
+            $table->dropColumn('locality_id');
         });
     }
 }
