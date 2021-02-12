@@ -14,7 +14,7 @@ class ShiftPrimaryKeyInLocalitiesTable extends Migration
     public function up()
     {
         Schema::table('localities', function (Blueprint $table) {
-            $table->id();
+            $table->unsignedBigInteger('id')->primary();
         });
     }
 

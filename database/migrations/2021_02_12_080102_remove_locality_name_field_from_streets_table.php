@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AssignNewPrimaryKeyInMunicipalitiesTable extends Migration
+class RemoveLocalityNameFieldFromStreetsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class AssignNewPrimaryKeyInMunicipalitiesTable extends Migration
      */
     public function up()
     {
-        Schema::table('municipalities', function (Blueprint $table) {
-            $table->unsignedBigInteger('id')->primary();
+        Schema::table('streets', function (Blueprint $table) {
+            $table->dropColumn('locality_name');
         });
     }
 
@@ -25,9 +25,8 @@ class AssignNewPrimaryKeyInMunicipalitiesTable extends Migration
      */
     public function down()
     {
-        Schema::table('municipalities', function (Blueprint $table) {
-            $table->dropPrimary(['id']);
-            $table->dropColumn('id');
+        Schema::table('streets', function (Blueprint $table) {
+            $table->string('locality_name');
         });
     }
 }

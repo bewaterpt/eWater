@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AssignNewPrimaryKeyInMunicipalitiesTable extends Migration
+class AddNameColumnToMunicipalitiesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,7 +14,7 @@ class AssignNewPrimaryKeyInMunicipalitiesTable extends Migration
     public function up()
     {
         Schema::table('municipalities', function (Blueprint $table) {
-            $table->unsignedBigInteger('id')->primary();
+            $table->string('name');
         });
     }
 
@@ -26,8 +26,7 @@ class AssignNewPrimaryKeyInMunicipalitiesTable extends Migration
     public function down()
     {
         Schema::table('municipalities', function (Blueprint $table) {
-            $table->dropPrimary(['id']);
-            $table->dropColumn('id');
+            $table->dropColumn('name');
         });
     }
 }

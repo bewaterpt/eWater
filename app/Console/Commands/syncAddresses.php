@@ -44,15 +44,17 @@ class syncAddresses extends Command
      */
     public function handle()
     {
-        //script Python para ler o ficheiro com Moradas
+        // Run python scraper
+        $this->info('Executing web scraper');
         shell_exec('cd ' . base_path('scripts/postal_codes') . '; make scrape');
 
-        //Municipios
         $index = 0;
-        $checker = false;
-        $tempFile = storage_path('app') . '/temp/concelhos.csv';
-        $reader = REF::createReaderFromFile($tempFile);
-        $reader->open($tempFile);
+
+        // Municipalities
+
+        $municipalitiesFile = storage_path('app') . '/temp/concelhos.csv';
+        $reader = REF::createReaderFromFile($municipalitiesFile);
+        $reader->open($municipalitiesFile);
 
         foreach ($reader->getSheetIterator() as $sheet) {
             foreach ($sheet->getRowIterator() as $row) {
@@ -60,7 +62,7 @@ class syncAddresses extends Command
                     $cells = $row->getCells();
                     //$str = ltrim($str, '0');
                     $municipalities[] = [
-                        'designation' => $cells[2]->getValue(),
+                        'name' => $cells[2]->getValue(),
                         'municipality_code' => $cells[1]->getValue(),
                         'id' => intval(intval($cells[0]->getValue()) . $cells[1]->getValue()),
                     ];
@@ -73,45 +75,47 @@ class syncAddresses extends Command
                 }
             }
         }
+
+        $this->info('Inserting municipalities in the database');
         $municipalities = collect($municipalities);
         $dbMunicipalities = Municipality::pluck('id')->toArray();
+        $diff = array_diff($municipalities->pluck('id')->toArray(), $dbMunicipalities);
 
-        if ($municipalities->count() != sizeof($dbMunicipalities)) {
-            $this->info('Inserting records in the database');
+        if (sizeOf($diff) > 0) {
+            $this->info('Chunking municipalities');
 
-            foreach ($municipalities->chunk(200) as $municipalitiesChunk) {
+            $municipalities = $municipalities->whereIn('id', $diff);
 
-                foreach ($municipalitiesChunk as $municipalityChunk) {
-                    $municipalityChunk = collect($municipalityChunk);
-                    //
-
-                    if (!in_array($municipalityChunk['id'], $dbMunicipalities)) {
-
-                        Municipality::insert($municipalityChunk->toArray());
-                    } else {
-                        $checker = true;
-                    }
+            foreach ($municipalities->chunk(200) as $municipalityChunks) {
+                foreach ($municipalityChunks as $municipalityChunk) {
+                    Municipality::insert($municipalityChunk);
                 }
             }
         } else {
-            $this->info('Nothing to insert in the database');
+            $this->info('No municipalities to insert');
         }
 
-
-        //Moradas
         $index = 0;
-        $checker = false;
-        $tempFile = storage_path('app') . '/temp/codigos_postais.csv';
-        $reader = REF::createReaderFromFile($tempFile);
-        $reader->open($tempFile);
+
+        // Localidades e Ruas
+        $this->info('Reading postal codes file, this might take a while...');
+        $postalCodesFile = storage_path('app') . '/temp/codigos_postais.csv';
+        $reader = REF::createReaderFromFile($postalCodesFile);
+        $reader->open($postalCodesFile);
+        $addresses = collect([]);
+        $localities = collect([]);
+
         foreach ($reader->getSheetIterator() as $sheet) {
             foreach ($sheet->getRowIterator() as $row) {
                 if ($index !== 0) {
                     $cells = $row->getCells();
 
+                    $municipalityId = intval(intval($cells[0]->getValue()) . $cells[1]->getValue());
+                    $municipalityCode = intval($cells[1]->getValue());
+                    $localityCode = $cells[2]->getValue();
+                    $localityId = intval($municipalityCode . $localityCode);
+
                     $addresses[] = [
-                        'locality_code' => $cells[2]->getValue(),
-                        'locality_name' => $cells[3]->getValue(),
                         'artery_code' => (int)$cells[4]->getValue(),
                         'artery_type' => $cells[5]->getValue(),
                         'primary_preposition' => $cells[6]->getValue(),
@@ -124,9 +128,17 @@ class syncAddresses extends Command
                         'postal_code' => $cells[14]->getValue(),
                         'postal_code_extension' => $cells[15]->getValue(),
                         'postal_designation' => $cells[16]->getValue(),
-                        'municipality_code' => intval($cells[1]->getValue()),
-                        'municipality_id' => intval(intval($cells[0]->getValue()) . $cells[1]->getValue()),
+                        'locality_id' => $localityId,
                     ];
+
+                    if (!isset($localities[$localityCode])) {
+                        $localities[$localityCode] = [
+                            'municipality_id' => $municipalityId,
+                            'locality_code' => $localityCode,
+                            'locality_name' => $cells[3]->getValue(),
+                            'id' => $localityId,
+                        ];
+                    }
 
                     unset($cells, $row);
                     gc_collect_cycles();
@@ -134,70 +146,49 @@ class syncAddresses extends Command
                 } else {
                     $index++;
                 }
+                echo $index . "\n";
             }
         }
-        $localities = [];
-        $localities = collect($localities);
-        $addresses = collect($addresses);
 
+        // $localities->map(function ($locality) {
+        //     shell_exec('cd /home/bruno/documents; echo ' . implode(',', $locality->toArray()) . ' >> localities.txt');
+        // });
 
-        foreach ($addresses as $address) {
-            if (!isset($localities[$address['locality_code']])) {
-                $localities[$address['locality_code']] = [
-                    'municipality_id' => $address['municipality_id'],
-                    'municipality_code' => $address['municipality_code'],
-                    'locality_name' => $address['locality_name'],
-                    'locality_code' => $address['locality_code'],
-                ];
-            }
-        };
-
-        $localities->map(function ($locality) {
-            shell_exec('cd /home/bruno/documents; echo ' . implode(',', $locality->toArray()) . ' >> localities.txt');
-        });
-
-        die;
-
-
+        $this->info('Inserting localities in the database');
         $dbLocalities = Locality::pluck('locality_code')->toArray();
+        $diff = array_diff($localities->pluck('id')->toArray(), $dbLocalities);
 
-        if ($localities->count() != sizeOf($dbLocalities)) {
-            $this->info('Inserting records in the database');
+        if (sizeOf($diff) > 0) {
+            $this->info('Chunking localities');
 
-            foreach ($localities->chunk(200) as $localitiesChunk) {
+            $localities = $localities->whereIn('id', $diff);
 
-                foreach ($localitiesChunk as $localityChunk) {
-                    $localityChunk = collect($localityChunk);
-                    //
-
-                    if (!in_array($localityChunk['id'], $dbLocalities)) {
-
-                        Locality::insert($localityChunk->toArray());
-                    }
+            foreach ($localities->chunk(200) as $localityChunks) {
+                foreach ($localityChunks as $localityChunk) {
+                    Locality::insert($localityChunk);
                 }
             }
         } else {
-            $this->info('Nothing to insert in the database');
+            $this->comment('No localities to insert');
         }
 
+        $this->info('Inserting addresses in the database');
         $dbAddresses = Street::pluck('id')->toArray();
-        if ($addresses->count() != sizeOf($dbAddresses)) {
-            $this->info('Inserting records in the database');
+        $diff = array_diff($addresses->pluck('id')->toArray(), $dbAddresses);
 
-            foreach ($addresses->chunk(200) as $addressesChunk) {
+        if (sizeOf($diff) > 0) {
 
-                foreach ($localitiesChunk as $localityChunk) {
-                    $addressesChunk = collect($addressesChunk);
-                    //
+            $this->info('Chunking addresses');
 
-                    if (!in_array($addressesChunk['id'], $dbAddresses)) {
+            $addresses = $addresses->whereIn('id', $diff);
 
-                        Street::insert($addressesChunk->toArray());
-                    }
+            foreach ($addresses->chunk(200) as $addressChunks) {
+                foreach ($addressChunks as $addressChunk) {
+                    Street::insert($addressChunk);
                 }
             }
         } else {
-            $this->info('Nothing to insert in the database');
+            $this->comment('No addresses to insert');
         }
     }
 }
