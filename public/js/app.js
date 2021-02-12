@@ -62887,8 +62887,8 @@ $(function () {
     });
   }
 
-  $("#submit_button").on("click", function () {
-    this.disabled = true;
+  $('#form_interruption_create').on('submit', function () {
+    $('#form_interruption_create').find('#submit_button').prop('disabled', true);
   });
 });
 

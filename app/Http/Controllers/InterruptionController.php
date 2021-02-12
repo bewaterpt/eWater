@@ -400,8 +400,6 @@ class InterruptionController extends Controller
         $interruption->save();
 
 
-
-
         if ($interruption->scheduled) {
         try {
             Mail::to(config('app.emails.interruptions_ao'))->send(new InterruptionCreated($interruption));
