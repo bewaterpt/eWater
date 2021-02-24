@@ -251,24 +251,6 @@ $(function () {
         }
       });
     });
-    $('#inputAddress').on("keyup", function () {
-      var query = $(this).val();
-      console.log();
-
-      if (query != '') {
-        $.ajax({
-          url: "/addresses/autocomplete",
-          method: "POST",
-          data: {
-            query: query
-          },
-          dataType: 'json',
-          success: function success(data) {
-            console.log(data);
-          }
-        });
-      }
-    });
   }
 });
 $(function () {
@@ -647,6 +629,28 @@ $(function () {
   $("a[data-toggle='tooltip']").tooltip({
     html: true
   });
+});
+$(function () {
+  if ($('div[contenteditable=true].search.autocomplete').length > 0) {
+    $('div[contenteditable=true].search.autocomplete').on("keyup", function () {
+      var query = $(this).text();
+      console.log("HEY!");
+
+      if (query != '') {
+        $.ajax({
+          url: $(this).attr('data-ajax'),
+          method: "POST",
+          data: {
+            query: query
+          },
+          dataType: 'json',
+          success: function success(data) {
+            console.log(data);
+          }
+        });
+      }
+    });
+  }
 });
 
 var _require = require("leaflet"),

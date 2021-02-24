@@ -18,23 +18,6 @@ $(() => {
                 }
             });
         });
-
-        $('#inputAddress').on("keyup", function() {
-            var query = $(this).val();
-            console.log()
-
-            if (query != '') {
-                $.ajax({
-                    url: "/addresses/autocomplete",
-                    method: "POST",
-                    data: {query:query},
-                    dataType: 'json',
-                    success: function(data) {
-                        console.log(data);
-                    }
-                });
-            }
-        });
     }
 
 });
