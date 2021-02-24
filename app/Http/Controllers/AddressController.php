@@ -18,7 +18,11 @@ class AddressController extends Controller
         if($request->get('query')){
             $query = $request->get('query');
 
-            $streets = Street::where('streets.municipality_code', 21)
+
+
+            $localities = Locality::where('municipality_id', )
+
+            $streets = Street::whereIn(, 21)
                         ->where('streets.artery_title', 'like', "%{$query}%")
                         ->where('streets.artery_designation', 'like', "%{$query}%")
                         ->distinct()

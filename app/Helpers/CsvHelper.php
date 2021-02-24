@@ -1,30 +1,22 @@
 <?php
 
 namespace App\Helpers;
-
 /**
  * Example usage: Count them, then grab them in chunks of 10.
- * 
- * $filename = "part4.csv";
- * $rows = countCsvRows($filename);
- * $items_per_run = 10;
- * for ($i=0;$i<=$rows;$i+=$items_per_run+1) {
- *      $chunk = _csv_slice($filename, $i, $items_per_run);
- *      foreach ($chunk as $item) {
- *          echo "$i - item category = " .  $item->CurrentURL . "\n"; //Note CurrentURL is a case sensitive  
- *      }
- * }
- * 
+ *
+ * @param string $filepath
+ *
+ * @param bool|int $chunkSize
+ *
  * Credit to https://gist.github.com/selwynpolit
  * @see https://gist.github.com/selwynpolit/7192fc22dce061ce902019d066347eb1
- * 
+ *
  * Adapted for use within this select environment
  */
-
 class CsvHelper
 {
 
-    protected $filepath;
+    protected $filepath = "";
 
     protected $rowCount = false;
 
@@ -34,7 +26,7 @@ class CsvHelper
 
     private $currentPointerPos = 0;
 
-    public function __construt($filepath, $chunkSize = false)
+    public function __construct($filepath, $chunkSize = false)
     {
         $this->filepath = $filepath;
 
@@ -46,17 +38,14 @@ class CsvHelper
     /**
      * Count the number of rows in a CSV file excluding header row.
      *
-     * @param string $filename
-     *   CSV filename.
-     *
      * @return int
      *   Number of rows.
      */
-    private function countCsvRows()
+    public function countCsvRows()
     {
         ini_set('auto_detect_line_endings', true);
         $rowCount = 0;
-        if (($handle = fopen($this->filename, "r")) !== false) {
+        if (($handle = fopen($this->filepath, "r")) !== false) {
             while (($row_data = fgetcsv($handle, 2000, ",")) !== false) {
                 $rowCount++;
             }
@@ -71,25 +60,19 @@ class CsvHelper
     /**
      * Load desired_count rows from filename starting at position start.
      *
-     * @param string $filename
-     *   CSV filename.
-     * @param int $start
-     *   Starting position in file.
-     * @param int $desired_count
-     *   Count of rows requested.
-     *
      * @return array|bool
-     *   Array of Objects or FALSE
+     *   Array of Objects or false
      */
-    function chunkCsv()
+    public function chunkCsv()
     {
         $row = 0;
         $count = 0;
         $rows = array();
-        if (($handle = fopen($this->filepath, "r")) === FALSE) {
+        if (($handle = fopen($this->filepath, "r")) === false) {
             return false;
         }
-        while (($rowData = fgetcsv($handle, 2000, ",")) !== FALSE) {
+
+        while (($rowData = fgetcsv($handle, 2000, ",")) !== false) {
             // Grab headings.
             if ($row == 0) {
                 $headings = $rowData;
@@ -111,6 +94,12 @@ class CsvHelper
         return $rows;
     }
 
+    /**
+     * Read file based on given parameters
+     *
+     * @param Callable $callback
+     *    Callback function to be executed with the results
+     */
     public function readFile($callback)
     {
         $this->countCsvRows();

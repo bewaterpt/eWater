@@ -2,14 +2,12 @@
 
 namespace App\Console\Commands;
 
+use App\Helpers\CsvHelper;
 use Illuminate\Console\Command;
-use App\Models\District;
 use App\Models\Locality;
 use App\Models\Municipality;
 use App\Models\Street;
-use DB;
 use Box\Spout\Reader\Common\Creator\ReaderEntityFactory as REF;
-use League\Flysystem\Adapter\Local;
 
 class syncAddresses extends Command
 {
@@ -100,55 +98,94 @@ class syncAddresses extends Command
         // Localidades e Ruas
         $this->info('Reading postal codes file, this might take a while...');
         $postalCodesFile = storage_path('app') . '/temp/codigos_postais.csv';
-        $reader = REF::createReaderFromFile($postalCodesFile);
-        $reader->open($postalCodesFile);
+
+        $csv = new CsvHelper($postalCodesFile);
+
         $addresses = collect([]);
         $localities = collect([]);
+        $csv->readFile(function ($item) {
+            $municipalityId = intval(intval($item->cod_distrito) . $item->cod_concelho);
+            $municipalityCode = intval($item->cod_concelho);
+            $localityCode = $item->cod_localidade;
+            $localityId = intval($municipalityCode . $localityCode);
 
-        foreach ($reader->getSheetIterator() as $sheet) {
-            foreach ($sheet->getRowIterator() as $row) {
-                if ($index !== 0) {
-                    $cells = $row->getCells();
-
-                    $municipalityId = intval(intval($cells[0]->getValue()) . $cells[1]->getValue());
-                    $municipalityCode = intval($cells[1]->getValue());
-                    $localityCode = $cells[2]->getValue();
-                    $localityId = intval($municipalityCode . $localityCode);
-
-                    $addresses[] = [
-                        'artery_code' => (int)$cells[4]->getValue(),
-                        'artery_type' => $cells[5]->getValue(),
-                        'primary_preposition' => $cells[6]->getValue(),
-                        'artery_title' => $cells[7]->getValue(),
-                        'secondary_preposition' => $cells[8]->getValue(),
-                        'artery_designation' => $cells[9]->getValue(),
-                        'section' => $cells[11]->getValue(),
-                        'door_number' => $cells[12]->getValue(),
-                        'client_name' => $cells[13]->getValue(),
-                        'postal_code' => $cells[14]->getValue(),
-                        'postal_code_extension' => $cells[15]->getValue(),
-                        'postal_designation' => $cells[16]->getValue(),
-                        'locality_id' => $localityId,
+            if ($item->cod_arteria != "") {
+                $addresses[] = [
+                    'artery_code' => intval($item->cod_arteria),
+                    'artery_type' => $item->tipo_arteria,
+                    'primary_preposition' => $item->prep1,
+                    'artery_title' => $item->titulo_arteria,
+                    'secondary_preposition' => $item->prep2,
+                    'artery_designation' => $item->nome_arteria,
+                    'artery_location' => $item->local_arteria,
+                    'section' => $item->tronco,
+                    'door_number' => $item->porta,
+                    'client_name' => $item->cliente,
+                    'postal_code' => intval($item->num_cod_postal),
+                    'postal_code_extension' => intval($item->ext_cod_postal),
+                    'postal_designation' => $item->desig_postal,
+                    'locality_id' => $localityId,
+                ];
+            } else {
+                if (!isset($localities[$localityId])) {
+                    $localities[$localityId] = [
+                        'municipality_id' => $municipalityId,
+                        'locality_code' => $localityCode,
+                        'locality_name' => $item->nome_localidade,
+                        'id' => $localityId,
                     ];
-
-                    if (!isset($localities[$localityCode])) {
-                        $localities[$localityCode] = [
-                            'municipality_id' => $municipalityId,
-                            'locality_code' => $localityCode,
-                            'locality_name' => $cells[3]->getValue(),
-                            'id' => $localityId,
-                        ];
-                    }
-
-                    unset($cells, $row);
-                    gc_collect_cycles();
-                    $index++;
-                } else {
-                    $index++;
                 }
-                echo $index . "\n";
             }
-        }
+        });
+
+        // $reader = REF::createReaderFromFile($postalCodesFile);
+        // $reader->open($postalCodesFile);
+
+
+        // foreach ($reader->getSheetIterator() as $sheet) {
+        //     foreach ($sheet->getRowIterator() as $row) {
+        //         if ($index !== 0) {
+        //             $cells = $row->getCells();
+
+        //             $municipalityId = intval(intval($cells[0]->getValue()) . $cells[1]->getValue());
+        //             $municipalityCode = intval($cells[1]->getValue());
+        //             $localityCode = $cells[2]->getValue();
+        //             $localityId = intval($municipalityCode . $localityCode);
+
+        //             $addresses[] = [
+        //                 'artery_code' => (int)$cells[4]->getValue(),
+        //                 'artery_type' => $cells[5]->getValue(),
+        //                 'primary_preposition' => $cells[6]->getValue(),
+        //                 'artery_title' => $cells[7]->getValue(),
+        //                 'secondary_preposition' => $cells[8]->getValue(),
+        //                 'artery_designation' => $cells[9]->getValue(),
+        //                 'section' => $cells[11]->getValue(),
+        //                 'door_number' => $cells[12]->getValue(),
+        //                 'client_name' => $cells[13]->getValue(),
+        //                 'postal_code' => $cells[14]->getValue(),
+        //                 'postal_code_extension' => $cells[15]->getValue(),
+        //                 'postal_designation' => $cells[16]->getValue(),
+        //                 'locality_id' => $localityId,
+        //             ];
+
+        //             if (!isset($localities[$localityCode])) {
+        //                 $localities[$localityCode] = [
+        //                     'municipality_id' => $municipalityId,
+        //                     'locality_code' => $localityCode,
+        //                     'locality_name' => $cells[3]->getValue(),
+        //                     'id' => $localityId,
+        //                 ];
+        //             }
+
+        //             unset($cells, $row);
+        //             gc_collect_cycles();
+        //             $index++;
+        //         } else {
+        //             $index++;
+        //         }
+        //         echo $index . "\n";
+        //     }
+        // }
 
         // $localities->map(function ($locality) {
         //     shell_exec('cd /home/bruno/documents; echo ' . implode(',', $locality->toArray()) . ' >> localities.txt');
