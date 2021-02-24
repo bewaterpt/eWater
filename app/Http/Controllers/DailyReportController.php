@@ -560,22 +560,23 @@ class DailyReportController extends Controller
         return redirect()->back();
     }
 
-    public function previous(Request $request) {
+    public function previous(Request $request)
+    {
         $report = Report::find($request->id);
 
         if ($report->isLast()) {
             return redirect()->back()->withErrors(__('errors.last_report'), 'custom');
         }
 
-        return $report ? : redirect()->back()->withErrors(__('errors.unexpected_error'), 'custom');
+        return $report ?: redirect()->back()->withErrors(__('errors.unexpected_error'), 'custom');
     }
 
-    public function next(Request $request) {
+    public function next(Request $request)
+    {
         $report = Report::find($request->id);
 
         if ($report->isLast()) {
             return redirect()->back()->withErrors(__('errors.last_report'), 'custom');
         }
     }
-
 }
