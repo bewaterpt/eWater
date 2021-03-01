@@ -69,14 +69,16 @@
                 {{ $carbon->parse($interruption->reinstatement_date)->format('Y-m-d H:i') }}
             </td>
         </tr>
-        <tr>
-            <td style="vertical-align: top">
-                <b>@Lang('general.interruptions.motive'): </b>
-            </td>
-            <td>
-                {{ $interruption->motive->name }}
-            </td>
-        </tr>
+        @if ($interruption->motive)
+            <tr>
+                <td style="vertical-align: top">
+                    <b>@Lang('general.interruptions.motive'): </b>
+                </td>
+                <td>
+                    {{ $interruption->motive->name }}
+                </td>
+            </tr>
+        @endif
         <tr>
             <td style="vertical-align: top">
                 <b>@Lang('general.interruptions.affected_area'): </b>

@@ -1,1 +1,1 @@
-cod_distrito;cod_concelho;cod_localidade;nome_localidade;cod_arteria;tipo_arteria;prep1;titulo_arteria;prep2;nome_arteria;local_arteria;troco;porta;cliente;num_cod_postal;ext_cod_postal;desig_postal
+district_code;municipality_code;locality_code;locality_name;artery_code;artery_type;first_preposition;artery_title;second_preposition;artery_name;artery_location;section;door_number;client;postal_code;postal_code_extension;postal_designation
