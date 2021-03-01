@@ -9,7 +9,7 @@
                     @Lang('general.interruptions.create') {{ $type }}
                 </div>
                 <div class="card-body">
-                    <form method="POST" action={{Route('interruptions.store')}}>
+                    <form id="form_interruption_create" method="POST" action={{Route('interruptions.store')}}>
                         @csrf
                         <input type="hidden" name="users" id="users" />
                         <div class="form-row mb-2 justify-content-center">
@@ -81,7 +81,7 @@
                                 @endif
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-primary float-right">@Lang('general.save')</button>
+                        <button type="submit" id="submit_button" class="btn btn-primary float-right">@Lang('general.save')</button>
                     </form>
                 </div>
             </div>

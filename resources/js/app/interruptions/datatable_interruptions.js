@@ -166,5 +166,11 @@ $(() => {
             },
         });
     }
+
+
+    $('#form_interruption_create').on('submit', () => {
+        $('#form_interruption_create').find('#submit_button').prop('disabled', true);
+
+     });
 });
 

@@ -93,6 +93,9 @@ class InterruptionController extends Controller
             die;
         }
 
+        // $interruptionsDB = Interruption::orderBy('id','desc')->first();
+        // dd($interruptionsDB);
+
         return view('interruptions.index');
     }
 
@@ -393,16 +396,16 @@ class InterruptionController extends Controller
             $interruption->outono_id = $outonoInterruption->{$outonoInterruption->getKeyName()};
         }
 
-
         $interruption->synced = true;
         $interruption->save();
 
-        // if ($interruption->scheduled) {
+
+        if ($interruption->scheduled) {
         try {
             Mail::to(config('app.emails.interruptions_ao'))->send(new InterruptionCreated($interruption));
         } catch (\Exception $e) {
         }
-        // }
+        }
 
         Artisan::call('interruptions:export');
 
@@ -450,12 +453,12 @@ class InterruptionController extends Controller
 
         $interruption->delete();
 
-        // if ($interruption->scheduled) {
+        if ($interruption->scheduled) {
         try {
             Mail::to(config('app.emails.interruptions_ao'))->send(new InterruptionCanceled($interruption));
         } catch (\Exception $e) {
         }
-        // }
+        }
 
         Artisan::call('interruptions:export');
 
