@@ -399,13 +399,18 @@ class InterruptionController extends Controller
         $interruption->synced = true;
         $interruption->save();
 
+        if(env('APP_ENV') === 'prod' ){
+            try {
+                Mail::to(config('app.emails.interruptions_ao'))->send(new InterruptionCreated($interruption));
+            } catch (\Exception $e) {
+            }
+        }else{
+            try {
+                Mail::to(config('app.emails.interruptions_dev'))->send(new InterruptionCreated($interruption));
+            } catch (\Exception $e) {
+            }
+        }
 
-        if ($interruption->scheduled) {
-        try {
-            Mail::to(config('app.emails.interruptions_ao'))->send(new InterruptionCreated($interruption));
-        } catch (\Exception $e) {
-        }
-        }
 
         Artisan::call('interruptions:export');
 
@@ -525,11 +530,16 @@ class InterruptionController extends Controller
         $interruption->synced = true;
         $interruption->save();
 
-        try {
-            // if ($interruption->scheduled) {
-            Mail::to(config('app.emails.interruptions_ao'))->send(new InterruptionUpdated($prevInt, $interruption));
-            // }
-        } catch (\Exception $e) {
+        if(env('APP_ENV') === 'prod' ){
+            try {
+                Mail::to(config('app.emails.interruptions_ao'))->send(new InterruptionCreated($interruption));
+            } catch (\Exception $e) {
+            }
+        }else{
+            try {
+                Mail::to(config('app.emails.interruptions_dev'))->send(new InterruptionCreated($interruption));
+            } catch (\Exception $e) {
+            }
         }
 
         Artisan::call('interruptions:export');
