@@ -11,7 +11,9 @@ $(() => {
                     data: {query:query},
                     dataType: 'json',
                     success: function(data) {
+                        window.requestdata = data;
                         console.log(data);
+                        $(data.hmtl).appendTo("#autocomplete-list ul");
                     }
                 });
             }

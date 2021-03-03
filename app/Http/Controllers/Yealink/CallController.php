@@ -58,14 +58,16 @@ class CallController extends Controller
     //     'type' => 'like',
     // ];
 
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
 
         $this->agentsForQuery = implode('|', array_keys($this->agents));
         $this->carbon = new Carbon();
     }
 
-    public function pbxList(Request $request) {
+    public function pbxList(Request $request)
+    {
         $pbxList = Pbx::all();
 
         // dd($request);
@@ -73,7 +75,8 @@ class CallController extends Controller
         return view('calls.pbx.index', ['pbxList' => $pbxList]);
     }
 
-    public function pbxEdit(Request $request, $id) {
+    public function pbxEdit(Request $request, $id)
+    {
         $pbx = Pbx::find($id);
         $delegations = Delegation::all();
         $pbx->password = Crypt::decryptString($pbx->password);
@@ -81,7 +84,8 @@ class CallController extends Controller
         return view('calls.pbx.edit', ['pbx' => $pbx, 'delegations' => $delegations]);
     }
 
-    public function pbxUpdate(Request $request, $id) {
+    public function pbxUpdate(Request $request, $id)
+    {
         $pbx = Pbx::find($id);
 
         $input = (object) $request->input();
@@ -99,12 +103,14 @@ class CallController extends Controller
         return redirect(route('calls.pbx.list'));
     }
 
-    public function pbxCreate() {
+    public function pbxCreate()
+    {
         $delegations = Delegation::all();
         return view('calls.pbx.create', ['delegations' => $delegations]);
     }
 
-    public function pbxStore(Request $request) {
+    public function pbxStore(Request $request)
+    {
         $user = Auth::user();
 
         $input = (object) $request->input();
@@ -127,7 +133,8 @@ class CallController extends Controller
         return redirect(route('calls.pbx.list'));
     }
 
-    public function index(Request $request) {
+    public function index(Request $request)
+    {
 
         if ($request->ajax()) {
             $input = $request->input();
@@ -225,7 +232,8 @@ class CallController extends Controller
         return view('calls.index');
     }
 
-    public function getMonthlyWaitTimeInfo(Request $request) {
+    public function getMonthlyWaitTimeInfo(Request $request)
+    {
         $data = [
             'status' => 500,
             'message' => __('errors.unexpected_error'),
@@ -239,19 +247,19 @@ class CallController extends Controller
 
         $cdrs = collect(DB::select("SELECT monthname(cdrAll.timestart) month, cdrAll.waitduration FROM cdr_records as cdrAll WHERE cdrAll.callid IN(\"" . implode('", "', $cdrIds) . "\")"));
 
-        $cdrs->map(function ($item) use (&$waitDurations){
+        $cdrs->map(function ($item) use (&$waitDurations) {
             $waitDurations[$item->month][] = $item->waitduration;
         });
 
         $waitDurations = collect($waitDurations);
 
         $months = CDRRecord::selectRaw('monthname(timestart) month')
-                    ->distinct('month')
-                    ->whereBetween('timestart', [Carbon::now()->subMonths(12)->format($this->dateFormat), Carbon::now()->format($this->dateFormat)])
-                    ->get()
-                    ->map(function($item) {
-                        return $item->month;
-                    })->toArray();
+            ->distinct('month')
+            ->whereBetween('timestart', [Carbon::now()->subMonths(12)->format($this->dateFormat), Carbon::now()->format($this->dateFormat)])
+            ->get()
+            ->map(function ($item) {
+                return $item->month;
+            })->toArray();
 
         foreach ($months as $month) {
             $data['test_values'][] = $waitDurations->get($month);
@@ -271,18 +279,19 @@ class CallController extends Controller
         return json_encode($data);
     }
 
-    public function getMonthlyCallNumberInfo() {
+    public function getMonthlyCallNumberInfo()
+    {
 
         $cdrs = CDRRecord::selectRaw('distinct count(callid) as count, monthname(timestart) month')
-                // ->join('cdr_records as cdrComp', function ($join) {
-                //     $join->on('cdr.callid', '=', 'cdrComp.callid')->on('cdr.callduration', '<', 'cdrComp.callduration');
-                // })
-                ->where('status', '<>', 'NO ANSWER')
-                ->groupBy('month');
+            // ->join('cdr_records as cdrComp', function ($join) {
+            //     $join->on('cdr.callid', '=', 'cdrComp.callid')->on('cdr.callduration', '<', 'cdrComp.callduration');
+            // })
+            ->where('status', '<>', 'NO ANSWER')
+            ->groupBy('month');
 
         $total = [];
         $cdrsTotal = clone $cdrs;
-        $cdrsTotal->get()->map(function($item) use (&$total){
+        $cdrsTotal->get()->map(function ($item) use (&$total) {
             $total[$item->month][] = $item->count;
         });
 
@@ -290,7 +299,7 @@ class CallController extends Controller
         $cdrsFront->where('callto', 'rlike', $this->agentsForQuery)->where('type', '<>', 'Internal');
 
         $frontOffice = [];
-        $cdrsFront->get()->map(function($item) use (&$frontOffice){
+        $cdrsFront->get()->map(function ($item) use (&$frontOffice) {
             $frontOffice[$item->month][] = $item->count;
         });
 
@@ -298,7 +307,7 @@ class CallController extends Controller
         $cdrsGeneric->where('callto', 'not rlike', $this->agentsForQuery)->where('type', '<>', 'Internal');
 
         $generic = [];
-        $cdrsGeneric->get()->map(function($item) use (&$generic){
+        $cdrsGeneric->get()->map(function ($item) use (&$generic) {
             $generic[$item->month][] = $item->count;
         });
 
@@ -306,16 +315,16 @@ class CallController extends Controller
         $cdrsInternal->where('type', 'Internal');
 
         $internal = [];
-        $cdrsInternal->get()->map(function($item) use (&$internal){
+        $cdrsInternal->get()->map(function ($item) use (&$internal) {
             $internal[$item->month][] = $item->count;
         });
 
         $cdrsLost = CDRRecord::selectRaw('distinct count(callid) as count, monthname(timestart) month')
-                    ->where('status', 'NO ANSWER')
-                    ->groupBy('month');
+            ->where('status', 'NO ANSWER')
+            ->groupBy('month');
 
         $totalLost = [];
-        $cdrsLost->get()->map(function($item) use (&$totalLost){
+        $cdrsLost->get()->map(function ($item) use (&$totalLost) {
             $totalLost[$item->month][] = $item->count;
         });
 
@@ -323,7 +332,7 @@ class CallController extends Controller
         $cdrsFrontLost->where('callto', 'rlike', $this->agentsForQuery)->where('type', '<>', 'Internal');
 
         $frontOfficeLost = [];
-        $cdrsFrontLost->get()->map(function($item) use (&$frontOfficeLost){
+        $cdrsFrontLost->get()->map(function ($item) use (&$frontOfficeLost) {
             $frontOfficeLost[$item->month][] = $item->count;
         });
 
@@ -331,7 +340,7 @@ class CallController extends Controller
         $cdrsGenericLost->where('callto', 'not rlike', $this->agentsForQuery)->where('type', '<>', 'Internal');
 
         $genericLost = [];
-        $cdrsGenericLost->get()->map(function($item) use (&$genericLost){
+        $cdrsGenericLost->get()->map(function ($item) use (&$genericLost) {
             $genericLost[$item->month][] = $item->count;
         });
 
@@ -339,17 +348,17 @@ class CallController extends Controller
         $cdrsInternalLost->where('type', 'Internal');
 
         $internalLost = [];
-        $cdrsInternalLost->get()->map(function($item) use (&$internalLost){
+        $cdrsInternalLost->get()->map(function ($item) use (&$internalLost) {
             $internalLost[$item->month][] = $item->count;
         });
 
         $months = CDRRecord::selectRaw('monthname(timestart) month')
-                ->distinct('month')
-                ->whereBetween('timestart', [Carbon::now()->subMonths(12)->format($this->dateFormat), Carbon::now()->format($this->dateFormat)])
-                ->get()
-                ->map(function($item) {
-                    return $item->month;
-                })->toArray();
+            ->distinct('month')
+            ->whereBetween('timestart', [Carbon::now()->subMonths(12)->format($this->dateFormat), Carbon::now()->format($this->dateFormat)])
+            ->get()
+            ->map(function ($item) {
+                return $item->month;
+            })->toArray();
 
         foreach ($months as $month) {
             $data['total'][] = !isset($total[$month]) ? 0 : $total[$month][0];
@@ -359,7 +368,7 @@ class CallController extends Controller
             $data['totalLost'][] = !isset($totalLost[$month]) ? 0 : $totalLost[$month][0];
             $data['frontOfficeLost'][] = !isset($frontOfficeLost[$month]) ? 0 : $frontOfficeLost[$month][0];
             $data['genericLost'][] = !isset($genericLost[$month]) ? 0 : $genericLost[$month][0];
-            $data['internalLost'][] =!isset($internalLost[$month]) ? 0 :  $internalLost[$month][0];
+            $data['internalLost'][] = !isset($internalLost[$month]) ? 0 :  $internalLost[$month][0];
         }
 
         $data['labels'] = $months;
@@ -369,7 +378,8 @@ class CallController extends Controller
         return json_encode($data);
     }
 
-    public function export(Request $request, $filetype = 'csv') {
+    public function export(Request $request, $filetype = 'csv')
+    {
         $renderer = false;
 
         if ($filetype == 'pdf') {
@@ -398,7 +408,8 @@ class CallController extends Controller
         return (new CDRRecordExport(null))->download(__('calls.call_records') . '.' . $filetype, ($renderer ? $renderer : null), ['X-ewater-filename' => __('calls.call_records') . '.' . $filetype]);
     }
 
-    public function refetch() {
+    public function refetch()
+    {
         $data = [
             'status' => 200,
             'message' => 'OK'
@@ -424,7 +435,7 @@ class CallController extends Controller
             Redis::hdel('calls', 'updating');
 
             return json_encode($data);
-        } catch(\Exception $e)  {
+        } catch (\Exception $e) {
             $data['status'] = 500;
             $data['message'] = $e->getMessage() . ' at line ' . $e->getLine();
 
@@ -434,7 +445,8 @@ class CallController extends Controller
         }
     }
 
-    public function checkCallUpdateState() {
+    public function checkCallUpdateState()
+    {
         try {
             return json_encode(Redis::hgetall('calls'));
         } catch (\Exception $e) {
@@ -442,7 +454,8 @@ class CallController extends Controller
         }
     }
 
-    private function getInboundAndTransferCalls() {
+    private function getInboundAndTransferCalls()
+    {
         return collect(DB::select("SELECT cdrTrans.callid  from `cdr_records` as `cdrTrans`
                 WHERE `callid` in (
                     SELECT `cdrTrans2`.`callid`
@@ -479,7 +492,7 @@ class CallController extends Controller
                     AND `cdrPrev2`.`callto` = '" . config('app.prevention_number') .  "'
                     AND `cdrPrev2`.`status` = 'ANSWERED'
                 )"))
-                ->pluck('callid')
-                ->toArray();
+            ->pluck('callid')
+            ->toArray();
     }
 }
