@@ -47,8 +47,9 @@ class GetCDRRecords extends Command
         parent::__construct();
     }
 
-    public function setCallRecordUpdateState($current, $first = false, $total = null) {
-        $content = ['calls', 'updating', true, 'current', $current ];
+    public function setCallRecordUpdateState($current, $first = false, $total = null)
+    {
+        $content = ['calls', 'updating', true, 'current', $current];
 
         if ($first) {
             $content[] = 'total';
@@ -60,13 +61,13 @@ class GetCDRRecords extends Command
         } catch (Exception $e) {
             throw new Exception($e->getMessage());
         }
-
     }
 
-    public function forgetCallRecordUpdateState() {
+    public function forgetCallRecordUpdateState()
+    {
 
         try {
-            foreach(Redis::hkeys('calls') as $key) {
+            foreach (Redis::hkeys('calls') as $key) {
                 Redis::hdel('calls', $key);
             }
         } catch (\Exception $e) {
@@ -83,13 +84,13 @@ class GetCDRRecords extends Command
     {
         try {
             Cache::forget('datatable_calls_records');
-            $this->setCallRecordUpdateState(0, true. 0);
+            $this->setCallRecordUpdateState(0, true . 0);
             $this->info('Applying settings');
             $guzzleClient = new Client([
                 'verify' => false,
             ]);
 
-            $tempFile = storage_path('app').'/temp/yealinkcdr.csv';
+            $tempFile = storage_path('app') . '/temp/yealinkcdr.csv';
 
             $errors = config('app.yealink_error_codes');
             $pbx = Pbx::first();
@@ -155,9 +156,7 @@ class GetCDRRecords extends Command
             $this->comment('Done');
 
             $this->info('Downloading CDR file');
-            $content = [
-
-            ];
+            $content = [];
 
             $contentLength = strlen(json_encode($content));
 
@@ -185,6 +184,8 @@ class GetCDRRecords extends Command
 
             $this->info('Determining records for insertion in the database... (this might take a while)');
 
+            $bar = $this->output->createProgressBar($rowCount);
+            $bar->start();
             foreach ($reader->getSheetIterator() as $sheet) {
 
                 foreach ($sheet->getRowIterator() as $row) {
@@ -206,7 +207,7 @@ class GetCDRRecords extends Command
                                 'callduration' => $cells[4]->getValue(),
                                 'talkduration' => $cells[5]->getValue(),
                                 'waitduration' => $cells[4]->getValue() - $cells[5]->getValue(),
-                                'srctrunkname'=> $cells[6]->getValue(),
+                                'srctrunkname' => $cells[6]->getValue(),
                                 'dsttrunkname' => $cells[7]->getValue(),
                                 'status' => $cells[8]->getValue(),
                                 'type' => $cells[9]->getValue(),
@@ -220,11 +221,12 @@ class GetCDRRecords extends Command
 
                         unset($cells, $row);
                         gc_collect_cycles();
-                        $index++;
-                    } else {
-                        $index++;
                     }
+
+                    $index++;
+                    $bar->advance();
                 }
+                $bar->finish();
                 $this->comment('Done');
 
                 // dd($cdrs);
@@ -259,7 +261,7 @@ class GetCDRRecords extends Command
 
             $this->info("");
             $this->comment('Done. Bye Bye');
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             Storage::delete($tempFile);
 
             throw new Exception($e->getMessage());
