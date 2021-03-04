@@ -399,6 +399,7 @@ class InterruptionController extends Controller
         $interruption->synced = true;
         $interruption->save();
 
+<<<<<<< HEAD
         if(env('APP_ENV') === 'prod' ){
             try {
                 Mail::to(config('app.emails.interruptions_ao'))->send(new InterruptionCreated($interruption));
@@ -410,6 +411,15 @@ class InterruptionController extends Controller
             } catch (\Exception $e) {
             }
         }
+=======
+
+        //if ($interruption->scheduled) {
+        try {
+            Mail::to(config('app.emails.interruptions_ao'))->send(new InterruptionCreated($interruption));
+        } catch (\Exception $e) {
+        }
+        //}
+>>>>>>> ew-185-hotfix
 
 
         Artisan::call('interruptions:export');

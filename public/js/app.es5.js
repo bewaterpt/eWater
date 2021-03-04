@@ -231,7 +231,7 @@ $(function () {
   }, 1000);
 });
 $(function () {
-  if ($('#calls-interruption-create').length > 0) {
+  if ($('#interruption-create').length > 0) {
     $('input[name=scheduled]').on('change', function (event) {
       console.log(event.target.value);
       $.ajax({
