@@ -1,0 +1,36 @@
+#interruption-create {
+
+    form {
+
+        .form-group {
+
+            #addressList {
+                box-shadow: 0px 0px 4px 2px #00000061;
+                display:none;
+
+                .show {
+                    display: block;
+                }
+
+                .items {
+                    margin: 0;
+                    padding: 0;
+
+                    .item {
+                        padding: 5px 20px 5px;
+                        list-style: none;
+                        cursor: pointer;
+
+                        &:hover {
+                            background-color: rgba(0, 0, 0, 0.1);
+                        }
+
+                        &:active {
+                            background-color: rgba(0, 0, 0, 0.2);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
