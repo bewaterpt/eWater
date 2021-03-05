@@ -23,7 +23,8 @@ class Permission extends Model
         }
 
         if(!$user) {
-            return redirect('/')->withErrors(__('auth.no_login'), 'custom');
+            // return redirect('/')->withErrors(__('auth.no_login'), 'custom');
+            return false;
         }
 
         if ($user->isAdmin()) {
@@ -35,7 +36,8 @@ class Permission extends Model
 
 
         if (sizeof($roles) <= 0) {
-            return redirect('/')->withErrors(__('auth.no_roles'), 'custom');;
+            // return redirect('/')->withErrors(__('auth.no_roles'), 'custom');;
+            return false;
         }
 
         $permissions = [];
