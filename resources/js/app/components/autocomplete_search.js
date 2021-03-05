@@ -51,22 +51,24 @@ $(() => {
                             let data = $(this).attr();
                             data.text = $(this).text();
                             allFieldData[data["data-resource-id"]] = data;
-                            input.val(allFieldData);
+                            input.val(JSON.stringify(allFieldData));
                             card.attr('id', 'address-' + data["data-type"] + '-' + data["data-resource-id"]);
                             let cardField = card.clone(true);
                             let cardHeader = cardH.clone(true);
                             let cardBody = cardB.clone(true);
                             cardBody.html(data.text);
-                            $('<a href="#" class="remove text-danger"><i class="fas fa-times"></i></a>').appendTo(cardHeader);
+                            $('<a href="#" class="remove float-right text-danger"><i class="fas fa-times"></i></a>').appendTo(cardHeader);
                             cardHeader.appendTo(cardField);
                             cardBody.appendTo(cardField);
                             $('#selection-list').append(cardField);
 
-                            $('cardField a').on('click', function() {
-                                addressToRemove = $(this).parent('card').attr('id').split('-').slice(1); // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice
-                                let newData = data.filter((object) => { // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter
-                                    return object.data-type != addressToRemove[0] && object.data-resource-id != addressToRemove[1];
+                            $('.card-headers a').on('click', function() {
+                                addressToRemove = $(this).parents('.selection-card').attr('id').split('-').slice(1); // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice
+                                let newData = Object.keys(data).filter((object) => { // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter
+                                    return object["data-type"] != addressToRemove[0] && object["data-resource-id"] != addressToRemove[1];
                                 });
+
+                                $(this).parents('.selection-card').remove();
                             });
 
                         });

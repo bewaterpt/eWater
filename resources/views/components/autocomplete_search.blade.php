@@ -12,7 +12,7 @@
         </ul>
     </div>
     @if (!$inline)
-        <div id="selection-list">
+        <div id="selection-list" >
         </div>
     @endif
     <div>
