@@ -23,13 +23,13 @@ class AddressController extends Controller
 
             $localities = Locality::where('municipality_id', 14021)->get();
 
-            $streets = Street::selectRaw('id, full_street_designation as "searchable", "\\\\App\\\\Models\\\\Street" as "class"')
+            $streets = Street::selectRaw('id, full_street_designation as "searchable", "\\\\App\\\\Models\\\\Street" as "class", "street" as "type"')
                 ->whereIn('locality_id', $localities->pluck('id'))
                 ->where('full_street_designation', 'like', sprintf('%%%s%%', $query))
                 // ->whereRaw('CHAR_LENGTH(CONCAT(streets.artery_type, streets.primary_preposition, streets.artery_title, streets.secondary_preposition, streets.artery_designation, streets.section)) > 0')
                 ->distinct();
 
-            $localities = Locality::selectRaw('id, name as "searchable", "\\\\App\\\\Models\\\\Locality" as "class"')
+            $localities = Locality::selectRaw('id, name as "searchable", "\\\\App\\\\Models\\\\Locality" as "class", "locality" as "type"')
                 ->whereIn('id', $localities->pluck('id'))
                 ->where('name', 'like', sprintf('%%%s%%', $query))
                 ->union($streets);
@@ -41,7 +41,7 @@ class AddressController extends Controller
             $output = "";
 
             $results->map(function ($result) use (&$output) {
-                $output .= "<li><a href='#' data-class='" . $result->class . "' data-resource-id='" . $result->id . "'>" . trim($result->searchable) . '</a></li>';
+                $output .= "<li><a href='#' data-class='" . $result->class . "' data-resource-id='" . $result->id . "' data-type='" . $result->type . "'>" . trim($result->searchable) . '</a></li>';
             });
 
             // dd($output);
