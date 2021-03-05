@@ -108,6 +108,15 @@ return [
         'canceled' => 'Anulada',
         'motive' => 'Motivo',
         'motives' => 'Motivos',
+        'addresses' => [
+            'locality' => 'Localidade',
+            'street' => 'Rua',
+
+            'generated_text' => "{0}Nova interrupção :type com início a  e com término a  .\nA mesma iré afetar as seguintes zonas: <ul></ul>
+            |{1}Nova interrupção :type com início a :start_date e com término a  .\nA mesma iré afetar as seguintes zonas: <ul></ul>
+            |{2}Nova interrupção :type com início a :start_date e com término a :reinstatement_date.\nA mesma irá afetar as seguintes zonas: <ul></ul>
+            |{3}Nova interrupção :type com início a :start_date e com término a :reinstatement_date.\nA mesma irá afetar as seguintes zonas: <ul>:zones</ul>"
+        ]
     ],
     'url' => "Endereço Web",
     'delegation' => 'Delegação',
