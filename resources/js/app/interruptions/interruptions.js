@@ -1,6 +1,5 @@
 $(() => {
-    if($('#interruption-create').length > 0){
-
+    if($('#interruption-create, #interruption-edit').length > 0){
         $('input[name=scheduled]').on('change', (event) => {
             console.log(event.target.value);
             $.ajax({
@@ -11,13 +10,16 @@ $(() => {
                 success: (response) => {
                     if(response.status == 200){
                         $('#inputMotive').find('option').remove();
-                        response.motives.forEach((motive)=>{
+                        response.motives.forEach((motive) => {
                             $('#inputMotive').append(`<option value="${motive.id}">${motive.name}</option>`);
                         });
                     }
                 }
             });
         });
-    }
 
+        $("form").find('input').on('change', function() {
+            console.log(this);
+        });
+    }
 });

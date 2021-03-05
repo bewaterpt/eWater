@@ -41,46 +41,22 @@ require('./config/tinymce/lang/pt_PT');
 $('button[type="submit"]').on('click', function (e) {
   $(e.target).find('button[type="submit"]').attr('disabled', true);
   return true;
-});
-
-$.fn.serializeObject = function () {
-  var o = {};
-  var a = this.serializeArray();
-  $.each(a, function () {
-    name = this.name.replace(/(\[\])$/, '');
-
-    if (o[name]) {
-      if (!o[name].push) {
-        o[name] = [o[name]];
-      }
-
-      o[name].push(this.value || '');
-    } else {
-      o[name] = this.value || '';
-    }
-  });
-  return o;
-};
-
-(function (old) {
-  $.fn.attr = function () {
-    if (arguments.length === 0) {
-      if (this.length === 0) {
-        return null;
-      }
-
-      var obj = {};
-      $.each(this[0].attributes, function () {
-        if (this.specified) {
-          obj[this.name] = this.value;
-        }
-      });
-      return obj;
-    }
-
-    return old.apply(this, arguments);
-  };
-})($.fn.attr);
+}); // $.fn.serializeObject = function() {
+//     var o = {};
+//     var a = this.serializeArray();
+//     $.each(a, function() {
+//         name = this.name.replace(/(\[\])$/, '');
+//         if (o[name]) {
+//             if (!o[name].push) {
+//                 o[name] = [o[name]];
+//             }
+//             o[name].push(this.value || '');
+//         } else {
+//             o[name] = this.value || '';
+//         }
+//     });
+//     return o;
+// };
 
 $(function () {
   $('[data-toggle="popover"]').popover({
@@ -173,6 +149,26 @@ $.fn.serializeObject = function () {
   return o;
 };
 
+(function (old) {
+  $.fn.attr = function () {
+    if (arguments.length === 0) {
+      if (this.length === 0) {
+        return null;
+      }
+
+      var obj = {};
+      $.each(this[0].attributes, function () {
+        if (this.specified) {
+          obj[this.name] = this.value;
+        }
+      });
+      return obj;
+    }
+
+    return old.apply(this, arguments);
+  };
+})($.fn.attr);
+
 $(function () {
   var t = setInterval(function () {
     if ($('#datatable-users').length > 0) {
@@ -251,7 +247,7 @@ $(function () {
   }, 1000);
 });
 $(function () {
-  if ($('#interruption-create').length > 0) {
+  if ($('#interruption-create, #interruption-edit').length > 0) {
     $('input[name=scheduled]').on('change', function (event) {
       console.log(event.target.value);
       $.ajax({
@@ -270,6 +266,9 @@ $(function () {
           }
         }
       });
+    });
+    $("form").find('input').on('change', function () {
+      console.log(this);
     });
   }
 });
@@ -702,6 +701,7 @@ $(function () {
               allFieldData.push(data);
               console.log(allFieldData);
               input.val(JSON.stringify(allFieldData));
+              input.trigger('change');
             });
             $("#autocomplete-list").addClass('show');
           }

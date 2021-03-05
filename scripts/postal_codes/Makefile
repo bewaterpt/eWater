@@ -1,7 +1,7 @@
 
 scrape:
 	rm -f todos_cp.zip
-	. `pwd`/.env/bin/activate; python3 download.py
+	. `pwd`/.env/bin/activate; python download.py
 	unzip todos_cp.zip
 	rm -f todos_cp.zip
 	rm -f leiame.txt
@@ -15,8 +15,9 @@ scrape:
 	bash mysql_import.sh
 
 install:
+#	[[ ":$PATH:" != *":$(pwd):"* ]] && export PATH="$(pwd):${PATH}"
 	virtualenv .env --python=/usr/bin/python3 --prompt=\(codpostais\)
-	. `pwd`/.env/bin/activate; pip install -r requirements.txt
+	. `pwd`/.env/bin/activate; pip install --user -r requirements.txt
 	@echo "--------------------------------------------------------------------------------------------"
 	@echo ""
 	@echo "Tudo instalado!"
@@ -34,8 +35,14 @@ deploy:
 	git push origin master
 
 installwin:
+#	$$addPath = $$pwd.Path
+#	$$regexAddPath = [regex]::Escape($$addPath)
+#	$$arrPath = $$env:Path -split ';' | Where-Object {$$_ -notMatch "^$$regexAddPath\\?"}
+#	$$env:Path = ($$arrPath + $$addPath) -join ';'
+#	refreshenv
 	virtualenv .env --python=C:\Python39\python.exe --prompt=\(codpostais\)
-	. `pwd`/.env/bin/activate; pip install -r requirements.txt
+	. `pwd`/.env/bin/activate; pip install --user -r requirements.txt
+	@echo "Necessário ter o chocolatey instalado"
 	@echo "--------------------------------------------------------------------------------------------"
 	@echo ""
 	@echo "Tudo instalado!"

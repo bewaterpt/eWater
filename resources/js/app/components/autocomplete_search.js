@@ -4,7 +4,7 @@ $(() => {
     });
     const cardH = $('<div>', {
         class: 'card-header'
-    }) 
+    })
     const selections = {};
     let id = 1;
     const loading = $('#autocomplete-list ul').html();
@@ -29,7 +29,7 @@ $(() => {
                 window.addressSearchAjax.abort();
             }
 
-            $("#autocomplete-list ul").html(loading);            
+            $("#autocomplete-list ul").html(loading);
             $("#autocomplete-list, #autocomplete-list ul .loading").addClass('show');
 
             if (query != '') {
@@ -50,6 +50,7 @@ $(() => {
                             allFieldData.push(data);
                             console.log(allFieldData);
                             input.val(JSON.stringify(allFieldData));
+                            input.trigger('change');
                         });
                         $("#autocomplete-list").addClass('show');
                     }
