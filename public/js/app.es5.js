@@ -652,10 +652,13 @@ $(function () {
 });
 $(function () {
   var card = $('<div>', {
-    "class": 'selection-card card'
+    "class": 'selection-card card col-md-4'
   });
   var cardH = $('<div>', {
-    "class": 'card-header'
+    "class": 'card-headers'
+  });
+  var cardB = $('<div>', {
+    "class": 'card-body'
   });
   var selections = {};
   var id = 1;
@@ -699,9 +702,25 @@ $(function () {
               var allFieldData = JSON.parse(input.val());
               var data = $(this).attr();
               data.text = $(this).text();
-              allFieldData.push(data);
-              console.log(allFieldData);
-              input.val(JSON.stringify(allFieldData));
+              allFieldData[data["data-resource-id"]] = data;
+              input.val(allFieldData);
+              card.attr('id', 'address-' + data["data-type"] + '-' + data["data-resource-id"]);
+              var cardField = card.clone(true);
+              var cardHeader = cardH.clone(true);
+              var cardBody = cardB.clone(true);
+              cardBody.html(data.text);
+              $('<a href="#" class="remove text-danger"><i class="fas fa-times"></i></a>').appendTo(cardHeader);
+              cardHeader.appendTo(cardField);
+              cardBody.appendTo(cardField);
+              $('#selection-list').append(cardField);
+              $('cardField a').on('click', function () {
+                addressToRemove = $(this).parent('card').attr('id').split('-').slice(1); // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice
+
+                var newData = data.filter(function (object) {
+                  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter
+                  return object.data - type != addressToRemove[0] && object.data - resource - id != addressToRemove[1];
+                });
+              });
             });
             $("#autocomplete-list").addClass('show');
           }
