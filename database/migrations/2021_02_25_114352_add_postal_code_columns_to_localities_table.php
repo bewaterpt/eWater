@@ -17,6 +17,12 @@ class AddPostalCodeColumnsToLocalitiesTable extends Migration
             $table->integer('postal_code_number');
             $table->integer('postal_code_extension');
         });
+
+        DB::raw(
+            'UPDATE localities 
+                SET postal_code_number = (SELECT postal_code_number FROM streets WHERE streets.locality_id = localities.id), 
+                postal_code_extension = (SELECT postal_code_extension FROM streets WHERE streets.locality_id = localities.id)'
+        );
     }
 
     /**
@@ -29,11 +35,5 @@ class AddPostalCodeColumnsToLocalitiesTable extends Migration
         Schema::table('localities', function (Blueprint $table) {
             $table->dropColumn(['postal_code_number', 'postal_code_extension']);
         });
-
-        DB::updateRaw(
-            'UPDATE localities 
-                SET postal_code_number = (SELECT postal_code_number FROM streets WHERE streets.locality_id = localities.id), 
-                postal_code_extension = (SELECT postal_code_extension FROM streets WHERE streets.locality_id = localities.id)'
-        );
     }
 }

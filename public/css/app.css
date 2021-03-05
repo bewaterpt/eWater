@@ -28048,6 +28048,26 @@ readers do not read off random characters that represent icons */
   content: "\F2DF";
 }
 
+@-webkit-keyframes spinner {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes spinner {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 .error-container {
   margin-bottom: 10px;
 }
@@ -28179,11 +28199,11 @@ readers do not read off random characters that represent icons */
 
 .popover-danger .popover-danger {
   background-color: #dc112512;
-  border-color: #dc3545;
+  border-color: #e3342f;
 }
 
 .popover-danger .popover-danger.right .arrow:after {
-  border-right-color: #dc3545;
+  border-right-color: #e3342f;
 }
 
 .cursor-info {
@@ -28220,7 +28240,7 @@ readers do not read off random characters that represent icons */
   transition: rotate(360deg);
 }
 
-.multiselect-listbox #btnContainer {
+.component.multiselect-listbox #btnContainer {
   top: 0;
   right: 0;
   bottom: 0;
@@ -28229,26 +28249,79 @@ readers do not read off random characters that represent icons */
   width: 35px;
 }
 
-input.unstyled[type=date]::-webkit-inner-spin-button,
-input.unstyled[type=date]::-webkit-calendar-picker-indicator,
-input.unstyled[type=datetime]::-webkit-inner-spin-button,
-input.unstyled[type=datetime]::-webkit-calendar-picker-indicator,
-input.unstyled[type=datetime-local]::-webkit-inner-spin-button,
-input.unstyled[type=datetime-local]::-webkit-calendar-picker-indicator {
+.componentinput.unstyled[type=date]::-webkit-inner-spin-button,
+.componentinput.unstyled[type=date]::-webkit-calendar-picker-indicator,
+.componentinput.unstyled[type=datetime]::-webkit-inner-spin-button,
+.componentinput.unstyled[type=datetime]::-webkit-calendar-picker-indicator,
+.componentinput.unstyled[type=datetime-local]::-webkit-inner-spin-button,
+.componentinput.unstyled[type=datetime-local]::-webkit-calendar-picker-indicator {
   margin: 0;
   margin-right: -10px;
 }
 
-input.unstyled[type=number] {
+.componentinput.unstyled[type=number] {
   -moz-appearance: textfield;
 }
 
-input.unstyled[type=number]::-webkit-outer-spin-button,
-input.unstyled[type=number]::-webkit-inner-spin-button {
+.componentinput.unstyled[type=number]::-webkit-outer-spin-button,
+.componentinput.unstyled[type=number]::-webkit-inner-spin-button {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
   margin: 0;
+}
+
+.component.autocomplete-search #autocomplete-list {
+  max-height: 250px;
+  overflow-y: scroll;
+  box-shadow: 0px 1px 8px -4px black;
+  background: white;
+  z-index: 2;
+  width: 100%;
+  display: none;
+}
+
+.component.autocomplete-search #autocomplete-list.show {
+  display: initial !important;
+}
+
+.component.autocomplete-search #autocomplete-list ul {
+  padding: 5px 0;
+  width: 80%;
+  margin: 0 auto !important;
+  list-style: none;
+}
+
+.component.autocomplete-search #autocomplete-list ul .loading {
+  width: 100%;
+  display: none;
+}
+
+.component.autocomplete-search #autocomplete-list ul .loading .spinner {
+  margin: 0 auto;
+  border-radius: 50%;
+  border: 5px solid #a1a1a1;
+  border-bottom: 5px solid #3490dc;
+  width: 40px;
+  height: 40px;
+  -webkit-animation: spinner 2s linear infinite;
+          animation: spinner 2s linear infinite;
+}
+
+.component.autocomplete-search #autocomplete-list ul .loading.show {
+  display: initial !important;
+}
+
+.component.autocomplete-search #autocomplete-list ul li {
+  padding: 5px 0;
+}
+
+.component.autocomplete-search #autocomplete-list ul li:first-child {
+  padding-top: 0;
+}
+
+.component.autocomplete-search #autocomplete-list ul li:last-child {
+  padding-bottom: 0;
 }
 
 .object-table thead th:nth-last-of-type(-n+2) {
@@ -28303,12 +28376,12 @@ a:hover {
 
 a.disable,
 a.delete {
-  color: #dc3545;
+  color: #e3342f;
 }
 
 a.disable:hover,
 a.delete:hover {
-  color: #af1a15;
+  color: #e3342f;
 }
 
 a.enable {
@@ -28316,7 +28389,7 @@ a.enable {
 }
 
 a.enable:hover {
-  color: #36a865;
+  color: #38c172;
 }
 
 .has-spinner {

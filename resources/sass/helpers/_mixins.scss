@@ -1,7 +1,3 @@
-@mixin spinner {
-
-}
-
 @mixin ajax_spinner {
     position: relative;
 
@@ -19,4 +15,18 @@
             position: absolute;
         }
     }
+}
+
+@mixin square($size) {
+    width: $size;
+    height: $size;
+}
+
+@mixin spinner($size) {
+        margin: 0 auto;
+        border-radius: 50%;
+        border: 5px solid $lightgray;
+        border-bottom: 5px solid $blue;
+        @include square($size);
+        animation: spinner 2s linear infinite;    
 }

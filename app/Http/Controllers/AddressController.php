@@ -19,34 +19,35 @@ class AddressController extends Controller
 
         if ($query = $request->get('query')) {
 
-            $output = [
-                'html' => '',
-            ];
-
             // dd($query);
 
             $localities = Locality::where('municipality_id', 14021)->get();
 
-            $streets = Street::whereIn('locality_id', $localities->pluck('id'))
-                ->orWhere('streets.artery_title', 'like', "%{$query}%")
-                ->orWhere('streets.artery_designation', 'like', "%{$query}%")
-                ->distinct()
-                ->get();
+            $streets = Street::selectRaw('id, full_street_designation as "searchable", "\\\\App\\\\Models\\\\Street" as "class"')
+                ->whereIn('locality_id', $localities->pluck('id'))
+                ->where('full_street_designation', 'like', sprintf('%%%s%%', $query))
+                // ->whereRaw('CHAR_LENGTH(CONCAT(streets.artery_type, streets.primary_preposition, streets.artery_title, streets.secondary_preposition, streets.artery_designation, streets.section)) > 0')
+                ->distinct();
 
-            $streets->map(function ($street) use (&$output) {
-                $output['html'] .= "<li><a href='#'>" . $street->artery_type . " " . $street->primary_preposition
-                    . " " . $street->artery_title . " " .
-                    $street->secondary_preposition . " " .
-                    $street->artery_designation . " " .
-                    $street->section . " "
-                    . $street->locality_name .
-                    '</a></li>';
+            $localities = Locality::selectRaw('id, name as "searchable", "\\\\App\\\\Models\\\\Locality" as "class"')
+                ->whereIn('id', $localities->pluck('id'))
+                ->where('name', 'like', sprintf('%%%s%%', $query))
+                ->union($streets);
+
+            $results = $localities->get();
+            // ->toSql();
+            // dd($streets);
+
+            $output = "";
+
+            $results->map(function ($result) use (&$output) {
+                $output .= "<li><a href='#' data-class='" . $result->class . "' data-resource-id='" . $result->id . "'>" . trim($result->searchable) . '</a></li>';
             });
 
             // dd($output);
             // $output['html'] = htmlentities($output['html']);
 
-            return json_encode($output);
+            return $output;
         }
     }
 }

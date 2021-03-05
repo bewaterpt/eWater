@@ -62,6 +62,26 @@ $.fn.serializeObject = function () {
   return o;
 };
 
+(function (old) {
+  $.fn.attr = function () {
+    if (arguments.length === 0) {
+      if (this.length === 0) {
+        return null;
+      }
+
+      var obj = {};
+      $.each(this[0].attributes, function () {
+        if (this.specified) {
+          obj[this.name] = this.value;
+        }
+      });
+      return obj;
+    }
+
+    return old.apply(this, arguments);
+  };
+})($.fn.attr);
+
 $(function () {
   $('[data-toggle="popover"]').popover({
     html: true,
@@ -631,25 +651,63 @@ $(function () {
   });
 });
 $(function () {
+  var card = $('<div>', {
+    "class": 'selection-card card'
+  });
+  var cardH = $('<div>', {
+    "class": 'card-header'
+  });
+  var selections = {};
+  var id = 1;
+  var loading = $('#autocomplete-list ul').html();
+
   if ($('div[contenteditable=true].search.autocomplete').length > 0) {
+    $('body').on('click', function (e) {
+      if ($("#autocomplete-list").hasClass('show') && !$(e.target).is('div[contenteditable=true].search.autocomplete')) {
+        $("#autocomplete-list").removeClass('show');
+      }
+    });
+    $('div[contenteditable=true].search.autocomplete').on('click', function () {
+      if ($("#autocomplete-list ul").children().length > 1) {
+        $("#autocomplete-list").addClass('show');
+      }
+    });
     $('div[contenteditable=true].search.autocomplete').on("keyup", function () {
       var query = $(this).text();
-      console.log("HEY!");
+
+      if (window.addressSearchAjax && window.addressSearchAjax.readyState !== 4) {
+        window.addressSearchAjax.abort();
+      }
+
+      $("#autocomplete-list ul").html(loading);
+      $("#autocomplete-list, #autocomplete-list ul .loading").addClass('show');
 
       if (query != '') {
-        $.ajax({
+        window.addressSearchAjax = $.ajax({
           url: $(this).attr('data-ajax'),
           method: "POST",
           data: {
             query: query
           },
-          dataType: 'json',
+          dataType: 'html',
           success: function success(data) {
+            $("#autocomplete-list .loading").removeClass('show');
             window.requestdata = data;
             console.log(data);
-            $(data.hmtl).appendTo("#autocomplete-list ul");
+            $("#autocomplete-list ul").html(data).find('li a').on('click', function () {
+              var input = $('#autocomplete-list').siblings('input[type=hidden]');
+              var allFieldData = JSON.parse(input.val());
+              var data = $(this).attr();
+              data.text = $(this).text();
+              allFieldData.push(data);
+              console.log(allFieldData);
+              input.val(JSON.stringify(allFieldData));
+            });
+            $("#autocomplete-list").addClass('show');
           }
         });
+      } else {
+        $("#autocomplete-list").removeClass('show');
       }
     });
   }

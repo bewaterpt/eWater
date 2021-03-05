@@ -1,2 +1,5 @@
-@import 'multiselect_listbox';
-@import 'inputs';
+.component {
+    @import 'multiselect_listbox';
+    @import 'inputs';
+    @import 'autocomplete_search';
+}

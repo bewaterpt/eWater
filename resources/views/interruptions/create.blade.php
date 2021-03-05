@@ -69,7 +69,7 @@
                                     @endforeach
                                 </select>
                             </div>
-                            @include('components.autocomplete_search', ['fieldId' => 'inputAddress', 'fieldName' => 'address', 'uri' => '/addresses/autocomplete', 'translationString' => 'forms.fields.addresses'])
+                            @include('components.autocomplete_search', ['fieldId' => 'inputAddress', 'fieldName' => 'address', 'uri' => '/addresses/autocomplete', 'translationString' => 'forms.fields.addresses', 'inline' => false])
                             <div class="form-group col-md-12">
                                 <label for="inputAffectedArea">@Lang('forms.fields.affected_area')</label>
                                 <textarea name="affected_area" id="inputAffectedArea" class="form-control text-editor @error('affected_area') is-invalid @enderror"></textarea>

@@ -1,4 +1,4 @@
-<fieldset id="multiselect-listbox-{{ $hiddenField }}" class="border-top border-bottom mb-3 multiselect-listbox" data-field="{{ $hiddenField }}">
+<fieldset id="multiselect-listbox-{{ $hiddenField }}" class="border-top border-bottom mb-3 component multiselect-listbox" data-field="{{ $hiddenField }}">
     <div class="form-row mt-2 justify-content-center">
         <div class="form-group col-md-5">
             <label for="selectLeft">@Lang('forms.fields.without_access')</label>

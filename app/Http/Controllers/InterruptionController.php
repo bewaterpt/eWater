@@ -383,6 +383,11 @@ class InterruptionController extends Controller
             'affected_area' => ['required']
         ]);
 
+        dd(collect(json_decode($request->address))->map(function ($item) {
+            unset($item->href);
+            return $item;
+        }));
+
         $scheduled = $request->scheduled == 'true' ? true : false;
 
         $interruption = new Interruption();

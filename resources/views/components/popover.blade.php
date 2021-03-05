@@ -1,4 +1,4 @@
-<div id="{{ $id ?? "generic" }}-popover" class="popover d-none">
+<div id="{{ $id ?? "generic" }}-popover" class="component popover d-none">
     <div id="title">
         <div class="{{ $type === 'error' ? 'bg-flamingo' : '' }}">
             {!! $title ?? "Popover" !!}
