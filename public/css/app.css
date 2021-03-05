@@ -28324,6 +28324,18 @@ readers do not read off random characters that represent icons */
   padding-bottom: 0;
 }
 
+.component.autocomplete-search #autocomplete-list ul li + span {
+  border: 1px solid blueviolet;
+  border-radius: 3px;
+  font-size: 11px;
+  background-color: rgba(138, 43, 226, 0.1);
+  padding: 1px;
+  margin-left: 10px;
+  position: relative;
+  top: -3px;
+  color: blueviolet;
+}
+
 .object-table thead th:nth-last-of-type(-n+2) {
   text-align: center;
 }

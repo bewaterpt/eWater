@@ -42,6 +42,18 @@
                 &:last-child {
                     padding-bottom: 0;
                 }
+
+                &+span {
+                    border: 1px solid blueviolet;
+                    border-radius: 3px;
+                    font-size: 11px;
+                    background-color: rgba(138, 43, 226, .1);
+                    padding: 1px;
+                    margin-left: 10px;
+                    position: relative;
+                    top: -3px;
+                    color: blueviolet;
+                }
             }
         }
     }
