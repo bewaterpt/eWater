@@ -41,7 +41,14 @@ class AddressController extends Controller
             $output = "";
 
             $results->map(function ($result) use (&$output) {
-                $output .= "<li><a href='#' data-class='" . $result->class . "' data-resource-id='" . $result->id . "' data-type='" . $result->type . "'>" . trim($result->searchable) . '</a></li>';
+                $output .= "<li>
+                <span class='" . $result->type . "'>
+                " . __('general.interruptions.addresses.' . $result->type) . "
+                </span>
+                <a href='#' data-class='" . $result->class . "' data-resource-id='" . $result->id . "' data-type='" . $result->type . "'>" .
+                    trim($result->searchable) .
+                    "</a>
+                </li>";
             });
 
             // dd($output);
