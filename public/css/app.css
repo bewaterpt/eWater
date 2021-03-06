@@ -28286,8 +28286,8 @@ readers do not read off random characters that represent icons */
 }
 
 .component.autocomplete-search #autocomplete-list ul {
-  padding: 5px 0;
-  width: 80%;
+  padding: 5px 15px;
+  width: 100%;
   margin: 0 auto !important;
   list-style: none;
 }

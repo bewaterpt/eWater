@@ -37,8 +37,9 @@ $(() => {
                     url: $(this).attr('data-ajax'),
                     method: "POST",
                     data: {query: query},
+                    // contentType: 'json',
                     dataType: 'html',
-                    success: function(data) {
+                    success: (data) => {
                         $("#autocomplete-list .loading").removeClass('show');
                         window.requestdata = data;
                         console.log(data)

@@ -36,6 +36,7 @@ Route::group(['middleware' => ['web']], function () {
     Route::post('logout', 'Auth\LoginController@logout')->name('logout');
     Route::get('locale/change/{locale}', 'Settings\SettingsController@change_locale')->name('settings.locale.change');
     Route::get('check-call-record-update-state', 'Yealink\CallController@checkCallUpdateState')->name('calls.check_update_state');
+    Route::post('interruptions/generate_text', 'InterruptionController@generateText')->name('interruptions.generate_text');
 
     /**
      * Routes within this group only allow usage for authenticated users
@@ -146,7 +147,6 @@ Route::group(['middleware' => ['web']], function () {
             Route::get('interruptions/edit/{id}', 'InterruptionController@edit')->name('interruptions.edit');
             Route::post('interruptions/update/{id}', 'InterruptionController@update')->name('interruptions.update');
             Route::get('interruptions/delete/{id}', 'InterruptionController@delete')->name('interruptions.delete');
-            Route::post('interruptions/fetch', 'InterruptionController@fetch')->name('interruptions.fetch');
             // Route::get('interruptions/restore/{id}', 'InterruptionController@restore')->name('interruptions.restore');
 
             // Teams

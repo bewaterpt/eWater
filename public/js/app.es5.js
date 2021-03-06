@@ -246,6 +246,10 @@ $(function () {
     }
   }, 1000);
 });
+
+var _require = require("jquery"),
+    data = _require.data;
+
 $(function () {
   if ($('#interruption-create, #interruption-edit').length > 0) {
     $('input[name=scheduled]').on('change', function (event) {
@@ -256,6 +260,7 @@ $(function () {
           'scheduled': event.target.value
         },
         method: 'POST',
+        contentType: 'json',
         dataType: 'json',
         success: function success(response) {
           if (response.status == 200) {
@@ -268,7 +273,20 @@ $(function () {
       });
     });
     $("form").find('input').on('change', function () {
-      console.log(this);
+      var data = $("form").serializeObject();
+      data._token = data._token.slice(1);
+      console.log('Form Data: ', data);
+      window.getAffectedAreaText = $.ajax({
+        url: '/interruptions/generate_text',
+        method: 'POST',
+        data: {
+          data: data
+        },
+        dataType: 'json',
+        success: function success(data) {
+          console.log(data);
+        }
+      });
     });
   }
 });
@@ -688,6 +706,7 @@ $(function () {
           data: {
             query: query
           },
+          // contentType: 'json',
           dataType: 'html',
           success: function success(data) {
             $("#autocomplete-list .loading").removeClass('show');
@@ -713,8 +732,8 @@ $(function () {
   }
 });
 
-var _require = require("leaflet"),
-    Evented = _require.Evented;
+var _require2 = require("leaflet"),
+    Evented = _require2.Evented;
 
 $(function () {
   var error = false;
@@ -799,7 +818,7 @@ $(function () {
       if (
       /*(window.verifyingWork && window.verifyingWork.readyState === 4) ||*/
       true || editing) {
-        var data = {
+        var _data = {
           plate: $('input[name="plate"]').val(),
           km_departure: $('input[name="km-departure"]').val(),
           km_arrival: $('input[name="km-arrival"]').val(),
@@ -811,7 +830,7 @@ $(function () {
           return work.value;
         }).get();
 
-        if (new Date(data.datetime) > today) {
+        if (new Date(_data.datetime) > today) {
           throw new Error($('#errors #invalidDate').text());
         }
 
@@ -820,10 +839,10 @@ $(function () {
         }
 
         if (editing) {
-          data.id = $('#reportId').text();
+          _data.id = $('#reportId').text();
         }
 
-        var totalKm = data.km_arrival - data.km_departure;
+        var totalKm = _data.km_arrival - _data.km_departure;
         var userInsertedKm = 0;
         var rows = {};
         $('div.card.work').each(function (workIndex, work) {
@@ -865,13 +884,13 @@ $(function () {
           throw new Error($('#errors #inferiorKmWarn').text());
         }
 
-        data.rows = rows;
+        _data.rows = rows;
 
         if (!window.createOrEditReportRequest || window.createOrEditReportRequest.readyState === 4) {
           window.createOrEditReportRequest = $.ajax({
             method: 'POST',
             url: $('#report').attr('action'),
-            data: JSON.stringify(data),
+            data: JSON.stringify(_data),
             contentType: 'json',
             success: function success(response) {
               $('button[type="submit"]').find('#spinner, #spinner-text').addClass('d-none');
@@ -1224,8 +1243,8 @@ $(function () {
   }
 });
 
-var _require2 = require("tinymce"),
-    triggerSave = _require2.triggerSave;
+var _require3 = require("tinymce"),
+    triggerSave = _require3.triggerSave;
 
 function getmonthlyWaitTimeInfo() {
   return new Promise(function (resolve, reject) {

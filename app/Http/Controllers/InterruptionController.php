@@ -569,4 +569,42 @@ class InterruptionController extends Controller
 
         return json_encode($data);
     }
+
+    public function generateText(Request $request) {
+        $data = [
+            'status' => 500,
+            'message' => __('errors.unexpected_error'),
+            'text' => "",
+        ];
+
+        $count = 0;
+        $requestData = (object) collect($request->data)->map(function ($item) {
+            return $item[0];
+        })->toArray();
+
+        dd(json_decode($requestData->address));
+
+        if ($request->data) {
+            if (!empty($requestData->start_date)) {
+                $count += 1;
+            }
+
+            if (!empty($requestData->reinstatement_date)) {
+                $count += 1;
+            }
+
+            // if (!empty($requestData->)) {
+
+            // }
+
+            $data['text'] = trans_choice('general.interruptions.addresses.generated_text', $count,
+                [
+                    'type' => ($requestData->scheduled ? __('general.interruptions.is_scheduled') : __('general.interruptions.is_unscheduled')),
+                    'start_date' => $requestData->start_date,
+                    'reinstatement_date' => $requestData->reinstatement_date,
+                ]);
+        }
+
+        return json_encode($data);
+    }
 }

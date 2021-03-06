@@ -62126,6 +62126,7 @@ $(function () {
           data: {
             query: query
           },
+          // contentType: 'json',
           dataType: 'html',
           success: function success(data) {
             $("#autocomplete-list .loading").removeClass('show');
@@ -62964,7 +62965,10 @@ $(function () {
   !*** ./resources/js/app/interruptions/interruptions.js ***!
   \*********************************************************/
 /*! no static exports found */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
+
+var _require = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js"),
+    data = _require.data;
 
 $(function () {
   if ($('#interruption-create, #interruption-edit').length > 0) {
@@ -62976,6 +62980,7 @@ $(function () {
           'scheduled': event.target.value
         },
         method: 'POST',
+        contentType: 'json',
         dataType: 'json',
         success: function success(response) {
           if (response.status == 200) {
@@ -62988,7 +62993,20 @@ $(function () {
       });
     });
     $("form").find('input').on('change', function () {
-      console.log(this);
+      var data = $("form").serializeObject();
+      data._token = data._token.slice(1);
+      console.log('Form Data: ', data);
+      window.getAffectedAreaText = $.ajax({
+        url: '/interruptions/generate_text',
+        method: 'POST',
+        data: {
+          data: data
+        },
+        dataType: 'json',
+        success: function success(data) {
+          console.log(data);
+        }
+      });
     });
   }
 });
