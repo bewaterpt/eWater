@@ -62089,10 +62089,13 @@ $(function () {
 
 $(function () {
   var card = $('<div>', {
-    "class": 'selection-card card'
+    "class": 'selection-card card col-md-4 p-0'
   });
   var cardH = $('<div>', {
     "class": 'card-header'
+  });
+  var cardB = $('<div>', {
+    "class": 'card-body'
   });
   var selections = {};
   var id = 1;
@@ -62137,10 +62140,26 @@ $(function () {
               var allFieldData = JSON.parse(input.val());
               var data = $(this).attr();
               data.text = $(this).text();
-              allFieldData.push(data);
-              console.log(allFieldData);
+              allFieldData[data["data-resource-id"]] = data;
               input.val(JSON.stringify(allFieldData));
               input.trigger('change');
+              var cardField = card.clone(true).attr('id', 'address-' + data["data-type"] + '-' + data["data-resource-id"]);
+              ;
+              var cardHeader = cardH.clone(true);
+              var cardBody = cardB.clone(true);
+              cardHeader.html(data.text);
+              $('<a href="#" class="remove float-right text-danger"><i class="fas fa-times"></i></a>').appendTo(cardHeader);
+              cardField.append(cardHeader, cardBody);
+              $('#selection-list').append(cardField);
+              $('#selection-list .card .card-header a').on('click', function () {
+                addressToRemove = $(this).parents('.selection-card').attr('id').split('-').slice(1); // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice
+
+                var newData = data.entries().filter(function (object) {
+                  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter
+                  console.log(object); // return object["data-type"] != addressToRemove[0] && object["data-resource-id"] != addressToRemove[1];
+                });
+                $(this).parents('.selection-card').remove();
+              });
             });
             $("#autocomplete-list").addClass('show');
           }
