@@ -50,7 +50,7 @@
                 <b>@Lang('mail.interruptions.ref'):</b>
             </td>
             <td>
-                {!! $prevInt->work_id !== $newInt->work_id ? "<span style='color: gray'><s>" . $prevInt->work_id . "</s></span> <span style='color: darkblue'>" . $newInt->work_id . "</span>" : $prevInt->work_id !!}
+                {!! strcmp($prevInt->work_id, $newInt->work_id ) !== 0 ? "<span style='color: gray'><s>" . $prevInt->work_id . "</s></span> <span style='color: darkblue'>" . $newInt->work_id . "</span>" : $prevInt->work_id !!}
             </td>
         </tr>
         <tr>

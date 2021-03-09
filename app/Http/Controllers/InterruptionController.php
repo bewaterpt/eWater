@@ -402,7 +402,7 @@ class InterruptionController extends Controller
 
         //if ($interruption->scheduled) {
         try {
-            Mail::to(config('app.emails.interruptions_ao'))->send(new InterruptionCreated($interruption));
+            Mail::to(config('app.emails.developer'))->send(new InterruptionCreated($interruption));
         } catch (\Exception $e) {
         }
         //}

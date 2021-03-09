@@ -313,7 +313,8 @@ return [
     'prevention_number' => '919736677',
 
     'emails' => [
-        'interruptions_ao' => "interrupcoes.ao@bewater.com.pt"
+        'interruptions_ao' => "interrupcoes.ao@bewater.com.pt",
+        'developer' => "developer@bewater.com.pt"
     ],
 
     'admins' => [
