@@ -526,16 +526,22 @@ class InterruptionController extends Controller
         $interruption->synced = true;
         $interruption->save();
 
-        if(env('APP_ENV') === 'prod' ){
-            try {
-                Mail::to(config('app.emails.interruptions_ao'))->send(new InterruptionCreated($interruption));
-            } catch (\Exception $e) {
-            }
-        }else{
-            try {
-                Mail::to(config('app.emails.interruptions_dev'))->send(new InterruptionCreated($interruption));
-            } catch (\Exception $e) {
-            }
+        // if(env('APP_ENV') === 'prod' ){
+        //     try {
+        //         Mail::to(config('app.emails.interruptions_ao'))->send(new InterruptionCreated($interruption));
+        //     } catch (\Exception $e) {
+        //     }
+        // }else{
+        //     try {
+        //         Mail::to(config('app.emails.interruptions_dev'))->send(new InterruptionCreated($interruption));
+        //     } catch (\Exception $e) {
+        //     }
+        // }
+
+        try {
+            env('APP_ENV') == 'prod' ? Mail::to(config('app.emails.interruptions_ao')) : Mail::to(config('app.emails.interruptions_dev'));
+        }catch (\Exception $e) {
+            //@Todo Proper exception handling
         }
 
         Artisan::call('interruptions:export');

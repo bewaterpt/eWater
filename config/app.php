@@ -314,7 +314,7 @@ return [
 
     'emails' => [
         'interruptions_ao' => "interrupcoes.ao@bewater.com.pt",
-        'developer' => "developer@bewater.com.pt"
+        'interruptions_dev' => "developer@bewater.com.pt"
     ],
 
     'admins' => [
