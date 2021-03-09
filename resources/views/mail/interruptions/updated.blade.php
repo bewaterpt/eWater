@@ -58,7 +58,7 @@
                 <b>@Lang('general.interruptions.start_date'):</b>
             </td>
             <td>
-                {!! $prevInt->start_date !== $newInt->start_date ? "<span style='color: gray'><s>" . $carbon->parse($prevInt->start_date)->format('Y-m-d H:i') . "</s></span> <span style='color: darkblue'>" . $carbon->parse($newInt->start_date)->format('Y-m-d H:i') . "</span>" : $carbon->parse($prevInt->start_date)->format('Y-m-d H:i') !!}
+                {!! strcmp($prevInt->start_date, $newInt->start_date ) !== 0 ? "<span style='color: gray'><s>" . $carbon->parse($prevInt->start_date)->format('Y-m-d H:i') . "</s></span> <span style='color: darkblue'>" . $carbon->parse($newInt->start_date)->format('Y-m-d H:i') . "</span>" : $carbon->parse($prevInt->start_date)->format('Y-m-d H:i') !!}
             </td>
         </tr>
         <tr>
@@ -66,7 +66,7 @@
                 <b>@Lang('general.interruptions.reinstatement_date'):</b>
             </td>
             <td>
-                {!! $prevInt->reinstatement_date !== $newInt->reinstatement_date ? "<span style='color: gray'><s>" . $carbon->parse($prevInt->reinstatement_date)->format('Y-m-d H:i') . "</s></span> <span style='color: darkblue'>" . $carbon->parse($newInt->reinstatement_date)->format('Y-m-d H:i') . "</span>" : $carbon->parse($prevInt->reinstatement_date)->format('Y-m-d H:i') !!}
+                {!! strcmp($prevInt->reinstatement_date, $newInt->reinstatement_date ) !== 0 ? "<span style='color: gray'><s>" . $carbon->parse($prevInt->reinstatement_date)->format('Y-m-d H:i') . "</s></span> <span style='color: darkblue'>" . $carbon->parse($newInt->reinstatement_date)->format('Y-m-d H:i') . "</span>" : $carbon->parse($prevInt->reinstatement_date)->format('Y-m-d H:i') !!}
             </td>
         </tr>
         <tr>
