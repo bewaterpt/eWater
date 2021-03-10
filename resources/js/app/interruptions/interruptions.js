@@ -21,7 +21,7 @@ $(() => {
             });
         });
 
-        $("form").find('input').on('change', function() {
+        $("form").find('input:not([name=address-adjacent]):not([name=address-partial]):not([name=address-partial-text])').on('change', function() {
             let data = $("form").serializeObject();
             data._token = data._token.slice(1);
             console.log('Form Data: ', data);
@@ -31,7 +31,11 @@ $(() => {
                 data: {data},
                 dataType: 'json',
                 success: (data) => {
-                    console.log(data);
+                    if (data.status === 200) {
+                        tinyMCE.get('inputAffectedArea').setContent(data.text);
+                    } else {
+                        // @todo Program bootbox to present error
+                    }
                 }
             });
         });

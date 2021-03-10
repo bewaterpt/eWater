@@ -69,7 +69,7 @@
                                     @endforeach
                                 </select>
                             </div>
-                            @include('components.autocomplete_search', ['fieldId' => 'inputAddress', 'fieldName' => 'address', 'uri' => '/addresses/autocomplete', 'translationString' => 'forms.fields.addresses', 'inline' => false])
+                            @include('components.autocomplete_search', ['fieldId' => 'inputAddress', 'fieldName' => 'address', 'uri' => '/addresses/autocomplete', 'translationString' => 'forms.fields.search_addresses', 'inline' => false])
                             <div class="form-group col-md-12">
                                 <label for="inputAffectedArea">@Lang('forms.fields.affected_area')</label>
                                 <textarea name="affected_area" id="inputAffectedArea" class="form-control text-editor @error('affected_area') is-invalid @enderror"></textarea>
@@ -87,6 +87,11 @@
                 </div>
             </div>
         </div>
+    </div>
+    <div id="translations" class="d-none">
+        <span class="partial-label">@Lang('general.interruptions.addresses.partial')</span>
+        <span class="adjacent-label">@Lang('general.interruptions.addresses.adjacent_streets')</span>
+        <span class="partial-info">@Lang('general.interruptions.addresses.partial_info')</span>
     </div>
 </div>
 @endsection

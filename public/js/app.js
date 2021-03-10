@@ -23,6 +23,7 @@ module.exports = __webpack_require__(/*! ./lib/axios */ "./node_modules/axios/li
 
 var utils = __webpack_require__(/*! ./../utils */ "./node_modules/axios/lib/utils.js");
 var settle = __webpack_require__(/*! ./../core/settle */ "./node_modules/axios/lib/core/settle.js");
+var cookies = __webpack_require__(/*! ./../helpers/cookies */ "./node_modules/axios/lib/helpers/cookies.js");
 var buildURL = __webpack_require__(/*! ./../helpers/buildURL */ "./node_modules/axios/lib/helpers/buildURL.js");
 var buildFullPath = __webpack_require__(/*! ../core/buildFullPath */ "./node_modules/axios/lib/core/buildFullPath.js");
 var parseHeaders = __webpack_require__(/*! ./../helpers/parseHeaders */ "./node_modules/axios/lib/helpers/parseHeaders.js");
@@ -43,7 +44,7 @@ module.exports = function xhrAdapter(config) {
     // HTTP basic authentication
     if (config.auth) {
       var username = config.auth.username || '';
-      var password = config.auth.password || '';
+      var password = config.auth.password ? unescape(encodeURIComponent(config.auth.password)) : '';
       requestHeaders.Authorization = 'Basic ' + btoa(username + ':' + password);
     }
 
@@ -124,8 +125,6 @@ module.exports = function xhrAdapter(config) {
     // This is only done if running in a standard browser environment.
     // Specifically not if we're in a web worker, or react-native.
     if (utils.isStandardBrowserEnv()) {
-      var cookies = __webpack_require__(/*! ./../helpers/cookies */ "./node_modules/axios/lib/helpers/cookies.js");
-
       // Add xsrf header
       var xsrfValue = (config.withCredentials || isURLSameOrigin(fullPath)) && config.xsrfCookieName ?
         cookies.read(config.xsrfCookieName) :
@@ -191,7 +190,7 @@ module.exports = function xhrAdapter(config) {
       });
     }
 
-    if (requestData === undefined) {
+    if (!requestData) {
       requestData = null;
     }
 
@@ -259,6 +258,9 @@ axios.all = function all(promises) {
   return Promise.all(promises);
 };
 axios.spread = __webpack_require__(/*! ./helpers/spread */ "./node_modules/axios/lib/helpers/spread.js");
+
+// Expose isAxiosError
+axios.isAxiosError = __webpack_require__(/*! ./helpers/isAxiosError */ "./node_modules/axios/lib/helpers/isAxiosError.js");
 
 module.exports = axios;
 
@@ -468,9 +470,10 @@ Axios.prototype.getUri = function getUri(config) {
 utils.forEach(['delete', 'get', 'head', 'options'], function forEachMethodNoData(method) {
   /*eslint func-names:0*/
   Axios.prototype[method] = function(url, config) {
-    return this.request(utils.merge(config || {}, {
+    return this.request(mergeConfig(config || {}, {
       method: method,
-      url: url
+      url: url,
+      data: (config || {}).data
     }));
   };
 });
@@ -478,7 +481,7 @@ utils.forEach(['delete', 'get', 'head', 'options'], function forEachMethodNoData
 utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
   /*eslint func-names:0*/
   Axios.prototype[method] = function(url, data, config) {
-    return this.request(utils.merge(config || {}, {
+    return this.request(mergeConfig(config || {}, {
       method: method,
       url: url,
       data: data
@@ -738,7 +741,7 @@ module.exports = function enhanceError(error, config, code, request, response) {
   error.response = response;
   error.isAxiosError = true;
 
-  error.toJSON = function() {
+  error.toJSON = function toJSON() {
     return {
       // Standard
       message: this.message,
@@ -787,59 +790,73 @@ module.exports = function mergeConfig(config1, config2) {
   config2 = config2 || {};
   var config = {};
 
-  var valueFromConfig2Keys = ['url', 'method', 'params', 'data'];
-  var mergeDeepPropertiesKeys = ['headers', 'auth', 'proxy'];
+  var valueFromConfig2Keys = ['url', 'method', 'data'];
+  var mergeDeepPropertiesKeys = ['headers', 'auth', 'proxy', 'params'];
   var defaultToConfig2Keys = [
-    'baseURL', 'url', 'transformRequest', 'transformResponse', 'paramsSerializer',
-    'timeout', 'withCredentials', 'adapter', 'responseType', 'xsrfCookieName',
-    'xsrfHeaderName', 'onUploadProgress', 'onDownloadProgress',
-    'maxContentLength', 'validateStatus', 'maxRedirects', 'httpAgent',
-    'httpsAgent', 'cancelToken', 'socketPath'
+    'baseURL', 'transformRequest', 'transformResponse', 'paramsSerializer',
+    'timeout', 'timeoutMessage', 'withCredentials', 'adapter', 'responseType', 'xsrfCookieName',
+    'xsrfHeaderName', 'onUploadProgress', 'onDownloadProgress', 'decompress',
+    'maxContentLength', 'maxBodyLength', 'maxRedirects', 'transport', 'httpAgent',
+    'httpsAgent', 'cancelToken', 'socketPath', 'responseEncoding'
   ];
+  var directMergeKeys = ['validateStatus'];
+
+  function getMergedValue(target, source) {
+    if (utils.isPlainObject(target) && utils.isPlainObject(source)) {
+      return utils.merge(target, source);
+    } else if (utils.isPlainObject(source)) {
+      return utils.merge({}, source);
+    } else if (utils.isArray(source)) {
+      return source.slice();
+    }
+    return source;
+  }
+
+  function mergeDeepProperties(prop) {
+    if (!utils.isUndefined(config2[prop])) {
+      config[prop] = getMergedValue(config1[prop], config2[prop]);
+    } else if (!utils.isUndefined(config1[prop])) {
+      config[prop] = getMergedValue(undefined, config1[prop]);
+    }
+  }
 
   utils.forEach(valueFromConfig2Keys, function valueFromConfig2(prop) {
-    if (typeof config2[prop] !== 'undefined') {
-      config[prop] = config2[prop];
+    if (!utils.isUndefined(config2[prop])) {
+      config[prop] = getMergedValue(undefined, config2[prop]);
     }
   });
 
-  utils.forEach(mergeDeepPropertiesKeys, function mergeDeepProperties(prop) {
-    if (utils.isObject(config2[prop])) {
-      config[prop] = utils.deepMerge(config1[prop], config2[prop]);
-    } else if (typeof config2[prop] !== 'undefined') {
-      config[prop] = config2[prop];
-    } else if (utils.isObject(config1[prop])) {
-      config[prop] = utils.deepMerge(config1[prop]);
-    } else if (typeof config1[prop] !== 'undefined') {
-      config[prop] = config1[prop];
-    }
-  });
+  utils.forEach(mergeDeepPropertiesKeys, mergeDeepProperties);
 
   utils.forEach(defaultToConfig2Keys, function defaultToConfig2(prop) {
-    if (typeof config2[prop] !== 'undefined') {
-      config[prop] = config2[prop];
-    } else if (typeof config1[prop] !== 'undefined') {
-      config[prop] = config1[prop];
+    if (!utils.isUndefined(config2[prop])) {
+      config[prop] = getMergedValue(undefined, config2[prop]);
+    } else if (!utils.isUndefined(config1[prop])) {
+      config[prop] = getMergedValue(undefined, config1[prop]);
+    }
+  });
+
+  utils.forEach(directMergeKeys, function merge(prop) {
+    if (prop in config2) {
+      config[prop] = getMergedValue(config1[prop], config2[prop]);
+    } else if (prop in config1) {
+      config[prop] = getMergedValue(undefined, config1[prop]);
     }
   });
 
   var axiosKeys = valueFromConfig2Keys
     .concat(mergeDeepPropertiesKeys)
-    .concat(defaultToConfig2Keys);
+    .concat(defaultToConfig2Keys)
+    .concat(directMergeKeys);
 
   var otherKeys = Object
-    .keys(config2)
+    .keys(config1)
+    .concat(Object.keys(config2))
     .filter(function filterAxiosKeys(key) {
       return axiosKeys.indexOf(key) === -1;
     });
 
-  utils.forEach(otherKeys, function otherKeysDefaultToConfig2(prop) {
-    if (typeof config2[prop] !== 'undefined') {
-      config[prop] = config2[prop];
-    } else if (typeof config1[prop] !== 'undefined') {
-      config[prop] = config1[prop];
-    }
-  });
+  utils.forEach(otherKeys, mergeDeepProperties);
 
   return config;
 };
@@ -868,7 +885,7 @@ var createError = __webpack_require__(/*! ./createError */ "./node_modules/axios
  */
 module.exports = function settle(resolve, reject, response) {
   var validateStatus = response.config.validateStatus;
-  if (!validateStatus || validateStatus(response.status)) {
+  if (!response.status || !validateStatus || validateStatus(response.status)) {
     resolve(response);
   } else {
     reject(createError(
@@ -1000,6 +1017,7 @@ var defaults = {
   xsrfHeaderName: 'X-XSRF-TOKEN',
 
   maxContentLength: -1,
+  maxBodyLength: -1,
 
   validateStatus: function validateStatus(status) {
     return status >= 200 && status < 300;
@@ -1063,7 +1081,6 @@ var utils = __webpack_require__(/*! ./../utils */ "./node_modules/axios/lib/util
 
 function encode(val) {
   return encodeURIComponent(val).
-    replace(/%40/gi, '@').
     replace(/%3A/gi, ':').
     replace(/%24/g, '$').
     replace(/%2C/gi, ',').
@@ -1244,6 +1261,29 @@ module.exports = function isAbsoluteURL(url) {
   // RFC 3986 defines scheme name as a sequence of characters beginning with a letter and followed
   // by any combination of letters, digits, plus, period, or hyphen.
   return /^([a-z][a-z\d\+\-\.]*:)?\/\//i.test(url);
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/axios/lib/helpers/isAxiosError.js":
+/*!********************************************************!*\
+  !*** ./node_modules/axios/lib/helpers/isAxiosError.js ***!
+  \********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/**
+ * Determines whether the payload is an error thrown by Axios
+ *
+ * @param {*} payload The value to test
+ * @returns {boolean} True if the payload is an error thrown by Axios, otherwise false
+ */
+module.exports = function isAxiosError(payload) {
+  return (typeof payload === 'object') && (payload.isAxiosError === true);
 };
 
 
@@ -1573,6 +1613,21 @@ function isObject(val) {
 }
 
 /**
+ * Determine if a value is a plain Object
+ *
+ * @param {Object} val The value to test
+ * @return {boolean} True if value is a plain Object, otherwise false
+ */
+function isPlainObject(val) {
+  if (toString.call(val) !== '[object Object]') {
+    return false;
+  }
+
+  var prototype = Object.getPrototypeOf(val);
+  return prototype === null || prototype === Object.prototype;
+}
+
+/**
  * Determine if a value is a Date
  *
  * @param {Object} val The value to test
@@ -1728,34 +1783,12 @@ function forEach(obj, fn) {
 function merge(/* obj1, obj2, obj3, ... */) {
   var result = {};
   function assignValue(val, key) {
-    if (typeof result[key] === 'object' && typeof val === 'object') {
+    if (isPlainObject(result[key]) && isPlainObject(val)) {
       result[key] = merge(result[key], val);
-    } else {
-      result[key] = val;
-    }
-  }
-
-  for (var i = 0, l = arguments.length; i < l; i++) {
-    forEach(arguments[i], assignValue);
-  }
-  return result;
-}
-
-/**
- * Function equal to merge with the difference being that no reference
- * to original objects is kept.
- *
- * @see merge
- * @param {Object} obj1 Object to merge
- * @returns {Object} Result of all merge properties
- */
-function deepMerge(/* obj1, obj2, obj3, ... */) {
-  var result = {};
-  function assignValue(val, key) {
-    if (typeof result[key] === 'object' && typeof val === 'object') {
-      result[key] = deepMerge(result[key], val);
-    } else if (typeof val === 'object') {
-      result[key] = deepMerge({}, val);
+    } else if (isPlainObject(val)) {
+      result[key] = merge({}, val);
+    } else if (isArray(val)) {
+      result[key] = val.slice();
     } else {
       result[key] = val;
     }
@@ -1786,6 +1819,19 @@ function extend(a, b, thisArg) {
   return a;
 }
 
+/**
+ * Remove byte order marker. This catches EF BB BF (the UTF-8 BOM)
+ *
+ * @param {string} content with BOM
+ * @return {string} content value without BOM
+ */
+function stripBOM(content) {
+  if (content.charCodeAt(0) === 0xFEFF) {
+    content = content.slice(1);
+  }
+  return content;
+}
+
 module.exports = {
   isArray: isArray,
   isArrayBuffer: isArrayBuffer,
@@ -1795,6 +1841,7 @@ module.exports = {
   isString: isString,
   isNumber: isNumber,
   isObject: isObject,
+  isPlainObject: isPlainObject,
   isUndefined: isUndefined,
   isDate: isDate,
   isFile: isFile,
@@ -1805,9 +1852,9 @@ module.exports = {
   isStandardBrowserEnv: isStandardBrowserEnv,
   forEach: forEach,
   merge: merge,
-  deepMerge: deepMerge,
   extend: extend,
-  trim: trim
+  trim: trim,
+  stripBOM: stripBOM
 };
 
 
@@ -62088,8 +62135,9 @@ $(function () {
 /***/ (function(module, exports) {
 
 $(function () {
+  var t = null;
   var card = $('<div>', {
-    "class": 'selection-card card col-md-4 p-0'
+    "class": 'selection-card border float-left p-0 mt-2'
   });
   var cardH = $('<div>', {
     "class": 'card-header'
@@ -62097,19 +62145,109 @@ $(function () {
   var cardB = $('<div>', {
     "class": 'card-body'
   });
-  var selections = {};
-  var id = 1;
+  var partialLabel = $('<label for="address-partial-check" class="partial-label mr-3">' + $('#translations .partial-label').text() + '</label>');
+  var partialCheck = $('<input>', {
+    type: 'checkbox',
+    name: 'address-partial',
+    id: 'address-partial-check'
+  });
+  var partialInput = $('<input>', {
+    type: 'text',
+    name: 'address-partial-text',
+    "class": 'd-none w-100 partial-input',
+    required: false
+  });
+  var partialInfo = $('<small class="partial-info form-text text-muted w-100 d-none">' + $('#translations .partial-info').text() + '</small>');
+  var adjacentLabel = $('<label for="address-adjatent-check" class="adjacent-label mr-3">' + $('#translations .adjacent-label').text() + '</label>');
+  var adjacentCheck = $('<input>', {
+    type: 'checkbox',
+    name: 'address-adjacent',
+    id: 'address-adjatent-check'
+  });
+  var a = $("<a>", {
+    href: '#',
+    "class": 'remove float-right text-danger'
+  });
+  var i = $('<i>', {
+    "class": 'fas fa-times'
+  });
+  a.append(i);
+  a.on('click', function () {
+    var addressToRemove = $(this).parents('.selection-card').attr('id').split('-').slice(1); // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice
+
+    var inputData = JSON.parse(input.val());
+    var newInputData = inputData.filter(function (entry) {
+      return entry.type != addressToRemove[0] && entry['data-resource-id'] != addressToRemove[1];
+    });
+    input.val(JSON.stringify(newInputData));
+    $(this).parents('.selection-card').remove();
+    input.trigger('change');
+  }); // Display partial door numbers 
+
+  partialCheck.on('change', function () {
+    if ($(this).prop('checked')) {
+      $(this).siblings('.partial-input, .partial-info').removeClass('d-none');
+    } else {
+      $(this).siblings('.partial-input, .partial-info').addClass('d-none');
+    }
+
+    var resourceId = $(this).parents('.selection-card').attr('id').split('-').slice(1);
+    var inputData = JSON.parse(input.val());
+    var partialData = $(this).prop('checked');
+    inputData.map(function (entry) {
+      if (entry['data-resource-id'] == resourceId[1] && entry['data-type'] == resourceId[0]) {
+        entry.partial = partialData;
+      }
+    });
+    input.val(JSON.stringify(inputData));
+    input.trigger('change');
+  });
+  partialInput.on('keyup', function () {
+    var _this = this;
+
+    clearTimeout(t);
+    t = setTimeout(function () {
+      var resourceId = $(_this).parents('.selection-card').attr('id').split('-').slice(1);
+      var inputData = JSON.parse(input.val());
+      var partialData = $(_this).val();
+      inputData.map(function (entry, i) {
+        console.log(entry);
+
+        if (entry['data-resource-id'] == resourceId[1] && entry['data-type'] == resourceId[0]) {
+          entry['partial-text'] = partialData;
+        }
+      });
+      console.log('Input data: ', inputData);
+      input.val(JSON.stringify(inputData));
+      console.log('Input value: ', input.val());
+      input.trigger('change');
+    }, 1000);
+  });
+  adjacentCheck.on('change', function () {
+    var resourceId = $(this).parents('.selection-card').attr('id').split('-').slice(1);
+    var inputData = JSON.parse(input.val());
+    var adjacentData = $(this).prop('checked');
+    inputData.map(function (entry, i) {
+      console.log(entry);
+
+      if (entry['data-resource-id'] == resourceId[1] && entry['data-type'] == resourceId[0]) {
+        entry.adjacent = adjacentData;
+      }
+    });
+    input.val(JSON.stringify(inputData));
+    input.trigger('change');
+  }); // cardB.append(adjacentLabel, adjacentCheck, partialLabel, partialCheck, partialInput);
+
+  card.append(cardH);
   var loading = $('#autocomplete-list ul').html();
+  var input = $('#autocomplete-list').siblings('input[type=hidden]');
 
   if ($('div[contenteditable=true].search.autocomplete').length > 0) {
     $('body').on('click', function (e) {
-      if ($("#autocomplete-list").hasClass('show') && !$(e.target).is('div[contenteditable=true].search.autocomplete')) {
-        $("#autocomplete-list").removeClass('show');
-      }
-    });
-    $('div[contenteditable=true].search.autocomplete').on('click', function () {
-      if ($("#autocomplete-list ul").children().length > 1) {
-        $("#autocomplete-list").addClass('show');
+      if (!$("#autocomplete-list").hasClass('invisible') && !$(e.target).is('div[contenteditable=true].search.autocomplete')) {
+        $("#autocomplete-list").addClass('invisible');
+      } else if ($("#autocomplete-list").hasClass('invisible') && $(e.target).is('div[contenteditable=true].search.autocomplete') && $("#autocomplete-list ul").children().length > 1) {
+        $("#autocomplete-list").removeClass('invisible');
       }
     });
     $('div[contenteditable=true].search.autocomplete').on("keyup", function () {
@@ -62120,7 +62258,7 @@ $(function () {
       }
 
       $("#autocomplete-list ul").html(loading);
-      $("#autocomplete-list, #autocomplete-list ul .loading").addClass('show');
+      $("#autocomplete-list, #autocomplete-list ul .loading").removeClass('invisible');
 
       if (query != '') {
         window.addressSearchAjax = $.ajax({
@@ -62132,40 +62270,38 @@ $(function () {
           // contentType: 'json',
           dataType: 'html',
           success: function success(data) {
-            $("#autocomplete-list .loading").removeClass('show');
+            // $("#autocomplete-list .loading").removeClass('show');
             window.requestdata = data;
-            console.log(data);
             $("#autocomplete-list ul").html(data).find('li a').on('click', function () {
-              var input = $('#autocomplete-list').siblings('input[type=hidden]');
               var allFieldData = JSON.parse(input.val());
               var data = $(this).attr();
-              data.text = $(this).text();
-              allFieldData[data["data-resource-id"]] = data;
-              input.val(JSON.stringify(allFieldData));
-              input.trigger('change');
-              var cardField = card.clone(true).attr('id', 'address-' + data["data-type"] + '-' + data["data-resource-id"]);
-              ;
-              var cardHeader = cardH.clone(true);
-              var cardBody = cardB.clone(true);
-              cardHeader.html(data.text);
-              $('<a href="#" class="remove float-right text-danger"><i class="fas fa-times"></i></a>').appendTo(cardHeader);
-              cardField.append(cardHeader, cardBody);
-              $('#selection-list').append(cardField);
-              $('#selection-list .card .card-header a').on('click', function () {
-                addressToRemove = $(this).parents('.selection-card').attr('id').split('-').slice(1); // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice
+              data.text = $(this).text().fullTrim();
+              delete data.href;
 
-                var newData = data.entries().filter(function (object) {
-                  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter
-                  console.log(object); // return object["data-type"] != addressToRemove[0] && object["data-resource-id"] != addressToRemove[1];
-                });
-                $(this).parents('.selection-card').remove();
-              });
+              if (!allFieldData.some(function (item) {
+                return item['data-resource-id'] === data['data-resource-id'];
+              })) {
+                allFieldData.push(data);
+                input.val(JSON.stringify(allFieldData));
+                input.trigger('change');
+                var id = 'address-' + data["data-type"] + '-' + data["data-resource-id"];
+                var addressCard = card.clone(true).attr('id', id);
+                var addressCardB = cardB.clone(true);
+                var addressRemove = a.clone(true);
+
+                if (data['data-type'] != 'locality') {
+                  addressCardB.append(adjacentLabel.clone(true), adjacentCheck.clone(true), partialLabel.clone(true), partialCheck.clone(true), partialInput.clone(true), partialInfo.clone(true)).appendTo(addressCard);
+                }
+
+                addressCard.find('.card-header').append(data.text, addressRemove);
+                $('#selection-list').append(addressCard);
+              }
             });
-            $("#autocomplete-list").addClass('show');
+            $("#autocomplete-list").removeClass('invisible');
           }
         });
       } else {
-        $("#autocomplete-list").removeClass('show');
+        $("#autocomplete-list").addClass('invisible');
       }
     });
   }
@@ -63011,7 +63147,7 @@ $(function () {
         }
       });
     });
-    $("form").find('input').on('change', function () {
+    $("form").find('input:not([name=address-adjacent]):not([name=address-partial]):not([name=address-partial-text])').on('change', function () {
       var data = $("form").serializeObject();
       data._token = data._token.slice(1);
       console.log('Form Data: ', data);
@@ -63023,7 +63159,10 @@ $(function () {
         },
         dataType: 'json',
         success: function success(data) {
-          console.log(data);
+          if (data.status === 200) {
+            tinyMCE.get('inputAffectedArea').setContent(data.text);
+          } else {// @todo Program bootbox to present error
+          }
         }
       });
     });
@@ -64095,29 +64234,29 @@ tinymce.addI18n('pt_PT', {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\Dev\eWater\resources\js\app.js */"./resources/js/app.js");
-__webpack_require__(/*! C:\Dev\eWater\resources\js\app\utility\tinymce.js */"./resources/js/app/utility/tinymce.js");
-__webpack_require__(/*! C:\Dev\eWater\resources\js\app\utility\datatables.js */"./resources/js/app/utility/datatables.js");
-__webpack_require__(/*! C:\Dev\eWater\resources\js\app\utility\fixes.js */"./resources/js/app/utility/fixes.js");
-__webpack_require__(/*! C:\Dev\eWater\resources\js\app\utility\ajax.js */"./resources/js/app/utility/ajax.js");
-__webpack_require__(/*! C:\Dev\eWater\resources\js\app\settings\users\datatables_users.js */"./resources/js/app/settings/users/datatables_users.js");
-__webpack_require__(/*! C:\Dev\eWater\resources\js\app\settings\teams\teams.js */"./resources/js/app/settings/teams/teams.js");
-__webpack_require__(/*! C:\Dev\eWater\resources\js\app\interruptions\interruptions.js */"./resources/js/app/interruptions/interruptions.js");
-__webpack_require__(/*! C:\Dev\eWater\resources\js\app\interruptions\datatable_interruptions.js */"./resources/js/app/interruptions/datatable_interruptions.js");
-__webpack_require__(/*! C:\Dev\eWater\resources\js\app\settings\teams\datatables_teams.js */"./resources/js/app/settings/teams/datatables_teams.js");
-__webpack_require__(/*! C:\Dev\eWater\resources\js\app\settings\forms\forms.js */"./resources/js/app/settings/forms/forms.js");
-__webpack_require__(/*! C:\Dev\eWater\resources\js\app\settings\permissions\update.js */"./resources/js/app/settings/permissions/update.js");
-__webpack_require__(/*! C:\Dev\eWater\resources\js\app\components\multiselect_listbox.js */"./resources/js/app/components/multiselect_listbox.js");
-__webpack_require__(/*! C:\Dev\eWater\resources\js\app\components\tooltip.js */"./resources/js/app/components/tooltip.js");
-__webpack_require__(/*! C:\Dev\eWater\resources\js\app\components\autocomplete_search.js */"./resources/js/app/components/autocomplete_search.js");
-__webpack_require__(/*! C:\Dev\eWater\resources\js\app\daily_reports\dailyReports.js */"./resources/js/app/daily_reports/dailyReports.js");
-__webpack_require__(/*! C:\Dev\eWater\resources\js\app\daily_reports\datatables_reports.js */"./resources/js/app/daily_reports/datatables_reports.js");
-__webpack_require__(/*! C:\Dev\eWater\resources\js\app\calls\calls.js */"./resources/js/app/calls/calls.js");
-__webpack_require__(/*! C:\Dev\eWater\resources\js\app\calls\datatables_calls.js */"./resources/js/app/calls/datatables_calls.js");
-__webpack_require__(/*! C:\Dev\eWater\resources\js\app\settings\roles\datatables_roles.js */"./resources/js/app/settings/roles/datatables_roles.js");
-__webpack_require__(/*! C:\Dev\eWater\resources\js\app\settings\motives\datatables_motives.js */"./resources/js/app/settings/motives/datatables_motives.js");
-__webpack_require__(/*! C:\Dev\eWater\resources\js\app\test\test.js */"./resources/js/app/test/test.js");
-module.exports = __webpack_require__(/*! C:\Dev\eWater\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! /home/bmartins/dev/eWater/resources/js/app.js */"./resources/js/app.js");
+__webpack_require__(/*! /home/bmartins/dev/eWater/resources/js/app/utility/tinymce.js */"./resources/js/app/utility/tinymce.js");
+__webpack_require__(/*! /home/bmartins/dev/eWater/resources/js/app/utility/datatables.js */"./resources/js/app/utility/datatables.js");
+__webpack_require__(/*! /home/bmartins/dev/eWater/resources/js/app/utility/fixes.js */"./resources/js/app/utility/fixes.js");
+__webpack_require__(/*! /home/bmartins/dev/eWater/resources/js/app/utility/ajax.js */"./resources/js/app/utility/ajax.js");
+__webpack_require__(/*! /home/bmartins/dev/eWater/resources/js/app/settings/users/datatables_users.js */"./resources/js/app/settings/users/datatables_users.js");
+__webpack_require__(/*! /home/bmartins/dev/eWater/resources/js/app/settings/teams/teams.js */"./resources/js/app/settings/teams/teams.js");
+__webpack_require__(/*! /home/bmartins/dev/eWater/resources/js/app/interruptions/interruptions.js */"./resources/js/app/interruptions/interruptions.js");
+__webpack_require__(/*! /home/bmartins/dev/eWater/resources/js/app/interruptions/datatable_interruptions.js */"./resources/js/app/interruptions/datatable_interruptions.js");
+__webpack_require__(/*! /home/bmartins/dev/eWater/resources/js/app/settings/teams/datatables_teams.js */"./resources/js/app/settings/teams/datatables_teams.js");
+__webpack_require__(/*! /home/bmartins/dev/eWater/resources/js/app/settings/forms/forms.js */"./resources/js/app/settings/forms/forms.js");
+__webpack_require__(/*! /home/bmartins/dev/eWater/resources/js/app/settings/permissions/update.js */"./resources/js/app/settings/permissions/update.js");
+__webpack_require__(/*! /home/bmartins/dev/eWater/resources/js/app/components/multiselect_listbox.js */"./resources/js/app/components/multiselect_listbox.js");
+__webpack_require__(/*! /home/bmartins/dev/eWater/resources/js/app/components/tooltip.js */"./resources/js/app/components/tooltip.js");
+__webpack_require__(/*! /home/bmartins/dev/eWater/resources/js/app/components/autocomplete_search.js */"./resources/js/app/components/autocomplete_search.js");
+__webpack_require__(/*! /home/bmartins/dev/eWater/resources/js/app/daily_reports/dailyReports.js */"./resources/js/app/daily_reports/dailyReports.js");
+__webpack_require__(/*! /home/bmartins/dev/eWater/resources/js/app/daily_reports/datatables_reports.js */"./resources/js/app/daily_reports/datatables_reports.js");
+__webpack_require__(/*! /home/bmartins/dev/eWater/resources/js/app/calls/calls.js */"./resources/js/app/calls/calls.js");
+__webpack_require__(/*! /home/bmartins/dev/eWater/resources/js/app/calls/datatables_calls.js */"./resources/js/app/calls/datatables_calls.js");
+__webpack_require__(/*! /home/bmartins/dev/eWater/resources/js/app/settings/roles/datatables_roles.js */"./resources/js/app/settings/roles/datatables_roles.js");
+__webpack_require__(/*! /home/bmartins/dev/eWater/resources/js/app/settings/motives/datatables_motives.js */"./resources/js/app/settings/motives/datatables_motives.js");
+__webpack_require__(/*! /home/bmartins/dev/eWater/resources/js/app/test/test.js */"./resources/js/app/test/test.js");
+module.exports = __webpack_require__(/*! /home/bmartins/dev/eWater/resources/sass/app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

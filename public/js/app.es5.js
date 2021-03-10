@@ -272,7 +272,7 @@ $(function () {
         }
       });
     });
-    $("form").find('input').on('change', function () {
+    $("form").find('input:not([name=address-adjacent]):not([name=address-partial]):not([name=address-partial-text])').on('change', function () {
       var data = $("form").serializeObject();
       data._token = data._token.slice(1);
       console.log('Form Data: ', data);
@@ -284,7 +284,10 @@ $(function () {
         },
         dataType: 'json',
         success: function success(data) {
-          console.log(data);
+          if (data.status === 200) {
+            tinyMCE.get('inputAffectedArea').setContent(data.text);
+          } else {// @todo Program bootbox to present error
+          }
         }
       });
     });
@@ -668,8 +671,9 @@ $(function () {
   });
 });
 $(function () {
+  var t = null;
   var card = $('<div>', {
-    "class": 'selection-card card col-md-4 p-0'
+    "class": 'selection-card border float-left p-0 mt-2'
   });
   var cardH = $('<div>', {
     "class": 'card-header'
@@ -677,19 +681,109 @@ $(function () {
   var cardB = $('<div>', {
     "class": 'card-body'
   });
-  var selections = {};
-  var id = 1;
+  var partialLabel = $('<label for="address-partial-check" class="partial-label mr-3">' + $('#translations .partial-label').text() + '</label>');
+  var partialCheck = $('<input>', {
+    type: 'checkbox',
+    name: 'address-partial',
+    id: 'address-partial-check'
+  });
+  var partialInput = $('<input>', {
+    type: 'text',
+    name: 'address-partial-text',
+    "class": 'd-none w-100 partial-input',
+    required: false
+  });
+  var partialInfo = $('<small class="partial-info form-text text-muted w-100 d-none">' + $('#translations .partial-info').text() + '</small>');
+  var adjacentLabel = $('<label for="address-adjatent-check" class="adjacent-label mr-3">' + $('#translations .adjacent-label').text() + '</label>');
+  var adjacentCheck = $('<input>', {
+    type: 'checkbox',
+    name: 'address-adjacent',
+    id: 'address-adjatent-check'
+  });
+  var a = $("<a>", {
+    href: '#',
+    "class": 'remove float-right text-danger'
+  });
+  var i = $('<i>', {
+    "class": 'fas fa-times'
+  });
+  a.append(i);
+  a.on('click', function () {
+    var addressToRemove = $(this).parents('.selection-card').attr('id').split('-').slice(1); // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice
+
+    var inputData = JSON.parse(input.val());
+    var newInputData = inputData.filter(function (entry) {
+      return entry.type != addressToRemove[0] && entry['data-resource-id'] != addressToRemove[1];
+    });
+    input.val(JSON.stringify(newInputData));
+    $(this).parents('.selection-card').remove();
+    input.trigger('change');
+  }); // Display partial door numbers 
+
+  partialCheck.on('change', function () {
+    if ($(this).prop('checked')) {
+      $(this).siblings('.partial-input, .partial-info').removeClass('d-none');
+    } else {
+      $(this).siblings('.partial-input, .partial-info').addClass('d-none');
+    }
+
+    var resourceId = $(this).parents('.selection-card').attr('id').split('-').slice(1);
+    var inputData = JSON.parse(input.val());
+    var partialData = $(this).prop('checked');
+    inputData.map(function (entry) {
+      if (entry['data-resource-id'] == resourceId[1] && entry['data-type'] == resourceId[0]) {
+        entry.partial = partialData;
+      }
+    });
+    input.val(JSON.stringify(inputData));
+    input.trigger('change');
+  });
+  partialInput.on('keyup', function () {
+    var _this3 = this;
+
+    clearTimeout(t);
+    t = setTimeout(function () {
+      var resourceId = $(_this3).parents('.selection-card').attr('id').split('-').slice(1);
+      var inputData = JSON.parse(input.val());
+      var partialData = $(_this3).val();
+      inputData.map(function (entry, i) {
+        console.log(entry);
+
+        if (entry['data-resource-id'] == resourceId[1] && entry['data-type'] == resourceId[0]) {
+          entry['partial-text'] = partialData;
+        }
+      });
+      console.log('Input data: ', inputData);
+      input.val(JSON.stringify(inputData));
+      console.log('Input value: ', input.val());
+      input.trigger('change');
+    }, 1000);
+  });
+  adjacentCheck.on('change', function () {
+    var resourceId = $(this).parents('.selection-card').attr('id').split('-').slice(1);
+    var inputData = JSON.parse(input.val());
+    var adjacentData = $(this).prop('checked');
+    inputData.map(function (entry, i) {
+      console.log(entry);
+
+      if (entry['data-resource-id'] == resourceId[1] && entry['data-type'] == resourceId[0]) {
+        entry.adjacent = adjacentData;
+      }
+    });
+    input.val(JSON.stringify(inputData));
+    input.trigger('change');
+  }); // cardB.append(adjacentLabel, adjacentCheck, partialLabel, partialCheck, partialInput);
+
+  card.append(cardH);
   var loading = $('#autocomplete-list ul').html();
+  var input = $('#autocomplete-list').siblings('input[type=hidden]');
 
   if ($('div[contenteditable=true].search.autocomplete').length > 0) {
     $('body').on('click', function (e) {
-      if ($("#autocomplete-list").hasClass('show') && !$(e.target).is('div[contenteditable=true].search.autocomplete')) {
-        $("#autocomplete-list").removeClass('show');
-      }
-    });
-    $('div[contenteditable=true].search.autocomplete').on('click', function () {
-      if ($("#autocomplete-list ul").children().length > 1) {
-        $("#autocomplete-list").addClass('show');
+      if (!$("#autocomplete-list").hasClass('invisible') && !$(e.target).is('div[contenteditable=true].search.autocomplete')) {
+        $("#autocomplete-list").addClass('invisible');
+      } else if ($("#autocomplete-list").hasClass('invisible') && $(e.target).is('div[contenteditable=true].search.autocomplete') && $("#autocomplete-list ul").children().length > 1) {
+        $("#autocomplete-list").removeClass('invisible');
       }
     });
     $('div[contenteditable=true].search.autocomplete').on("keyup", function () {
@@ -700,7 +794,7 @@ $(function () {
       }
 
       $("#autocomplete-list ul").html(loading);
-      $("#autocomplete-list, #autocomplete-list ul .loading").addClass('show');
+      $("#autocomplete-list, #autocomplete-list ul .loading").removeClass('invisible');
 
       if (query != '') {
         window.addressSearchAjax = $.ajax({
@@ -712,40 +806,38 @@ $(function () {
           // contentType: 'json',
           dataType: 'html',
           success: function success(data) {
-            $("#autocomplete-list .loading").removeClass('show');
+            // $("#autocomplete-list .loading").removeClass('show');
             window.requestdata = data;
-            console.log(data);
             $("#autocomplete-list ul").html(data).find('li a').on('click', function () {
-              var input = $('#autocomplete-list').siblings('input[type=hidden]');
               var allFieldData = JSON.parse(input.val());
               var data = $(this).attr();
-              data.text = $(this).text();
-              allFieldData[data["data-resource-id"]] = data;
-              input.val(JSON.stringify(allFieldData));
-              input.trigger('change');
-              var cardField = card.clone(true).attr('id', 'address-' + data["data-type"] + '-' + data["data-resource-id"]);
-              ;
-              var cardHeader = cardH.clone(true);
-              var cardBody = cardB.clone(true);
-              cardHeader.html(data.text);
-              $('<a href="#" class="remove float-right text-danger"><i class="fas fa-times"></i></a>').appendTo(cardHeader);
-              cardField.append(cardHeader, cardBody);
-              $('#selection-list').append(cardField);
-              $('#selection-list .card .card-header a').on('click', function () {
-                addressToRemove = $(this).parents('.selection-card').attr('id').split('-').slice(1); // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice
+              data.text = $(this).text().fullTrim();
+              delete data.href;
 
-                var newData = data.entries().filter(function (object) {
-                  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter
-                  console.log(object); // return object["data-type"] != addressToRemove[0] && object["data-resource-id"] != addressToRemove[1];
-                });
-                $(this).parents('.selection-card').remove();
-              });
+              if (!allFieldData.some(function (item) {
+                return item['data-resource-id'] === data['data-resource-id'];
+              })) {
+                allFieldData.push(data);
+                input.val(JSON.stringify(allFieldData));
+                input.trigger('change');
+                var id = 'address-' + data["data-type"] + '-' + data["data-resource-id"];
+                var addressCard = card.clone(true).attr('id', id);
+                var addressCardB = cardB.clone(true);
+                var addressRemove = a.clone(true);
+
+                if (data['data-type'] != 'locality') {
+                  addressCardB.append(adjacentLabel.clone(true), adjacentCheck.clone(true), partialLabel.clone(true), partialCheck.clone(true), partialInput.clone(true), partialInfo.clone(true)).appendTo(addressCard);
+                }
+
+                addressCard.find('.card-header').append(data.text, addressRemove);
+                $('#selection-list').append(addressCard);
+              }
             });
-            $("#autocomplete-list").addClass('show');
+            $("#autocomplete-list").removeClass('invisible');
           }
         });
       } else {
-        $("#autocomplete-list").removeClass('show');
+        $("#autocomplete-list").addClass('invisible');
       }
     });
   }

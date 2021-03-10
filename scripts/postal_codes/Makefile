@@ -1,12 +1,7 @@
 
 scrape:
-<<<<<<< HEAD
 	rm -f todos_cp.zip
 	. `pwd`/.env/bin/activate; python download.py
-=======
-	rm -Force todos_cp.zip
-	. `pwd`/.env/bin/activate; python3 download.py
->>>>>>> e00037a8b659b063636d4fcda3fc4df73227a0f0
 	unzip todos_cp.zip
 	rm -Force todos_cp.zip
 	rm -Force leiame.txt
@@ -40,6 +35,7 @@ deploy:
 	git push origin master
 
 installwin:
+#	Passar as linhas comentadas para um script próprio
 #	$$addPath = $$pwd.Path
 #	$$regexAddPath = [regex]::Escape($$addPath)
 #	$$arrPath = $$env:Path -split ';' | Where-Object {$$_ -notMatch "^$$regexAddPath\\?"}

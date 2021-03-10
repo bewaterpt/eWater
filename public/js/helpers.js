@@ -159,3 +159,11 @@ function logAjaxError(error) {
 
     ])
 }
+
+/**
+ * Prototype editing
+ */
+
+String.prototype.fullTrim = function () {
+    return this.replace(/^\s+|\s+$/gm, '').replace(/\s+/gm, decodeURI('%20'));
+}

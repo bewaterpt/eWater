@@ -570,7 +570,8 @@ class InterruptionController extends Controller
         return json_encode($data);
     }
 
-    public function generateText(Request $request) {
+    public function generateText(Request $request)
+    {
         $data = [
             'status' => 500,
             'message' => __('errors.unexpected_error'),
@@ -582,27 +583,34 @@ class InterruptionController extends Controller
             return $item[0];
         })->toArray();
 
-        dd(json_decode($requestData->address));
+        $zones = "";
+        // dd(json_decode($requestData->address));
+        collect(json_decode($requestData->address))->map(function ($address) use (&$zones) {
+            $partialNumbers = isset($address->{"partial-text"}) && $address->{"partial-text"} ? explode('-', $address->{"partial-text"}) : ["", ""];
+            $zones .= "<li>" .
+                ($address->{"data-type"} == "locality" ? __('general.interruptions.addresses.locality_text') : "") .
+                $address->text .
+                (isset($address->partial) && $address->partial && $address->{"data-type"} != "locality" ? __('general.interruptions.addresses.partial_text', ['nOne' => $partialNumbers[0], 'nTwo' => $partialNumbers[1]]) : "") .
+                (isset($address->adjacent) && $address->adjacent && $address->{"data-type"} != "locality" ? __('general.interruptions.addresses.adjacent_streets_text') : "") .
+                "</li>\n";
+        });
 
+        // dd($zones);
         if ($request->data) {
-            if (!empty($requestData->start_date)) {
-                $count += 1;
-            }
 
-            if (!empty($requestData->reinstatement_date)) {
-                $count += 1;
-            }
-
-            // if (!empty($requestData->)) {
-
-            // }
-
-            $data['text'] = trans_choice('general.interruptions.addresses.generated_text', $count,
+            $data['text'] = __(
+                'general.interruptions.addresses.generated_text',
                 [
-                    'type' => ($requestData->scheduled ? __('general.interruptions.is_scheduled') : __('general.interruptions.is_unscheduled')),
-                    'start_date' => $requestData->start_date,
-                    'reinstatement_date' => $requestData->reinstatement_date,
-                ]);
+                    'type' => (isset($requestData->scheduled) ? ($requestData->scheduled ? __('general.interruptions.is_scheduled') : __('general.interruptions.is_unscheduled')) : ""),
+                    'start_date' => (isset($requestData->start_date) ? ($requestData->start_date != "" ? Carbon::parse($requestData->start_date)->format('Y-m-d') : "") : ""),
+                    'start_time' => (isset($requestData->start_date) ? ($requestData->start_date != "" ? Carbon::parse($requestData->start_date)->format('H:i') : "") : ""),
+                    'reinstatement_date' => (isset($requestData->reinstatement_date) ? ($requestData->reinstatement_date != "" ? Carbon::parse($requestData->reinstatement_date)->format('Y-m-d') : "") : ""),
+                    'reinstatement_time' => (isset($requestData->reinstatement_date) ? ($requestData->reinstatement_date != "" ? Carbon::parse($requestData->reinstatement_date)->format('H:i') : "") : ""),
+                    'zones' => $zones,
+                ]
+            );
+            $data['status'] = 200;
+            $data['message'] = 'Success';
         }
 
         return json_encode($data);

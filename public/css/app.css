@@ -28068,6 +28068,26 @@ readers do not read off random characters that represent icons */
   }
 }
 
+@-webkit-keyframes flash {
+  0%, 50%, 100% {
+    opacity: 1;
+  }
+
+  25%, 75% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes flash {
+  0%, 50%, 100% {
+    opacity: 1;
+  }
+
+  25%, 75% {
+    opacity: 0.5;
+  }
+}
+
 .error-container {
   margin-bottom: 10px;
 }
@@ -28278,7 +28298,6 @@ readers do not read off random characters that represent icons */
   background: white;
   z-index: 2;
   width: 100%;
-  display: none;
 }
 
 .component.autocomplete-search #autocomplete-list.show {
@@ -28294,7 +28313,6 @@ readers do not read off random characters that represent icons */
 
 .component.autocomplete-search #autocomplete-list ul .loading {
   width: 100%;
-  display: none;
 }
 
 .component.autocomplete-search #autocomplete-list ul .loading .spinner {
@@ -28343,6 +28361,29 @@ readers do not read off random characters that represent icons */
   border: 1px solid #2462d6;
   color: #2462d6;
   background-color: rgba(36, 98, 214, 0.1);
+}
+
+.component.autocomplete-search #selection-list {
+  -moz-column-count: 3;
+       column-count: 3;
+}
+
+.component.autocomplete-search #selection-list .selection-card {
+  page-break-inside: avoid;
+  -moz-column-break-inside: avoid;
+       break-inside: avoid;
+  width: 100%;
+  -webkit-animation-name: flash;
+          animation-name: flash;
+  -webkit-animation-duration: 3s;
+          animation-duration: 3s;
+  -webkit-animation-fill-mode: both;
+          animation-fill-mode: both;
+}
+
+.component.autocomplete-search #selection-list .selection-card .card-header a {
+  position: relative;
+  right: -9px;
 }
 
 .object-table thead th:nth-last-of-type(-n+2) {

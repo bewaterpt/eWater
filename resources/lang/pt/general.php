@@ -111,11 +111,13 @@ return [
         'addresses' => [
             'locality' => 'Localidade',
             'street' => 'Rua',
-
-            'generated_text' => "{0}Nova interrupção :type com início a  e com término a  .\nA mesma iré afetar as seguintes zonas: <ul></ul>
-            |{1}Nova interrupção :type com início a :start_date e com término a  .\nA mesma iré afetar as seguintes zonas: <ul></ul>
-            |{2}Nova interrupção :type com início a :start_date e com término a :reinstatement_date.\nA mesma irá afetar as seguintes zonas: <ul></ul>
-            |{3}Nova interrupção :type com início a :start_date e com término a :reinstatement_date.\nA mesma irá afetar as seguintes zonas: <ul>:zones</ul>"
+            'adjacent_streets' => 'Ruas adjacentes',
+            'partial' => 'Parcial',
+            'adjacent_streets_text' => ' e ruas adjacentes',
+            'locality_text' => 'Toda a localidade de ',
+            'partial_text' => ' parcialmente do número :nOne ao :nTwo',
+            'partial_info' => 'Introduzir o primeiro e último números de porta separados por um "-"',
+            'generated_text' => "Nova interrupção :type com início a :start_date pelas :start_time e término a :reinstatement_date pelas :reinstatement_time.\nA mesma irá afetar as seguintes zonas: <ul>:zones</ul>",
         ]
     ],
     'url' => "Endereço Web",
